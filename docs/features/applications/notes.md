@@ -12,8 +12,15 @@
 - 8단계: 달력 (자동 진행, 최종 테스트 대기)
 - 9단계: 홈 연동 (자동 진행, 최종 테스트 대기)
 - 10단계: 마무리 (자동 진행, 최종 테스트 대기)
+- 사용자 테스트 r1: 통과 29, 실패 3(3·4·8번), 판정 없음 3(14·15·22번)
+- 수정 명세 L18: R5·R8·R13·R21·R24·R25·R33 변경, R38–R40 추가 (승인)
 
 ## 다음 진행
-- `/test applications`
+- `/plan applications`로 L18 수정 계획 세우기 (마감일·지원일 속성 제거와 데이터 옮기기, 카드 아래쪽 줄·정렬, 최대화 버그)
+- 14·15번(📅 일정 추가·고치기)은 사용자 판정이 비어 있음, 수정 후 테스트 때 함께 확인
 
 ## 확인할 문서 (경로는 docs/features/applications/ 기준, 파일 통째로 읽기)
+- ai/logs/L18.md
+- ai/spec/req-page-gallery.md, req-calendar.md, req-popup.md, req-status.md, req-schedule.md, req-properties.md
+- ai/spec/data.md, ai/spec/decisions.md
+- ai/plan/index.md
