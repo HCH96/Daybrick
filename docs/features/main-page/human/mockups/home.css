@@ -1,0 +1,99 @@
+/* 홈: 머리, 요약 줄, 벤토 카드, 이번 주 막대, 빈 카드 */
+/* ===== 홈 ===== */
+.home { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+.head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.date { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+.hello { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.3px; }
+.quick { display: flex; align-items: center; gap: 8px; width: 340px; height: 40px; padding: 0 14px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--muted); font-size: 13px; }
+.quick kbd { margin-left: auto; font-family: inherit; font-size: 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; }
+.quick.disabled { opacity: .6; }
+
+/* 요약 줄 */
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; }
+.kpi .l { font-size: 12px; color: var(--muted); }
+.kpi .v { font-size: 24px; font-weight: 800; margin-top: 2px; line-height: 1.4; letter-spacing: -0.3px; }
+.kpi .v small { font-size: 14px; font-weight: 600; color: var(--muted); margin-left: 2px; }
+.kpi .v.accent { color: var(--accent); }
+.kpi .v.none { color: var(--border); }
+.kpi .s { font-size: 12px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* 벤토 그리드 (12칸). 창 폭이 1280px 미만이면 앱에서는 모든 카드가 6칸이 된다 */
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: minmax(200px, auto); gap: 20px; }
+.large { grid-column: span 7; grid-row: span 2; }
+.wide { grid-column: span 7; }
+.narrow { grid-column: span 5; }
+
+/* 카드 공통 틀 */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; display: flex; flex-direction: column; min-width: 0; }
+.card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.card-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.badge { font-size: 12px; font-weight: 600; color: var(--muted); }
+.link { font-size: 12px; color: var(--accent); font-weight: 600; }
+.card-body { flex: 1; min-height: 0; }
+
+/* 오늘 할 일 */
+.progress { height: 6px; background: var(--track); border-radius: 99px; overflow: hidden; margin-bottom: 8px; }
+.progress > div { height: 100%; background: var(--accent); border-radius: 99px; }
+.todo { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.todo:last-child { border-bottom: none; }
+.check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--muted); flex-shrink: 0; position: relative; }
+.todo.done .check { background: var(--accent); border-color: var(--accent); }
+.todo.done .check::after { content: ""; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid var(--on-accent); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.todo.done span { color: var(--muted); text-decoration: line-through; }
+.todo .meta { margin-left: auto; font-size: 12px; color: var(--faint); }
+.chip { font-size: 11px; padding: 1px 8px; border-radius: 99px; background: var(--neutral-soft); color: var(--neutral); }
+.sub-title { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+
+/* 오늘 일정 */
+.event { display: flex; gap: 14px; padding: 10px 0; }
+.event .time { width: 48px; font-size: 13px; font-weight: 700; color: var(--muted); padding-top: 1px; }
+.event .bar { width: 3px; border-radius: 2px; background: var(--border); }
+.event .t { font-size: 14px; font-weight: 600; }
+.event .s { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.event.past .t { color: var(--muted); }
+.event.now .time { color: var(--accent); }
+.event.now .bar { background: var(--accent); }
+.now-tag { font-size: 10px; font-weight: 700; color: var(--on-accent); background: var(--accent); padding: 2px 7px; border-radius: 99px; margin-left: 6px; vertical-align: 2px; }
+
+/* 오늘 집중 시간 */
+.focus { display: flex; align-items: center; gap: 24px; }
+.ring { width: 132px; height: 132px; border-radius: 50%; flex-shrink: 0;
+  background: conic-gradient(var(--accent) 0 65%, var(--track) 65% 100%); display: grid; place-items: center; }
+.ring > div { width: 108px; height: 108px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; text-align: center; }
+.ring b { font-size: 26px; font-weight: 800; display: block; line-height: 1.1; }
+.ring small { font-size: 11px; color: var(--muted); }
+.frow { display: flex; justify-content: space-between; gap: 16px; font-size: 13px; padding: 3px 0; }
+.frow span:first-child { color: var(--muted); }
+.frow span:last-child { font-weight: 700; }
+.btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; background: var(--accent); color: var(--on-accent);
+  font-weight: 700; font-size: 13px; border-radius: 8px; padding: 8px 14px; }
+.btn svg { width: 12px; height: 12px; fill: currentColor; }
+
+/* 지원 현황 */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+.stat { border-radius: 10px; padding: 12px 14px; }
+.stat .n { font-size: 22px; font-weight: 800; }
+.stat .l { font-size: 12px; margin-top: 2px; }
+.st1 { background: var(--neutral-soft); color: var(--neutral); } .st2 { background: var(--blue-soft); color: var(--blue); }
+.st3 { background: var(--amber-soft); color: var(--amber); } .st4 { background: var(--green-soft); color: var(--green); }
+.dl { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 13px; border-bottom: 1px solid var(--border); }
+.dl:last-child { border-bottom: none; }
+.dday { font-weight: 800; color: var(--accent); font-size: 13px; }
+.dday.calm { color: var(--muted); font-weight: 700; }
+
+/* 이번 주 집중 막대 */
+.bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; align-items: end; height: 120px; }
+.bars div { display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; justify-content: flex-end; }
+.bars i { width: 100%; max-width: 28px; border-radius: 6px 6px 3px 3px; background: var(--track); }
+.bars i.on { background: var(--accent); }
+.bars i.empty { height: 4px; border-radius: 99px; }
+.bars span { font-size: 12px; color: var(--muted); }
+.bars .today span { color: var(--accent); font-weight: 700; }
+.bars .today i.empty { background: var(--accent); }
+.week-note { margin: 14px 0 0; text-align: center; font-size: 13px; color: var(--muted); }
+
+/* 빈 카드 */
+.empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; color: var(--muted); font-size: 13px; }
+.btn-ghost { margin-top: 6px; border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; font-size: 13px; color: var(--accent); font-weight: 600; }

@@ -1,0 +1,49 @@
+<!doctype html>
+<!-- 목업: 지원 관리 (Applications) / 5-3. 종료 → 결과 고르기
+  목차와 다른 화면: index.html
+  CSS: common.css, popup.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면    요구사항
+  parts-result        5-3. 종료 → 결과 고르기    R20
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 지원 관리 목업 · 5-3. 종료 → 결과 고르기</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="popup.css" />
+<link rel="stylesheet" href="parts.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다. 오늘 날짜는 2026년 10월 22일(목)로 가정했습니다.</p>
+
+  <section class="screen" id="parts">
+    <div class="screen-head"><h2>5-3. 종료 → 결과 고르기</h2><span class="tag">R20</span></div>
+    <p class="screen-desc">팝업 안에서 버튼을 눌렀을 때 뜨는 작은 창. 실제 크기(100%)로 보여줍니다.</p>
+
+    <div class="parts">
+      <!-- 종료 결과 -->
+      <div id="parts-result">
+        <div class="part-label">종료 → 결과 고르기 <small>종료를 고르면 바로 뜸</small></div>
+        <div class="stage">
+          <span class="badge big st-end" style="margin-bottom:8px">종료<svg class="ico chev"><use href="#i-down" /></svg></span>
+          <div class="pop result-pop">
+            <p>어떻게 끝났나요?</p>
+            <div class="result-opts">
+              <div class="on"><span class="opt o-green">최종 합격</span></div>
+              <div><span class="opt o-red">불합격</span></div>
+              <div><span class="opt o-gray">지원 포기</span></div>
+              <div><small>나중에 고르기</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+</body>
+</html>

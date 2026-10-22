@@ -1,0 +1,187 @@
+<!doctype html>
+<!-- 목업: 지원 관리 (Applications) / 1. 갤러리 (기본 화면)
+  목차와 다른 화면: index.html
+  CSS: common.css, gallery.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                                  요구사항
+  gallery             1. 갤러리 (기본 화면)                  R1–R6
+    gallery-head        1-1. 페이지 머리 (전환 버튼, 새 지원)  R1–R2
+    gallery-toolbar     1-2. 탭 줄 (진행 중·종료·전체)         R4
+    gallery-cards       1-3. 카드 바둑판                       R3, R5–R6
+    gallery-notes       1-4. 설명 메모                         -
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 지원 관리 목업 · 1. 갤러리 (기본 화면)</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="gallery.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다. 오늘 날짜는 2026년 10월 22일(목)로 가정했습니다.</p>
+
+  <section class="screen" id="gallery">
+    <div class="screen-head"><h2>1. 갤러리 (기본 화면)</h2><span class="tag">R1–R6</span></div>
+    <p class="screen-desc">처음 들어오면 보이는 화면. "진행 중" 탭, 마감일이 가까운 순. 두 번째 카드는 마우스를 올린 모습입니다.</p>
+    <div class="scale-note">1440 × 900 창, 80% 축소</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav">
+          <span class="tb-btn on"><svg class="ico"><use href="#i-side" /></svg></span>
+          <span class="tb-btn"><svg class="ico"><use href="#i-back" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-fwd" /></svg></span>
+        </div>
+        <div class="tb-drag"></div>
+        <div class="win">
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><path d="M0 5.5h10" /></svg></span>
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="9" height="9" /></svg></span>
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><path d="M.5.5l9 9M9.5.5l-9 9" /></svg></span>
+        </div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home" /></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-cal" /></svg>Calendar</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock" /></svg>Scheduler</div>
+          <div class="nav on"><svg class="ico"><use href="#i-bag" /></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer" /></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main">
+          <div class="page">
+            <div id="gallery-head" class="page-head">
+              <div>
+                <h1 class="page-title">지원 현황</h1>
+                <div class="page-sub">진행 중 8곳 · 이번 주 일정 3개</div>
+              </div>
+              <div class="head-right">
+                <div class="seg">
+                  <span class="on"><svg class="ico sm"><use href="#i-grid" /></svg>갤러리</span>
+                  <span><svg class="ico sm"><use href="#i-cal" /></svg>달력</span>
+                </div>
+                <span class="btn-primary"><svg class="ico sm"><use href="#i-plus" /></svg>새 지원</span>
+              </div>
+            </div>
+
+            <div id="gallery-toolbar" class="toolbar">
+              <div class="tabs">
+                <span class="on">진행 중<em>8</em></span>
+                <span>종료<em>3</em></span>
+                <span>전체<em>11</em></span>
+              </div>
+              <div class="sort-note"><svg class="ico sm"><use href="#i-sort" /></svg>마감일 가까운 순</div>
+            </div>
+
+            <div id="gallery-cards" class="gallery">
+              <!-- 1 -->
+              <div class="card">
+                <div class="card-title">게임 클라이언트 프로그래머 인턴 (2026 하반기)</div>
+                <div><span class="badge st-stage">전형 준비<span class="sub">면접</span></span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>엔씨소프트</div>
+                <div class="card-foot">
+                  <span class="next urgent"><b>D-1</b>면접 14:00</span>
+                  <span class="prio high"><span class="prio-bars"><i></i><i></i><i></i></span>높음</span>
+                </div>
+              </div>
+              <!-- 2 (hover) -->
+              <div class="card hover">
+                <div class="card-title">[던전앤파이터] 클라이언트/엔진 프로그래머</div>
+                <div><span class="badge st-stage">전형 준비<span class="sub">코딩테스트</span></span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>네오플</div>
+                <div class="card-foot">
+                  <span class="next"><b>D-3</b>코딩테스트</span>
+                  <span class="prio high"><span class="prio-bars"><i></i><i></i><i></i></span>높음</span>
+                </div>
+              </div>
+              <!-- 3 -->
+              <div class="card">
+                <div class="card-title">엔진 프로그래머 신입 공개채용</div>
+                <div><span class="badge st-stage">전형 준비<span class="sub">과제</span></span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>크래프톤</div>
+                <div class="card-foot">
+                  <span class="next"><b>D-5</b>과제 마감</span>
+                  <span class="prio high"><span class="prio-bars"><i></i><i></i><i></i></span>높음</span>
+                </div>
+              </div>
+              <!-- 4 -->
+              <div class="card">
+                <div class="card-title">로스트아크 클라이언트 프로그래머</div>
+                <div><span class="badge st-prep">지원 준비</span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>스마일게이트</div>
+                <div class="card-foot">
+                  <span class="next deadline"><b>D-7</b>마감</span>
+                  <span class="prio mid"><span class="prio-bars"><i></i><i></i><i></i></span>중간</span>
+                </div>
+              </div>
+              <!-- 5 -->
+              <div class="card">
+                <div class="card-title empty">제목 없음</div>
+                <div><span class="badge st-prep">지원 준비</span></div>
+                <div class="card-company empty"><svg class="ico sm"><use href="#i-building" /></svg>회사 없음</div>
+                <div class="card-foot">
+                  <span class="next deadline"><b>D-12</b>마감</span>
+                  <span></span>
+                </div>
+              </div>
+              <!-- 6 -->
+              <div class="card">
+                <div class="card-title">2026 하반기 신입 게임 프로그래머</div>
+                <div><span class="badge st-done">지원 완료</span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>넥슨코리아</div>
+                <div class="card-foot">
+                  <span class="next none">예정된 일정 없음</span>
+                  <span class="prio mid"><span class="prio-bars"><i></i><i></i><i></i></span>중간</span>
+                </div>
+              </div>
+              <!-- 7 -->
+              <div class="card">
+                <div class="card-title">게임플레이 프로그래머 (UE5)</div>
+                <div><span class="badge st-wait">결과 대기<span class="sub">면접</span></span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>펄어비스</div>
+                <div class="card-foot">
+                  <span class="next none">예정된 일정 없음</span>
+                  <span class="prio high"><span class="prio-bars"><i></i><i></i><i></i></span>높음</span>
+                </div>
+              </div>
+              <!-- 8 -->
+              <div class="card">
+                <div class="card-title">그래픽스 프로그래머 (렌더링)</div>
+                <div><span class="badge st-wait">결과 대기<span class="sub">코딩테스트</span></span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>시프트업</div>
+                <div class="card-foot">
+                  <span class="next none">예정된 일정 없음</span>
+                  <span class="prio low"><span class="prio-bars"><i></i><i></i><i></i></span>낮음</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="gallery-notes" class="notes">
+      <div class="note"><b>카드 앞면</b><ul>
+        <li>위에서부터 제목(2줄까지) → 상태 배지 → 회사 → 아래 줄에 다음 일정과 우선순위</li>
+        <li>제목·회사가 비면 흐린 글자로 "제목 없음", "회사 없음"</li>
+        <li>지원 준비 카드는 마감일을 회색으로, 전형 일정은 보라색 D-day로 구분</li>
+      </ul></div>
+      <div class="note"><b>D-day 색</b><ul>
+        <li>D-1·D-day는 빨간색으로 더 눈에 띄게 (제안)</li>
+        <li>남은 일정이 없으면 "예정된 일정 없음"을 흐리게 표시 (명세 R24는 팝업 기준이라 카드에서는 빈 줄 대신 문구를 둠)</li>
+      </ul></div>
+      <div class="note"><b>우선순위</b><ul>
+        <li>막대 3칸으로 높음(빨강 3칸)·중간(주황 2칸)·낮음(회색 1칸)</li>
+        <li>값이 없으면 아무것도 표시하지 않음</li>
+        <li>창 폭이 1280px보다 좁으면 3열로 줄어듦</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

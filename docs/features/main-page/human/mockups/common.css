@@ -1,0 +1,81 @@
+/* 공통: 색 토큰(그라파이트 바이올렛), 문서 부분, 앱 창 틀, 아이콘 상자 */
+/* 색: 그라파이트 바이올렛 (apps/desktop/src/styles/theme.css와 같은 값) */
+:root {
+  --bg: #17171a; --sidebar: #1c1c20; --surface: #222227;
+  --border: #33333b; --track: #33333b;
+  --text: #ededf2; --muted: #9b9ba8; --faint: #6b6b78;
+  --accent: #a68cff; --accent-soft: #2d2745; --on-accent: #17171a;
+  --neutral: #cdcdd6; --neutral-soft: #2b2b31;
+  --blue: #7aa8ff; --blue-soft: #1e2740;
+  --amber: #f0b860; --amber-soft: #3a2f1c;
+  --green: #66cf95; --green-soft: #1a3428;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 40px 32px 80px; background: #0d0d0f; color: var(--text);
+  font-family: "Malgun Gothic", "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5;
+}
+
+/* ===== 문서 부분 ===== */
+.doc { max-width: 1160px; margin: 0 auto; }
+.doc > h1 { margin: 0 0 8px; font-size: 24px; }
+.lead { margin: 0 0 12px; color: var(--muted); }
+.toc { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 40px; }
+.toc a { color: var(--accent); text-decoration: none; border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; font-size: 13px; }
+.screen { margin-bottom: 72px; }
+.screen-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+.screen-head h2 { margin: 0; font-size: 20px; }
+.tag { font-size: 12px; color: var(--muted); border: 1px solid var(--border); border-radius: 99px; padding: 1px 10px; }
+.screen-desc { margin: 0 0 16px; color: var(--muted); }
+.scale-note { font-size: 12px; color: var(--faint); margin-bottom: 8px; }
+.sub-label { font-size: 13px; font-weight: 700; margin: 28px 0 8px; }
+.notes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+.note { background: var(--sidebar); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 13px; }
+.note b { display: block; margin-bottom: 6px; font-size: 13px; }
+.note ul { margin: 0; padding-left: 18px; color: var(--muted); }
+.note li + li { margin-top: 3px; }
+
+/* ===== 앱 창 (1440 x 900, 75%로 축소해서 보여줌) ===== */
+.frame {
+  zoom: 0.75; width: 1440px; min-height: 900px; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+}
+.frame.small { height: 520px; min-height: 0; }
+.ico { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.ico.sm { width: 16px; height: 16px; }
+.ico.lg { width: 20px; height: 20px; }
+
+/* 제목 표시줄 (40px) */
+.titlebar { height: 40px; flex-shrink: 0; display: flex; align-items: center; background: var(--sidebar); border-bottom: 1px solid var(--border); }
+.tb-nav { display: flex; align-items: center; gap: 2px; padding-left: 8px; }
+.tb-btn { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 6px; color: var(--muted); }
+.tb-btn.on { background: rgba(255,255,255,.08); color: var(--text); }
+.tb-btn.off { opacity: .35; }
+.tb-drag { flex: 1; align-self: stretch; }
+.win { display: flex; height: 100%; }
+.win span { width: 46px; display: grid; place-items: center; color: var(--text); }
+.win svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1; }
+
+/* 제목 표시줄 아래: 사이드바 + 본문 */
+.body { flex: 1; min-height: 0; display: flex; }
+.sidebar { width: 200px; flex-shrink: 0; background: var(--sidebar); border-right: 1px solid var(--border);
+  padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+.logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 800; padding: 0 8px 20px; }
+.brick { width: 26px; height: 26px; border-radius: 6px; background: var(--accent); display: grid;
+  grid-template-columns: 1fr 1fr; gap: 2px; padding: 4px; }
+.brick i { background: rgba(255,255,255,.85); border-radius: 1px; }
+.nav { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: var(--muted); font-size: 14px; }
+.nav.on { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.spacer { flex: 1; }
+.version { font-size: 11px; color: var(--muted); padding: 0 12px; }
+.main { flex: 1; min-width: 0; padding: 28px 32px; overflow: hidden; }
+
+/* 준비 중 화면 */
+.placeholder { height: 100%; display: flex; flex-direction: column; }
+.placeholder h1 { margin: 0; font-size: 22px; font-weight: 800; }
+.placeholder .notice { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; color: var(--muted); font-size: 13px; }
+
+/* 아이콘 상자 + 안내 (빈 카드, 준비 중 화면 공용) */
+.icon-box { width: 44px; height: 44px; border-radius: 12px; background: var(--neutral-soft); display: grid; place-items: center; color: var(--muted); }
+.msg { color: var(--text); font-size: 14px; font-weight: 600; }

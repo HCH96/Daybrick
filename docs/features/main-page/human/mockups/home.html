@@ -1,0 +1,156 @@
+<!doctype html>
+<!-- 목업: 메인 페이지 (앱 틀 + 홈 대시보드) / 2. 홈 (기능이 다 연결된 뒤의 모습)
+  목차와 다른 화면: index.html
+  CSS: common.css, home.css (필요한 클래스만 검색해서 읽기)
+  ID                    화면                                      요구사항
+  home                  2. 홈 (기능이 다 연결된 뒤의 모습)           R10–R16
+    home-head             2-1. 날짜·인사 + 빠른 추가                 R10–R12
+    home-summary          2-2. 요약 줄 4칸                           R13
+    home-todo             2-3. 오늘 할 일 카드 (7칸 × 2줄)            R14–R16
+    home-schedule         2-4. 오늘 일정 카드 (5칸)                   R14–R16
+    home-focus            2-5. 오늘 집중 시간 카드 (5칸)              R14–R16
+    home-apps             2-6. 지원 현황 카드 (7칸)                   R14–R16
+    home-week             2-7. 이번 주 집중 카드 (5칸)                R14–R16
+    home-notes            2-8. 설명 메모                             -
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 메인 페이지 목업 · 2. 홈 (기능이 다 연결된 뒤의 모습)</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="home.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 정적 화면이며 데이터는 모두 예시 값입니다. 승인된 최종 디자인(홈 B안, 그라파이트 바이올렛, 직접 그린 제목 표시줄) 기준입니다.</p>
+
+  <!-- ================================================================ -->
+  <section class="screen" id="home">
+    <div class="screen-head"><h2>2. 홈 (기능이 다 연결된 뒤의 모습)</h2><span class="tag">R10–R16</span></div>
+    <p class="screen-desc">본문은 최대 너비 1280px로 가운데 정렬합니다. 위에서부터 날짜·인사와 빠른 추가, 요약 줄 4칸, 12칸 벤토 그리드 순서입니다. 카드 내용은 각 기능을 만든 뒤의 예시입니다.</p>
+    <div class="scale-note">1440 × 900 창, 75% 축소 · 12칸 격자 (할 일 7칸 × 2줄, 나머지 5칸 또는 7칸)</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav">
+          <span class="tb-btn on"><svg class="ico"><use href="#i-side" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-back" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-fwd" /></svg></span>
+        </div>
+        <div class="tb-drag"></div>
+        <div class="win">
+          <span><svg viewBox="0 0 10 10"><path d="M0 5.5h10" /></svg></span>
+          <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9" /></svg></span>
+          <span><svg viewBox="0 0 10 10"><path d="M.5.5l9 9M9.5.5l-9 9" /></svg></span>
+        </div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+          <div class="nav on"><svg class="ico"><use href="#i-home" /></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-cal" /></svg>Calendar</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock" /></svg>Scheduler</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag" /></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer" /></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main">
+          <div class="home">
+            <div class="head" id="home-head">
+              <div><div class="date">2026년 10월 22일 (목)</div><h1 class="hello">좋은 하루예요</h1></div>
+              <div class="quick"><svg class="ico sm"><use href="#i-plus" /></svg>할 일 빠르게 추가<kbd>Ctrl N</kbd></div>
+            </div>
+
+            <div class="kpis" id="home-summary">
+              <div class="kpi"><div class="l">오늘 할 일</div><div class="v">3<small>/ 5 완료</small></div><div class="s">남은 일 2개</div></div>
+              <div class="kpi"><div class="l">오늘 집중</div><div class="v">2<small>시간</small> 35<small>분</small></div><div class="s">목표 4시간의 65%</div></div>
+              <div class="kpi"><div class="l">다음 일정</div><div class="v accent">14:00</div><div class="s">A사 1차 면접 · 1시간 20분 뒤</div></div>
+              <div class="kpi"><div class="l">가장 가까운 마감</div><div class="v accent">D-2</div><div class="s">C사 백엔드 신입 서류</div></div>
+            </div>
+
+            <div class="grid">
+              <section class="card large" id="home-todo">
+                <div class="card-head"><div class="card-title">오늘 할 일 <span class="badge">3 / 5</span></div><span class="link">캘린더로 가기 →</span></div>
+                <div class="progress"><div style="width:60%"></div></div>
+                <div class="todo"><div class="check"></div><span>포트폴리오 README 정리</span><span class="meta"><span class="chip">포트폴리오</span></span></div>
+                <div class="todo"><div class="check"></div><span>B사 코딩테스트 기출 확인</span><span class="meta"><span class="chip">지원</span></span></div>
+                <div class="todo done"><div class="check"></div><span>알고리즘 문제 2개 풀기</span><span class="meta">09:40 완료</span></div>
+                <div class="todo done"><div class="check"></div><span>자기소개서 초안 다듬기</span><span class="meta">11:15 완료</span></div>
+                <div class="todo done"><div class="check"></div><span>운영체제 강의 3강 듣기</span><span class="meta">12:50 완료</span></div>
+                <div class="sub-title" style="margin-top:18px">내일 할 일</div>
+                <div class="todo"><div class="check"></div><span>C사 지원서 최종 제출</span><span class="meta"><span class="chip">지원</span></span></div>
+                <div class="todo"><div class="check"></div><span>네트워크 스터디 발표 준비</span></div>
+              </section>
+
+              <section class="card narrow" id="home-schedule">
+                <div class="card-head"><div class="card-title">오늘 일정 <span class="badge">3개</span></div><span class="link">스케줄러로 가기 →</span></div>
+                <div class="event past"><div class="time">10:00</div><div class="bar"></div><div><div class="t">CS 스터디</div><div class="s">10:00 – 12:00 · 온라인</div></div></div>
+                <div class="event now"><div class="time">14:00</div><div class="bar"></div><div><div class="t">A사 1차 면접 <span class="now-tag">다음</span></div><div class="s">14:00 – 15:00 · 화상 면접</div></div></div>
+                <div class="event"><div class="time">19:30</div><div class="bar" style="background:var(--blue)"></div><div><div class="t">헬스장</div><div class="s">19:30 – 20:30</div></div></div>
+              </section>
+
+              <section class="card narrow" id="home-focus">
+                <div class="card-head"><div class="card-title">오늘 집중 시간</div><span class="link">타이머로 가기 →</span></div>
+                <div class="focus">
+                  <div class="ring"><div><div><b>2:35</b><small>목표 4:00</small></div></div></div>
+                  <div style="flex:1">
+                    <div class="frow"><span>집중 횟수</span><span>4회</span></div>
+                    <div class="frow"><span>가장 긴 집중</span><span>58분</span></div>
+                    <span class="btn"><svg viewBox="0 0 12 12"><path d="M3 1.5v9l7.5-4.5z" /></svg>집중 시작</span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card wide" id="home-apps">
+                <div class="card-head"><div class="card-title">지원 현황 <span class="badge">13건</span></div><span class="link">지원 현황으로 가기 →</span></div>
+                <div class="stats">
+                  <div class="stat st1"><div class="n">8</div><div class="l">지원함</div></div>
+                  <div class="stat st2"><div class="n">3</div><div class="l">서류 통과</div></div>
+                  <div class="stat st3"><div class="n">2</div><div class="l">면접</div></div>
+                  <div class="stat st4"><div class="n">0</div><div class="l">최종 합격</div></div>
+                </div>
+                <div class="dl"><span>C사 · 백엔드 신입 · 서류 마감</span><span class="dday">D-2</span></div>
+                <div class="dl"><span>D사 · 클라이언트 개발 · 서류 마감</span><span class="dday calm">D-5</span></div>
+              </section>
+
+              <section class="card narrow" id="home-week">
+                <div class="card-head"><div class="card-title">이번 주 집중 <span class="badge">11시간 20분</span></div><span class="link">타이머로 가기 →</span></div>
+                <div class="bars">
+                  <div><i class="on" style="height:64%"></i><span>월</span></div>
+                  <div><i class="on" style="height:30%"></i><span>화</span></div>
+                  <div><i class="on" style="height:80%"></i><span>수</span></div>
+                  <div class="today"><i class="on" style="height:52%"></i><span>목</span></div>
+                  <div><i class="empty"></i><span>금</span></div>
+                  <div><i class="empty"></i><span>토</span></div>
+                  <div><i class="empty"></i><span>일</span></div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="notes" id="home-notes">
+      <div class="note"><b>배치</b><ul>
+        <li>본문 최대 1280px, 넓은 창에서는 양옆이 배경색 여백</li>
+        <li>카드 줄 높이는 최소 200px, 창 높이에 맞춰 늘리지 않음</li>
+        <li>창 폭이 1280px 미만이면 모든 카드가 6칸(2열)이 됨</li>
+      </ul></div>
+      <div class="note"><b>요약 줄</b><ul>
+        <li>오늘 할 일 · 오늘 집중 · 다음 일정 · 가장 가까운 마감</li>
+        <li>시간이 급한 값(다음 일정, 마감)은 강조색</li>
+      </ul></div>
+      <div class="note"><b>카드</b><ul>
+        <li>제목과 오른쪽 위 "○○로 가기 →"를 누르면 해당 화면으로 이동</li>
+        <li>"오늘 할 일"이 가장 크게 (7칸 × 2줄)</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<!-- 목업: 지원 관리 (Applications) / 5-4. 선택 항목 고르기·추가
+  목차와 다른 화면: index.html
+  CSS: common.css, popup.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면    요구사항
+  parts-option        5-4. 선택 항목 고르기·추가    R30, R32
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 지원 관리 목업 · 5-4. 선택 항목 고르기·추가</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="popup.css" />
+<link rel="stylesheet" href="parts.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다. 오늘 날짜는 2026년 10월 22일(목)로 가정했습니다.</p>
+
+  <section class="screen" id="parts">
+    <div class="screen-head"><h2>5-4. 선택 항목 고르기·추가</h2><span class="tag">R30, R32</span></div>
+    <p class="screen-desc">팝업 안에서 버튼을 눌렀을 때 뜨는 작은 창. 실제 크기(100%)로 보여줍니다.</p>
+
+    <div class="parts">
+      <!-- 선택 속성 편집 -->
+      <div id="parts-option">
+        <div class="part-label">선택 항목 고르기·추가 <small>회사 칸을 누름</small></div>
+        <div class="stage">
+          <div class="pop opt-pop">
+            <div class="opt-input"><span class="opt o-violet">네오플</span><span style="color:var(--text)">넷마</span><span class="cursor"></span></div>
+            <div class="menu-cap">항목 고르기 또는 새로 만들기</div>
+            <div class="opt-row on"><span>새로 만들기&nbsp; <span class="opt o-pink">넷마</span></span></div>
+            <div class="opt-row"><span class="opt o-violet">네오플</span><span class="dots">···</span></div>
+            <div class="opt-row"><span class="opt o-pink">스마일게이트</span><span class="dots">···</span></div>
+            <div class="opt-row"><span class="opt o-blue">크래프톤</span><span class="dots">···</span></div>
+            <div class="palette">
+              <i style="background:var(--s-prep)"></i><i style="background:var(--s-done)"></i><i style="background:var(--s-stage)"></i><i style="background:var(--s-wait)"></i>
+              <i style="background:var(--o-red)"></i><i style="background:var(--o-violet)"></i><i style="background:var(--o-teal)"></i><i class="sel" style="background:var(--o-pink)"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>선택 항목</b><ul>
+        <li>입력하다가 없는 이름이면 "새로 만들기" (R30)</li>
+        <li>항목 옆 ··· 에서 이름 변경·삭제, 아래 8색에서 색 고르기</li>
+        <li>날짜 속성도 전형 일정 창과 같은 작은 달력을 씀 (R32)</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

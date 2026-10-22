@@ -1,0 +1,77 @@
+<!doctype html>
+<!-- 목업: 지원 관리 (Applications) / 5-2. 전형 일정 창
+  목차와 다른 화면: index.html
+  CSS: common.css, popup.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면    요구사항
+  parts-schedule      5-2. 전형 일정 창    R25–R27
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 지원 관리 목업 · 5-2. 전형 일정 창</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="popup.css" />
+<link rel="stylesheet" href="parts.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다. 오늘 날짜는 2026년 10월 22일(목)로 가정했습니다.</p>
+
+  <section class="screen" id="parts">
+    <div class="screen-head"><h2>5-2. 전형 일정 창</h2><span class="tag">R25–R27</span></div>
+    <p class="screen-desc">팝업 안에서 버튼을 눌렀을 때 뜨는 작은 창. 실제 크기(100%)로 보여줍니다.</p>
+
+    <div class="parts">
+      <!-- 전형 일정 창 -->
+      <div id="parts-schedule" style="grid-row: span 2">
+        <div class="part-label">전형 일정 창 <small>📅 버튼을 누름</small></div>
+        <div class="stage" style="padding:14px">
+          <div class="pop sched">
+            <h4>일정 종류를 고르고 날짜를 누르세요</h4>
+            <div class="kind-row">
+              <span class="kind">지원 완료</span>
+              <span class="kind">과제 마감</span>
+              <span class="kind">코딩테스트</span>
+              <span class="kind on">면접</span>
+            </div>
+            <div class="mini-cal">
+              <div class="mini-head">2026년 10월<span><svg class="ico sm"><use href="#i-left" /></svg><svg class="ico sm"><use href="#i-right" /></svg></span></div>
+              <div class="mini-grid">
+                <div class="w">일</div><div class="w">월</div><div class="w">화</div><div class="w">수</div><div class="w">목</div><div class="w">금</div><div class="w">토</div>
+                <div class="d o">27</div><div class="d o">28</div><div class="d o">29</div><div class="d o">30</div><div class="d">1</div><div class="d">2</div><div class="d">3</div>
+                <div class="d">4</div><div class="d">5</div><div class="d">6</div><div class="d">7</div><div class="d">8</div><div class="d">9</div><div class="d has">10</div>
+                <div class="d">11</div><div class="d">12</div><div class="d">13</div><div class="d">14</div><div class="d">15</div><div class="d">16</div><div class="d">17</div>
+                <div class="d">18</div><div class="d">19</div><div class="d">20</div><div class="d">21</div><div class="d t">22</div><div class="d">23</div><div class="d">24</div>
+                <div class="d has">25</div><div class="d">26</div><div class="d">27</div><div class="d">28</div><div class="d">29</div><div class="d">30</div><div class="d sel">31</div>
+              </div>
+            </div>
+            <div class="sched-list">
+              <div class="s-item past"><span class="k" style="color:var(--s-done)">지원 완료</span><span class="dt">10/10 (토)</span><span class="x"><svg class="ico sm"><use href="#i-x" /></svg></span></div>
+              <div class="s-item"><span class="k" style="color:var(--s-stage)">코딩테스트</span><span class="dt">10/25 (일) 14:00 <span class="memo">· 120분</span></span><span class="x"><svg class="ico sm"><use href="#i-x" /></svg></span></div>
+              <div class="s-item edit"><span class="k" style="color:var(--s-stage)">면접</span><span class="dt">10/31 (토)</span><span class="x"><svg class="ico sm"><use href="#i-x" /></svg></span>
+                <div class="edit-fields">
+                  <span class="field"><svg class="ico sm"><use href="#i-clock" /></svg>시간 없음</span>
+                  <span class="field ph" style="flex:1">메모 (예: 1차 면접)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>전형 일정 창</b><ul>
+        <li>종류 버튼 → 달력 날짜 클릭으로 바로 저장 (R25)</li>
+        <li>일정이 있는 날은 달력에 작은 점</li>
+        <li>목록의 줄을 누르면 시간·메모 칸이 펼쳐짐, ✕로 삭제 (R26)</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

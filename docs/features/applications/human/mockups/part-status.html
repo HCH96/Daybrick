@@ -1,0 +1,64 @@
+<!doctype html>
+<!-- 목업: 지원 관리 (Applications) / 5-1. 상태 선택 (상태 → 세부 단계)
+  목차와 다른 화면: index.html
+  CSS: common.css, popup.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면    요구사항
+  parts-status        5-1. 상태 선택 (상태 → 세부 단계)    R18–R19, R22
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 지원 관리 목업 · 5-1. 상태 선택 (상태 → 세부 단계)</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="popup.css" />
+<link rel="stylesheet" href="parts.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다. 오늘 날짜는 2026년 10월 22일(목)로 가정했습니다.</p>
+
+  <section class="screen" id="parts">
+    <div class="screen-head"><h2>5-1. 상태 선택 (상태 → 세부 단계)</h2><span class="tag">R18–R19, R22</span></div>
+    <p class="screen-desc">팝업 안에서 버튼을 눌렀을 때 뜨는 작은 창. 실제 크기(100%)로 보여줍니다.</p>
+
+    <div class="parts">
+      <!-- 상태 선택 -->
+      <div id="parts-status">
+        <div class="part-label">상태 선택 <small>배지를 누름 → 상태 → 세부 단계</small></div>
+        <div class="stage">
+          <span class="badge big st-stage" style="margin-bottom:8px">전형 준비<span class="sub">코딩테스트</span><svg class="ico chev"><use href="#i-down" /></svg></span>
+          <div class="menu-pair">
+            <div class="pop menu" style="width:170px">
+              <div class="menu-row"><span class="badge st-prep">지원 준비</span></div>
+              <div class="menu-row"><span class="badge st-done">지원 완료</span></div>
+              <div class="menu-row on"><span class="badge st-stage">전형 준비</span><svg class="ico sm chev-r"><use href="#i-right" /></svg></div>
+              <div class="menu-row"><span class="badge st-wait">결과 대기</span><svg class="ico sm chev-r"><use href="#i-right" /></svg></div>
+              <div class="menu-sep"></div>
+              <div class="menu-row"><span class="badge st-end">종료</span></div>
+            </div>
+            <div class="pop menu" style="width:130px; margin-top:74px">
+              <div class="menu-cap">세부 단계</div>
+              <div class="menu-row">과제</div>
+              <div class="menu-row on">코딩테스트<svg class="ico sm check"><use href="#i-check" /></svg></div>
+              <div class="menu-row">면접</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>상태 선택</b><ul>
+        <li>세부 단계가 있는 상태(전형 준비·결과 대기)에만 ▸ 표시</li>
+        <li>종료는 구분선 아래에 따로 두어 어디서든 바로 고를 수 있게 (R20)</li>
+        <li>전형 준비 세부 단계를 고르면 위 "전형 일정 창"과 같은 작은 달력이 이어서 뜸, 건너뛰기 가능 (R22)</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

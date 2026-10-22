@@ -1,0 +1,52 @@
+<!doctype html>
+<!-- 목업: 지원 관리 (Applications) / 5-5. 속성 추가
+  목차와 다른 화면: index.html
+  CSS: common.css, popup.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면    요구사항
+  parts-add-prop      5-5. 속성 추가    R28–R29
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 지원 관리 목업 · 5-5. 속성 추가</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="popup.css" />
+<link rel="stylesheet" href="parts.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다. 오늘 날짜는 2026년 10월 22일(목)로 가정했습니다.</p>
+
+  <section class="screen" id="parts">
+    <div class="screen-head"><h2>5-5. 속성 추가</h2><span class="tag">R28–R29</span></div>
+    <p class="screen-desc">팝업 안에서 버튼을 눌렀을 때 뜨는 작은 창. 실제 크기(100%)로 보여줍니다.</p>
+
+    <div class="parts">
+      <!-- 속성 추가 -->
+      <div id="parts-add-prop">
+        <div class="part-label">속성 추가 <small>"+ 속성 추가"를 누름</small></div>
+        <div class="stage">
+          <div class="pop prop-menu">
+            <div class="opt-input" style="border-color:var(--border-2)"><span class="placeholder">속성 이름</span></div>
+            <div class="menu-cap">종류</div>
+            <div class="type-list">
+              <div class="menu-row"><svg class="ico sm"><use href="#t-text" /></svg>텍스트</div>
+              <div class="menu-row"><svg class="ico sm"><use href="#t-num" /></svg>숫자</div>
+              <div class="menu-row on"><svg class="ico sm"><use href="#t-select" /></svg>선택</div>
+              <div class="menu-row"><svg class="ico sm"><use href="#t-multi" /></svg>다중 선택</div>
+              <div class="menu-row"><svg class="ico sm"><use href="#t-date" /></svg>날짜</div>
+              <div class="menu-row"><svg class="ico sm"><use href="#t-url" /></svg>URL</div>
+              <div class="menu-row"><svg class="ico sm"><use href="#t-checkbox" /></svg>체크박스</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<!-- 목업 목차: 지원 관리 (Applications)
+  읽는 법: 이 목차에서 필요한 화면 파일만 골라 읽는다. CSS는 그 화면 파일 머리에 적힌 파일에서 필요한 클래스만 검색한다.
+  아이콘(icons.js)은 보통 읽지 않는다.
+  파일                  화면                                  요구사항
+  gallery.html          1. 갤러리 (기본 화면)                  R1–R6         부분 ID: gallery-head, -toolbar, -cards, -notes
+  calendar.html         2. 달력                                R7–R11        부분 ID: calendar-head, -bar, -grid, -notes
+  popup.html            3. 상세 팝업                           R12–R17, R24  부분 ID: popup-head, -status, -props, -body, -notes
+  popup-max.html        4. 상세 팝업 최대화                    R13
+  part-status.html      5-1. 상태 선택 (상태 → 세부 단계)      R18–R19, R22
+  part-schedule.html    5-2. 전형 일정 창                      R25–R27
+  part-result.html      5-3. 종료 → 결과 고르기                R20
+  part-option.html      5-4. 선택 항목 고르기·추가             R30, R32
+  part-add-prop.html    5-5. 속성 추가                         R28–R29
+  part-delete.html      5-6. 삭제 확인                         R16
+  part-ended-card.html  5-7. "종료" 탭의 카드                  R4, R20
+  CSS: common.css(색 토큰·앱 틀·배지·칩), gallery.css, calendar.css, popup.css, parts.css
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 지원 관리 목업</title>
+<link rel="stylesheet" href="common.css" />
+<style>.idx { margin-top: 24px } .idx a { display:block; color:var(--text); padding:10px 0; border-bottom:1px solid var(--border); text-decoration:none } .idx a:hover { color:var(--accent) } .idx small { color:var(--muted); margin-left:10px }</style>
+</head>
+<body>
+<div class="doc">
+  <h1>지원 관리 (Applications) 목업</h1>
+  <p class="lead">디자인 확인용 정적 화면입니다. 기능은 없고 배치와 스타일만 보여줍니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다. 오늘 날짜는 2026년 10월 22일(목)로 가정했습니다.</p>
+  <div class="legend">
+    <b>상태 색 배정 (제안)</b>
+    <span class="badge st-prep">지원 준비</span>
+    <span class="badge st-done">지원 완료</span>
+    <span class="badge st-stage">전형 준비</span>
+    <span class="badge st-wait">결과 대기</span>
+    <span class="badge st-end">종료</span>
+    <span class="muted">홈의 회색 → 파랑 → 주황 → 초록 순서를 진행 순서대로 이어 쓰고, 종료는 색 없이 테두리만 둡니다.</span>
+  </div>
+  <div class="idx">
+    <a href="gallery.html">1. 갤러리 (기본 화면)<small>R1–R6</small></a>
+    <a href="calendar.html">2. 달력<small>R7–R11</small></a>
+    <a href="popup.html">3. 상세 팝업<small>R12–R17, R24</small></a>
+    <a href="popup-max.html">4. 상세 팝업 최대화<small>R13</small></a>
+    <a href="part-status.html">5-1. 상태 선택 (상태 → 세부 단계)<small>R18–R19, R22</small></a>
+    <a href="part-schedule.html">5-2. 전형 일정 창<small>R25–R27</small></a>
+    <a href="part-result.html">5-3. 종료 → 결과 고르기<small>R20</small></a>
+    <a href="part-option.html">5-4. 선택 항목 고르기·추가<small>R30, R32</small></a>
+    <a href="part-add-prop.html">5-5. 속성 추가<small>R28–R29</small></a>
+    <a href="part-delete.html">5-6. 삭제 확인<small>R16</small></a>
+    <a href="part-ended-card.html">5-7. "종료" 탭의 카드<small>R4, R20</small></a>
+  </div>
+</div>
+</body>
+</html>

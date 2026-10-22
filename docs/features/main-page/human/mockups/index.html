@@ -1,0 +1,35 @@
+<!doctype html>
+<!-- 목업 목차: 메인 페이지 (앱 틀 + 홈 대시보드)
+  읽는 법: 이 목차에서 필요한 화면 파일만 골라 읽는다. CSS는 그 화면 파일 머리에 적힌 파일에서 필요한 클래스만 검색한다.
+  아이콘(icons.js)은 보통 읽지 않는다.
+  기준: 승인된 최종 디자인 (홈 B안 · 그라파이트 바이올렛 · 직접 그린 제목 표시줄).
+  비교 후보(보관): ../../archive/mockups/main-page-layouts.html, main-page-palettes.html
+  파일            화면                                      요구사항
+  shell.html      1. 앱 틀 (빈 기능 화면 예시)                 R1, R3–R9, R18   부분 ID: shell-titlebar, -sidebar, -placeholder, -collapsed, -notes
+  home.html       2. 홈 (기능이 다 연결된 뒤의 모습)           R10–R16          부분 ID: home-head, -summary, -todo, -schedule, -focus, -apps, -week, -notes
+  home-now.html   3. 홈 (지금 앱: 기능 연결 전 빈 상태)        R12–R13, R17     부분 ID: home-now-head, -summary, -card, -week, -notes
+  CSS: common.css(색 토큰·앱 틀·아이콘 상자), home.css
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 메인 페이지 목업</title>
+<link rel="stylesheet" href="common.css" />
+<style>.idx { margin-top: 24px } .idx a { display:block; color:var(--text); padding:10px 0; border-bottom:1px solid var(--border); text-decoration:none } .idx a:hover { color:var(--accent) } .idx small { color:var(--muted); margin-left:10px }</style>
+</head>
+<body>
+<div class="doc">
+  <h1>메인 페이지 목업</h1>
+  <p class="lead">
+    정적 화면이며 데이터는 모두 예시 값입니다. 승인된 최종 디자인(홈 B안, 그라파이트 바이올렛, 직접 그린 제목 표시줄)을 화면별 파일로 나눴습니다.<br>
+    배치 후보 비교와 색 후보 비교는 <a href="../../archive/mockups/main-page-layouts.html" style="color:var(--accent)">main-page-layouts.html</a>, <a href="../../archive/mockups/main-page-palettes.html" style="color:var(--accent)">main-page-palettes.html</a>에 보관합니다.
+  </p>
+  <div class="idx">
+    <a href="shell.html">1. 앱 틀 (빈 기능 화면 예시)<small>R1, R3–R9, R18</small></a>
+    <a href="home.html">2. 홈 (기능이 다 연결된 뒤의 모습)<small>R10–R16</small></a>
+    <a href="home-now.html">3. 홈 (지금 앱: 기능 연결 전 빈 상태)<small>R12–R13, R17</small></a>
+  </div>
+</div>
+</body>
+</html>

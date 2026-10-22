@@ -1,0 +1,11 @@
+# 메인 페이지: 목업
+- 승인된 목업: [human/mockups/index.html](../../human/mockups/index.html) (2026-10-21 승인, 2026-10-22 최종 디자인으로 정리, 화면별 파일로 나눔)
+  - 승인된 최종 디자인(홈 B안, 그라파이트 바이올렛, 직접 그린 제목 표시줄) 기준. 화면 목록은 index.html 맨 앞 "목업 목차"를 본다.
+  - `shell.html` 앱 틀(제목 표시줄·사이드바·접은 모습·준비 중 화면), `home.html` 기능이 연결된 뒤의 홈, `home-now.html` 지금 앱의 빈 상태 홈.
+- 화면 배치와 스타일(카드 모양, 사이드바)은 이 목업을 기준으로 구현한다. 색은 R19의 색 목록을 따른다 ([req-common.md](req-common.md)).
+- 후보 비교 목업 2개는 보관용이다. 결정 과정만 담겨 있고, 구현 기준은 위 목업이다.
+  - 색 후보: [archive/mockups/main-page-palettes.html](../../archive/mockups/main-page-palettes.html). 2026-10-22 후보 1 "차콜 브릭"에서 후보 4 "그라파이트 바이올렛"으로 변경 (R19).
+  - 홈 배치 후보: [archive/mockups/main-page-layouts.html](../../archive/mockups/main-page-layouts.html) (2026-10-22 **B안 승인**, R14)
+    - 문제: 처음 홈은 카드가 창 높이를 반씩 나눠 가져서, 최대화하면 카드가 지나치게 커졌다.
+    - 목업의 점선(최대 너비 경계)은 설명용이며 앱에는 넣지 않는다.
+    - 목업은 기능이 연결된 뒤의 모습이다. 이번 범위의 빈 상태와 결정은 [archive/plans/main-page-layout-b-plan.md](../../archive/plans/main-page-layout-b-plan.md)를 따른다.

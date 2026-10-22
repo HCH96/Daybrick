@@ -1,0 +1,113 @@
+<!doctype html>
+<!-- 목업: 지원 관리 (Applications) / 4. 상세 팝업 최대화
+  목차와 다른 화면: index.html
+  CSS: common.css, popup.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                                  요구사항
+  popup-max           4. 상세 팝업 최대화                    R13
+    popup-max-notes     4-1. 설명 메모                         R24
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 지원 관리 목업 · 4. 상세 팝업 최대화</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다. 오늘 날짜는 2026년 10월 22일(목)로 가정했습니다.</p>
+
+  <section class="screen" id="popup-max">
+    <div class="screen-head"><h2>4. 상세 팝업 최대화</h2><span class="tag">R13</span></div>
+    <p class="screen-desc">사이드바가 펼쳐져 있을 때 최대화한 모습. 사이드바는 남기고 본문 영역을 꽉 채우며, 내용은 가운데 760px 폭으로 정렬합니다. (사이드바가 접혀 있으면 사이드바 자리까지 채웁니다.)</p>
+    <div class="scale-note">1440 × 900 창, 80% 축소</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav">
+          <span class="tb-btn on"><svg class="ico"><use href="#i-side" /></svg></span>
+          <span class="tb-btn"><svg class="ico"><use href="#i-back" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-fwd" /></svg></span>
+        </div>
+        <div class="tb-drag"></div>
+        <div class="win">
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><path d="M0 5.5h10" /></svg></span>
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="9" height="9" /></svg></span>
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><path d="M.5.5l9 9M9.5.5l-9 9" /></svg></span>
+        </div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home" /></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-cal" /></svg>Calendar</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock" /></svg>Scheduler</div>
+          <div class="nav on"><svg class="ico"><use href="#i-bag" /></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer" /></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main" style="padding:0">
+          <div class="popup max">
+            <div class="popup-top">
+              <span class="pbtn" title="원래 크기로"><svg class="ico sm"><use href="#i-min" /></svg></span>
+              <div class="popup-right">
+                <span class="save-state"><svg class="ico sm"><use href="#i-check" /></svg>저장됨</span>
+                <span class="pbtn danger"><svg class="ico sm"><use href="#i-trash" /></svg></span>
+                <span class="pbtn"><svg class="ico"><use href="#i-x" /></svg></span>
+              </div>
+            </div>
+            <div class="popup-scroll">
+              <div class="popup-inner">
+                <h2 class="p-title">로스트아크 클라이언트 프로그래머</h2>
+                <div class="p-status">
+                  <span class="badge big st-prep">지원 준비<svg class="ico chev"><use href="#i-down" /></svg></span>
+                  <span class="cal-btn"><svg class="ico sm"><use href="#i-cal" /></svg></span>
+                </div>
+                <div class="props">
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>결과</div><div class="prop-val empty">비어 있음</div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>회사</div><div class="prop-val"><span class="opt o-pink">스마일게이트</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>직무</div><div class="prop-val"><span class="opt o-teal">클라이언트</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-url" /></svg>공고 링크</div><div class="prop-val"><a>careers.smilegate.com/apply/9876</a></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-date" /></svg>마감일</div><div class="prop-val">2026년 10월 29일</div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-date" /></svg>지원일</div><div class="prop-val empty">비어 있음</div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>우선순위</div><div class="prop-val"><span class="opt o-amber">중간</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-multi" /></svg>제출 자료</div><div class="prop-val"><span class="opt o-gray">이력서</span><span class="opt o-violet">포트폴리오 Notion</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>경력 구분</div><div class="prop-val"><span class="opt o-blue">신입</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>고용 형태</div><div class="prop-val"><span class="opt o-green">전환형 인턴</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-checkbox" /></svg>추천인 있음</div><div class="prop-val"><span class="todo"><span class="chk"></span></span></div></div>
+                  <div class="add-prop"><svg class="ico sm"><use href="#i-plus" /></svg>속성 추가</div>
+                </div>
+                <div class="divider"></div>
+                <div class="md">
+                  <h2>자기소개서 메모</h2>
+                  <p>1번 문항(지원 동기): 로스트아크 레이드 연출을 보고 클라이언트 최적화에 관심 → 개인 프로젝트 프레임 개선 경험 연결.</p>
+                  <p class="placeholder">'/'를 입력해 블록 추가…</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="popup-max-notes" class="notes">
+      <div class="note"><b>최대화 상태</b><ul>
+        <li>둥근 모서리·그림자 없이 본문 영역에 딱 맞게</li>
+        <li>왼쪽 위 버튼이 "원래 크기로" 모양으로 바뀜</li>
+      </ul></div>
+      <div class="note"><b>지원 준비 카드</b><ul>
+        <li>전형 일정이 없으면 📅 버튼만 있고 옆은 비어 있음 (R24)</li>
+        <li>사용자가 추가한 체크박스 속성 예시: "추천인 있음"</li>
+      </ul></div>
+      <div class="note"><b>빈 본문</b><ul>
+        <li>본문 끝에 흐린 안내 문구 (Notion식)</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

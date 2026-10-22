@@ -1,0 +1,158 @@
+<!doctype html>
+<!-- 목업: 메인 페이지 (앱 틀 + 홈 대시보드) / 3. 홈 (지금 앱: 기능 연결 전 빈 상태)
+  목차와 다른 화면: index.html
+  CSS: common.css, home.css (필요한 클래스만 검색해서 읽기)
+  ID                    화면                                      요구사항
+  home-now              3. 홈 (지금 앱: 기능 연결 전 빈 상태)        R12–R13, R17
+    home-now-head         3-1. 빠른 추가 비활성                       R12
+    home-now-summary      3-2. 요약 줄 "—"                           R13
+    home-now-card         3-3. 빈 카드 (아이콘·안내·이동 버튼)        R17
+    home-now-week         3-4. 이번 주 집중 빈 막대                   R15, R17
+    home-now-notes        3-5. 설명 메모                             -
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 메인 페이지 목업 · 3. 홈 (지금 앱: 기능 연결 전 빈 상태)</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="home.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 정적 화면이며 데이터는 모두 예시 값입니다. 승인된 최종 디자인(홈 B안, 그라파이트 바이올렛, 직접 그린 제목 표시줄) 기준입니다.</p>
+
+  <!-- ================================================================ -->
+  <section class="screen" id="home-now">
+    <div class="screen-head"><h2>3. 홈 (지금 앱: 기능 연결 전 빈 상태)</h2><span class="tag">R12–R13, R17</span></div>
+    <p class="screen-desc">할 일·일정·타이머·지원 관리가 연결되기 전 지금 앱의 모습입니다. 배치는 2번과 같고, 값과 카드 내용만 비어 있습니다.</p>
+    <div class="scale-note">1440 × 900 창, 75% 축소</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav">
+          <span class="tb-btn on"><svg class="ico"><use href="#i-side" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-back" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-fwd" /></svg></span>
+        </div>
+        <div class="tb-drag"></div>
+        <div class="win">
+          <span><svg viewBox="0 0 10 10"><path d="M0 5.5h10" /></svg></span>
+          <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9" /></svg></span>
+          <span><svg viewBox="0 0 10 10"><path d="M.5.5l9 9M9.5.5l-9 9" /></svg></span>
+        </div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+          <div class="nav on"><svg class="ico"><use href="#i-home" /></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-cal" /></svg>Calendar</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock" /></svg>Scheduler</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag" /></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer" /></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main">
+          <div class="home">
+            <div class="head" id="home-now-head">
+              <div><div class="date">2026년 10월 22일 (목)</div><h1 class="hello">좋은 하루예요</h1></div>
+              <div class="quick disabled"><svg class="ico sm"><use href="#i-plus" /></svg>할 일 기능을 만들면 사용할 수 있어요</div>
+            </div>
+
+            <div class="kpis" id="home-now-summary">
+              <div class="kpi"><div class="l">오늘 할 일</div><div class="v none">—</div><div class="s">캘린더 연결 전</div></div>
+              <div class="kpi"><div class="l">오늘 집중</div><div class="v none">—</div><div class="s">타이머 연결 전</div></div>
+              <div class="kpi"><div class="l">다음 일정</div><div class="v none">—</div><div class="s">스케줄러 연결 전</div></div>
+              <div class="kpi"><div class="l">가장 가까운 마감</div><div class="v none">—</div><div class="s">지원 관리 연결 전</div></div>
+            </div>
+
+            <div class="grid">
+              <section class="card large" id="home-now-card">
+                <div class="card-head"><div class="card-title">오늘 할 일</div><span class="link">캘린더로 가기 →</span></div>
+                <div class="card-body">
+                  <div class="empty">
+                    <div class="icon-box"><svg class="ico lg"><use href="#i-bricks" /></svg></div>
+                    <div class="msg">아직 연결되지 않았어요</div>
+                    <div>캘린더 기능을 만들면 여기에 오늘 할 일이 보여요</div>
+                    <span class="btn-ghost">캘린더로 가기</span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card narrow">
+                <div class="card-head"><div class="card-title">오늘 일정</div><span class="link">스케줄러로 가기 →</span></div>
+                <div class="card-body">
+                  <div class="empty">
+                    <div class="icon-box"><svg class="ico lg"><use href="#i-bricks" /></svg></div>
+                    <div class="msg">아직 연결되지 않았어요</div>
+                    <div>스케줄러 기능을 만들면 여기에 오늘 일정이 보여요</div>
+                    <span class="btn-ghost">스케줄러로 가기</span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card narrow">
+                <div class="card-head"><div class="card-title">오늘 집중 시간</div><span class="link">타이머로 가기 →</span></div>
+                <div class="card-body">
+                  <div class="empty">
+                    <div class="icon-box"><svg class="ico lg"><use href="#i-bricks" /></svg></div>
+                    <div class="msg">아직 연결되지 않았어요</div>
+                    <div>타이머 기능을 만들면 여기에 오늘 집중한 시간이 보여요</div>
+                    <span class="btn-ghost">타이머로 가기</span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card wide">
+                <div class="card-head"><div class="card-title">지원 현황</div><span class="link">지원 현황으로 가기 →</span></div>
+                <div class="card-body">
+                  <div class="empty">
+                    <div class="icon-box"><svg class="ico lg"><use href="#i-bricks" /></svg></div>
+                    <div class="msg">아직 연결되지 않았어요</div>
+                    <div>지원 관리 기능을 만들면 여기에 상태별 지원 개수가 보여요</div>
+                    <span class="btn-ghost">지원 현황으로 가기</span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card narrow" id="home-now-week">
+                <div class="card-head"><div class="card-title">이번 주 집중</div><span class="link">타이머로 가기 →</span></div>
+                <div class="card-body" style="display:flex; flex-direction:column; justify-content:flex-end">
+                  <div class="bars" style="height:80px">
+                    <div><i class="empty"></i><span>월</span></div>
+                    <div><i class="empty"></i><span>화</span></div>
+                    <div><i class="empty"></i><span>수</span></div>
+                    <div class="today"><i class="empty"></i><span>목</span></div>
+                    <div><i class="empty"></i><span>금</span></div>
+                    <div><i class="empty"></i><span>토</span></div>
+                    <div><i class="empty"></i><span>일</span></div>
+                  </div>
+                  <p class="week-note">타이머를 연결하면 기록이 쌓여요</p>
+                </div>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="notes" id="home-now-notes">
+      <div class="note"><b>빠른 추가 · 요약 줄</b><ul>
+        <li>빠른 추가는 흐리게 비활성, 눌러도 반응 없음</li>
+        <li>요약 줄 값은 "—", 아래에 "○○ 연결 전" 안내. 눌러도 이동하지 않음</li>
+      </ul></div>
+      <div class="note"><b>빈 카드</b><ul>
+        <li>벽돌 아이콘 + "아직 연결되지 않았어요" + 무엇이 보일지 안내 + 이동 버튼</li>
+        <li>기능을 만들면 카드 본문만 실제 내용으로 바꿈</li>
+      </ul></div>
+      <div class="note"><b>이번 주 집중</b><ul>
+        <li>기록이 없어 월~일 막대를 바닥 높이로만 그리고 오늘 요일만 강조색</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

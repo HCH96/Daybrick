@@ -1,0 +1,24 @@
+/* 갤러리 카드 */
+/* ===== 갤러리 ===== */
+.gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px;
+  display: flex; flex-direction: column; gap: 10px; min-height: 172px; }
+.card.hover { border-color: var(--border-2); background: #25252b; box-shadow: 0 6px 20px rgba(0,0,0,.25); }
+.card-title { font-size: 15px; font-weight: 700; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card-title.empty { color: var(--faint); font-weight: 600; }
+.card-company { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.card-company.empty { color: var(--faint); }
+.card-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
+.next { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text); min-width: 0; }
+.next b { color: var(--accent); font-weight: 800; }
+.next.urgent b { color: #ff8a8a; }
+.next.deadline { color: var(--muted); }
+.next.deadline b { color: var(--muted); }
+.next.none { color: var(--faint); font-weight: 400; font-size: 12px; }
+.prio { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); flex-shrink: 0; }
+.prio i { width: 3px; border-radius: 1px; background: var(--border-2); display: inline-block; }
+.prio i:nth-child(1) { height: 6px; } .prio i:nth-child(2) { height: 9px; } .prio i:nth-child(3) { height: 12px; }
+.prio.high i { background: var(--o-red); } .prio.high { color: var(--o-red); }
+.prio.mid i:nth-child(-n+2) { background: var(--s-stage); } .prio.mid { color: var(--s-stage); }
+.prio.low i:nth-child(1) { background: var(--muted); }
+.prio-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; margin-right: 2px; }
