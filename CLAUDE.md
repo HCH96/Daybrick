@@ -59,6 +59,9 @@ PC 앱 (apps/desktop에서 실행)
 - Rust 쪽만 컴파일 확인 (apps/desktop/src-tauri에서): `cargo check`
 - 테스트: 아직 테스트 도구 없음 (도입 후 작성)
 
+토큰 보고서 (프로젝트 루트에서)
+- `node .claude/scripts/token-report.mjs [세션ID] --title "<제목>" --out docs/common/ai/token-reports/<기능명>-<날짜>.md` (세션ID 생략 시 최근 세션, 목차는 같은 폴더 index.md)
+
 ## 금지 사항
 - Supabase 키 등 비밀값을 코드에 직접 넣지 않는다. .env를 사용하고 .env는 커밋하지 않는다.
 - 요청하지 않은 파일 삭제나 대규모 리팩터링은 하지 않는다.
