@@ -3,6 +3,7 @@ import { useApplications } from "../../features/applications/store";
 import { countEventsThisWeek, isActive, type GalleryTab } from "../../features/applications/schedule";
 import ApplicationsHeader, { type ApplicationsView } from "./ApplicationsHeader";
 import GalleryView from "./gallery/GalleryView";
+import CalendarView from "./calendar/CalendarView";
 import ApplicationDetailModal from "./detail/ApplicationDetailModal";
 import "./ApplicationsPage.css";
 
@@ -12,7 +13,7 @@ function ApplicationsPage() {
   const [view, setView] = useState<ApplicationsView>("gallery");
   // 달력을 다녀와도 고른 탭이 유지되도록 페이지가 들고 있는다
   const [tab, setTab] = useState<GalleryTab>("active");
-  // 상세 팝업으로 연 카드 (R12). 달력(8단계)에서도 같은 팝업을 연다.
+  // 상세 팝업으로 연 카드 (R12). 달력에서도 같은 팝업을 연다 (R11).
   const [openId, setOpenId] = useState<string | null>(null);
   const closeDetail = useCallback(() => setOpenId(null), []);
 
@@ -46,8 +47,7 @@ function ApplicationsPage() {
         />
       )}
       {state.kind === "ready" && view === "calendar" && (
-        // 달력(8단계)을 만들기 전까지 쓰는 임시 안내
-        <div className="applications-page__notice">달력 화면은 다음 단계에서 만들어요</div>
+        <CalendarView applications={applications} properties={state.data.properties} onOpen={setOpenId} />
       )}
       {state.kind === "ready" && openId !== null && (
         <ApplicationDetailModal applicationId={openId} onClose={closeDetail} />
