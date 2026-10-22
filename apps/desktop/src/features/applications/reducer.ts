@@ -75,12 +75,17 @@ export function reducer(state: DataState, action: Action): DataState {
       });
     }
     case "add-event": {
+      // 지원 마감은 카드당 하나라, 이미 있으면 새로 넣지 않고 그 날짜만 바꾼다 (R39). 다른 종류는 여러 개 (R27).
       if (state.kind !== "ready") return state;
-      return mapApplication(state, action.id, (a) => ({
-        ...a,
-        events: [...a.events, action.event],
-        updatedAt: action.now,
-      }));
+      const { event } = action;
+      return mapApplication(state, action.id, (a) => {
+        const due = event.kind === "application-due" ? a.events.find((e) => e.kind === "application-due") : undefined;
+        if (due) {
+          if (due.date === event.date) return a;
+          return { ...a, events: a.events.map((e) => (e.id === due.id ? { ...e, date: event.date } : e)), updatedAt: action.now };
+        }
+        return { ...a, events: [...a.events, event], updatedAt: action.now };
+      });
     }
     case "update-event": {
       // 같은 id의 일정을 통째로 바꾼다 (R26). 바뀐 칸이 없으면 그대로 둔다.

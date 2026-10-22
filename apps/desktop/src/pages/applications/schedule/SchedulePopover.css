@@ -144,8 +144,9 @@
   font-weight: 700;
 }
 
-.sched-kind--applied {
-  color: var(--blue);
+/* 지원 마감은 회색(흐림) */
+.sched-kind--application-due {
+  color: var(--muted);
 }
 
 .sched-kind--assignment-due,
