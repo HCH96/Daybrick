@@ -51,24 +51,46 @@ const short = (s, n = 60) => {
 };
 const sizeOf = (v) => (typeof v === 'string' ? v.length : JSON.stringify(v ?? '').length);
 
-// 도구 호출 하나의 종류와 대상
+// 대화 기록에만 남고 모델에게는 보내지 않는 항목. 증가분 분배에서 뺀다.
+const LOG_ONLY = new Set(['prompt_snapshot']);
+
+// 문서로 볼 경로: docs/, .claude/, 마크다운·HTML, 목업
+const DOC_RE = /(^|[\s"'/=])(docs\/|\.claude\/)|\.md\b|\.html\b|mockups|DOCS_INDEX|PROJECT\.md/;
+const docOrCode = (s) => (DOC_RE.test(String(s ?? '').replace(/\\/g, '/')) ? '문서' : '코드');
+
+// 도구 호출 하나의 종류(kind), 분류(cat), 대상
 function describeTool(name, input = {}) {
   switch (name) {
-    case 'Read': return { kind: 'Read', target: rel(input.file_path) };
-    case 'Edit': case 'Write': case 'NotebookEdit': return { kind: name, target: rel(input.file_path ?? input.notebook_path) };
-    case 'Grep': return { kind: 'Grep', target: `${input.pattern}${input.path ? ' @ ' + rel(input.path) : ''}` };
-    case 'Glob': return { kind: 'Glob', target: input.pattern };
-    case 'Agent': case 'Task': return { kind: 'Agent', target: input.description };
+    case 'Read': return { kind: 'Read', cat: docOrCode(input.file_path), target: rel(input.file_path) };
+    case 'Edit': case 'Write': case 'NotebookEdit': return { kind: name, cat: '편집', target: rel(input.file_path ?? input.notebook_path) };
+    case 'Grep': return { kind: 'Grep', cat: docOrCode(input.path), target: `${input.pattern}${input.path ? ' @ ' + rel(input.path) : ''}` };
+    case 'Glob': return { kind: 'Glob', cat: docOrCode(`${input.path ?? ''} ${input.pattern}`), target: input.pattern };
+    case 'Agent': case 'Task': return { kind: 'Agent', cat: '하위 에이전트 보고', target: input.description };
     case 'Bash': case 'PowerShell': {
-      // 앞의 `cd "경로" &&` 같은 준비 부분은 빼고 실제 명령만 보여 준다
-      const c = String(input.command ?? '').replace(/^(\s*(cd\s+("[^"]*"|\S+)|[A-Za-z_$][\w:]*=("[^"]*"|\S+))\s*(&&|;)\s*)+/, '');
-      const kind = /npm run build|tsc|cargo (check|build)|tauri build/.test(c) ? 'Bash: 빌드·타입검사'
-        : /^\s*git\b/.test(c) ? 'Bash: git' : 'Bash: 기타';
-      return { kind, target: short(c, 70) };
+      const full = String(input.command ?? '');
+      // 앞의 `cd "경로" &&` 같은 준비 부분은 빼고 실제 명령만 보여 준다 (분류는 cd 경로까지 보고 정한다)
+      const c = full.replace(/^(\s*(cd\s+("[^"]*"|\S+)|[A-Za-z_$][\w:]*=("[^"]*"|\S+))\s*(&&|;)\s*)+/, '');
+      const build = /npm run build|tsc|cargo (check|build)|tauri build/.test(c);
+      const git = /^\s*git\b/.test(c);
+      const kind = build ? 'Bash: 빌드·타입검사' : git ? 'Bash: git' : 'Bash: 기타';
+      // sed -i, 리디렉션(>, >>), python 히어독은 읽기가 아니라 파일 고치기로 본다
+      const edit = /\bsed\s+-i|(^|[^0-9&>])>>?\s*(?!&|\/dev\/null)\S|\bpython3?\s+-\s*<</.test(c);
+      const cat = build ? '빌드·검사' : git ? 'git' : edit ? '편집' : docOrCode(full);
+      return { kind, cat, target: short(c, 70) };
     }
-    default: return { kind: name, target: short(JSON.stringify(input), 50) };
+    default: {
+      const cat = /^mcp__(Claude_Browser|claude-in-chrome)__/.test(name) ? '브라우저' : '기타 도구';
+      return { kind: name, cat, target: short(JSON.stringify(input), 50) };
+    }
   }
 }
+
+// 첫 호출 입력(시작 ctx)을 이루는 항목. 기록에 남은 글자 수로 나눈다.
+const START_PARTS = {
+  skill_listing: '스킬 목록', deferred_tools_delta: '나중에 불러올 도구 이름 목록',
+  agent_listing_delta: '에이전트·MCP 안내', mcp_instructions_delta: '에이전트·MCP 안내',
+  instructions: 'CLAUDE.md·메모리 (instructions)',
+};
 
 // 한 기록 파일을 API 호출 단위로 분석한다.
 // 호출 n의 컨텍스트 = input + cache_creation + cache_read.
@@ -79,10 +101,15 @@ function analyze(entries, label) {
   const agentCalls = []; // 메인에서 띄운 Agent: { toolUseId, prompt, description }
   let pending = []; // 첫 호출 전에 들어온 항목
   let compactions = 0;
+  let snapshot = null; // 도구 정의가 담긴 첫 prompt_snapshot (시작 ctx 구성 계산용)
   const seen = new Set();
 
   for (const o of entries) {
     if (o.type === 'system' && o.subtype === 'compact_boundary') { compactions++; continue; }
+    if (o.type === 'attachment' && LOG_ONLY.has(o.attachment?.type)) {
+      if (!snapshot && Array.isArray(o.attachment.tools)) snapshot = o.attachment;
+      continue;
+    }
     if (o.type === 'assistant' && o.message?.usage) {
       const id = o.message.id ?? o.uuid;
       for (const c of o.message.content ?? []) {
@@ -106,17 +133,17 @@ function analyze(entries, label) {
     const sink = calls.length ? calls[calls.length - 1].items : pending;
     if (o.type === 'user' && o.message) {
       const content = o.message.content;
-      if (typeof content === 'string') { sink.push({ kind: '사용자·지시 입력', target: short(content, 50), chars: content.length }); continue; }
+      if (typeof content === 'string') { sink.push({ kind: '사용자·지시 입력', cat: '지시', target: short(content, 50), chars: content.length }); continue; }
       for (const c of content ?? []) {
         if (c.type === 'tool_result') {
-          const info = toolInfo.get(c.tool_use_id) ?? { kind: '도구 결과', target: '' };
+          const info = toolInfo.get(c.tool_use_id) ?? { kind: '도구 결과', cat: '기타 도구', target: '' };
           sink.push({ ...info, chars: sizeOf(c.content) });
         } else if (c.type === 'text') {
-          sink.push({ kind: '사용자·지시 입력', target: short(c.text, 50), chars: c.text.length });
+          sink.push({ kind: '사용자·지시 입력', cat: '지시', target: short(c.text, 50), chars: c.text.length });
         }
       }
     } else if (o.type === 'attachment' && o.attachment) {
-      sink.push({ kind: `알림: ${o.attachment.type}`, target: '', chars: sizeOf(o.attachment) });
+      sink.push({ kind: `알림: ${o.attachment.type}`, cat: '알림', type: o.attachment.type, target: '', chars: sizeOf(o.attachment) });
     }
   }
 
@@ -126,25 +153,48 @@ function analyze(entries, label) {
     const growth = calls[n + 1].ctx - calls[n].ctx;
     const laterCalls = calls.length - (n + 1);
     const outPart = Math.min(Math.max(growth, 0), calls[n].out);
-    if (outPart > 0) added.push({ kind: '모델 응답(출력)', target: '', tokens: outPart, laterCalls, label });
+    if (outPart > 0) added.push({ kind: '모델 응답(출력)', cat: '모델 출력', target: '', tokens: outPart, laterCalls, label });
     const rest = growth - outPart;
     const items = calls[n].items;
     const totalChars = items.reduce((s, it) => s + it.chars, 0);
     if (rest > 0 && totalChars > 0) {
-      for (const it of items) added.push({ kind: it.kind, target: it.target, tokens: rest * (it.chars / totalChars), laterCalls, label });
+      for (const it of items) added.push({ kind: it.kind, cat: it.cat, target: it.target, tokens: rest * (it.chars / totalChars), laterCalls, label });
     } else if (rest > 0) {
-      added.push({ kind: '분배 불가(설명 없는 증가)', target: '', tokens: rest, laterCalls, label });
+      added.push({ kind: '분배 불가(설명 없는 증가)', cat: '기타 도구', target: '', tokens: rest, laterCalls, label });
     }
   }
 
   const sum = (k) => calls.reduce((s, c) => s + c[k], 0);
   return {
     label, calls, added, agentCalls, compactions,
+    startParts: startComposition(calls[0], snapshot),
     start: calls[0]?.ctx ?? 0,
     peak: Math.max(0, ...calls.map((c) => c.ctx)),
     end: calls[calls.length - 1]?.ctx ?? 0,
     fresh: sum('fresh'), write: sum('write'), read: sum('read'), out: sum('out'), think: sum('think'),
   };
+}
+
+// 시작 ctx(첫 호출 입력)를 구성 항목별로 나눈다.
+// prompt_snapshot에 도구 정의가 있으면 모든 항목을 글자 수 비율로 나누고,
+// 없으면 아는 항목만 글자 수 ÷ 4로 어림하고 나머지를 "기록에 없음"으로 둔다.
+function startComposition(first, snap) {
+  if (!first) return null;
+  const parts = new Map();
+  const add = (label, chars) => parts.set(label, (parts.get(label) ?? 0) + chars);
+  if (snap) {
+    add('도구 정의', sizeOf(snap.tools));
+    add('시스템 프롬프트', sizeOf(snap.systemPrompt));
+  }
+  for (const it of first.before) add(it.cat === '알림' ? (START_PARTS[it.type] ?? '기타 알림') : '지시문 (사용자·명령)', it.chars);
+  const totalChars = [...parts.values()].reduce((s, c) => s + c, 0);
+  const toTok = (chars) => (snap ? first.ctx * (chars / totalChars) : chars / 4);
+  const rows = [...parts].map(([label, chars]) => ({ label, tokens: toTok(chars) }));
+  if (!snap) rows.push({ label: '기록에 없음 (시스템 프롬프트·도구 정의 추정)', tokens: Math.max(0, first.ctx - rows.reduce((s, r) => s + r.tokens, 0)) });
+  const bigTools = snap
+    ? snap.tools.map((t) => ({ name: t.name, tokens: toTok(sizeOf(t)) })).sort((a, b) => b.tokens - a.tokens).slice(0, 4)
+    : [];
+  return { rows, bigTools, toolCount: snap?.tools.length ?? 0 };
 }
 
 // ---------- 메인 + 하위 에이전트 ----------
@@ -191,6 +241,51 @@ L.push('|---|---:|---:|---:|---:|---:|---:|');
 for (const s of segments) L.push(`| ${s.label} | ${s.calls.length} | ${fmt(s.start)} | ${fmt(s.peak)} | ${fmt(s.read)} | ${fmt(s.write)} | ${fmt(s.out)} |`);
 L.push('');
 L.push('시작 ctx = 첫 호출 입력(시스템 프롬프트·CLAUDE.md·메모리·도구 정의·지시문). 하위 에이전트마다 반복되는 고정 비용이다.');
+L.push('');
+
+// 세션(구간)을 열로 두는 표
+const segHead = (first) => {
+  L.push(`| ${first} | ${segments.map((s) => s.label).join(' | ')} |`);
+  L.push(`|---|${segments.map(() => '---:').join('|')}|`);
+};
+
+L.push('## 세션별 시작 컨텍스트 구성 (추정)');
+const startLabels = [...new Set(segments.flatMap((s) => s.startParts?.rows.map((r) => r.label) ?? []))];
+const startOf = (s, label) => s.startParts?.rows.filter((r) => r.label === label).reduce((a, r) => a + r.tokens, 0) ?? 0;
+startLabels.sort((a, b) => segments.reduce((t, s) => t + startOf(s, b), 0) - segments.reduce((t, s) => t + startOf(s, a), 0));
+segHead('항목');
+for (const label of startLabels) L.push(`| ${label} | ${segments.map((s) => fmt(startOf(s, label))).join(' | ')} |`);
+L.push(`| **합계 (시작 ctx)** | ${segments.map((s) => fmt(s.start)).join(' | ')} |`);
+const bigToolLines = new Map();
+for (const s of segments) {
+  const big = s.startParts?.bigTools ?? [];
+  const line = big.length ? `${s.startParts.toolCount}개 중 ` + big.map((t) => `${t.name} 약 ${fmt(Math.round(t.tokens / 100) * 100)}`).join(' · ') : '';
+  if (line) bigToolLines.set(line, [...(bigToolLines.get(line) ?? []), s.label]);
+}
+for (const [line, labels] of bigToolLines) L.push(`- 큰 도구 정의 (${labels.join(', ')}): ${line}`);
+L.push('- 기록에 남은 글자 수 비율로 나눈 값이다. `prompt_snapshot`은 기록 전용 항목이라 아래 분배에서는 뺐다.');
+L.push('');
+
+const CATS = ['문서', '코드', '브라우저', '모델 출력', '편집', '빌드·검사', 'git', '알림', '지시', '하위 에이전트 보고', '기타 도구'];
+const catOf = (s, cat) => s.added.filter((a) => a.cat === cat).reduce((t, a) => t + a.tokens, 0);
+L.push('## 세션별 분류 합계 (시작 이후 늘어난 컨텍스트)');
+segHead('분류');
+for (const cat of CATS) {
+  if (segments.every((s) => catOf(s, cat) < 1)) continue;
+  L.push(`| ${cat} | ${segments.map((s) => fmt(catOf(s, cat))).join(' | ')} |`);
+}
+L.push(`| **합계** | ${segments.map((s) => fmt(s.added.reduce((t, a) => t + a.tokens, 0))).join(' | ')} |`);
+L.push(`| **최대 ctx** | ${segments.map((s) => fmt(s.peak)).join(' | ')} |`);
+L.push('- 문서 = docs/·.claude/·.md·.html·목업, 코드 = 그 밖의 파일. Bash는 명령에 적힌 경로로 나눈 추정이다. 합계가 (최대 ctx − 시작 ctx)와 다르면 그 차이는 줄어든 구간(압축 등) 때문이다.');
+L.push('');
+
+L.push('## 세션별 읽은 문서·코드 (큰 순서 6개, 추가 토큰)');
+for (const s of segments) {
+  for (const cat of ['문서', '코드']) {
+    const g = groupBy(s.added.filter((a) => a.cat === cat), (a) => a.target).sort((a, b) => b.tokens - a.tokens).slice(0, 6);
+    if (g.length) L.push(`- ${s.label} ${cat}: ` + g.map((x) => `${short(x.key, 45)} (+${fmt(x.tokens)}${x.count > 1 ? `, ${x.count}회` : ''})`).join(' · '));
+  }
+}
 L.push('');
 
 function groupBy(list, keyFn) {
