@@ -60,7 +60,8 @@ function eventSortKey(event: ScheduleEvent): string {
 
 /**
  * 카드에 보여줄 다음 일정.
- * - event: 오늘 이후(오늘 포함) 가장 가까운 전형 일정 (보라색 D-day)
+ * - event: 오늘 이후(오늘 포함) 가장 가까운 전형 일정 (보라색 D-day).
+ *   "지원 완료" 일정은 상태가 지원 완료일 때만 포함한다.
  * - deadline: 지원 준비 카드의 마감일 (회색 "D-n 마감")
  * 둘 다 있으면 더 가까운 쪽. days는 오늘부터 남은 일 수 (0 = 당일).
  */
@@ -71,8 +72,10 @@ export type NextItem =
 export function getNextItem(application: Application, deadlineProperty: PropertyDef | null, today: Date): NextItem | null {
   const todayKey = toDateKey(today);
 
+  // "지원 완료" 일정은 이미 한 일의 기록이라, 상태가 지원 완료일 때만 다음 일정으로 본다
   const upcoming = application.events
     .filter((e) => e.date >= todayKey)
+    .filter((e) => e.kind !== "applied" || application.status === "applied")
     .sort((a, b) => eventSortKey(a).localeCompare(eventSortKey(b)))[0];
 
   const deadline = application.status === "preparing" ? getDateValue(application, deadlineProperty) : null;

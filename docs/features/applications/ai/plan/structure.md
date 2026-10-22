@@ -58,7 +58,7 @@ interface Application {
 - `pages/applications/gallery/`: `GalleryView`, `ApplicationCard`, `PriorityBars`
 - `pages/applications/calendar/`: `CalendarView`, `CalendarDayCell`, `CalendarEventChip`
 - `pages/applications/detail/`: `ApplicationDetailModal`, `TitleInput`, `StatusRow`, `MarkdownBody`
-- `pages/applications/status/`: `StatusBadge`, `StatusPicker`, `ResultPicker`
+- `pages/applications/status/`: `StatusBadge`, `StatusPicker`, `ResultPicker`, `StageDatePicker`
 - `pages/applications/schedule/`: `ScheduleButton`, `NextEventLabel`, `SchedulePopover`, `ScheduleItemRow`
 - `pages/applications/properties/`: `PropertyList`, `PropertyRow`, `PropertyValueEditor`(+ 종류별 7개), `OptionPicker`, `PropertyMenu`, `AddPropertyButton`
 - `pages/home/ApplicationsSummaryCard.tsx` (+css): 홈 지원 현황 카드 본문

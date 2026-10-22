@@ -1,6 +1,7 @@
 import { withValue } from "./propertyOps";
 import { reduceProperties, type PropertyAction } from "./propertyReducer";
-import type { Application, ApplicationsData, PropertyValue } from "./types";
+import { changeStatus } from "./transitions";
+import type { Application, ApplicationsData, PropertyValue, ScheduleEvent, StageId, StatusId } from "./types";
 
 /** 데이터 상태: 읽는 중 / 준비됨 / 읽기 실패 */
 export type DataState =
@@ -22,6 +23,8 @@ export type Action =
   | { type: "update-application"; id: string; patch: ApplicationPatch; now: string }
   | { type: "delete-application"; id: string }
   | { type: "set-value"; id: string; propertyId: string; value: PropertyValue; now: string }
+  | { type: "change-status"; id: string; status: StatusId; stage: StageId | null; today: string; eventId: string; now: string }
+  | { type: "add-event"; id: string; event: ScheduleEvent; now: string }
   | PropertyAction;
 
 export function reducer(state: DataState, action: Action): DataState {
@@ -61,6 +64,23 @@ export function reducer(state: DataState, action: Action): DataState {
       });
       return changed ? withApplications(state.data, applications) : state;
     }
+    case "change-status": {
+      // 상태 규칙(R20~R22)은 transitions.ts. 같은 상태를 다시 고르면 아무것도 바꾸지 않는다.
+      if (state.kind !== "ready") return state;
+      const { properties } = state.data;
+      return mapApplication(state, action.id, (a) => {
+        const next = changeStatus(a, properties, action.status, action.stage, action.today, action.eventId);
+        return next === a ? a : { ...next, updatedAt: action.now };
+      });
+    }
+    case "add-event": {
+      if (state.kind !== "ready") return state;
+      return mapApplication(state, action.id, (a) => ({
+        ...a,
+        events: [...a.events, action.event],
+        updatedAt: action.now,
+      }));
+    }
     default: {
       // 나머지는 속성 정의 동작 (propertyReducer.ts)
       if (state.kind !== "ready") return state;
@@ -68,6 +88,22 @@ export function reducer(state: DataState, action: Action): DataState {
       return data === state.data ? state : { kind: "ready", data };
     }
   }
+}
+
+/** 카드 하나를 바꾼다. update가 같은 카드를 돌려주면 상태를 그대로 둔다. */
+function mapApplication(
+  state: Extract<DataState, { kind: "ready" }>,
+  id: string,
+  update: (application: Application) => Application,
+): DataState {
+  let changed = false;
+  const applications = state.data.applications.map((a) => {
+    if (a.id !== id) return a;
+    const next = update(a);
+    if (next !== a) changed = true;
+    return next;
+  });
+  return changed ? withApplications(state.data, applications) : state;
 }
 
 function withApplications(data: ApplicationsData, applications: Application[]): DataState {

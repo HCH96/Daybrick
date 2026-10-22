@@ -18,6 +18,14 @@ export function ChevronRightIcon({ size = 15 }: { size?: number }) {
   );
 }
 
+export function ChevronDownIcon({ size = 15 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <path d="M6 9l6 6 6-6" />
+    </LineIcon>
+  );
+}
+
 export function PlusIcon({ size = 15 }: { size?: number }) {
   return (
     <LineIcon size={size}>

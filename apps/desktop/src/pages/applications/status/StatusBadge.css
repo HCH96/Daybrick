@@ -31,6 +31,24 @@
   opacity: 0.7;
 }
 
+/* 큰 배지: 상세 팝업 제목 아래 (R17) */
+.status-badge--big {
+  height: 32px;
+  padding: 0 12px 0 14px;
+  font-size: 14px;
+  gap: 8px;
+}
+
+.status-badge--big::before {
+  width: 8px;
+  height: 8px;
+}
+
+.status-badge__chev {
+  display: flex;
+  opacity: 0.8;
+}
+
 /* 종료: 바탕 없이 테두리만 */
 .status-badge--closed {
   box-shadow: 0 0 0 1px var(--border-2) inset;

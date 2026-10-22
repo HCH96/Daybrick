@@ -3,7 +3,7 @@
 - 기능 명세서: [../spec/index.md](../spec/index.md) (R1~R37)
 - 승인된 목업: [../../human/mockups/index.html](../../human/mockups/index.html)
 - 작성일: 2026-10-22
-- 상태: 승인됨 (2026-10-22), 구현 중 (4단계 완료)
+- 상태: 승인됨 (2026-10-22), 구현 중 (5단계 완료)
 - 경로 기준: `apps/desktop/src/` (Rust는 `apps/desktop/src-tauri/`)
 - 전체 파일 목록·컴포넌트 구조·C++ 비유: [structure.md](structure.md) (필요할 때만)
 

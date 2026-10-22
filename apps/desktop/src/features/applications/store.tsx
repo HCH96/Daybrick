@@ -2,7 +2,9 @@ import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNo
 import { loadApplicationsData } from "./storage";
 import { createApplication, reducer, type ApplicationPatch, type DataState } from "./reducer";
 import type { PropertyAction } from "./propertyReducer";
-import type { PropertyValue } from "./types";
+import { createStageEvent } from "./transitions";
+import type { PropertyValue, StageId, StatusId } from "./types";
+import { toDateKey } from "../../utils/date";
 import { useAutoSave, type SaveStatus } from "./useAutoSave";
 
 export interface ApplicationsStore {
@@ -16,6 +18,10 @@ export interface ApplicationsStore {
   deleteApplication: (id: string) => void;
   /** 카드 하나의 속성 값 하나를 바꾼다. null = 없음 (R31) */
   setValue: (id: string, propertyId: string, value: PropertyValue) => void;
+  /** 상태를 바꾼다. 지원 완료면 오늘 일정·지원일을 채운다 (R18~R21, transitions.ts) */
+  changeStatus: (id: string, status: StatusId, stage: StageId | null) => void;
+  /** 전형 준비 세부 단계의 날짜를 고르면 그 전형 일정을 만든다 (R22) */
+  addStageEvent: (id: string, stage: StageId, date: string) => void;
   /** 속성 정의를 바꾼다 (추가·이름·종류·삭제·항목). 모든 카드에 함께 반영된다 (R28~R30) */
   changeProperties: (action: PropertyAction) => void;
 }
@@ -61,6 +67,25 @@ export function ApplicationsProvider({ children }: { children: ReactNode }) {
       },
       setValue: (id, propertyId, value) => {
         dispatch({ type: "set-value", id, propertyId, value, now: new Date().toISOString() });
+      },
+      changeStatus: (id, status, stage) => {
+        const now = new Date();
+        dispatch({
+          type: "change-status",
+          id,
+          status,
+          stage,
+          today: toDateKey(now),
+          eventId: crypto.randomUUID(),
+          now: now.toISOString(),
+        });
+      },
+      addStageEvent: (id, stage, date) => {
+        if (state.kind !== "ready") return;
+        const application = state.data.applications.find((a) => a.id === id);
+        if (!application) return;
+        const event = createStageEvent(application, stage, date, crypto.randomUUID());
+        if (event) dispatch({ type: "add-event", id, event, now: new Date().toISOString() });
       },
       changeProperties: (action) => {
         dispatch(action);

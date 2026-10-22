@@ -4,8 +4,8 @@ import Modal from "../../../components/common/Modal";
 import { CloseIcon, MaximizeIcon, RestoreIcon, TrashIcon } from "../../../components/icons/DialogIcons";
 import { useApplications } from "../../../features/applications/store";
 import PropertyList from "../properties/PropertyList";
-import StatusBadge from "../status/StatusBadge";
 import SaveStateLabel from "./SaveStateLabel";
+import StatusRow from "./StatusRow";
 import TitleInput from "./TitleInput";
 import "./ApplicationDetailModal.css";
 
@@ -69,9 +69,7 @@ function ApplicationDetailModal({ applicationId, onClose }: ApplicationDetailMod
       <div className="detail-modal__scroll">
         <div className="detail-modal__inner">
           <TitleInput value={application.title} onChange={(title) => updateApplication(application.id, { title })} />
-          <div className="detail-modal__status">
-            <StatusBadge status={application.status} stage={application.stage} />
-          </div>
+          <StatusRow application={application} properties={properties} />
           <PropertyList application={application} properties={properties} />
           <div className="detail-modal__divider" />
           {/* 본문 편집기(7단계)를 만들기 전까지 쓰는 임시 안내 */}
