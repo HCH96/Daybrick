@@ -1,32 +1,30 @@
-import { getDateValue } from "./properties";
 import { EVENT_KIND_LABELS } from "./statuses";
-import type { Application, PropertyDef, StatusId } from "./types";
+import type { Application, StatusId } from "./types";
 
-/** 큰 달력의 날짜 칸에 그릴 일정 하나 (전형 일정 또는 지원 준비 카드의 마감일) */
+/** 큰 달력의 날짜 칸에 그릴 일정 하나 (전형 일정 또는 지원 준비 카드의 지원 마감) */
 export interface CalendarEntry {
   key: string; // React key (카드 안에서 겹치지 않음)
   applicationId: string;
   title: string; // 카드 제목 (비어 있을 수 있음)
-  label: string; // 일정 종류 ("면접", "마감" 등)
+  label: string; // 일정 종류 ("면접", "지원 마감" 등)
   date: string; // "YYYY-MM-DD"
   time: string | null;
   status: StatusId; // 카드의 현재 상태 (색)
-  isDeadline: boolean; // 지원 준비 카드의 마감일 (R8)
+  isDeadline: boolean; // 지원 준비 카드의 지원 마감 (흐린 점선 칸, R8)
 }
 
 /**
  * 모든 카드의 전형 일정을 날짜별로 모은다 (R7). 종료 카드의 일정도 남긴다 (R10).
- * 지원 준비 카드는 마감일도 넣는다 (R8). 마감일 속성을 지웠으면 마감일은 건너뛴다 (D4).
+ * 지원 마감 일정은 지원 준비 카드일 때만 넣는다 (R8, D21).
  * 상태 자체는 일정으로 만들지 않는다 (R9).
- * 같은 날 안에서는 시간 없는 일정 → 시간 순, 마감일은 맨 뒤.
+ * 같은 날 안에서는 시간 없는 일정 → 시간 순, 지원 마감은 맨 뒤.
  */
-export function groupEntriesByDate(
-  applications: readonly Application[],
-  deadlineProperty: PropertyDef | null,
-): Map<string, CalendarEntry[]> {
+export function groupEntriesByDate(applications: readonly Application[]): Map<string, CalendarEntry[]> {
   const entries: CalendarEntry[] = [];
   for (const app of applications) {
     for (const event of app.events) {
+      const isDeadline = event.kind === "application-due";
+      if (isDeadline && app.status !== "preparing") continue;
       entries.push({
         key: event.id,
         applicationId: app.id,
@@ -35,20 +33,7 @@ export function groupEntriesByDate(
         date: event.date,
         time: event.time,
         status: app.status,
-        isDeadline: false,
-      });
-    }
-    const deadline = app.status === "preparing" ? getDateValue(app, deadlineProperty) : null;
-    if (deadline !== null) {
-      entries.push({
-        key: `${app.id}-deadline`,
-        applicationId: app.id,
-        title: app.title,
-        label: "마감",
-        date: deadline,
-        time: null,
-        status: app.status,
-        isDeadline: true,
+        isDeadline,
       });
     }
   }

@@ -23,7 +23,7 @@ export type Action =
   | { type: "update-application"; id: string; patch: ApplicationPatch; now: string }
   | { type: "delete-application"; id: string }
   | { type: "set-value"; id: string; propertyId: string; value: PropertyValue; now: string }
-  | { type: "change-status"; id: string; status: StatusId; stage: StageId | null; today: string; eventId: string; now: string }
+  | { type: "change-status"; id: string; status: StatusId; stage: StageId | null; now: string }
   | { type: "add-event"; id: string; event: ScheduleEvent; now: string }
   | { type: "update-event"; id: string; event: ScheduleEvent; now: string }
   | { type: "delete-event"; id: string; eventId: string; now: string }
@@ -69,9 +69,8 @@ export function reducer(state: DataState, action: Action): DataState {
     case "change-status": {
       // 상태 규칙(R20~R22)은 transitions.ts. 같은 상태를 다시 고르면 아무것도 바꾸지 않는다.
       if (state.kind !== "ready") return state;
-      const { properties } = state.data;
       return mapApplication(state, action.id, (a) => {
-        const next = changeStatus(a, properties, action.status, action.stage, action.today, action.eventId);
+        const next = changeStatus(a, action.status, action.stage);
         return next === a ? a : { ...next, updatedAt: action.now };
       });
     }

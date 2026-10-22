@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "../../../components/icons/CommonIcons";
 import { groupEntriesByDate } from "../../../features/applications/calendarEntries";
-import { findPropertyByRole } from "../../../features/applications/properties";
-import type { Application, PropertyDef } from "../../../features/applications/types";
+import type { Application } from "../../../features/applications/types";
 import { getMonthGrid } from "../../../utils/calendarGrid";
 import { toDateKey } from "../../../utils/date";
 import CalendarDayCell from "./CalendarDayCell";
@@ -20,18 +19,16 @@ const LEGEND = [
 
 interface CalendarViewProps {
   applications: readonly Application[];
-  properties: readonly PropertyDef[];
   onOpen: (applicationId: string) => void;
 }
 
 /** 지원 관리 달력 (R7–R11): 월 이동 + 범례 + 월 달력 */
-function CalendarView({ applications, properties, onOpen }: CalendarViewProps) {
+function CalendarView({ applications, onOpen }: CalendarViewProps) {
   const today = new Date();
   const todayKey = toDateKey(today);
   const [month, setMonth] = useState({ year: today.getFullYear(), month: today.getMonth() });
 
-  const deadlineProperty = findPropertyByRole(properties, "deadline");
-  const byDate = useMemo(() => groupEntriesByDate(applications, deadlineProperty), [applications, deadlineProperty]);
+  const byDate = useMemo(() => groupEntriesByDate(applications), [applications]);
   const weeks = getMonthGrid(month.year, month.month);
 
   const move = (delta: number) =>

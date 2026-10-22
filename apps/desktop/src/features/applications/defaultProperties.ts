@@ -8,7 +8,7 @@ interface DefaultPropertySpec {
   options?: [string, OptionColor][];
 }
 
-/** 명세서 "기본 속성" 표 그대로. 순서 = 팝업 속성 목록 순서. */
+/** 명세서 "기본 속성" 표 그대로. 순서 = 팝업 속성 목록 순서. 마감일·지원일은 없앰 (R40). */
 const SPECS: DefaultPropertySpec[] = [
   {
     id: "result",
@@ -24,8 +24,6 @@ const SPECS: DefaultPropertySpec[] = [
   { id: "company", name: "회사", type: "select", role: "company" },
   { id: "position", name: "직무", type: "select", role: null },
   { id: "posting-url", name: "공고 링크", type: "url", role: null },
-  { id: "deadline", name: "마감일", type: "date", role: "deadline" },
-  { id: "applied-date", name: "지원일", type: "date", role: "appliedDate" },
   {
     id: "priority",
     name: "우선순위",

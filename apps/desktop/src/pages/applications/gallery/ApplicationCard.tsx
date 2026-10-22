@@ -13,7 +13,6 @@ import "./ApplicationCard.css";
 /** 카드 앞면이 쓰는 역할 속성들. 사용자가 지웠으면 null. */
 export interface CardProperties {
   company: PropertyDef | null;
-  deadline: PropertyDef | null;
   priority: PropertyDef | null;
   result: PropertyDef | null;
 }
@@ -76,7 +75,7 @@ function ApplicationCard({ application, properties, today, onOpen }: Application
         {closed ? (
           <LastEventLine application={application} />
         ) : (
-          <NextEventLabel item={getNextItem(application, properties.deadline, today)} emptyText="예정된 일정 없음" />
+          <NextEventLabel item={getNextItem(application, today)} emptyText="예정된 일정 없음" />
         )}
         <PriorityBars option={priority} />
       </div>

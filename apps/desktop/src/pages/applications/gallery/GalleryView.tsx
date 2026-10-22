@@ -26,17 +26,13 @@ function GalleryView({ applications, properties, tab, onTabChange, onOpen }: Gal
   const cardProperties = useMemo<CardProperties>(
     () => ({
       company: findPropertyByRole(properties, "company"),
-      deadline: findPropertyByRole(properties, "deadline"),
       priority: findPropertyByRole(properties, "priority"),
       result: findPropertyByRole(properties, "result"),
     }),
     [properties],
   );
 
-  const visible = useMemo(
-    () => sortByDeadline(filterByTab(applications, tab), cardProperties.deadline),
-    [applications, tab, cardProperties.deadline],
-  );
+  const visible = useMemo(() => sortByDeadline(filterByTab(applications, tab)), [applications, tab]);
 
   const tabOptions: SegmentOption<GalleryTab>[] = [
     { value: "active", label: "진행 중", count: filterByTab(applications, "active").length },

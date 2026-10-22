@@ -1,7 +1,5 @@
-import { withValue } from "./propertyOps";
-import { getDateValue, findPropertyByRole } from "./properties";
 import { findStatus } from "./statuses";
-import type { Application, EventKind, PropertyDef, ScheduleEvent, StageId, StatusId } from "./types";
+import type { Application, EventKind, ScheduleEvent, StageId, StatusId } from "./types";
 
 /**
  * 상태를 바꿀 때의 규칙 (R20~R22). 화면과 무관한 순수 함수만 둔다.
@@ -27,34 +25,12 @@ export function isSameStatus(application: Application, status: StatusId, stage: 
 
 /**
  * 상태를 바꾼 새 카드를 돌려준다. 같은 상태를 다시 골랐으면 원래 카드를 그대로 돌려준다.
- * - 지원 완료(R21): 오늘 "지원 완료" 일정을 만든다(같은 날 것이 이미 있으면 만들지 않음).
- *   지원일 속성이 있고 비어 있으면 오늘로 채운다. 지원일을 지웠으면 건너뛴다(D4).
+ * - 지원 완료(R21): 상태만 바꾼다. 일정·날짜는 만들지 않는다.
  * - 종료(R20)의 결과 고르기, 전형 준비(R22)의 날짜 고르기는 화면이 이어서 띄운다.
  */
-export function changeStatus(
-  application: Application,
-  properties: readonly PropertyDef[],
-  status: StatusId,
-  stage: StageId | null,
-  todayKey: string,
-  newEventId: string,
-): Application {
+export function changeStatus(application: Application, status: StatusId, stage: StageId | null): Application {
   if (isSameStatus(application, status, stage)) return application;
-
-  let next: Application = { ...application, status, stage: normalizeStage(status, stage) };
-
-  if (status === "applied" && application.status !== "applied") {
-    const hasToday = next.events.some((e) => e.kind === "applied" && e.date === todayKey);
-    if (!hasToday) {
-      next = { ...next, events: [...next.events, makeEvent(newEventId, "applied", todayKey)] };
-    }
-    const appliedDate = findPropertyByRole(properties, "appliedDate");
-    if (appliedDate && appliedDate.type === "date" && getDateValue(next, appliedDate) === null) {
-      next = { ...next, values: withValue(next.values, appliedDate.id, todayKey) };
-    }
-  }
-
-  return next;
+  return { ...application, status, stage: normalizeStage(status, stage) };
 }
 
 /** 전형 준비의 세부 단계를 고른 뒤 날짜를 고르면 만드는 일정 (R22). 같은 종류·같은 날 일정이 있으면 null. */

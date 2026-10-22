@@ -13,12 +13,12 @@ interface ScheduleButtonProps {
 
 /**
  * 상태 배지 옆 📅 버튼 (R24·R25). 옆에 앞으로 남은 전형 일정 하나만 보여준다.
- * 마감일은 전형 일정이 아니라서 넣지 않는다 (마감일 속성 대신 null을 넘김).
+ * 지원 마감은 아직 넣지 않는다 (수정1 2단계에서 카드와 같은 규칙으로 바꾼다).
  */
 function ScheduleButton({ application }: ScheduleButtonProps) {
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = useState(false);
-  const next = getNextItem(application, null, new Date());
+  const next = getNextItem(application, new Date(), false);
 
   return (
     <>

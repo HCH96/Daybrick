@@ -15,8 +15,6 @@ interface PropertyMenuProps {
 
 /** 역할 속성을 지우면 함께 사라지는 기능 (삭제 확인 문구에 덧붙인다, R33) */
 const ROLE_DELETE_NOTE: Record<PropertyRole, string> = {
-  deadline: "카드의 마감일 표시와 마감일 순 정렬도 함께 사라져요.",
-  appliedDate: "지원 완료로 바꿀 때 지원일을 자동으로 채우지도 않아요.",
   priority: "카드의 우선순위 표시도 함께 사라져요.",
   result: "종료로 바꿀 때 결과를 고르는 칸도 뜨지 않아요.",
   company: "카드의 회사 표시도 함께 사라져요.",

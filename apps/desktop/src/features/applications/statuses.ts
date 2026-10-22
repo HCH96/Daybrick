@@ -24,7 +24,7 @@ export const STAGES: readonly { id: StageId; label: string; shortLabel: string }
 ];
 
 export const EVENT_KIND_LABELS: Record<EventKind, string> = {
-  applied: "지원 완료",
+  "application-due": "지원 마감",
   "assignment-due": "과제 마감",
   "coding-test": "코딩테스트",
   interview: "면접",

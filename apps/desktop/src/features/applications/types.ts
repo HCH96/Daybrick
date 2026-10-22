@@ -6,8 +6,8 @@ export type StatusId = "preparing" | "applied" | "stage-prep" | "awaiting" | "cl
 /** 세부 단계 3개. 전형 준비·결과 대기일 때만 쓴다. */
 export type StageId = "assignment" | "coding-test" | "interview";
 
-/** 전형 일정 종류 (R25) */
-export type EventKind = "applied" | "assignment-due" | "coding-test" | "interview";
+/** 전형 일정 종류 (R25). 지원 마감은 카드당 하나 (R39). */
+export type EventKind = "application-due" | "assignment-due" | "coding-test" | "interview";
 
 /** 전형 일정 하나 (R23~R27). 속성 목록에는 나오지 않는다. */
 export interface ScheduleEvent {
@@ -35,7 +35,7 @@ export interface PropertyOption {
  * 앱 기능이 의존하는 기본 속성의 역할.
  * 역할이 있는 속성은 종류를 바꿀 수 없다 (계획 결정 3). 이름·항목 변경과 삭제는 가능하다.
  */
-export type PropertyRole = "deadline" | "appliedDate" | "priority" | "result" | "company";
+export type PropertyRole = "priority" | "result" | "company";
 
 /** 속성 정의 (모든 카드가 공유). 순서는 배열 순서를 따른다. */
 export interface PropertyDef {
@@ -66,9 +66,9 @@ export interface Application {
   updatedAt: string;
 }
 
-/** 파일 전체 형식 */
+/** 파일 전체 형식 (v2: 마감일·지원일 속성과 "지원 완료" 일정을 없앰, D20) */
 export interface ApplicationsData {
-  version: 1;
+  version: 2;
   properties: PropertyDef[];
   applications: Application[];
 }

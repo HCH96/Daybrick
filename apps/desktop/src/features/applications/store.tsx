@@ -4,7 +4,6 @@ import { createApplication, reducer, type ApplicationPatch, type DataState } fro
 import type { PropertyAction } from "./propertyReducer";
 import { createStageEvent } from "./transitions";
 import type { EventKind, PropertyValue, ScheduleEvent, StageId, StatusId } from "./types";
-import { toDateKey } from "../../utils/date";
 import { useAutoSave, type SaveStatus } from "./useAutoSave";
 
 export interface ApplicationsStore {
@@ -75,16 +74,7 @@ export function ApplicationsProvider({ children }: { children: ReactNode }) {
         dispatch({ type: "set-value", id, propertyId, value, now: new Date().toISOString() });
       },
       changeStatus: (id, status, stage) => {
-        const now = new Date();
-        dispatch({
-          type: "change-status",
-          id,
-          status,
-          stage,
-          today: toDateKey(now),
-          eventId: crypto.randomUUID(),
-          now: now.toISOString(),
-        });
+        dispatch({ type: "change-status", id, status, stage, now: new Date().toISOString() });
       },
       addStageEvent: (id, stage, date) => {
         if (state.kind !== "ready") return;

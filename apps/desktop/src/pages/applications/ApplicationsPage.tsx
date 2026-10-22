@@ -47,7 +47,7 @@ function ApplicationsPage() {
         />
       )}
       {state.kind === "ready" && view === "calendar" && (
-        <CalendarView applications={applications} properties={state.data.properties} onOpen={setOpenId} />
+        <CalendarView applications={applications} onOpen={setOpenId} />
       )}
       {state.kind === "ready" && openId !== null && (
         <ApplicationDetailModal applicationId={openId} onClose={closeDetail} />

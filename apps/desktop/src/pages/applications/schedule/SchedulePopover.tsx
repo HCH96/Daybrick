@@ -8,7 +8,7 @@ import { toDateKey } from "../../../utils/date";
 import ScheduleItemRow from "./ScheduleItemRow";
 import "./SchedulePopover.css";
 
-const KINDS: readonly EventKind[] = ["applied", "assignment-due", "coding-test", "interview"];
+const KINDS: readonly EventKind[] = ["application-due", "assignment-due", "coding-test", "interview"];
 
 interface SchedulePopoverProps {
   application: Application;
