@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import type { PageId } from "../../app/types";
 import EmptyState from "../../components/common/EmptyState";
 import WeeklyFocusEmpty from "./WeeklyFocusEmpty";
+import ApplicationsSummaryCard from "./ApplicationsSummaryCard";
 
 /**
  * 카드가 벤토 그리드(12칸)에서 차지하는 크기.
@@ -17,7 +18,7 @@ export interface DashboardCardDef {
   title: string;
   linkTo: PageId; // 카드에서 이동할 메뉴
   size: CardSize;
-  body: ComponentType; // 지금은 빈 상태 컴포넌트
+  body: ComponentType; // 카드 본문 (연결 전 기능은 빈 상태 컴포넌트)
 }
 
 /**
@@ -60,12 +61,7 @@ export const dashboardCards: DashboardCardDef[] = [
     title: "지원 현황",
     linkTo: "applications",
     size: "wide",
-    body: () => (
-      <EmptyState
-        linkTo="applications"
-        description="지원 관리 기능을 만들면 여기에 상태별 지원 개수가 보여요"
-      />
-    ),
+    body: ApplicationsSummaryCard,
   },
   {
     id: "weekly-focus",

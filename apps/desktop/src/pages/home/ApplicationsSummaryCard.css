@@ -1,0 +1,42 @@
+.apps-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.apps-summary__tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.apps-summary__tile {
+  border-radius: 10px;
+  padding: 12px 14px;
+  min-width: 0;
+}
+
+.apps-summary__count {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.apps-summary__label {
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.apps-summary__stages {
+  font-size: 12px;
+  margin-top: 6px;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.apps-summary__total,
+.apps-summary__notice {
+  font-size: 13px;
+  color: var(--muted);
+}

@@ -19,3 +19,4 @@
 - D16. 📅 옆에는 전형 일정만 보여준다. `getNextItem`에 마감일 속성 대신 null을 넘겨 마감일은 넣지 않는다 (카드는 그대로 마감일 포함). (적용: 이후 전체) (기록: L12)
 - D17. 본문 이미지: 본문(마크다운)에는 `images/파일명` 상대 경로만 적고, 그릴 때 `features/applications/images.ts`의 `resolveImageSrc`로 asset 주소로 바꾼다. 편집기는 처음 열 때의 본문만 읽으므로 카드가 바뀌면 `key`로 새로 만든다. 본문 링크는 클릭으로 열지 않는다(앱 창이 넘어가는 것 방지). (적용: 이후 전체) (기록: L13)
 - D18. 큰 달력의 일정은 `features/applications/calendarEntries.ts`의 `groupEntriesByDate`로 모은다(전형 일정 + 지원 준비 카드의 마감일). 한 칸에 3개가 넘으면 2개와 "+N개 더"를 보이고, 누르면 그날 일정 전체를 `Popover`로 보여준다. (적용: 이후 전체) (기록: L14)
+- D19. 홈 지원 현황은 `features/applications/summary.ts`의 `summarizeApplications`로 센다(종료 제외, 세부 단계는 0개면 뺌). 홈 요약 줄은 "가장 가까운 마감" 칸의 아래 줄에 "진행 중 N곳"을 보이고, 값은 마감 연결 전까지 "—"로 둔다. (적용: 이후 전체) (기록: L15)
