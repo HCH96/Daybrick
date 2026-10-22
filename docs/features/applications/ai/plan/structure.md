@@ -1,110 +1,52 @@
-# 지원 관리 구현 계획: 파일 목록과 컴포넌트 구조
-전체 구조가 필요할 때만 읽는다. 단계 하나를 구현할 때는 그 단계의 step 파일만 읽으면 된다.
+# 지원 관리 수정 계획: 파일 목록과 데이터 모양
+전체 구조가 필요할 때만 읽는다. 처음 계획의 전체 구조는 [../../archive/plan-initial/structure.md](../../archive/plan-initial/structure.md).
 
-## 1. 만들거나 수정할 파일
+## 1. 고칠 파일 (경로 기준 `apps/desktop/src/`)
+새 파일은 `migrate.ts` 하나. Rust 쪽은 바꾸지 않는다 (백업 없음).
 
-### Rust / 설정
-| 구분 | 파일 | 내용 | 단계 |
-|---|---|---|---|
-| 수정 | `src-tauri/src/lib.rs` | `greet` 대신 저장 명령 등록 | 1 |
-| 새로 | `src-tauri/src/storage.rs` | `load_applications`, `save_applications`(임시 파일에 쓴 뒤 바꿔치기), `save_image`(바이트를 그대로 받아 `images/`에 저장) | 1, 7 |
-| 수정 | `src-tauri/Cargo.toml`, `tauri.conf.json` | 이미지 표시용 asset 프로토콜 켜기 (앱 데이터 폴더 `images/`만 허용) | 7 |
-| 수정 | `package.json` | Tiptap 패키지 추가 | 7 |
-
-### 데이터와 계산 (`features/applications/`)
-화면과 무관한 순수 로직. 나중에 테스트 도구를 도입하면 여기부터 테스트한다.
-
-| 파일 | 내용 | 단계 |
+| 파일 | 변경 | 단계 |
 |---|---|---|
-| `types.ts` | `Application`, `ScheduleEvent`, `PropertyDef`, `PropertyValue`, `StatusId`, `StageId` | 1 |
-| `statuses.ts` | 상태 5개·세부 단계 3개, 이름·색 (고정 목록) | 1 |
-| `defaultProperties.ts` | 기본 속성 10개와 처음 항목, 역할(`deadline`, `appliedDate`, `priority`, `result`, `company`) | 1 |
-| `storage.ts` | Rust 명령 호출, 파일 형식 버전 확인 | 1 |
-| `store.tsx` | 전체 데이터 Context + reducer + 0.5초 늦춰 저장 | 1 |
-| `transitions.ts` | 상태 바꿀 때 규칙 (R20~R22: 지원 완료 일정 생성, 지원일 채우기 등) | 5 |
-| `schedule.ts` | 다음 일정, D-day, 정렬, 탭 거르기 | 2, 6 |
-| `calendarGrid.ts` | 월 달력 칸 계산 (작은 달력과 큰 달력이 같이 씀) | 5, 8 |
-| `summary.ts` | 홈용 상태별·세부 단계별 개수 | 9 |
+| `features/applications/types.ts` | `EventKind`의 `applied` → `application-due`, `PropertyRole`에서 `deadline`·`appliedDate` 제거, `version: 2` | 1 |
+| `features/applications/defaultProperties.ts` | 마감일·지원일 기본 속성 제거 | 1 |
+| `features/applications/migrate.ts` (새로) | `migrateV1ToV2(raw)`: v1 객체 → v2 객체 (순수 함수) | 1 |
+| `features/applications/storage.ts` | 읽은 파일이 v1이면 옮기고 바로 저장, v2가 아니면 지금처럼 오류 | 1 |
+| `features/applications/statuses.ts` | `EVENT_KIND_LABELS`: "지원 완료" 대신 "지원 마감" | 1 |
+| `features/applications/transitions.ts` | 지원 완료로 바꿀 때 일정 만들기·지원일 채우기 삭제 (R21) | 1 |
+| `features/applications/calendarEntries.ts` | `groupEntriesByDate(applications)`: 지원 마감 일정은 지원 준비 카드만, 흐린 칸 (R8) | 1 |
+| `features/applications/schedule.ts` | 1단계: 마감을 속성 대신 `application-due` 일정에서 읽음 / 2단계: `getNextItem(app, today)` R38 규칙, `sortByNextDate`, `getLastEvent`·`countEventsThisWeek` 기준 | 1, 2 |
+| `pages/applications/properties/PropertyMenu.tsx` | `ROLE_DELETE_NOTE`에서 두 역할 문구 제거 | 1 |
+| `pages/applications/calendar/CalendarView.tsx` | 새 `groupEntriesByDate` 호출 | 1 |
+| `pages/applications/gallery/GalleryView.tsx` | `sortByNextDate`, 글자 "일정 가까운 순" | 1, 2 |
+| `pages/applications/gallery/ApplicationCard.tsx` | 새 `getNextItem` 호출 | 1, 2 |
+| `pages/applications/schedule/NextEventLabel.tsx` (+css) | "D-5 지원 마감" 회색, "지원 완료" 파랑 | 2 |
+| `pages/applications/schedule/ScheduleButton.tsx` | 카드와 같은 규칙, 날짜 없으면 숨김 (D16 대체) | 2 |
+| `pages/applications/schedule/SchedulePopover.tsx` (+css) | 종류 버튼 `KINDS` 순서, 지원 마감 색 | 3 |
+| `pages/applications/schedule/ScheduleItemRow.tsx` | `sched-kind--application-due` 색 | 3 |
+| `features/applications/reducer.ts` | `add-event`: 지원 마감이 이미 있으면 그 일정의 날짜만 바꿈 (R39) | 3 |
+| `components/common/Modal.tsx` / `Modal.css` | 최대화로 바뀌는 순간에는 `left` 전환을 끄고, 최대화 상태에서 사이드바가 움직일 때만 켬 (R13) | 4 |
 
-### 데이터 모양 (요약)
+## 2. 데이터 모양
 ```ts
-type StatusId = "preparing" | "applied" | "stage-prep" | "awaiting" | "closed";
-type StageId = "assignment" | "coding-test" | "interview";
-type PropertyValue = string | number | boolean | string[] | null; // null = 없음
+type EventKind = "application-due" | "assignment-due" | "coding-test" | "interview";
+type PropertyRole = "priority" | "result" | "company";
+// 파일: { version: 2, properties: PropertyDef[], applications: Application[] }
 
-interface Application {
-  id: string; title: string;
-  status: StatusId; stage: StageId | null;   // stage는 전형 준비·결과 대기일 때만
-  values: Record<string, PropertyValue>;    // 속성 id → 값
-  events: ScheduleEvent[];                  // 전형 일정
-  body: string;                             // 마크다운
-  createdAt: string; updatedAt: string;
-}
-// 파일: { version: 1, properties: PropertyDef[], applications: Application[] }
+type NextItem =
+  | { kind: "event"; event: ScheduleEvent; days: number }   // 전형 일정 (보라)
+  | { kind: "deadline"; date: string; days: number }         // 지원 마감 (회색)
+  | { kind: "applied" };                                     // "지원 완료" (파랑, 📅 옆에는 숨김)
+```
+옮기기 (v1 → v2): 마감일 값 → `{kind:"application-due", date}` 일정 추가, 지원일 값 삭제, `applied` 일정 삭제, 두 속성 정의 삭제.
+
+## 3. 컴포넌트 구조
+바뀌는 곳만 (나머지는 처음 계획 그대로):
+```
+ApplicationCard ─ NextEventLabel(getNextItem)      R38
+ScheduleButton  ─ NextEventLabel(getNextItem, applied면 숨김)  R24
+SchedulePopover ─ 종류 버튼 4개(지원 마감 먼저) → reducer add-event  R25·R39
+Modal           ─ 최대화 전환 애니메이션 정리      R13
 ```
 
-### 공용 컴포넌트 (`components/common/`)
-| 파일 | 내용 | 단계 |
-|---|---|---|
-| `SegmentedControl.tsx` (+css) | `갤러리 / 달력`, `진행 중 / 종료 / 전체` 전환 버튼 | 1, 2 |
-| `Modal.tsx` (+css) | 앱 창 전체를 어둡게 덮는 바탕 + 가운데 상자, 바깥 클릭·Esc로 닫기 | 3 |
-| `ConfirmDialog.tsx` (+css) | 삭제 확인 창 | 3 |
-| `Popover.tsx` (+css) | 버튼 옆에 뜨는 작은 창 | 4 |
-| `MiniCalendar.tsx` (+css) | 날짜를 클릭해서 고르는 작은 달력 | 4 |
-
-### 지원 관리 화면 (`pages/applications/`)
-아래 "2. 컴포넌트 구조"의 컴포넌트를 각각 파일(+ 필요하면 `.css`)로 만든다. 폴더 구분:
-- `pages/applications/`: `ApplicationsPage`, `ApplicationsHeader`
-- `pages/applications/gallery/`: `GalleryView`, `ApplicationCard`, `PriorityBars`
-- `pages/applications/calendar/`: `CalendarView`, `CalendarDayCell`, `CalendarEventChip`
-- `pages/applications/detail/`: `ApplicationDetailModal`, `TitleInput`, `StatusRow`, `MarkdownBody`
-- `pages/applications/status/`: `StatusBadge`, `StatusPicker`, `ResultPicker`, `StageDatePicker`
-- `pages/applications/schedule/`: `ScheduleButton`, `NextEventLabel`, `SchedulePopover`, `ScheduleItemRow`
-- `pages/applications/properties/`: `PropertyList`, `PropertyRow`, `PropertyValueEditor`(+ 종류별 7개), `OptionPicker`, `PropertyMenu`, `AddPropertyButton`
-- `pages/home/ApplicationsSummaryCard.tsx` (+css): 홈 지원 현황 카드 본문
-
-### 수정하는 기존 파일
-| 파일 | 내용 | 단계 |
-|---|---|---|
-| `app/pages.ts` | 지원 관리 항목을 실제 화면으로 교체 | 1 |
-| `App.tsx` | `ApplicationsProvider`로 감싸기 (홈과 지원 관리가 같은 데이터를 봄) | 1 |
-| `styles/theme.css` | 선택 항목 8색(빨강·보라·청록·분홍 추가) | 4 |
-| `pages/home/dashboardCards.tsx` | 지원 현황 본문을 `ApplicationsSummaryCard`로 교체 | 9 |
-| `pages/home/SummaryStrip.tsx` | 지원 관리 칸에 진행 중 개수 | 9 |
-
-## 2. 컴포넌트 구조
-
-```
-App
-└─ ApplicationsProvider (데이터 전체 + 저장)
-   ├─ HomePage
-   │  └─ ApplicationsSummaryCard        상태별 개수 + 세부 단계 개수 (R36·R37)
-   └─ ApplicationsPage                   머리줄 + 갤러리/달력 + 팝업 (R1·R2)
-      ├─ ApplicationsHeader             제목·부제, [갤러리|달력], [+ 새 지원]
-      ├─ GalleryView                    탭 + 카드 바둑판 4열/3열 (R3~R5)
-      │  └─ ApplicationCard             제목, StatusBadge, 회사, NextEventLabel, PriorityBars (R6)
-      ├─ CalendarView                   월 이동 + 월 달력 (R7~R11)
-      │  └─ CalendarDayCell → CalendarEventChip   "+N개 더" 접기
-      └─ ApplicationDetailModal         일반/최대화, 저장됨·삭제·닫기 (R12~R16)
-         ├─ TitleInput
-         ├─ StatusRow
-         │  ├─ StatusBadge → StatusPicker (Popover: 상태 → 세부 단계, R18)
-         │  │   ├─ ResultPicker         종료 시 결과 고르기 (R20)
-         │  │   └─ MiniCalendar         전형 준비 날짜 고르기, 건너뛰기 (R22)
-         │  └─ ScheduleButton(📅) + NextEventLabel
-         │     └─ SchedulePopover       종류 버튼 + MiniCalendar + 저장된 일정 목록 (R25~R27)
-         │        └─ ScheduleItemRow    날짜·시간·메모 고치기, 지우기
-         ├─ PropertyList (R28~R33)
-         │  ├─ PropertyRow → PropertyValueEditor (종류별 7개)
-         │  │   Text / Number / Select / MultiSelect / Date(MiniCalendar) / Url / Checkbox
-         │  │   └─ OptionPicker         쓰면서 항목 추가, 8색 고르기 (R30)
-         │  ├─ PropertyMenu             이름·종류 바꾸기, 삭제
-         │  └─ AddPropertyButton
-         └─ MarkdownBody                Tiptap 편집기 + 이미지 붙여 넣기 (R34·R35)
-```
-
-### C++ 비유
-- `ApplicationsProvider`(Context + reducer)는 앱 전체가 참조하는 싱글턴 데이터 관리자와 비슷하다. 다만 상태를 직접 고치지 않고, 동작(action)을 보내면 reducer가 새 객체를 만들어 돌려준다(불변).
-- Rust 명령(`#[tauri::command]`)은 DLL에서 내보낸 함수를 JS가 이름으로 부르는 것과 비슷하다. 차이는 인자·결과가 직렬화되어 오가고, 항상 비동기(`Promise`)라는 점이다.
-- 0.5초 늦춰 저장(debounce)은 입력이 올 때마다 다시 거는 watchdog 타이머와 같다. 입력이 멈춰야 한 번 발동한다.
-
+## C++ 비유
+- `migrateV1ToV2`는 파일 형식 버전이 바뀔 때 쓰는 변환 함수(예: 직렬화 버전 번호를 보고 옛 구조체를 새 구조체로 채우는 코드)와 같다. 읽을 때 한 번 변환하고 새 버전으로 다시 쓴다.
+- `NextItem`의 세 가지 모양은 `std::variant<Event, Deadline, Applied>`와 같고, `kind`가 어느 것인지 알려 주는 태그다.

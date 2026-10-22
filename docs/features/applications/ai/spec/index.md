@@ -24,7 +24,8 @@
 | [decisions.md](decisions.md) | 결정 사항 D1~ (노트의 "관련 결정" 번호 줄만 읽기) |
 
 ## 다른 문서
-- 구현 계획: [../plan/index.md](../plan/index.md) (2026-10-22 승인, 10단계). 계획에서 정한 것: JSON 파일 저장 + `images/` 폴더, Tiptap 편집기, 역할 있는 기본 속성(마감일·지원일·우선순위·결과·회사)은 종류 변경 금지 (마감일·지원일은 L18에서 없앰), 홈 요약 줄 "지원 관리" 칸에 진행 중 개수 표시
+- 구현 계획 (수정1): [../plan/index.md](../plan/index.md) (2026-10-23 승인, 5단계, 근거 기록 L18). 계획에서 정한 것: 저장 파일 v1→v2는 앱을 열 때 자동으로 옮기고 백업하지 않음, 새 일정 종류 `application-due`(지원 마감)는 지원 준비 카드일 때만 달력·부제 개수에 셈
+- 처음 구현 계획 (보관): [../../archive/plan-initial/index.md](../../archive/plan-initial/index.md) (2026-10-22 승인, 10단계). 계획에서 정한 것: JSON 파일 저장 + `images/` 폴더, Tiptap 편집기, 역할 있는 기본 속성(마감일·지원일·우선순위·결과·회사)은 종류 변경 금지 (마감일·지원일은 L18에서 없앰), 홈 요약 줄 "지원 관리" 칸에 진행 중 개수 표시
 - 테스트 문서: AI 테스트 [../tests/r1/index.md](../tests/r1/index.md), 사용자 테스트 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md) (r1, 2026-10-23)
 - 진행 기록: [../logs/index.md](../logs/index.md)
 - 사용자 테스트 r1 반영 수정(L18): R5·R8·R13·R21·R24·R25·R33 변경, R38–R40 추가

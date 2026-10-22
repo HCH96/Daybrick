@@ -1,42 +1,30 @@
-# 지원 관리 계획 1단계: 저장 기반 + 페이지 뼈대
+# 지원 관리 수정1 1단계: 저장 데이터 v2와 자동 옮기기
 
-- 요구사항: R1–R2
-- 목업: gallery.html (gallery-head)
-- 경로 기준: `apps/desktop/src/` (Rust는 `apps/desktop/src-tauri/`)
-- 공통 규칙: [index.md](index.md)의 "0. 결정 사항"과 "작은 규칙"
+- 요구사항: R40, R21, R33, R8 (영향: R7, R28)
+- 목업: part-schedule.html, calendar.html (calendar-grid)
+- 경로 기준: `apps/desktop/src/`
+- 공통 규칙: [index.md](index.md)의 결정·작은 규칙
 
 ## 할 일
-저장 기반 + 페이지 뼈대: Rust 저장 명령, 타입·기본 속성, Provider, 머리줄(전환 버튼, + 새 지원)
+- 데이터 모양을 v2로 바꾼다 ([structure.md](structure.md) "2. 데이터 모양"): 마감일·지원일 기본 속성과 역할, `applied` 일정 종류를 없애고 `application-due`(지원 마감)를 넣는다.
+- `migrate.ts`에 `migrateV1ToV2`를 만들고, `storage.ts`가 v1을 읽으면 옮긴 뒤 바로 저장한다 (백업 없음).
+- 지원 완료로 바꿀 때 일정·날짜를 만들지 않는다 (R21).
+- 마감을 속성 대신 지원 마감 일정에서 읽도록 `schedule.ts`·`calendarEntries.ts`의 인자를 바꾸고 호출하는 곳을 고친다. 카드 표시 규칙 자체는 2단계에서 바꾼다(이 단계에서는 지금 동작 유지).
+- 달력: 지원 마감 일정은 지원 준비 카드만, 흐린 점선 칸 (R8).
+- 속성 삭제 확인 창의 마감일·지원일 안내 문구를 없앤다.
 
 ## 확인할 결과
-사이드바 "지원 현황"을 누르면 준비 중 화면 대신 머리줄이 보임. "+ 새 지원"을 누를 때마다 카드 수가 늘고, 앱을 껐다 켜도 남아 있음. `%APPDATA%\<앱 id>\applications.json` 파일이 생김
+- 옮기기 전 (v1 예시): `{version:1, properties:[…, {id:"deadline"}, {id:"applied-date"}, …], applications:[{status:"preparing", values:{deadline:"2026-10-28", "applied-date":"2026-10-20"}, events:[{kind:"applied", date:"2026-10-20"}, {kind:"interview", date:"2026-11-02"}]}]}`
+- 옮긴 뒤 (v2): `{version:2, properties:[마감일·지원일 없음], applications:[{status:"preparing", values:{}, events:[{kind:"interview", date:"2026-11-02"}, {kind:"application-due", date:"2026-10-28"}]}]}`
+- 앱을 열면 속성 목록에 마감일·지원일이 없고, 다시 켜도 그대로다. 📅 창 목록에 옮긴 "지원 마감" 일정이 보인다.
+- 카드를 지원 완료로 바꿔도 📅 목록에 새 일정이 생기지 않는다 (r1 12번).
+- 달력: 지원 준비 카드의 지원 마감만 점선·흐린 칸, 다른 상태 카드의 지원 마감은 안 보인다 (r1 26번 다시 확인).
+- 우선순위·결과·회사 속성 삭제 확인 창은 예전 문구 그대로, 지원일 문구는 없다 (r1 22번은 R40으로 대상이 없어짐).
+- `npm run build` 성공.
+
+## 목업과 다른 점
+- popup.html 속성 목록의 마감일·지원일 행이 없어진다.
 
 ## 이 단계에서 만들거나 고칠 파일
-
-### Rust / 설정
-| 구분 | 파일 | 내용 | 단계 |
-|---|---|---|---|
-| 수정 | `src-tauri/src/lib.rs` | `greet` 대신 저장 명령 등록 | 1 |
-| 새로 | `src-tauri/src/storage.rs` | `load_applications`, `save_applications`(임시 파일에 쓴 뒤 바꿔치기), `save_image`(바이트를 그대로 받아 `images/`에 저장) | 1, 7 |
-
-### 데이터와 계산 (`features/applications/`)
-| 파일 | 내용 | 단계 |
-|---|---|---|
-| `types.ts` | `Application`, `ScheduleEvent`, `PropertyDef`, `PropertyValue`, `StatusId`, `StageId` | 1 |
-| `statuses.ts` | 상태 5개·세부 단계 3개, 이름·색 (고정 목록) | 1 |
-| `defaultProperties.ts` | 기본 속성 10개와 처음 항목, 역할(`deadline`, `appliedDate`, `priority`, `result`, `company`) | 1 |
-| `storage.ts` | Rust 명령 호출, 파일 형식 버전 확인 | 1 |
-| `store.tsx` | 전체 데이터 Context + reducer + 0.5초 늦춰 저장 | 1 |
-
-### 공용 컴포넌트 (`components/common/`)
-| 파일 | 내용 | 단계 |
-|---|---|---|
-| `SegmentedControl.tsx` (+css) | `갤러리 / 달력`, `진행 중 / 종료 / 전체` 전환 버튼 | 1, 2 |
-
-### 수정하는 기존 파일
-| 파일 | 내용 | 단계 |
-|---|---|---|
-| `app/pages.ts` | 지원 관리 항목을 실제 화면으로 교체 | 1 |
-| `App.tsx` | `ApplicationsProvider`로 감싸기 (홈과 지원 관리가 같은 데이터를 봄) | 1 |
-
-화면 컴포넌트: pages/applications/: ApplicationsPage, ApplicationsHeader (각각 파일 + 필요하면 `.css`. 구조는 [structure.md](structure.md) "2. 컴포넌트 구조")
+- `features/applications/`: `types.ts`, `defaultProperties.ts`, `migrate.ts`(새로), `storage.ts`, `statuses.ts`, `transitions.ts`, `calendarEntries.ts`, `schedule.ts`
+- `pages/applications/`: `properties/PropertyMenu.tsx`, `calendar/CalendarView.tsx`, `gallery/GalleryView.tsx`, `gallery/ApplicationCard.tsx`, `schedule/ScheduleButton.tsx`(호출만)

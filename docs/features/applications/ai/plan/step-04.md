@@ -1,27 +1,20 @@
-# 지원 관리 계획 4단계: 속성
+# 지원 관리 수정1 4단계: 최대화 움직임
 
-- 요구사항: R28–R33
-- 목업: popup.html (popup-props), part-option.html, part-add-prop.html
-- 경로 기준: `apps/desktop/src/` (Rust는 `apps/desktop/src-tauri/`)
-- 공통 규칙: [index.md](index.md)의 "0. 결정 사항"과 "작은 규칙"
+- 요구사항: R13
+- 목업: popup-max.html
+- 경로 기준: `apps/desktop/src/`
+- 공통 규칙: [index.md](index.md), decisions.md D2·D5
 
 ## 할 일
-속성: 값 편집 7종, 작은 달력, 선택 항목 추가·색, 속성 추가·이름/종류 바꾸기·삭제
+- 원인: `.modal-layer--max`에 `transition: left 0.15s`가 있어, 최대화로 바뀌는 순간 `left`가 0에서 사이드바 폭까지 미끄러진다.
+- 최대화로 바뀌는 순간에는 전환 없이 바로 본문 영역을 채우고, 최대화 상태에서 사이드바를 접고 펼 때만 `left` 전환이 걸리게 한다 (예: 최대화 직후 한 프레임 뒤에 전환 클래스를 붙인다).
 
 ## 확인할 결과
-회사에 "네오플"을 쓰면 항목이 생기고 색을 고를 수 있음. 마감일을 달력에서 고르면 카드에 "D-5 마감"(회색). 우선순위 "높음"이면 빨간 막대 3칸. 마감일 순 정렬 확인. 새 속성을 추가하면 모든 카드에 생김. 역할 있는 기본 속성은 종류 바꾸기가 막혀 있음
+- 사이드바를 펼친 채 최대화: 사이드바 위를 지나가는 움직임 없이 처음부터 사이드바 오른쪽만 채운다. 원래 크기로 버튼도 바로 돌아온다 (r1 8번).
+- 사이드바를 접은 채 최대화: 지금처럼 사이드바 자리까지 채운다.
+- 최대화한 채 사이드바를 접고 펴면 팝업 왼쪽 끝이 사이드바와 같은 속도로 따라간다.
+- 닫고 다시 열면 기본 크기 (D5).
+- `npm run build` 성공.
 
 ## 이 단계에서 만들거나 고칠 파일
-
-### 공용 컴포넌트 (`components/common/`)
-| 파일 | 내용 | 단계 |
-|---|---|---|
-| `Popover.tsx` (+css) | 버튼 옆에 뜨는 작은 창 | 4 |
-| `MiniCalendar.tsx` (+css) | 날짜를 클릭해서 고르는 작은 달력 | 4 |
-
-### 수정하는 기존 파일
-| 파일 | 내용 | 단계 |
-|---|---|---|
-| `styles/theme.css` | 선택 항목 8색(빨강·보라·청록·분홍 추가) | 4 |
-
-화면 컴포넌트: pages/applications/properties/: PropertyList, PropertyRow, PropertyValueEditor(+ 종류별 7개), OptionPicker, PropertyMenu, AddPropertyButton (각각 파일 + 필요하면 `.css`. 구조는 [structure.md](structure.md) "2. 컴포넌트 구조")
+- `components/common/Modal.tsx`, `components/common/Modal.css`

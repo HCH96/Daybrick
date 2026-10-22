@@ -1,22 +1,25 @@
-# 지원 관리 계획 3단계: 상세 팝업 틀
+# 지원 관리 수정1 3단계: 📅 창 지원 마감
 
-- 요구사항: R12–R16
-- 목업: popup.html (popup-head), popup-max.html, part-delete.html
-- 경로 기준: `apps/desktop/src/` (Rust는 `apps/desktop/src-tauri/`)
-- 공통 규칙: [index.md](index.md)의 "0. 결정 사항"과 "작은 규칙"
+- 요구사항: R25, R39 (영향: R26)
+- 목업: part-schedule.html
+- 경로 기준: `apps/desktop/src/`
+- 공통 규칙: [index.md](index.md)의 결정·작은 규칙, decisions.md D14·D15
 
 ## 할 일
-상세 팝업 틀: 열기/닫기, 최대화, 제목 고치기, 자동 저장 표시, 삭제 확인
+- 📅 창 종류 버튼을 `지원 마감 / 과제 마감 / 코딩테스트 / 면접` 순서로 바꾼다.
+- reducer `add-event`: 지원 마감이 이미 있으면 새로 추가하지 않고 그 일정의 날짜만 바꾼다 (R39). 다른 종류는 지금처럼 여러 개.
+- 목록 줄의 지원 마감 종류 글자를 회색(흐림)으로 칠한다.
 
 ## 확인할 결과
-카드를 누르면 가운데 팝업 + 창 전체가 어두워짐. 바깥 클릭·Esc·✕로 닫힘. 최대화하면 사이드바를 남기고 본문을 꽉 채움, 사이드바를 접고 최대화하면 그 자리까지 채움. 제목을 고치면 "저장됨"이 뜨고 카드에도 반영. 🗑 → 확인 → 카드 사라짐
+- 📅 창 위쪽 버튼이 `지원 마감` `과제 마감` `코딩테스트` `면접` 순서.
+- 지원 마감 → +5일, 다시 지원 마감 → +7일을 누르면 목록에 지원 마감이 하나만 있고 날짜가 +7일이다. 갤러리 카드도 "D-7 지원 마감".
+- 면접 +7·+14를 넣고 메모 `1차`·`2차`를 한글로 입력 → 두 줄이 날짜 순으로 따로 보인다 (r1 14번, 판정 없음이던 항목).
+- "1차" 줄을 펼쳐 달력에서 +8일, 시간 14:00, 메모 `1차 기술` 후 Enter → 날짜만 바뀌고 새 일정이 생기지 않는다. "2차" ✕는 확인 없이 지운다 (r1 15번).
+- `npm run build` 성공.
+
+## 목업과 다른 점
+- part-schedule.html의 첫 버튼 `지원 완료` → `지원 마감` (회색).
 
 ## 이 단계에서 만들거나 고칠 파일
-
-### 공용 컴포넌트 (`components/common/`)
-| 파일 | 내용 | 단계 |
-|---|---|---|
-| `Modal.tsx` (+css) | 앱 창 전체를 어둡게 덮는 바탕 + 가운데 상자, 바깥 클릭·Esc로 닫기 | 3 |
-| `ConfirmDialog.tsx` (+css) | 삭제 확인 창 | 3 |
-
-화면 컴포넌트: pages/applications/detail/: ApplicationDetailModal, TitleInput (각각 파일 + 필요하면 `.css`. 구조는 [structure.md](structure.md) "2. 컴포넌트 구조")
+- `features/applications/reducer.ts`
+- `pages/applications/schedule/SchedulePopover.tsx` (+css), `schedule/ScheduleItemRow.tsx`
