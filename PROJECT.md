@@ -26,7 +26,7 @@
 | 메인 페이지 | 완료 (B안 배치·제목 표시줄·사이드바 접기·뒤로/앞으로 포함, 2차 AI·사용자 테스트 통과) | docs/features/main-page/index.md |
 | 캘린더 계획 | 시작 전 | - |
 | 일정 관리 | 시작 전 | - |
-| 지원 관리 | 구현 중 (5/10단계 완료) | docs/features/applications/index.md |
+| 지원 관리 | 구현 중 (6/10단계 완료) | docs/features/applications/index.md |
 | 집중 타이머 | 시작 전 | - |
 | 집중 모드 | 시작 전 | - |
 | 공유 웹 | 시작 전 | - |

@@ -4,6 +4,7 @@ import { findPropertyByRole } from "../../../features/applications/properties";
 import { useApplications } from "../../../features/applications/store";
 import { isSameStatus } from "../../../features/applications/transitions";
 import type { Application, PropertyDef, StageId, StatusId } from "../../../features/applications/types";
+import ScheduleButton from "../schedule/ScheduleButton";
 import ResultPicker from "../status/ResultPicker";
 import StageDatePicker from "../status/StageDatePicker";
 import StatusBadge from "../status/StatusBadge";
@@ -18,7 +19,7 @@ interface StatusRowProps {
 /** 배지 아래에 지금 떠 있는 창: 상태 고르기 → (종료면) 결과 고르기 / (전형 준비면) 날짜 고르기 */
 type OpenStep = { kind: "status" } | { kind: "result" } | { kind: "stage-date"; stage: StageId } | null;
 
-/** 제목 아래 상태 줄: 큰 상태 배지를 누르면 상태를 고른다 (R17~R22). 📅 버튼은 6단계에서 붙인다. */
+/** 제목 아래 상태 줄: 큰 상태 배지를 누르면 상태를 고른다 (R17~R22). 옆의 📅 버튼은 전형 일정 창 (R24~R27). */
 function StatusRow({ application, properties }: StatusRowProps) {
   const { changeStatus, addStageEvent, setValue } = useApplications();
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
@@ -55,6 +56,7 @@ function StatusRow({ application, properties }: StatusRowProps) {
       >
         <StatusBadge status={application.status} stage={application.stage} size="big" chevron />
       </button>
+      <ScheduleButton application={application} />
 
       {step && anchor && step.kind === "status" && (
         <Popover anchor={anchor} onClose={close} width={170} ariaLabel="상태 고르기">

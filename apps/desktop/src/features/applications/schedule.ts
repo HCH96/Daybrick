@@ -90,6 +90,11 @@ export function getNextItem(application: Application, deadlineProperty: Property
   return null;
 }
 
+/** 📅 창 목록 순서: 날짜·시간 순 (같은 날이면 시간 없는 일정이 먼저) */
+export function sortEvents(events: readonly ScheduleEvent[]): ScheduleEvent[] {
+  return [...events].sort((a, b) => eventSortKey(a).localeCompare(eventSortKey(b)));
+}
+
 /** 가장 늦은 전형 일정 (종료 카드의 "마지막 일정" 표시용). 없으면 null. */
 export function getLastEvent(application: Application): ScheduleEvent | null {
   return (

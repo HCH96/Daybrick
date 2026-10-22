@@ -3,7 +3,7 @@ import { loadApplicationsData } from "./storage";
 import { createApplication, reducer, type ApplicationPatch, type DataState } from "./reducer";
 import type { PropertyAction } from "./propertyReducer";
 import { createStageEvent } from "./transitions";
-import type { PropertyValue, StageId, StatusId } from "./types";
+import type { EventKind, PropertyValue, ScheduleEvent, StageId, StatusId } from "./types";
 import { toDateKey } from "../../utils/date";
 import { useAutoSave, type SaveStatus } from "./useAutoSave";
 
@@ -22,6 +22,12 @@ export interface ApplicationsStore {
   changeStatus: (id: string, status: StatusId, stage: StageId | null) => void;
   /** 전형 준비 세부 단계의 날짜를 고르면 그 전형 일정을 만든다 (R22) */
   addStageEvent: (id: string, stage: StageId, date: string) => void;
+  /** 📅 창에서 종류·날짜로 일정을 추가한다. 같은 종류도 여러 개 가능 (R25·R27) */
+  addEvent: (id: string, kind: EventKind, date: string) => void;
+  /** 저장된 일정의 날짜·시간·메모를 고친다 (R26) */
+  updateEvent: (id: string, event: ScheduleEvent) => void;
+  /** 저장된 일정을 지운다 (R26) */
+  deleteEvent: (id: string, eventId: string) => void;
   /** 속성 정의를 바꾼다 (추가·이름·종류·삭제·항목). 모든 카드에 함께 반영된다 (R28~R30) */
   changeProperties: (action: PropertyAction) => void;
 }
@@ -86,6 +92,16 @@ export function ApplicationsProvider({ children }: { children: ReactNode }) {
         if (!application) return;
         const event = createStageEvent(application, stage, date, crypto.randomUUID());
         if (event) dispatch({ type: "add-event", id, event, now: new Date().toISOString() });
+      },
+      addEvent: (id, kind, date) => {
+        const event: ScheduleEvent = { id: crypto.randomUUID(), kind, date, time: null, memo: "" };
+        dispatch({ type: "add-event", id, event, now: new Date().toISOString() });
+      },
+      updateEvent: (id, event) => {
+        dispatch({ type: "update-event", id, event, now: new Date().toISOString() });
+      },
+      deleteEvent: (id, eventId) => {
+        dispatch({ type: "delete-event", id, eventId, now: new Date().toISOString() });
       },
       changeProperties: (action) => {
         dispatch(action);

@@ -25,6 +25,8 @@ export type Action =
   | { type: "set-value"; id: string; propertyId: string; value: PropertyValue; now: string }
   | { type: "change-status"; id: string; status: StatusId; stage: StageId | null; today: string; eventId: string; now: string }
   | { type: "add-event"; id: string; event: ScheduleEvent; now: string }
+  | { type: "update-event"; id: string; event: ScheduleEvent; now: string }
+  | { type: "delete-event"; id: string; eventId: string; now: string }
   | PropertyAction;
 
 export function reducer(state: DataState, action: Action): DataState {
@@ -80,6 +82,25 @@ export function reducer(state: DataState, action: Action): DataState {
         events: [...a.events, action.event],
         updatedAt: action.now,
       }));
+    }
+    case "update-event": {
+      // 같은 id의 일정을 통째로 바꾼다 (R26). 바뀐 칸이 없으면 그대로 둔다.
+      if (state.kind !== "ready") return state;
+      const { event } = action;
+      return mapApplication(state, action.id, (a) => {
+        const old = a.events.find((e) => e.id === event.id);
+        if (!old || (old.date === event.date && old.time === event.time && old.memo === event.memo && old.kind === event.kind)) {
+          return a;
+        }
+        return { ...a, events: a.events.map((e) => (e.id === event.id ? event : e)), updatedAt: action.now };
+      });
+    }
+    case "delete-event": {
+      if (state.kind !== "ready") return state;
+      return mapApplication(state, action.id, (a) => {
+        const events = a.events.filter((e) => e.id !== action.eventId);
+        return events.length === a.events.length ? a : { ...a, events, updatedAt: action.now };
+      });
     }
     default: {
       // 나머지는 속성 정의 동작 (propertyReducer.ts)
