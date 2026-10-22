@@ -29,7 +29,11 @@
   padding: 0;
   background: none;
   animation: none;
-  transition: left 0.15s ease; /* 사이드바 접기·펴기와 같은 속도 */
+}
+
+/* 최대화가 자리 잡은 뒤에만 붙는다: 사이드바 접기·펴기를 같은 속도로 따라간다 (최대화 순간엔 전환 없음) */
+.modal-layer--follow {
+  transition: left 0.15s ease;
 }
 
 .modal-layer--max .modal {
