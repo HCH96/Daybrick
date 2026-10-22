@@ -1,0 +1,34 @@
+.summary-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.summary-strip__item {
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.summary-strip__label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.summary-strip__value {
+  margin-top: 2px;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.4;
+  color: var(--border);
+}
+
+.summary-strip__note {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

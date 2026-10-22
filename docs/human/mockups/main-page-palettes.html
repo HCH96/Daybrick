@@ -1,0 +1,358 @@
+<!doctype html>
+<!-- 목업 목차: 메인 페이지 어두운 색 조합 후보 비교 (보관용)
+  읽는 법: 필요한 ID만 골라 id="ID" 를 검색해 그 구역만 읽는다. CSS는 그 구역의 클래스만 검색한다.
+  결과: 후보 4 그라파이트 바이올렛 채택 (2026-10-22). 축소판 배치는 옛 2×2 배치라 배치 참고용이 아니다.
+  실제 색 값은 apps/desktop/src/styles/theme.css 와 main-page.md R19의 색 목록이 기준이다.
+  ID             화면                              요구사항
+  candidate-1    후보 1. 차콜 브릭 (처음 선택, 대체됨)   R19
+  candidate-2    후보 2. 미드나잇 네이비                R19
+  candidate-3    후보 3. 포레스트 코퍼                  R19
+  candidate-4    후보 4. 그라파이트 바이올렛 (채택)      R19
+  candidate-5    후보 5. 웜 그레이                      R19
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daybrick 어두운 색 조합 후보</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 16px 80px;
+    background: #e9e6e1; color: #2b2724;
+    font-family: "Pretendard", "Malgun Gothic", "Segoe UI", sans-serif;
+  }
+  .page { max-width: 1160px; margin: 0 auto; }
+  .page > h1 { font-size: 22px; margin: 0 0 6px; }
+  .page > p { font-size: 13px; color: #5d564f; margin: 0 0 32px; line-height: 1.6; }
+
+  /* 후보 하나 */
+  .candidate { background: #fff; border-radius: 14px; padding: 24px; margin-bottom: 28px; box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+  .cand-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+  .cand-head h2 { margin: 0; font-size: 18px; }
+  .cand-head .tag { font-size: 11px; font-weight: 700; color: #fff; background: #c2553a; padding: 3px 8px; border-radius: 99px; }
+  .cand-desc { font-size: 13px; color: #5d564f; margin: 0 0 18px; }
+  .cand-body { display: grid; grid-template-columns: 340px 1fr; gap: 24px; align-items: start; }
+
+  /* 색 목록 */
+  .swatches { display: flex; flex-direction: column; gap: 6px; }
+  .sw { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center; font-size: 12px; }
+  .sw .chip { width: 34px; height: 26px; border-radius: 6px; border: 1px solid rgba(0,0,0,.12); }
+  .sw .role b { display: block; font-size: 13px; color: #2b2724; }
+  .sw .role span { color: #8a8279; }
+  .sw code { font-family: Consolas, monospace; font-size: 12px; color: #4d4741; }
+  .sw-group { font-size: 11px; font-weight: 700; color: #8a8279; margin: 8px 0 2px; }
+  .status-row { display: flex; gap: 6px; }
+  .status-row div { flex: 1; border-radius: 6px; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: 700; font-family: Consolas, monospace; }
+
+  /* 미니 메인 화면 */
+  .mini {
+    background: var(--bg); color: var(--text);
+    border-radius: 10px; overflow: hidden; height: 430px;
+    display: flex; border: 1px solid #00000022;
+  }
+  .m-side { width: 150px; background: var(--sidebar); border-right: 1px solid var(--border); padding: 16px 10px; }
+  .m-logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 15px; padding: 0 6px 16px; }
+  .m-logo i { width: 20px; height: 20px; border-radius: 5px; background: var(--accent); }
+  .m-nav { padding: 8px 10px; border-radius: 7px; font-size: 13px; color: var(--muted); }
+  .m-nav.on { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  .m-main { flex: 1; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .m-date { font-size: 11px; color: var(--muted); }
+  .m-hello { font-size: 18px; font-weight: 800; }
+  .m-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; min-height: 0; }
+  .m-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; overflow: hidden; }
+  .m-ch { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .m-ch span { font-size: 11px; color: var(--accent); font-weight: 600; }
+  .m-prog { height: 5px; background: var(--track); border-radius: 99px; margin-bottom: 6px; }
+  .m-prog div { width: 60%; height: 100%; background: var(--accent); border-radius: 99px; }
+  .m-todo { display: flex; gap: 8px; align-items: center; font-size: 12px; padding: 3px 0; }
+  .m-todo i { width: 11px; height: 11px; border-radius: 3px; border: 1.5px solid var(--muted); }
+  .m-todo.d i { background: var(--accent); border-color: var(--accent); }
+  .m-todo.d { color: var(--muted); text-decoration: line-through; }
+  .m-ev { display: flex; gap: 8px; font-size: 12px; padding: 4px 0; align-items: center; }
+  .m-ev b { width: 36px; color: var(--muted); }
+  .m-ev i { width: 3px; height: 26px; border-radius: 2px; }
+  .m-ev small { display: block; color: var(--muted); font-size: 10px; }
+  .m-ev.now b { color: var(--accent); }
+  .m-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 8px; }
+  .m-stats div { border-radius: 7px; padding: 6px 7px; font-size: 10px; }
+  .m-stats strong { display: block; font-size: 16px; }
+  .m-dl { display: flex; justify-content: space-between; font-size: 11px; padding: 2px 0; }
+  .m-dl span:last-child { color: var(--accent); font-weight: 700; }
+  .m-focus { display: flex; gap: 14px; align-items: center; }
+  .m-ring { width: 84px; height: 84px; border-radius: 50%; flex-shrink: 0;
+    background: conic-gradient(var(--accent) 0 65%, var(--track) 65% 100%); display: grid; place-items: center; }
+  .m-ring div { width: 66px; height: 66px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; font-weight: 800; font-size: 15px; }
+  .m-fi { font-size: 11px; color: var(--muted); line-height: 1.8; }
+  .m-btn, .m-fi, .m-stats div { white-space: nowrap; }
+  .m-btn { display: inline-block; margin-top: 4px; background: var(--accent); color: var(--on-accent); border-radius: 6px; padding: 5px 10px; font-size: 11px; font-weight: 700; }
+
+  .st1 { background: var(--s1-bg); color: var(--s1); }
+  .st2 { background: var(--s2-bg); color: var(--s2); }
+  .st3 { background: var(--s3-bg); color: var(--s3); }
+  .st4 { background: var(--s4-bg); color: var(--s4); }
+
+  /* ===== 후보별 색 ===== */
+  .t1 { --bg:#1b1918; --sidebar:#211f1d; --surface:#292624; --border:#3a3532; --track:#3a3532;
+        --text:#efe9e2; --muted:#a0968d; --accent:#e0704f; --accent-soft:#3e2620; --on-accent:#1b1918;
+        --s1:#cfc6bd; --s1-bg:#33302d; --s2:#7aa5e8; --s2-bg:#1f2a3d; --s3:#e3b155; --s3-bg:#3a2f1a; --s4:#6cc08a; --s4-bg:#1d3326; }
+  .t2 { --bg:#0e1424; --sidebar:#121a2e; --surface:#182238; --border:#26324d; --track:#26324d;
+        --text:#e5eaf3; --muted:#8d98b0; --accent:#ff8a65; --accent-soft:#3b2a2e; --on-accent:#0e1424;
+        --s1:#c4cbe0; --s1-bg:#222d45; --s2:#7cb0ff; --s2-bg:#1b2b4a; --s3:#f2c16b; --s3-bg:#3a3122; --s4:#6fd39a; --s4-bg:#173529; }
+  .t3 { --bg:#121815; --sidebar:#161e1a; --surface:#1c2521; --border:#2b3832; --track:#2b3832;
+        --text:#e3ebe5; --muted:#8ea095; --accent:#e39a5b; --accent-soft:#3a2c1f; --on-accent:#121815;
+        --s1:#c6d1ca; --s1-bg:#26302b; --s2:#7fb2d9; --s2-bg:#1a2c36; --s3:#e6c26a; --s3-bg:#34301c; --s4:#7fd19b; --s4-bg:#1b3626; }
+  .t4 { --bg:#17171a; --sidebar:#1c1c20; --surface:#222227; --border:#33333b; --track:#33333b;
+        --text:#ededf2; --muted:#9b9ba8; --accent:#a68cff; --accent-soft:#2d2745; --on-accent:#17171a;
+        --s1:#cdcdd6; --s1-bg:#2b2b31; --s2:#7aa8ff; --s2-bg:#1e2740; --s3:#f0b860; --s3-bg:#3a2f1c; --s4:#66cf95; --s4-bg:#1a3428; }
+  .t5 { --bg:#2f2b28; --sidebar:#262321; --surface:#3a3532; --border:#4a4440; --track:#4a4440;
+        --text:#f3ede6; --muted:#b3a99f; --accent:#e57a5a; --accent-soft:#4d3329; --on-accent:#2a2624;
+        --s1:#ddd4cb; --s1-bg:#45403b; --s2:#8ab2ee; --s2-bg:#2f3a4d; --s3:#e8bb66; --s3-bg:#4a3e26; --s4:#7cc796; --s4-bg:#2c4433; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>메인 페이지 · 어두운 색 조합 후보</h1>
+  <p>
+    승인된 목업(main-page.html)의 배치는 그대로 두고 색만 바꾼 후보 5개입니다. 정적 화면이고 데이터는 예시 값입니다.<br>
+    후보마다 왼쪽은 색 목록과 그 색을 쓰는 자리, 오른쪽은 그 색으로 칠한 메인 화면 축소판입니다.
+  </p>
+
+  <!-- ===================== 후보 1 ===================== -->
+  <section class="candidate" id="candidate-1">
+    <div class="cand-head"><h2>후보 1 · 차콜 브릭</h2><span class="tag">추천</span></div>
+    <p class="cand-desc">따뜻한 숯색 바탕에 지금의 벽돌색 강조를 그대로 가져갑니다. 앱 이름(Daybrick)과 가장 잘 맞고, 지금 목업에서 가장 자연스럽게 넘어갑니다.</p>
+    <div class="cand-body">
+      <div class="swatches">
+        <div class="sw-group">바탕과 면</div>
+        <div class="sw"><div class="chip" style="background:#1b1918"></div><div class="role"><b>배경</b><span>본문 전체 바탕</span></div><code>#1B1918</code></div>
+        <div class="sw"><div class="chip" style="background:#211f1d"></div><div class="role"><b>사이드바</b><span>왼쪽 메뉴 영역</span></div><code>#211F1D</code></div>
+        <div class="sw"><div class="chip" style="background:#292624"></div><div class="role"><b>카드</b><span>요약 카드 바탕</span></div><code>#292624</code></div>
+        <div class="sw"><div class="chip" style="background:#3a3532"></div><div class="role"><b>테두리 · 진행 막대 바탕</b><span>카드 테두리, 구분선</span></div><code>#3A3532</code></div>
+        <div class="sw-group">글자</div>
+        <div class="sw"><div class="chip" style="background:#efe9e2"></div><div class="role"><b>기본 글자</b><span>제목, 본문</span></div><code>#EFE9E2</code></div>
+        <div class="sw"><div class="chip" style="background:#a0968d"></div><div class="role"><b>보조 글자</b><span>날짜, 시간, 완료한 할 일</span></div><code>#A0968D</code></div>
+        <div class="sw-group">강조</div>
+        <div class="sw"><div class="chip" style="background:#e0704f"></div><div class="role"><b>강조색</b><span>선택 메뉴, 버튼, 진행률, D-day</span></div><code>#E0704F</code></div>
+        <div class="sw"><div class="chip" style="background:#3e2620"></div><div class="role"><b>강조 배경</b><span>선택된 메뉴 바탕</span></div><code>#3E2620</code></div>
+        <div class="sw-group">지원 상태 (지원함 · 서류 통과 · 면접 · 합격)</div>
+        <div class="status-row t1">
+          <div class="st1">#CFC6BD</div><div class="st2">#7AA5E8</div><div class="st3">#E3B155</div><div class="st4">#6CC08A</div>
+        </div>
+      </div>
+      <div class="mini t1">
+        <div class="m-side">
+          <div class="m-logo"><i></i>Daybrick</div>
+          <div class="m-nav on">홈</div><div class="m-nav">캘린더</div><div class="m-nav">스케줄러</div><div class="m-nav">지원 현황</div><div class="m-nav">타이머</div>
+        </div>
+        <div class="m-main">
+          <div><div class="m-date">2026년 10월 21일 (수)</div><div class="m-hello">좋은 하루예요</div></div>
+          <div class="m-grid">
+            <div class="m-card"><div class="m-ch">오늘 할 일<span>캘린더 →</span></div><div class="m-prog"><div></div></div>
+              <div class="m-todo d"><i></i>알고리즘 문제 2개 풀기</div><div class="m-todo d"><i></i>자기소개서 초안 다듬기</div><div class="m-todo"><i></i>포트폴리오 README 정리</div></div>
+            <div class="m-card"><div class="m-ch">오늘 일정<span>스케줄러 →</span></div>
+              <div class="m-ev"><b>10:00</b><i style="background:var(--border)"></i><div>CS 스터디<small>온라인</small></div></div>
+              <div class="m-ev now"><b>14:00</b><i style="background:var(--accent)"></i><div>A사 1차 면접<small>화상 면접</small></div></div>
+              <div class="m-ev"><b>19:30</b><i style="background:var(--s2)"></i><div>헬스장<small>19:30 – 20:30</small></div></div></div>
+            <div class="m-card"><div class="m-ch">지원 현황<span>지원 현황 →</span></div>
+              <div class="m-stats"><div class="st1"><strong>8</strong>지원함</div><div class="st2"><strong>3</strong>서류</div><div class="st3"><strong>2</strong>면접</div><div class="st4"><strong>0</strong>합격</div></div>
+              <div class="m-dl"><span>C사 · 백엔드 신입</span><span>D-2</span></div><div class="m-dl"><span>D사 · 클라이언트</span><span>D-5</span></div></div>
+            <div class="m-card"><div class="m-ch">오늘 집중 시간<span>타이머 →</span></div>
+              <div class="m-focus"><div class="m-ring"><div>2:35</div></div><div class="m-fi">집중 4회 · 최장 58분<br>목표 4시간<br><span class="m-btn">▶ 집중 시작</span></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 후보 2 ===================== -->
+  <section class="candidate" id="candidate-2">
+    <div class="cand-head"><h2>후보 2 · 미드나잇 네이비</h2></div>
+    <p class="cand-desc">깊은 남색 바탕에 산호색 강조. 차분하고 집중되는 느낌이며, 파란 바탕과 따뜻한 강조색의 대비가 뚜렷합니다.</p>
+    <div class="cand-body">
+      <div class="swatches">
+        <div class="sw-group">바탕과 면</div>
+        <div class="sw"><div class="chip" style="background:#0e1424"></div><div class="role"><b>배경</b><span>본문 전체 바탕</span></div><code>#0E1424</code></div>
+        <div class="sw"><div class="chip" style="background:#121a2e"></div><div class="role"><b>사이드바</b><span>왼쪽 메뉴 영역</span></div><code>#121A2E</code></div>
+        <div class="sw"><div class="chip" style="background:#182238"></div><div class="role"><b>카드</b><span>요약 카드 바탕</span></div><code>#182238</code></div>
+        <div class="sw"><div class="chip" style="background:#26324d"></div><div class="role"><b>테두리 · 진행 막대 바탕</b><span>카드 테두리, 구분선</span></div><code>#26324D</code></div>
+        <div class="sw-group">글자</div>
+        <div class="sw"><div class="chip" style="background:#e5eaf3"></div><div class="role"><b>기본 글자</b><span>제목, 본문</span></div><code>#E5EAF3</code></div>
+        <div class="sw"><div class="chip" style="background:#8d98b0"></div><div class="role"><b>보조 글자</b><span>날짜, 시간, 완료한 할 일</span></div><code>#8D98B0</code></div>
+        <div class="sw-group">강조</div>
+        <div class="sw"><div class="chip" style="background:#ff8a65"></div><div class="role"><b>강조색</b><span>선택 메뉴, 버튼, 진행률, D-day</span></div><code>#FF8A65</code></div>
+        <div class="sw"><div class="chip" style="background:#3b2a2e"></div><div class="role"><b>강조 배경</b><span>선택된 메뉴 바탕</span></div><code>#3B2A2E</code></div>
+        <div class="sw-group">지원 상태 (지원함 · 서류 통과 · 면접 · 합격)</div>
+        <div class="status-row t2">
+          <div class="st1">#C4CBE0</div><div class="st2">#7CB0FF</div><div class="st3">#F2C16B</div><div class="st4">#6FD39A</div>
+        </div>
+      </div>
+      <div class="mini t2">
+        <div class="m-side">
+          <div class="m-logo"><i></i>Daybrick</div>
+          <div class="m-nav on">홈</div><div class="m-nav">캘린더</div><div class="m-nav">스케줄러</div><div class="m-nav">지원 현황</div><div class="m-nav">타이머</div>
+        </div>
+        <div class="m-main">
+          <div><div class="m-date">2026년 10월 21일 (수)</div><div class="m-hello">좋은 하루예요</div></div>
+          <div class="m-grid">
+            <div class="m-card"><div class="m-ch">오늘 할 일<span>캘린더 →</span></div><div class="m-prog"><div></div></div>
+              <div class="m-todo d"><i></i>알고리즘 문제 2개 풀기</div><div class="m-todo d"><i></i>자기소개서 초안 다듬기</div><div class="m-todo"><i></i>포트폴리오 README 정리</div></div>
+            <div class="m-card"><div class="m-ch">오늘 일정<span>스케줄러 →</span></div>
+              <div class="m-ev"><b>10:00</b><i style="background:var(--border)"></i><div>CS 스터디<small>온라인</small></div></div>
+              <div class="m-ev now"><b>14:00</b><i style="background:var(--accent)"></i><div>A사 1차 면접<small>화상 면접</small></div></div>
+              <div class="m-ev"><b>19:30</b><i style="background:var(--s2)"></i><div>헬스장<small>19:30 – 20:30</small></div></div></div>
+            <div class="m-card"><div class="m-ch">지원 현황<span>지원 현황 →</span></div>
+              <div class="m-stats"><div class="st1"><strong>8</strong>지원함</div><div class="st2"><strong>3</strong>서류</div><div class="st3"><strong>2</strong>면접</div><div class="st4"><strong>0</strong>합격</div></div>
+              <div class="m-dl"><span>C사 · 백엔드 신입</span><span>D-2</span></div><div class="m-dl"><span>D사 · 클라이언트</span><span>D-5</span></div></div>
+            <div class="m-card"><div class="m-ch">오늘 집중 시간<span>타이머 →</span></div>
+              <div class="m-focus"><div class="m-ring"><div>2:35</div></div><div class="m-fi">집중 4회 · 최장 58분<br>목표 4시간<br><span class="m-btn">▶ 집중 시작</span></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 후보 3 ===================== -->
+  <section class="candidate" id="candidate-3">
+    <div class="cand-head"><h2>후보 3 · 포레스트 코퍼</h2></div>
+    <p class="cand-desc">짙은 숲색 바탕에 구리색 강조. 눈이 편하고 자연스러운 느낌으로, 오래 켜 두는 집중 앱에 어울립니다.</p>
+    <div class="cand-body">
+      <div class="swatches">
+        <div class="sw-group">바탕과 면</div>
+        <div class="sw"><div class="chip" style="background:#121815"></div><div class="role"><b>배경</b><span>본문 전체 바탕</span></div><code>#121815</code></div>
+        <div class="sw"><div class="chip" style="background:#161e1a"></div><div class="role"><b>사이드바</b><span>왼쪽 메뉴 영역</span></div><code>#161E1A</code></div>
+        <div class="sw"><div class="chip" style="background:#1c2521"></div><div class="role"><b>카드</b><span>요약 카드 바탕</span></div><code>#1C2521</code></div>
+        <div class="sw"><div class="chip" style="background:#2b3832"></div><div class="role"><b>테두리 · 진행 막대 바탕</b><span>카드 테두리, 구분선</span></div><code>#2B3832</code></div>
+        <div class="sw-group">글자</div>
+        <div class="sw"><div class="chip" style="background:#e3ebe5"></div><div class="role"><b>기본 글자</b><span>제목, 본문</span></div><code>#E3EBE5</code></div>
+        <div class="sw"><div class="chip" style="background:#8ea095"></div><div class="role"><b>보조 글자</b><span>날짜, 시간, 완료한 할 일</span></div><code>#8EA095</code></div>
+        <div class="sw-group">강조</div>
+        <div class="sw"><div class="chip" style="background:#e39a5b"></div><div class="role"><b>강조색</b><span>선택 메뉴, 버튼, 진행률, D-day</span></div><code>#E39A5B</code></div>
+        <div class="sw"><div class="chip" style="background:#3a2c1f"></div><div class="role"><b>강조 배경</b><span>선택된 메뉴 바탕</span></div><code>#3A2C1F</code></div>
+        <div class="sw-group">지원 상태 (지원함 · 서류 통과 · 면접 · 합격)</div>
+        <div class="status-row t3">
+          <div class="st1">#C6D1CA</div><div class="st2">#7FB2D9</div><div class="st3">#E6C26A</div><div class="st4">#7FD19B</div>
+        </div>
+      </div>
+      <div class="mini t3">
+        <div class="m-side">
+          <div class="m-logo"><i></i>Daybrick</div>
+          <div class="m-nav on">홈</div><div class="m-nav">캘린더</div><div class="m-nav">스케줄러</div><div class="m-nav">지원 현황</div><div class="m-nav">타이머</div>
+        </div>
+        <div class="m-main">
+          <div><div class="m-date">2026년 10월 21일 (수)</div><div class="m-hello">좋은 하루예요</div></div>
+          <div class="m-grid">
+            <div class="m-card"><div class="m-ch">오늘 할 일<span>캘린더 →</span></div><div class="m-prog"><div></div></div>
+              <div class="m-todo d"><i></i>알고리즘 문제 2개 풀기</div><div class="m-todo d"><i></i>자기소개서 초안 다듬기</div><div class="m-todo"><i></i>포트폴리오 README 정리</div></div>
+            <div class="m-card"><div class="m-ch">오늘 일정<span>스케줄러 →</span></div>
+              <div class="m-ev"><b>10:00</b><i style="background:var(--border)"></i><div>CS 스터디<small>온라인</small></div></div>
+              <div class="m-ev now"><b>14:00</b><i style="background:var(--accent)"></i><div>A사 1차 면접<small>화상 면접</small></div></div>
+              <div class="m-ev"><b>19:30</b><i style="background:var(--s2)"></i><div>헬스장<small>19:30 – 20:30</small></div></div></div>
+            <div class="m-card"><div class="m-ch">지원 현황<span>지원 현황 →</span></div>
+              <div class="m-stats"><div class="st1"><strong>8</strong>지원함</div><div class="st2"><strong>3</strong>서류</div><div class="st3"><strong>2</strong>면접</div><div class="st4"><strong>0</strong>합격</div></div>
+              <div class="m-dl"><span>C사 · 백엔드 신입</span><span>D-2</span></div><div class="m-dl"><span>D사 · 클라이언트</span><span>D-5</span></div></div>
+            <div class="m-card"><div class="m-ch">오늘 집중 시간<span>타이머 →</span></div>
+              <div class="m-focus"><div class="m-ring"><div>2:35</div></div><div class="m-fi">집중 4회 · 최장 58분<br>목표 4시간<br><span class="m-btn">▶ 집중 시작</span></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 후보 4 ===================== -->
+  <section class="candidate" id="candidate-4">
+    <div class="cand-head"><h2>후보 4 · 그라파이트 바이올렛</h2></div>
+    <p class="cand-desc">색기가 거의 없는 회색 바탕에 보라색 강조. 개발 도구처럼 깔끔하고 현대적인 느낌입니다. 벽돌 느낌은 사라집니다.</p>
+    <div class="cand-body">
+      <div class="swatches">
+        <div class="sw-group">바탕과 면</div>
+        <div class="sw"><div class="chip" style="background:#17171a"></div><div class="role"><b>배경</b><span>본문 전체 바탕</span></div><code>#17171A</code></div>
+        <div class="sw"><div class="chip" style="background:#1c1c20"></div><div class="role"><b>사이드바</b><span>왼쪽 메뉴 영역</span></div><code>#1C1C20</code></div>
+        <div class="sw"><div class="chip" style="background:#222227"></div><div class="role"><b>카드</b><span>요약 카드 바탕</span></div><code>#222227</code></div>
+        <div class="sw"><div class="chip" style="background:#33333b"></div><div class="role"><b>테두리 · 진행 막대 바탕</b><span>카드 테두리, 구분선</span></div><code>#33333B</code></div>
+        <div class="sw-group">글자</div>
+        <div class="sw"><div class="chip" style="background:#ededf2"></div><div class="role"><b>기본 글자</b><span>제목, 본문</span></div><code>#EDEDF2</code></div>
+        <div class="sw"><div class="chip" style="background:#9b9ba8"></div><div class="role"><b>보조 글자</b><span>날짜, 시간, 완료한 할 일</span></div><code>#9B9BA8</code></div>
+        <div class="sw-group">강조</div>
+        <div class="sw"><div class="chip" style="background:#a68cff"></div><div class="role"><b>강조색</b><span>선택 메뉴, 버튼, 진행률, D-day</span></div><code>#A68CFF</code></div>
+        <div class="sw"><div class="chip" style="background:#2d2745"></div><div class="role"><b>강조 배경</b><span>선택된 메뉴 바탕</span></div><code>#2D2745</code></div>
+        <div class="sw-group">지원 상태 (지원함 · 서류 통과 · 면접 · 합격)</div>
+        <div class="status-row t4">
+          <div class="st1">#CDCDD6</div><div class="st2">#7AA8FF</div><div class="st3">#F0B860</div><div class="st4">#66CF95</div>
+        </div>
+      </div>
+      <div class="mini t4">
+        <div class="m-side">
+          <div class="m-logo"><i></i>Daybrick</div>
+          <div class="m-nav on">홈</div><div class="m-nav">캘린더</div><div class="m-nav">스케줄러</div><div class="m-nav">지원 현황</div><div class="m-nav">타이머</div>
+        </div>
+        <div class="m-main">
+          <div><div class="m-date">2026년 10월 21일 (수)</div><div class="m-hello">좋은 하루예요</div></div>
+          <div class="m-grid">
+            <div class="m-card"><div class="m-ch">오늘 할 일<span>캘린더 →</span></div><div class="m-prog"><div></div></div>
+              <div class="m-todo d"><i></i>알고리즘 문제 2개 풀기</div><div class="m-todo d"><i></i>자기소개서 초안 다듬기</div><div class="m-todo"><i></i>포트폴리오 README 정리</div></div>
+            <div class="m-card"><div class="m-ch">오늘 일정<span>스케줄러 →</span></div>
+              <div class="m-ev"><b>10:00</b><i style="background:var(--border)"></i><div>CS 스터디<small>온라인</small></div></div>
+              <div class="m-ev now"><b>14:00</b><i style="background:var(--accent)"></i><div>A사 1차 면접<small>화상 면접</small></div></div>
+              <div class="m-ev"><b>19:30</b><i style="background:var(--s2)"></i><div>헬스장<small>19:30 – 20:30</small></div></div></div>
+            <div class="m-card"><div class="m-ch">지원 현황<span>지원 현황 →</span></div>
+              <div class="m-stats"><div class="st1"><strong>8</strong>지원함</div><div class="st2"><strong>3</strong>서류</div><div class="st3"><strong>2</strong>면접</div><div class="st4"><strong>0</strong>합격</div></div>
+              <div class="m-dl"><span>C사 · 백엔드 신입</span><span>D-2</span></div><div class="m-dl"><span>D사 · 클라이언트</span><span>D-5</span></div></div>
+            <div class="m-card"><div class="m-ch">오늘 집중 시간<span>타이머 →</span></div>
+              <div class="m-focus"><div class="m-ring"><div>2:35</div></div><div class="m-fi">집중 4회 · 최장 58분<br>목표 4시간<br><span class="m-btn">▶ 집중 시작</span></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 후보 5 ===================== -->
+  <section class="candidate" id="candidate-5">
+    <div class="cand-head"><h2>후보 5 · 웜 그레이 (중간 어두움)</h2></div>
+    <p class="cand-desc">완전히 어둡지 않고 한 단계 밝은 회갈색 톤입니다. "약간 어두운" 정도를 원할 때의 선택지로, 사이드바가 본문보다 살짝 더 어둡습니다.</p>
+    <div class="cand-body">
+      <div class="swatches">
+        <div class="sw-group">바탕과 면</div>
+        <div class="sw"><div class="chip" style="background:#2f2b28"></div><div class="role"><b>배경</b><span>본문 전체 바탕</span></div><code>#2F2B28</code></div>
+        <div class="sw"><div class="chip" style="background:#262321"></div><div class="role"><b>사이드바</b><span>왼쪽 메뉴 영역</span></div><code>#262321</code></div>
+        <div class="sw"><div class="chip" style="background:#3a3532"></div><div class="role"><b>카드</b><span>요약 카드 바탕</span></div><code>#3A3532</code></div>
+        <div class="sw"><div class="chip" style="background:#4a4440"></div><div class="role"><b>테두리 · 진행 막대 바탕</b><span>카드 테두리, 구분선</span></div><code>#4A4440</code></div>
+        <div class="sw-group">글자</div>
+        <div class="sw"><div class="chip" style="background:#f3ede6"></div><div class="role"><b>기본 글자</b><span>제목, 본문</span></div><code>#F3EDE6</code></div>
+        <div class="sw"><div class="chip" style="background:#b3a99f"></div><div class="role"><b>보조 글자</b><span>날짜, 시간, 완료한 할 일</span></div><code>#B3A99F</code></div>
+        <div class="sw-group">강조</div>
+        <div class="sw"><div class="chip" style="background:#e57a5a"></div><div class="role"><b>강조색</b><span>선택 메뉴, 버튼, 진행률, D-day</span></div><code>#E57A5A</code></div>
+        <div class="sw"><div class="chip" style="background:#4d3329"></div><div class="role"><b>강조 배경</b><span>선택된 메뉴 바탕</span></div><code>#4D3329</code></div>
+        <div class="sw-group">지원 상태 (지원함 · 서류 통과 · 면접 · 합격)</div>
+        <div class="status-row t5">
+          <div class="st1">#DDD4CB</div><div class="st2">#8AB2EE</div><div class="st3">#E8BB66</div><div class="st4">#7CC796</div>
+        </div>
+      </div>
+      <div class="mini t5">
+        <div class="m-side">
+          <div class="m-logo"><i></i>Daybrick</div>
+          <div class="m-nav on">홈</div><div class="m-nav">캘린더</div><div class="m-nav">스케줄러</div><div class="m-nav">지원 현황</div><div class="m-nav">타이머</div>
+        </div>
+        <div class="m-main">
+          <div><div class="m-date">2026년 10월 21일 (수)</div><div class="m-hello">좋은 하루예요</div></div>
+          <div class="m-grid">
+            <div class="m-card"><div class="m-ch">오늘 할 일<span>캘린더 →</span></div><div class="m-prog"><div></div></div>
+              <div class="m-todo d"><i></i>알고리즘 문제 2개 풀기</div><div class="m-todo d"><i></i>자기소개서 초안 다듬기</div><div class="m-todo"><i></i>포트폴리오 README 정리</div></div>
+            <div class="m-card"><div class="m-ch">오늘 일정<span>스케줄러 →</span></div>
+              <div class="m-ev"><b>10:00</b><i style="background:var(--border)"></i><div>CS 스터디<small>온라인</small></div></div>
+              <div class="m-ev now"><b>14:00</b><i style="background:var(--accent)"></i><div>A사 1차 면접<small>화상 면접</small></div></div>
+              <div class="m-ev"><b>19:30</b><i style="background:var(--s2)"></i><div>헬스장<small>19:30 – 20:30</small></div></div></div>
+            <div class="m-card"><div class="m-ch">지원 현황<span>지원 현황 →</span></div>
+              <div class="m-stats"><div class="st1"><strong>8</strong>지원함</div><div class="st2"><strong>3</strong>서류</div><div class="st3"><strong>2</strong>면접</div><div class="st4"><strong>0</strong>합격</div></div>
+              <div class="m-dl"><span>C사 · 백엔드 신입</span><span>D-2</span></div><div class="m-dl"><span>D사 · 클라이언트</span><span>D-5</span></div></div>
+            <div class="m-card"><div class="m-ch">오늘 집중 시간<span>타이머 →</span></div>
+              <div class="m-focus"><div class="m-ring"><div>2:35</div></div><div class="m-fi">집중 4회 · 최장 58분<br>목표 4시간<br><span class="m-btn">▶ 집중 시작</span></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

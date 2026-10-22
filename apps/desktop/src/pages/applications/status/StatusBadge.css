@@ -1,0 +1,41 @@
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--badge-color);
+  background: var(--badge-bg);
+}
+
+.status-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-badge__stage {
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.status-badge__stage::before {
+  content: "·";
+  margin-right: 6px;
+  opacity: 0.7;
+}
+
+/* 종료: 바탕 없이 테두리만 */
+.status-badge--closed {
+  box-shadow: 0 0 0 1px var(--border-2) inset;
+}
+
+.status-badge--closed::before {
+  background: var(--faint);
+}

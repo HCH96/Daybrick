@@ -1,0 +1,21 @@
+.title-input {
+  display: block;
+  width: 100%;
+  margin: 6px 0 14px;
+  padding: 0;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: -0.3px;
+}
+
+.title-input::placeholder {
+  color: var(--faint);
+}

@@ -1,0 +1,1096 @@
+<!doctype html>
+<!-- 목업 목차: 지원 관리 (Applications)
+  읽는 법: 필요한 ID만 골라 id="ID" 를 검색해 그 구역만 읽는다. CSS는 그 구역의 클래스만 검색한다.
+  ID                  화면                                  요구사항
+  gallery             1. 갤러리 (기본 화면)                  R1–R6
+    gallery-head        1-1. 페이지 머리 (전환 버튼, 새 지원)  R1–R2
+    gallery-toolbar     1-2. 탭 줄 (진행 중·종료·전체)         R4
+    gallery-cards       1-3. 카드 바둑판                       R3, R5–R6
+    gallery-notes       1-4. 설명 메모                         -
+  calendar            2. 달력                                R7–R11
+    calendar-head       2-1. 페이지 머리                       R1
+    calendar-bar        2-2. 월 이동·범례                      R8
+    calendar-grid       2-3. 월 달력                           R7–R10
+    calendar-notes      2-4. 설명 메모                         -
+  popup               3. 상세 팝업                           R12–R17, R24
+    popup-head          3-1. 팝업 머리 (최대화·저장됨·삭제·닫기) R13, R15–R16
+    popup-status        3-2. 제목 아래 상태 배지·📅 버튼       R17, R24
+    popup-props         3-3. 속성 목록                         R28–R31
+    popup-body          3-4. 마크다운 본문                     R14
+    popup-notes         3-5. 설명 메모                         -
+  popup-max           4. 상세 팝업 최대화                    R13
+    popup-max-notes     4-1. 설명 메모                         R24
+  parts               5. 작은 창 모음                        R16, R18–R22, R25–R30
+    parts-status        5-1. 상태 선택 (상태 → 세부 단계)      R18–R19, R22
+    parts-schedule      5-2. 전형 일정 창                      R25–R27
+    parts-result        5-3. 종료 → 결과 고르기                R20
+    parts-option        5-4. 선택 항목 고르기·추가             R30
+    parts-add-prop      5-5. 속성 추가                         R28–R29
+    parts-delete        5-6. 삭제 확인                         R16
+    parts-ended-card    5-7. "종료" 탭의 카드                  R4, R20
+    parts-notes         5-8. 설명 메모                         R20, R22, R25–R26, R30, R32
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 지원 관리 목업</title>
+<style>
+  :root {
+    --bg: #17171a; --sidebar: #1c1c20; --surface: #222227; --surface-2: #28282e; --popup: #1f1f24;
+    --border: #33333b; --border-2: #3d3d46;
+    --text: #ededf2; --muted: #9b9ba8; --faint: #6b6b78;
+    --accent: #a68cff; --accent-soft: #2d2745; --on-accent: #17171a;
+    /* 상태 색 (홈 색 이어 쓰기) */
+    --s-prep: #cdcdd6;   --s-prep-bg: #2b2b31;   /* 지원 준비: 회색 */
+    --s-done: #7aa8ff;   --s-done-bg: #1e2740;   /* 지원 완료: 파랑 */
+    --s-stage: #f0b860;  --s-stage-bg: #3a2f1c;  /* 전형 준비: 주황 */
+    --s-wait: #66cf95;   --s-wait-bg: #1a3428;   /* 결과 대기: 초록 */
+    --s-end: #6b6b78;    --s-end-bg: #222227;    /* 종료: 흐린 회색 테두리 */
+    /* 선택 항목 색 (사용자가 고르는 색) */
+    --o-red: #ff8a8a; --o-red-bg: #3a1f22;
+    --o-violet: #c4b2ff; --o-violet-bg: #2d2745;
+    --o-teal: #5fd0c8; --o-teal-bg: #173230;
+    --o-pink: #f29ad3; --o-pink-bg: #3a1f33;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 32px 80px; background: #0d0d0f; color: var(--text);
+    font-family: "Malgun Gothic", "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5;
+  }
+
+  /* ===== 문서 부분 ===== */
+  .doc { max-width: 1160px; margin: 0 auto; }
+  .doc h1 { margin: 0 0 8px; font-size: 24px; }
+  .doc .lead { margin: 0 0 12px; color: var(--muted); }
+  .toc { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+  .toc a { color: var(--accent); text-decoration: none; border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; font-size: 13px; }
+  .legend { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 48px;
+    background: var(--sidebar); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 13px; }
+  .legend b { margin-right: 6px; }
+  .legend .muted { color: var(--muted); margin-left: 6px; }
+  section.screen { margin-bottom: 72px; }
+  .screen-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  .screen-head h2 { margin: 0; font-size: 20px; }
+  .tag { font-size: 12px; font-weight: 700; color: var(--on-accent); background: var(--accent); border-radius: 99px; padding: 2px 10px; }
+  .screen-desc { margin: 0 0 8px; color: var(--muted); }
+  .scale-note { font-size: 12px; color: var(--faint); margin-bottom: 8px; }
+  .notes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+  .note { background: var(--sidebar); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 13px; }
+  .note b { display: block; margin-bottom: 6px; }
+  .note ul { margin: 0; padding-left: 18px; color: var(--muted); }
+  .note li + li { margin-top: 3px; }
+
+  /* ===== 앱 창 1440x900 (80%로 축소) ===== */
+  .frame { zoom: 0.8; width: 1440px; height: 900px; display: flex; flex-direction: column; overflow: hidden;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px; position: relative; }
+  .titlebar { height: 40px; flex-shrink: 0; display: flex; align-items: center; background: var(--sidebar); border-bottom: 1px solid var(--border); }
+  .tb-nav { display: flex; gap: 2px; padding-left: 8px; }
+  .tb-btn { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 6px; color: var(--muted); }
+  .tb-btn.on { background: rgba(255,255,255,.08); color: var(--text); }
+  .tb-btn.off { opacity: .35; }
+  .tb-drag { flex: 1; }
+  .win { display: flex; height: 100%; }
+  .win span { width: 46px; display: grid; place-items: center; color: var(--text); }
+  .body { flex: 1; min-height: 0; display: flex; }
+  .sidebar { width: 200px; flex-shrink: 0; background: var(--sidebar); border-right: 1px solid var(--border);
+    padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 800; padding: 0 8px 20px; }
+  .brick { width: 26px; height: 26px; border-radius: 6px; background: var(--accent); display: grid;
+    grid-template-columns: 1fr 1fr; gap: 2px; padding: 4px; }
+  .brick i { background: rgba(255,255,255,.85); border-radius: 1px; }
+  .nav { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: var(--muted); font-size: 14px; }
+  .nav.on { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  .ico { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .ico.sm { width: 15px; height: 15px; }
+  .spacer { flex: 1; }
+  .version { font-size: 11px; color: var(--muted); padding: 0 12px; }
+  .main { flex: 1; min-width: 0; padding: 28px 32px; overflow: hidden; position: relative; }
+  .page { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+
+  /* ===== 페이지 머리 ===== */
+  .page-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .page-title { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -.3px; }
+  .page-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .head-right { display: flex; align-items: center; gap: 12px; }
+  .seg { display: flex; padding: 3px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+  .seg span { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 7px; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .seg span.on { background: var(--surface-2); color: var(--text); box-shadow: 0 0 0 1px var(--border-2) inset; }
+  .btn-primary { display: flex; align-items: center; gap: 6px; height: 38px; padding: 0 16px; border-radius: 10px;
+    background: var(--accent); color: var(--on-accent); font-size: 13px; font-weight: 700; }
+
+  .toolbar { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+  .tabs { display: flex; gap: 4px; }
+  .tabs span { padding: 8px 12px 10px; font-size: 14px; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tabs span.on { color: var(--text); font-weight: 700; border-bottom-color: var(--accent); }
+  .tabs em { font-style: normal; font-size: 12px; color: var(--faint); margin-left: 4px; }
+  .tabs span.on em { color: var(--accent); }
+  .sort-note { font-size: 12px; color: var(--faint); display: flex; align-items: center; gap: 6px; }
+
+  /* ===== 상태 배지 ===== */
+  .badge { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 99px;
+    font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .badge .sub { font-weight: 600; opacity: .85; }
+  .badge .sub::before { content: "·"; margin-right: 6px; opacity: .7; }
+  .st-prep { color: var(--s-prep); background: var(--s-prep-bg); }
+  .st-done { color: var(--s-done); background: var(--s-done-bg); }
+  .st-stage { color: var(--s-stage); background: var(--s-stage-bg); }
+  .st-wait { color: var(--s-wait); background: var(--s-wait-bg); }
+  .st-end { color: var(--muted); background: transparent; box-shadow: 0 0 0 1px var(--border-2) inset; }
+  .st-end::before { background: var(--faint); }
+
+  /* 선택 항목 칩 */
+  .opt { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 5px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .o-gray { color: var(--s-prep); background: var(--s-prep-bg); }
+  .o-blue { color: var(--s-done); background: var(--s-done-bg); }
+  .o-amber { color: var(--s-stage); background: var(--s-stage-bg); }
+  .o-green { color: var(--s-wait); background: var(--s-wait-bg); }
+  .o-red { color: var(--o-red); background: var(--o-red-bg); }
+  .o-violet { color: var(--o-violet); background: var(--o-violet-bg); }
+  .o-teal { color: var(--o-teal); background: var(--o-teal-bg); }
+  .o-pink { color: var(--o-pink); background: var(--o-pink-bg); }
+
+  /* ===== 갤러리 ===== */
+  .gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 10px; min-height: 172px; }
+  .card.hover { border-color: var(--border-2); background: #25252b; box-shadow: 0 6px 20px rgba(0,0,0,.25); }
+  .card-title { font-size: 15px; font-weight: 700; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-title.empty { color: var(--faint); font-weight: 600; }
+  .card-company { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .card-company.empty { color: var(--faint); }
+  .card-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .next { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text); min-width: 0; }
+  .next b { color: var(--accent); font-weight: 800; }
+  .next.urgent b { color: #ff8a8a; }
+  .next.deadline { color: var(--muted); }
+  .next.deadline b { color: var(--muted); }
+  .next.none { color: var(--faint); font-weight: 400; font-size: 12px; }
+  .prio { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); flex-shrink: 0; }
+  .prio i { width: 3px; border-radius: 1px; background: var(--border-2); display: inline-block; }
+  .prio i:nth-child(1) { height: 6px; } .prio i:nth-child(2) { height: 9px; } .prio i:nth-child(3) { height: 12px; }
+  .prio.high i { background: var(--o-red); } .prio.high { color: var(--o-red); }
+  .prio.mid i:nth-child(-n+2) { background: var(--s-stage); } .prio.mid { color: var(--s-stage); }
+  .prio.low i:nth-child(1) { background: var(--muted); }
+  .prio-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; margin-right: 2px; }
+
+  /* ===== 달력 ===== */
+  .cal-bar { display: flex; align-items: center; justify-content: space-between; }
+  .month-nav { display: flex; align-items: center; gap: 10px; }
+  .month-nav h3 { margin: 0; font-size: 18px; font-weight: 800; min-width: 120px; text-align: center; }
+  .icon-btn { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 8px; border: 1px solid var(--border); color: var(--muted); background: var(--surface); }
+  .today-btn { height: 32px; padding: 0 12px; display: flex; align-items: center; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; color: var(--text); background: var(--surface); }
+  .cal-legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); align-items: center; }
+  .cal-legend span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .cal { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+  .cal-week { display: grid; grid-template-columns: repeat(7, 1fr); }
+  .cal-week.head div { padding: 8px 10px; font-size: 12px; font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--sidebar); }
+  .cal-week.head div:first-child { color: #e88; } .cal-week.head div:last-child { color: #8ab0ff; }
+  .day { height: 118px; padding: 6px 6px 4px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .cal-week .day:nth-child(7) { border-right: none; }
+  .cal-week:last-child .day { border-bottom: none; }
+  .day .num { font-size: 12px; font-weight: 600; color: var(--muted); padding: 0 4px; height: 22px; display: flex; align-items: center; }
+  .day.out { background: #1d1d21; } .day.out .num { color: var(--faint); opacity: .6; }
+  .day.past .num { color: var(--faint); }
+  .day.today { background: #25223a; }
+  .day.today .num span { background: var(--accent); color: var(--on-accent); border-radius: 99px; width: 22px; height: 22px; display: grid; place-items: center; font-weight: 800; margin-left: -4px; }
+  .ev { display: flex; align-items: center; gap: 5px; height: 21px; padding: 0 6px; border-radius: 5px; font-size: 11.5px; font-weight: 600;
+    white-space: nowrap; overflow: hidden; min-width: 0; }
+  .ev .t { overflow: hidden; text-overflow: ellipsis; }
+  .ev .k { flex-shrink: 0; opacity: .8; font-weight: 500; }
+  .ev::before { content: ""; width: 3px; height: 12px; border-radius: 2px; background: currentColor; flex-shrink: 0; }
+  .ev.e-done { color: var(--s-done); background: var(--s-done-bg); }
+  .ev.e-stage { color: var(--s-stage); background: var(--s-stage-bg); }
+  .ev.e-wait { color: var(--s-wait); background: var(--s-wait-bg); }
+  .ev.e-end { color: var(--muted); background: var(--s-prep-bg); }
+  .ev.past { opacity: .55; }
+  .ev.e-deadline { color: var(--muted); background: transparent; box-shadow: 0 0 0 1px dashed; border: 1px dashed var(--border-2); box-shadow: none; }
+  .ev.e-deadline::before { background: var(--faint); }
+  .ev.hover { box-shadow: 0 0 0 1px currentColor inset; }
+  .more { font-size: 11px; color: var(--muted); padding: 0 6px; }
+
+  /* ===== 상세 팝업 ===== */
+  .dim { position: absolute; inset: 0; background: rgba(8,8,10,.62); z-index: 5; }
+  .popup-wrap { position: absolute; inset: 0; display: grid; place-items: center; z-index: 6; }
+  .popup { width: 760px; height: 760px; background: var(--popup); border: 1px solid var(--border-2); border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.5); display: flex; flex-direction: column; overflow: hidden; }
+  .popup-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; flex-shrink: 0; }
+  .pbtn { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 7px; color: var(--muted); }
+  .pbtn.hover { background: rgba(255,255,255,.07); color: var(--text); }
+  .pbtn.danger { color: var(--muted); }
+  .popup-right { display: flex; gap: 2px; align-items: center; }
+  .save-state { font-size: 12px; color: var(--faint); margin-right: 8px; display: flex; align-items: center; gap: 5px; }
+  .popup-scroll { flex: 1; overflow: hidden; padding: 4px 56px 40px; }
+  .popup-inner { max-width: 760px; margin: 0 auto; }
+  .p-title { margin: 6px 0 14px; font-size: 26px; font-weight: 800; line-height: 1.35; letter-spacing: -.3px; }
+  .p-status { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .badge.big { height: 32px; padding: 0 12px 0 14px; font-size: 14px; gap: 8px; }
+  .badge.big::before { width: 8px; height: 8px; }
+  .badge.big .chev { width: 14px; height: 14px; opacity: .8; }
+  .cal-btn { height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 12px 0 10px; border-radius: 8px; border: 1px solid var(--border-2); color: var(--text); font-size: 13px; background: var(--surface); }
+  .cal-btn b { color: var(--accent); }
+  .cal-btn .when { color: var(--muted); font-size: 12px; }
+  .cal-btn.active { box-shadow: 0 0 0 2px var(--accent-soft); border-color: var(--accent); }
+  .props { display: flex; flex-direction: column; }
+  .prop { display: grid; grid-template-columns: 150px 1fr; align-items: center; min-height: 34px; border-radius: 6px; }
+  .prop.hover { background: rgba(255,255,255,.03); }
+  .prop-name { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); padding: 0 6px; }
+  .prop-name .ico { width: 15px; height: 15px; color: var(--faint); }
+  .prop-val { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13.5px; padding: 4px 8px; min-height: 30px; }
+  .prop-val.empty { color: var(--faint); }
+  .prop-val a { color: var(--text); text-decoration: underline; text-decoration-color: var(--faint); text-underline-offset: 3px; }
+  .add-prop { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--faint); padding: 8px 6px; }
+  .divider { height: 1px; background: var(--border); margin: 14px 0 20px; }
+
+  /* 마크다운 본문 */
+  .md { font-size: 14.5px; line-height: 1.75; color: #dcdce3; }
+  .md h2 { font-size: 18px; margin: 0 0 6px; color: var(--text); }
+  .md h3 { font-size: 15px; margin: 18px 0 4px; color: var(--text); }
+  .md p { margin: 0 0 8px; }
+  .md ul { margin: 0 0 8px; padding-left: 22px; }
+  .md code { font-family: Consolas, monospace; font-size: 13px; background: var(--surface-2); padding: 1px 6px; border-radius: 4px; color: #ffb38a; }
+  .md blockquote { margin: 10px 0; padding: 4px 14px; border-left: 3px solid var(--border-2); color: var(--muted); }
+  .todo { display: flex; align-items: center; gap: 10px; }
+  .todo .chk { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--muted); flex-shrink: 0; position: relative; }
+  .todo.done .chk { background: var(--accent); border-color: var(--accent); }
+  .todo.done .chk::after { content: ""; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid var(--on-accent); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .todo.done span { color: var(--muted); text-decoration: line-through; }
+  .md-img { margin: 12px 0; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; width: 100%; background: #f4f4f6; color: #333; font-size: 12px; }
+  .md-img .bar { background: #e4e4ea; padding: 6px 12px; font-weight: 700; color: #555; display: flex; gap: 6px; align-items: center; }
+  .md-img .bar i { width: 8px; height: 8px; border-radius: 50%; background: #c9c9d1; display: inline-block; }
+  .md-img .mail { padding: 14px 18px; line-height: 1.8; }
+  .md-img .mail .ln { height: 8px; background: #dcdce2; border-radius: 4px; margin: 7px 0; }
+  .cursor { display: inline-block; width: 1.5px; height: 17px; background: var(--accent); vertical-align: -3px; margin-left: 1px; }
+  .placeholder { color: var(--faint); }
+
+  /* 최대화된 팝업 */
+  .popup.max { width: auto; height: auto; position: absolute; inset: 0; border-radius: 0; border: none; box-shadow: none; }
+  .popup.max .popup-scroll { padding: 4px 56px 40px; }
+
+  /* ===== 작은 창들 ===== */
+  .parts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; }
+  .part-label { font-size: 13px; font-weight: 700; margin-bottom: 8px; display: flex; gap: 8px; align-items: baseline; }
+  .part-label small { color: var(--faint); font-weight: 400; font-size: 12px; }
+  .stage { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; position: relative; min-height: 120px; }
+  .pop { background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 10px; box-shadow: 0 12px 32px rgba(0,0,0,.45); }
+  .menu { width: 220px; padding: 6px; }
+  .menu-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 8px; border-radius: 6px; font-size: 13px; }
+  .menu-row.on { background: rgba(255,255,255,.06); }
+  .menu-row .chev-r { color: var(--faint); }
+  .menu-row .check { color: var(--accent); }
+  .menu-sep { height: 1px; background: var(--border-2); margin: 5px 4px; }
+  .menu-cap { font-size: 11px; color: var(--faint); padding: 4px 8px 2px; }
+  .menu-pair { display: flex; align-items: flex-start; gap: 4px; }
+
+  .sched { width: 100%; padding: 14px; }
+  .sched h4 { margin: 0 0 10px; font-size: 13px; color: var(--muted); font-weight: 600; }
+  .kind-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .kind { padding: 5px 10px; border-radius: 7px; border: 1px solid var(--border-2); font-size: 12px; font-weight: 600; color: var(--muted); }
+  .kind.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .mini-cal { border-top: 1px solid var(--border-2); padding-top: 10px; }
+  .mini-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; margin-bottom: 6px; padding: 0 2px; }
+  .mini-head span { color: var(--faint); font-weight: 400; display: flex; gap: 10px; }
+  .mini-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; }
+  .mini-grid .w { color: var(--faint); font-size: 11px; padding: 2px 0; }
+  .mini-grid .d { height: 28px; display: grid; place-items: center; border-radius: 6px; color: var(--text); position: relative; }
+  .mini-grid .d.o { color: var(--faint); opacity: .5; }
+  .mini-grid .d.t { color: var(--accent); font-weight: 800; }
+  .mini-grid .d.sel { background: var(--accent); color: var(--on-accent); font-weight: 800; }
+  .mini-grid .d.has::after { content: ""; position: absolute; bottom: 3px; width: 4px; height: 4px; border-radius: 50%; background: var(--s-stage); }
+  .sched-list { border-top: 1px solid var(--border-2); margin-top: 12px; padding-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .s-item { display: grid; grid-template-columns: 74px 1fr auto; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 7px; font-size: 12.5px; }
+  .s-item.edit { background: rgba(255,255,255,.05); box-shadow: 0 0 0 1px var(--border-2) inset; }
+  .s-item .k { font-weight: 700; }
+  .s-item .dt { color: var(--muted); }
+  .s-item .memo { color: var(--faint); font-size: 12px; }
+  .s-item.past { opacity: .5; }
+  .s-item .x { color: var(--faint); }
+  .field { display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border-2); font-size: 12px; color: var(--text); }
+  .field.ph { color: var(--faint); }
+  .edit-fields { display: flex; gap: 6px; margin-top: 6px; grid-column: 1 / -1; }
+
+  .result-pop { width: 260px; padding: 12px; }
+  .result-pop p { margin: 0 0 8px; font-size: 12px; color: var(--muted); }
+  .result-opts { display: flex; flex-direction: column; gap: 4px; }
+  .result-opts div { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; border-radius: 6px; }
+  .result-opts div.on { background: rgba(255,255,255,.06); }
+  .result-opts small { color: var(--faint); font-size: 11px; }
+
+  .opt-pop { width: 280px; padding: 8px; }
+  .opt-input { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 6px 8px; border-radius: 7px; background: var(--bg); border: 1px solid var(--accent); margin-bottom: 6px; font-size: 13px; }
+  .opt-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 6px; border-radius: 6px; font-size: 12px; }
+  .opt-row.on { background: rgba(255,255,255,.06); }
+  .opt-row .dots { color: var(--faint); letter-spacing: 1px; }
+  .palette { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; padding: 8px 6px 4px; border-top: 1px solid var(--border-2); margin-top: 6px; }
+  .palette i { width: 20px; height: 20px; border-radius: 5px; display: block; }
+  .palette i.sel { box-shadow: 0 0 0 2px var(--surface-2), 0 0 0 4px var(--text); }
+
+  .confirm { width: 340px; padding: 20px; }
+  .confirm h4 { margin: 0 0 6px; font-size: 15px; }
+  .confirm p { margin: 0 0 16px; font-size: 13px; color: var(--muted); }
+  .confirm .btns { display: flex; justify-content: flex-end; gap: 8px; }
+  .btn-ghost { height: 32px; padding: 0 14px; display: flex; align-items: center; border-radius: 8px; border: 1px solid var(--border-2); font-size: 13px; }
+  .btn-danger { height: 32px; padding: 0 14px; display: flex; align-items: center; border-radius: 8px; background: #d9534f; color: #fff; font-size: 13px; font-weight: 700; }
+
+  .prop-menu { width: 230px; padding: 6px; }
+  .type-list .menu-row { justify-content: flex-start; gap: 10px; color: var(--text); }
+  .type-list .menu-row .ico { color: var(--muted); }
+
+  .card.ended { opacity: .62; }
+  .card.ended .card-title { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- 아이콘 모음 (목업 안에서 재사용) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7" /><path d="M5 10v10h14V10" /></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></symbol>
+    <symbol id="i-bag" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2" /><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" /></symbol>
+    <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" /><path d="M12 9v4M10 2h4" /></symbol>
+    <symbol id="i-side" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16" /></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6" /></symbol>
+    <symbol id="i-fwd" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5" /><rect x="13" y="4" width="7" height="7" rx="1.5" /><rect x="4" y="13" width="7" height="7" rx="1.5" /><rect x="13" y="13" width="7" height="7" rx="1.5" /></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" /></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" /></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" /></symbol>
+    <symbol id="i-max" viewBox="0 0 24 24"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7" /></symbol>
+    <symbol id="i-min" viewBox="0 0 24 24"><path d="M4 14h6v6M20 10h-6V4M10 14l-7 7M14 10l7-7" /></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" /></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" /></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5" /><path d="M9 8h1M14 8h1M9 12h1M14 12h1M10 21v-4h4v4" /></symbol>
+    <symbol id="i-sort" viewBox="0 0 24 24"><path d="M7 4v16M3 16l4 4 4-4M14 6h7M14 12h5M14 18h3" /></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10" /></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z" /><path d="M9.5 13.5l2 2 3.5-3.5" /></symbol>
+    <!-- 속성 종류 아이콘 -->
+    <symbol id="t-text" viewBox="0 0 24 24"><path d="M5 6h14M12 6v13M9 19h6" /></symbol>
+    <symbol id="t-num" viewBox="0 0 24 24"><path d="M9 4L7 20M17 4l-2 16M4 9h16M3 15h16" /></symbol>
+    <symbol id="t-select" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M8 11l4 4 4-4" /></symbol>
+    <symbol id="t-multi" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11" /><circle cx="4.5" cy="6" r="1" /><circle cx="4.5" cy="12" r="1" /><circle cx="4.5" cy="18" r="1" /></symbol>
+    <symbol id="t-date" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></symbol>
+    <symbol id="t-url" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1" /><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1" /></symbol>
+    <symbol id="t-checkbox" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3" /><path d="M8 12l3 3 5-6" /></symbol>
+    <symbol id="t-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5" /></symbol>
+  </defs>
+</svg>
+
+<div class="doc">
+  <h1>지원 관리 (Applications) 목업</h1>
+  <p class="lead">디자인 확인용 정적 화면입니다. 기능은 없고 배치와 스타일만 보여줍니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다. 오늘 날짜는 2026년 10월 22일(목)로 가정했습니다.</p>
+  <div class="toc">
+    <a href="#gallery">1. 갤러리</a>
+    <a href="#calendar">2. 달력</a>
+    <a href="#popup">3. 상세 팝업</a>
+    <a href="#popup-max">4. 상세 팝업 최대화</a>
+    <a href="#parts">5. 작은 창 모음</a>
+  </div>
+
+  <div class="legend">
+    <b>상태 색 배정 (제안)</b>
+    <span class="badge st-prep">지원 준비</span>
+    <span class="badge st-done">지원 완료</span>
+    <span class="badge st-stage">전형 준비</span>
+    <span class="badge st-wait">결과 대기</span>
+    <span class="badge st-end">종료</span>
+    <span class="muted">홈의 회색 → 파랑 → 주황 → 초록 순서를 진행 순서대로 이어 쓰고, 종료는 색 없이 테두리만 둡니다.</span>
+  </div>
+
+  <!-- ================================================================ -->
+  <section class="screen" id="gallery">
+    <div class="screen-head"><h2>1. 갤러리 (기본 화면)</h2><span class="tag">R1–R6</span></div>
+    <p class="screen-desc">처음 들어오면 보이는 화면. "진행 중" 탭, 마감일이 가까운 순. 두 번째 카드는 마우스를 올린 모습입니다.</p>
+    <div class="scale-note">1440 × 900 창, 80% 축소</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav">
+          <span class="tb-btn on"><svg class="ico"><use href="#i-side" /></svg></span>
+          <span class="tb-btn"><svg class="ico"><use href="#i-back" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-fwd" /></svg></span>
+        </div>
+        <div class="tb-drag"></div>
+        <div class="win">
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><path d="M0 5.5h10" /></svg></span>
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="9" height="9" /></svg></span>
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><path d="M.5.5l9 9M9.5.5l-9 9" /></svg></span>
+        </div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home" /></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-cal" /></svg>Calendar</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock" /></svg>Scheduler</div>
+          <div class="nav on"><svg class="ico"><use href="#i-bag" /></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer" /></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main">
+          <div class="page">
+            <div id="gallery-head" class="page-head">
+              <div>
+                <h1 class="page-title">지원 현황</h1>
+                <div class="page-sub">진행 중 8곳 · 이번 주 일정 3개</div>
+              </div>
+              <div class="head-right">
+                <div class="seg">
+                  <span class="on"><svg class="ico sm"><use href="#i-grid" /></svg>갤러리</span>
+                  <span><svg class="ico sm"><use href="#i-cal" /></svg>달력</span>
+                </div>
+                <span class="btn-primary"><svg class="ico sm"><use href="#i-plus" /></svg>새 지원</span>
+              </div>
+            </div>
+
+            <div id="gallery-toolbar" class="toolbar">
+              <div class="tabs">
+                <span class="on">진행 중<em>8</em></span>
+                <span>종료<em>3</em></span>
+                <span>전체<em>11</em></span>
+              </div>
+              <div class="sort-note"><svg class="ico sm"><use href="#i-sort" /></svg>마감일 가까운 순</div>
+            </div>
+
+            <div id="gallery-cards" class="gallery">
+              <!-- 1 -->
+              <div class="card">
+                <div class="card-title">게임 클라이언트 프로그래머 인턴 (2026 하반기)</div>
+                <div><span class="badge st-stage">전형 준비<span class="sub">면접</span></span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>엔씨소프트</div>
+                <div class="card-foot">
+                  <span class="next urgent"><b>D-1</b>면접 14:00</span>
+                  <span class="prio high"><span class="prio-bars"><i></i><i></i><i></i></span>높음</span>
+                </div>
+              </div>
+              <!-- 2 (hover) -->
+              <div class="card hover">
+                <div class="card-title">[던전앤파이터] 클라이언트/엔진 프로그래머</div>
+                <div><span class="badge st-stage">전형 준비<span class="sub">코딩테스트</span></span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>네오플</div>
+                <div class="card-foot">
+                  <span class="next"><b>D-3</b>코딩테스트</span>
+                  <span class="prio high"><span class="prio-bars"><i></i><i></i><i></i></span>높음</span>
+                </div>
+              </div>
+              <!-- 3 -->
+              <div class="card">
+                <div class="card-title">엔진 프로그래머 신입 공개채용</div>
+                <div><span class="badge st-stage">전형 준비<span class="sub">과제</span></span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>크래프톤</div>
+                <div class="card-foot">
+                  <span class="next"><b>D-5</b>과제 마감</span>
+                  <span class="prio high"><span class="prio-bars"><i></i><i></i><i></i></span>높음</span>
+                </div>
+              </div>
+              <!-- 4 -->
+              <div class="card">
+                <div class="card-title">로스트아크 클라이언트 프로그래머</div>
+                <div><span class="badge st-prep">지원 준비</span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>스마일게이트</div>
+                <div class="card-foot">
+                  <span class="next deadline"><b>D-7</b>마감</span>
+                  <span class="prio mid"><span class="prio-bars"><i></i><i></i><i></i></span>중간</span>
+                </div>
+              </div>
+              <!-- 5 -->
+              <div class="card">
+                <div class="card-title empty">제목 없음</div>
+                <div><span class="badge st-prep">지원 준비</span></div>
+                <div class="card-company empty"><svg class="ico sm"><use href="#i-building" /></svg>회사 없음</div>
+                <div class="card-foot">
+                  <span class="next deadline"><b>D-12</b>마감</span>
+                  <span></span>
+                </div>
+              </div>
+              <!-- 6 -->
+              <div class="card">
+                <div class="card-title">2026 하반기 신입 게임 프로그래머</div>
+                <div><span class="badge st-done">지원 완료</span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>넥슨코리아</div>
+                <div class="card-foot">
+                  <span class="next none">예정된 일정 없음</span>
+                  <span class="prio mid"><span class="prio-bars"><i></i><i></i><i></i></span>중간</span>
+                </div>
+              </div>
+              <!-- 7 -->
+              <div class="card">
+                <div class="card-title">게임플레이 프로그래머 (UE5)</div>
+                <div><span class="badge st-wait">결과 대기<span class="sub">면접</span></span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>펄어비스</div>
+                <div class="card-foot">
+                  <span class="next none">예정된 일정 없음</span>
+                  <span class="prio high"><span class="prio-bars"><i></i><i></i><i></i></span>높음</span>
+                </div>
+              </div>
+              <!-- 8 -->
+              <div class="card">
+                <div class="card-title">그래픽스 프로그래머 (렌더링)</div>
+                <div><span class="badge st-wait">결과 대기<span class="sub">코딩테스트</span></span></div>
+                <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>시프트업</div>
+                <div class="card-foot">
+                  <span class="next none">예정된 일정 없음</span>
+                  <span class="prio low"><span class="prio-bars"><i></i><i></i><i></i></span>낮음</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="gallery-notes" class="notes">
+      <div class="note"><b>카드 앞면</b><ul>
+        <li>위에서부터 제목(2줄까지) → 상태 배지 → 회사 → 아래 줄에 다음 일정과 우선순위</li>
+        <li>제목·회사가 비면 흐린 글자로 "제목 없음", "회사 없음"</li>
+        <li>지원 준비 카드는 마감일을 회색으로, 전형 일정은 보라색 D-day로 구분</li>
+      </ul></div>
+      <div class="note"><b>D-day 색</b><ul>
+        <li>D-1·D-day는 빨간색으로 더 눈에 띄게 (제안)</li>
+        <li>남은 일정이 없으면 "예정된 일정 없음"을 흐리게 표시 (명세 R24는 팝업 기준이라 카드에서는 빈 줄 대신 문구를 둠)</li>
+      </ul></div>
+      <div class="note"><b>우선순위</b><ul>
+        <li>막대 3칸으로 높음(빨강 3칸)·중간(주황 2칸)·낮음(회색 1칸)</li>
+        <li>값이 없으면 아무것도 표시하지 않음</li>
+        <li>창 폭이 1280px보다 좁으면 3열로 줄어듦</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ================================================================ -->
+  <section class="screen" id="calendar">
+    <div class="screen-head"><h2>2. 달력</h2><span class="tag">R7–R11</span></div>
+    <p class="screen-desc">상단 전환 버튼에서 "달력"을 고른 모습. 지난 일정은 흐리게, 지원 준비 카드의 마감일은 점선 테두리로 구분합니다. 25일 일정은 마우스를 올린 모습입니다.</p>
+    <div class="scale-note">1440 × 900 창, 80% 축소</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav">
+          <span class="tb-btn on"><svg class="ico"><use href="#i-side" /></svg></span>
+          <span class="tb-btn"><svg class="ico"><use href="#i-back" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-fwd" /></svg></span>
+        </div>
+        <div class="tb-drag"></div>
+        <div class="win">
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><path d="M0 5.5h10" /></svg></span>
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="9" height="9" /></svg></span>
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><path d="M.5.5l9 9M9.5.5l-9 9" /></svg></span>
+        </div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home" /></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-cal" /></svg>Calendar</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock" /></svg>Scheduler</div>
+          <div class="nav on"><svg class="ico"><use href="#i-bag" /></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer" /></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main">
+          <div class="page">
+            <div id="calendar-head" class="page-head">
+              <div>
+                <h1 class="page-title">지원 현황</h1>
+                <div class="page-sub">진행 중 8곳 · 이번 주 일정 3개</div>
+              </div>
+              <div class="head-right">
+                <div class="seg">
+                  <span><svg class="ico sm"><use href="#i-grid" /></svg>갤러리</span>
+                  <span class="on"><svg class="ico sm"><use href="#i-cal" /></svg>달력</span>
+                </div>
+                <span class="btn-primary"><svg class="ico sm"><use href="#i-plus" /></svg>새 지원</span>
+              </div>
+            </div>
+
+            <div id="calendar-bar" class="cal-bar">
+              <div class="month-nav">
+                <span class="icon-btn"><svg class="ico sm"><use href="#i-left" /></svg></span>
+                <h3>2026년 10월</h3>
+                <span class="icon-btn"><svg class="ico sm"><use href="#i-right" /></svg></span>
+                <span class="today-btn">오늘</span>
+              </div>
+              <div class="cal-legend">
+                <span><i class="dot" style="background:var(--s-done)"></i>지원 완료</span>
+                <span><i class="dot" style="background:var(--s-stage)"></i>전형 준비</span>
+                <span><i class="dot" style="background:var(--s-wait)"></i>결과 대기</span>
+                <span><i class="dot" style="background:var(--faint)"></i>종료</span>
+                <span><i class="dot" style="border:1px dashed var(--muted)"></i>지원 마감 (준비 중)</span>
+              </div>
+            </div>
+
+            <div id="calendar-grid" class="cal">
+              <div class="cal-week head"><div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div></div>
+              <div class="cal-week">
+                <div class="day out"><div class="num">27</div></div>
+                <div class="day out"><div class="num">28</div></div>
+                <div class="day out"><div class="num">29</div><div class="ev e-end past"><span class="t">클라이언트 프로그래머 (모바일)</span><span class="k">· 면접</span></div></div>
+                <div class="day out"><div class="num">30</div></div>
+                <div class="day past"><div class="num">1</div></div>
+                <div class="day past"><div class="num">2</div><div class="ev e-done past"><span class="t">2026 하반기 신입 게임 프로그래머</span><span class="k">· 지원 완료</span></div></div>
+                <div class="day past"><div class="num">3</div></div>
+              </div>
+              <div class="cal-week">
+                <div class="day past"><div class="num">4</div></div>
+                <div class="day past"><div class="num">5</div><div class="ev e-wait past"><span class="t">게임플레이 프로그래머 (UE5)</span><span class="k">· 지원 완료</span></div></div>
+                <div class="day past"><div class="num">6</div><div class="ev e-end past"><span class="t">게임 서버 프로그래머</span><span class="k">· 코딩테스트</span></div></div>
+                <div class="day past"><div class="num">7</div></div>
+                <div class="day past"><div class="num">8</div><div class="ev e-stage past"><span class="t">엔진 프로그래머 신입 공개채용</span><span class="k">· 지원 완료</span></div></div>
+                <div class="day past"><div class="num">9</div></div>
+                <div class="day past"><div class="num">10</div><div class="ev e-stage past"><span class="t">[던전앤파이터] 클라이언트/엔진 프로그래머</span><span class="k">· 지원 완료</span></div></div>
+              </div>
+              <div class="cal-week">
+                <div class="day past"><div class="num">11</div></div>
+                <div class="day past"><div class="num">12</div><div class="ev e-wait past"><span class="t">게임플레이 프로그래머 (UE5)</span><span class="k">· 코딩테스트</span></div></div>
+                <div class="day past"><div class="num">13</div><div class="ev e-stage past"><span class="t">게임 클라이언트 프로그래머 인턴</span><span class="k">· 지원 완료</span></div></div>
+                <div class="day past"><div class="num">14</div><div class="ev e-wait past"><span class="t">그래픽스 프로그래머 (렌더링)</span><span class="k">· 지원 완료</span></div></div>
+                <div class="day past"><div class="num">15</div></div>
+                <div class="day past"><div class="num">16</div><div class="ev e-end past"><span class="t">게임 서버 프로그래머</span><span class="k">· 면접</span></div></div>
+                <div class="day past"><div class="num">17</div></div>
+              </div>
+              <div class="cal-week">
+                <div class="day past"><div class="num">18</div></div>
+                <div class="day past"><div class="num">19</div><div class="ev e-wait past"><span class="t">그래픽스 프로그래머 (렌더링)</span><span class="k">· 코딩테스트</span></div></div>
+                <div class="day past"><div class="num">20</div><div class="ev e-wait past"><span class="t">게임플레이 프로그래머 (UE5)</span><span class="k">· 면접</span></div><div class="ev e-done past"><span class="t">2026 하반기 신입 게임 프로그래머</span><span class="k">· 코딩테스트</span></div></div>
+                <div class="day past"><div class="num">21</div></div>
+                <div class="day today"><div class="num"><span>22</span></div></div>
+                <div class="day"><div class="num">23</div><div class="ev e-stage"><span class="t">게임 클라이언트 프로그래머 인턴</span><span class="k">· 면접</span></div></div>
+                <div class="day"><div class="num">24</div></div>
+              </div>
+              <div class="cal-week">
+                <div class="day"><div class="num">25</div><div class="ev e-stage hover"><span class="t">[던전앤파이터] 클라이언트/엔진 프로그래머</span><span class="k">· 코딩테스트</span></div></div>
+                <div class="day"><div class="num">26</div></div>
+                <div class="day"><div class="num">27</div><div class="ev e-stage"><span class="t">엔진 프로그래머 신입 공개채용</span><span class="k">· 과제 마감</span></div></div>
+                <div class="day"><div class="num">28</div></div>
+                <div class="day"><div class="num">29</div><div class="ev e-deadline"><span class="t">로스트아크 클라이언트 프로그래머</span><span class="k">· 마감</span></div></div>
+                <div class="day"><div class="num">30</div></div>
+                <div class="day"><div class="num">31</div></div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="calendar-notes" class="notes">
+      <div class="note"><b>일정 칸</b><ul>
+        <li>"카드 제목 · 일정 종류" 한 줄. 제목이 길면 말줄임(…), 일정 종류는 항상 보임</li>
+        <li>왼쪽 세로 막대와 바탕색은 그 카드의 현재 상태 색</li>
+        <li>하루에 3개가 넘으면 "+2개 더"로 접음 (제안)</li>
+      </ul></div>
+      <div class="note"><b>구분 방법</b><ul>
+        <li>지원 준비 카드의 마감일: 바탕 없이 점선 테두리 + 회색 글자 (R8)</li>
+        <li>오늘보다 이전 일정: 흐리게 (종료된 카드 일정도 남김, R10)</li>
+        <li>오늘 날짜: 보라색 원 + 칸 바탕 강조</li>
+      </ul></div>
+      <div class="note"><b>위쪽 줄</b><ul>
+        <li>이전·다음 달 버튼, "오늘" 버튼으로 이번 달로 돌아오기</li>
+        <li>오른쪽에 색 범례</li>
+        <li>일정을 누르면 3번 상세 팝업이 열림 (R11)</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ================================================================ -->
+  <section class="screen" id="popup">
+    <div class="screen-head"><h2>3. 상세 팝업</h2><span class="tag">R12–R17, R24</span></div>
+    <p class="screen-desc">카드를 누르면 앱 안 가운데에 뜨는 팝업. 뒤의 갤러리는 어둡게 덮습니다. 왼쪽 위 최대화, 오른쪽 위 삭제·닫기.</p>
+    <div class="scale-note">1440 × 900 창, 80% 축소</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav">
+          <span class="tb-btn on"><svg class="ico"><use href="#i-side" /></svg></span>
+          <span class="tb-btn"><svg class="ico"><use href="#i-back" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-fwd" /></svg></span>
+        </div>
+        <div class="tb-drag"></div>
+        <div class="win">
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><path d="M0 5.5h10" /></svg></span>
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="9" height="9" /></svg></span>
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><path d="M.5.5l9 9M9.5.5l-9 9" /></svg></span>
+        </div>
+      </div>
+      <div class="body" style="position:relative">
+        <nav class="sidebar">
+          <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home" /></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-cal" /></svg>Calendar</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock" /></svg>Scheduler</div>
+          <div class="nav on"><svg class="ico"><use href="#i-bag" /></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer" /></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main">
+          <div class="page">
+            <div class="page-head">
+              <div><h1 class="page-title">지원 현황</h1><div class="page-sub">진행 중 8곳 · 이번 주 일정 3개</div></div>
+              <div class="head-right">
+                <div class="seg"><span class="on"><svg class="ico sm"><use href="#i-grid" /></svg>갤러리</span><span><svg class="ico sm"><use href="#i-cal" /></svg>달력</span></div>
+                <span class="btn-primary"><svg class="ico sm"><use href="#i-plus" /></svg>새 지원</span>
+              </div>
+            </div>
+            <div class="toolbar"><div class="tabs"><span class="on">진행 중<em>8</em></span><span>종료<em>3</em></span><span>전체<em>11</em></span></div></div>
+            <div class="gallery">
+              <div class="card"><div class="card-title">게임 클라이언트 프로그래머 인턴 (2026 하반기)</div><div><span class="badge st-stage">전형 준비<span class="sub">면접</span></span></div><div class="card-company">엔씨소프트</div><div class="card-foot"><span class="next urgent"><b>D-1</b>면접 14:00</span></div></div>
+              <div class="card"><div class="card-title">[던전앤파이터] 클라이언트/엔진 프로그래머</div><div><span class="badge st-stage">전형 준비<span class="sub">코딩테스트</span></span></div><div class="card-company">네오플</div><div class="card-foot"><span class="next"><b>D-3</b>코딩테스트</span></div></div>
+              <div class="card"><div class="card-title">엔진 프로그래머 신입 공개채용</div><div><span class="badge st-stage">전형 준비<span class="sub">과제</span></span></div><div class="card-company">크래프톤</div><div class="card-foot"><span class="next"><b>D-5</b>과제 마감</span></div></div>
+              <div class="card"><div class="card-title">로스트아크 클라이언트 프로그래머</div><div><span class="badge st-prep">지원 준비</span></div><div class="card-company">스마일게이트</div><div class="card-foot"><span class="next deadline"><b>D-7</b>마감</span></div></div>
+              <div class="card"><div class="card-title empty">제목 없음</div><div><span class="badge st-prep">지원 준비</span></div><div class="card-company empty">회사 없음</div><div class="card-foot"><span class="next deadline"><b>D-12</b>마감</span></div></div>
+              <div class="card"><div class="card-title">2026 하반기 신입 게임 프로그래머</div><div><span class="badge st-done">지원 완료</span></div><div class="card-company">넥슨코리아</div><div class="card-foot"><span class="next none">예정된 일정 없음</span></div></div>
+              <div class="card"><div class="card-title">게임플레이 프로그래머 (UE5)</div><div><span class="badge st-wait">결과 대기<span class="sub">면접</span></span></div><div class="card-company">펄어비스</div><div class="card-foot"><span class="next none">예정된 일정 없음</span></div></div>
+              <div class="card"><div class="card-title">그래픽스 프로그래머 (렌더링)</div><div><span class="badge st-wait">결과 대기<span class="sub">코딩테스트</span></span></div><div class="card-company">시프트업</div><div class="card-foot"><span class="next none">예정된 일정 없음</span></div></div>
+            </div>
+          </div>
+        </main>
+
+        <!-- 팝업은 앱 창 전체(사이드바 포함)를 덮는 어두운 막 위에 뜬다 -->
+        <div class="dim"></div>
+        <div class="popup-wrap">
+          <div class="popup">
+            <div id="popup-head" class="popup-top">
+              <span class="pbtn hover" title="최대화"><svg class="ico sm"><use href="#i-max" /></svg></span>
+              <div class="popup-right">
+                <span class="save-state"><svg class="ico sm"><use href="#i-check" /></svg>저장됨</span>
+                <span class="pbtn danger" title="삭제"><svg class="ico sm"><use href="#i-trash" /></svg></span>
+                <span class="pbtn" title="닫기"><svg class="ico"><use href="#i-x" /></svg></span>
+              </div>
+            </div>
+            <div class="popup-scroll">
+              <div class="popup-inner">
+                <h2 class="p-title">[던전앤파이터] 클라이언트/엔진 프로그래머</h2>
+                <div id="popup-status" class="p-status">
+                  <span class="badge big st-stage">전형 준비<span class="sub">코딩테스트</span><svg class="ico chev"><use href="#i-down" /></svg></span>
+                  <span class="cal-btn"><svg class="ico sm"><use href="#i-cal" /></svg><b>D-3</b>코딩테스트<span class="when">10/25 (일) 14:00</span></span>
+                </div>
+
+                <div id="popup-props" class="props">
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>결과</div><div class="prop-val empty">비어 있음</div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>회사</div><div class="prop-val"><span class="opt o-violet">네오플</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>직무</div><div class="prop-val"><span class="opt o-teal">클라이언트</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-url" /></svg>공고 링크</div><div class="prop-val"><a>careers.nexon.com/recruit/12345</a></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-date" /></svg>마감일</div><div class="prop-val">2026년 10월 12일</div></div>
+                  <div class="prop hover"><div class="prop-name"><svg class="ico"><use href="#t-date" /></svg>지원일</div><div class="prop-val">2026년 10월 10일</div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>우선순위</div><div class="prop-val"><span class="opt o-red">높음</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-multi" /></svg>제출 자료</div><div class="prop-val"><span class="opt o-gray">이력서</span><span class="opt o-gray">자기소개서</span><span class="opt o-blue">포트폴리오 PDF</span><span class="opt o-green">GitHub</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>경력 구분</div><div class="prop-val"><span class="opt o-blue">신입</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>고용 형태</div><div class="prop-val"><span class="opt o-amber">정규직</span></div></div>
+                  <div class="add-prop"><svg class="ico sm"><use href="#i-plus" /></svg>속성 추가</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div id="popup-body" class="md">
+                  <h2>공고 요약</h2>
+                  <ul>
+                    <li>C++ 기반 자체 엔진 클라이언트 개발, 렌더링·툴 파트 협업</li>
+                    <li>우대: DirectX 11/12, 멀티스레드 프로그래밍 경험</li>
+                  </ul>
+                  <h3>코딩테스트 준비</h3>
+                  <div class="todo done"><span class="chk"></span><span>프로그래머스 Lv.3 그래프 문제 10개</span></div>
+                  <div class="todo"><span class="chk"></span><span><code>std::priority_queue</code> 다익스트라 다시 짜 보기</span></div>
+                  <div class="md-img">
+                    <div class="bar"><i></i><i></i><i></i>&nbsp;코딩테스트 안내 메일.png</div>
+                    <div class="mail">
+                      <b>[네오플] 코딩테스트 응시 안내</b>
+                      <div class="ln" style="width:82%"></div>
+                      <div class="ln" style="width:64%"></div>
+                      <div class="ln" style="width:72%"></div>
+                    </div>
+                  </div>
+                  <blockquote>시험 시간 120분, 3문항. 웹캠 필수<span class="cursor"></span></blockquote>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="popup-notes" class="notes">
+      <div class="note"><b>팝업 머리</b><ul>
+        <li>왼쪽 위: 최대화 (누르면 4번 모습)</li>
+        <li>오른쪽 위: "저장됨" 표시 → 삭제 → 닫기 순서. 삭제는 닫기와 떨어진 곳이 더 안전해서 저장 표시를 사이에 둠</li>
+        <li>팝업 바깥(어두운 부분)을 눌러도 닫힘 (제안)</li>
+      </ul></div>
+      <div class="note"><b>제목·상태</b><ul>
+        <li>제목은 26px 굵게, 바로 고칠 수 있는 칸</li>
+        <li>상태는 일반 속성보다 큰 배지 + ▾ 로 누를 수 있다는 표시 (R17)</li>
+        <li>📅 버튼 안에 다음 일정 하나만 (D-day · 종류 · 날짜와 시간)</li>
+      </ul></div>
+      <div class="note"><b>속성·본문</b><ul>
+        <li>이름 칸 150px + 값 칸. 빈 값은 흐린 "비어 있음"</li>
+        <li>선택 항목은 둥근 사각 칩, 상태 배지(알약 모양 + 점)와 모양을 다르게 해서 헷갈리지 않게</li>
+        <li>구분선 아래는 Notion식 마크다운 본문 (붙여 넣은 이미지 포함)</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ================================================================ -->
+  <section class="screen" id="popup-max">
+    <div class="screen-head"><h2>4. 상세 팝업 최대화</h2><span class="tag">R13</span></div>
+    <p class="screen-desc">사이드바가 펼쳐져 있을 때 최대화한 모습. 사이드바는 남기고 본문 영역을 꽉 채우며, 내용은 가운데 760px 폭으로 정렬합니다. (사이드바가 접혀 있으면 사이드바 자리까지 채웁니다.)</p>
+    <div class="scale-note">1440 × 900 창, 80% 축소</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav">
+          <span class="tb-btn on"><svg class="ico"><use href="#i-side" /></svg></span>
+          <span class="tb-btn"><svg class="ico"><use href="#i-back" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-fwd" /></svg></span>
+        </div>
+        <div class="tb-drag"></div>
+        <div class="win">
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><path d="M0 5.5h10" /></svg></span>
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><rect x=".5" y=".5" width="9" height="9" /></svg></span>
+          <span><svg width="10" height="10" fill="none" stroke="currentColor"><path d="M.5.5l9 9M9.5.5l-9 9" /></svg></span>
+        </div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home" /></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-cal" /></svg>Calendar</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock" /></svg>Scheduler</div>
+          <div class="nav on"><svg class="ico"><use href="#i-bag" /></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer" /></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main" style="padding:0">
+          <div class="popup max">
+            <div class="popup-top">
+              <span class="pbtn" title="원래 크기로"><svg class="ico sm"><use href="#i-min" /></svg></span>
+              <div class="popup-right">
+                <span class="save-state"><svg class="ico sm"><use href="#i-check" /></svg>저장됨</span>
+                <span class="pbtn danger"><svg class="ico sm"><use href="#i-trash" /></svg></span>
+                <span class="pbtn"><svg class="ico"><use href="#i-x" /></svg></span>
+              </div>
+            </div>
+            <div class="popup-scroll">
+              <div class="popup-inner">
+                <h2 class="p-title">로스트아크 클라이언트 프로그래머</h2>
+                <div class="p-status">
+                  <span class="badge big st-prep">지원 준비<svg class="ico chev"><use href="#i-down" /></svg></span>
+                  <span class="cal-btn"><svg class="ico sm"><use href="#i-cal" /></svg></span>
+                </div>
+                <div class="props">
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>결과</div><div class="prop-val empty">비어 있음</div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>회사</div><div class="prop-val"><span class="opt o-pink">스마일게이트</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>직무</div><div class="prop-val"><span class="opt o-teal">클라이언트</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-url" /></svg>공고 링크</div><div class="prop-val"><a>careers.smilegate.com/apply/9876</a></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-date" /></svg>마감일</div><div class="prop-val">2026년 10월 29일</div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-date" /></svg>지원일</div><div class="prop-val empty">비어 있음</div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>우선순위</div><div class="prop-val"><span class="opt o-amber">중간</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-multi" /></svg>제출 자료</div><div class="prop-val"><span class="opt o-gray">이력서</span><span class="opt o-violet">포트폴리오 Notion</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>경력 구분</div><div class="prop-val"><span class="opt o-blue">신입</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-select" /></svg>고용 형태</div><div class="prop-val"><span class="opt o-green">전환형 인턴</span></div></div>
+                  <div class="prop"><div class="prop-name"><svg class="ico"><use href="#t-checkbox" /></svg>추천인 있음</div><div class="prop-val"><span class="todo"><span class="chk"></span></span></div></div>
+                  <div class="add-prop"><svg class="ico sm"><use href="#i-plus" /></svg>속성 추가</div>
+                </div>
+                <div class="divider"></div>
+                <div class="md">
+                  <h2>자기소개서 메모</h2>
+                  <p>1번 문항(지원 동기): 로스트아크 레이드 연출을 보고 클라이언트 최적화에 관심 → 개인 프로젝트 프레임 개선 경험 연결.</p>
+                  <p class="placeholder">'/'를 입력해 블록 추가…</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="popup-max-notes" class="notes">
+      <div class="note"><b>최대화 상태</b><ul>
+        <li>둥근 모서리·그림자 없이 본문 영역에 딱 맞게</li>
+        <li>왼쪽 위 버튼이 "원래 크기로" 모양으로 바뀜</li>
+      </ul></div>
+      <div class="note"><b>지원 준비 카드</b><ul>
+        <li>전형 일정이 없으면 📅 버튼만 있고 옆은 비어 있음 (R24)</li>
+        <li>사용자가 추가한 체크박스 속성 예시: "추천인 있음"</li>
+      </ul></div>
+      <div class="note"><b>빈 본문</b><ul>
+        <li>본문 끝에 흐린 안내 문구 (Notion식)</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <!-- ================================================================ -->
+  <section class="screen" id="parts">
+    <div class="screen-head"><h2>5. 작은 창 모음</h2><span class="tag">R16, R18–R22, R25–R30</span></div>
+    <p class="screen-desc">팝업 안에서 버튼을 눌렀을 때 뜨는 작은 창들. 실제 크기(100%)로 보여줍니다.</p>
+
+    <div class="parts">
+      <!-- 상태 선택 -->
+      <div id="parts-status">
+        <div class="part-label">상태 선택 <small>배지를 누름 → 상태 → 세부 단계</small></div>
+        <div class="stage">
+          <span class="badge big st-stage" style="margin-bottom:8px">전형 준비<span class="sub">코딩테스트</span><svg class="ico chev"><use href="#i-down" /></svg></span>
+          <div class="menu-pair">
+            <div class="pop menu" style="width:170px">
+              <div class="menu-row"><span class="badge st-prep">지원 준비</span></div>
+              <div class="menu-row"><span class="badge st-done">지원 완료</span></div>
+              <div class="menu-row on"><span class="badge st-stage">전형 준비</span><svg class="ico sm chev-r"><use href="#i-right" /></svg></div>
+              <div class="menu-row"><span class="badge st-wait">결과 대기</span><svg class="ico sm chev-r"><use href="#i-right" /></svg></div>
+              <div class="menu-sep"></div>
+              <div class="menu-row"><span class="badge st-end">종료</span></div>
+            </div>
+            <div class="pop menu" style="width:130px; margin-top:74px">
+              <div class="menu-cap">세부 단계</div>
+              <div class="menu-row">과제</div>
+              <div class="menu-row on">코딩테스트<svg class="ico sm check"><use href="#i-check" /></svg></div>
+              <div class="menu-row">면접</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 전형 일정 창 -->
+      <div id="parts-schedule" style="grid-row: span 2">
+        <div class="part-label">전형 일정 창 <small>📅 버튼을 누름</small></div>
+        <div class="stage" style="padding:14px">
+          <div class="pop sched">
+            <h4>일정 종류를 고르고 날짜를 누르세요</h4>
+            <div class="kind-row">
+              <span class="kind">지원 완료</span>
+              <span class="kind">과제 마감</span>
+              <span class="kind">코딩테스트</span>
+              <span class="kind on">면접</span>
+            </div>
+            <div class="mini-cal">
+              <div class="mini-head">2026년 10월<span><svg class="ico sm"><use href="#i-left" /></svg><svg class="ico sm"><use href="#i-right" /></svg></span></div>
+              <div class="mini-grid">
+                <div class="w">일</div><div class="w">월</div><div class="w">화</div><div class="w">수</div><div class="w">목</div><div class="w">금</div><div class="w">토</div>
+                <div class="d o">27</div><div class="d o">28</div><div class="d o">29</div><div class="d o">30</div><div class="d">1</div><div class="d">2</div><div class="d">3</div>
+                <div class="d">4</div><div class="d">5</div><div class="d">6</div><div class="d">7</div><div class="d">8</div><div class="d">9</div><div class="d has">10</div>
+                <div class="d">11</div><div class="d">12</div><div class="d">13</div><div class="d">14</div><div class="d">15</div><div class="d">16</div><div class="d">17</div>
+                <div class="d">18</div><div class="d">19</div><div class="d">20</div><div class="d">21</div><div class="d t">22</div><div class="d">23</div><div class="d">24</div>
+                <div class="d has">25</div><div class="d">26</div><div class="d">27</div><div class="d">28</div><div class="d">29</div><div class="d">30</div><div class="d sel">31</div>
+              </div>
+            </div>
+            <div class="sched-list">
+              <div class="s-item past"><span class="k" style="color:var(--s-done)">지원 완료</span><span class="dt">10/10 (토)</span><span class="x"><svg class="ico sm"><use href="#i-x" /></svg></span></div>
+              <div class="s-item"><span class="k" style="color:var(--s-stage)">코딩테스트</span><span class="dt">10/25 (일) 14:00 <span class="memo">· 120분</span></span><span class="x"><svg class="ico sm"><use href="#i-x" /></svg></span></div>
+              <div class="s-item edit"><span class="k" style="color:var(--s-stage)">면접</span><span class="dt">10/31 (토)</span><span class="x"><svg class="ico sm"><use href="#i-x" /></svg></span>
+                <div class="edit-fields">
+                  <span class="field"><svg class="ico sm"><use href="#i-clock" /></svg>시간 없음</span>
+                  <span class="field ph" style="flex:1">메모 (예: 1차 면접)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 종료 결과 -->
+      <div id="parts-result">
+        <div class="part-label">종료 → 결과 고르기 <small>종료를 고르면 바로 뜸</small></div>
+        <div class="stage">
+          <span class="badge big st-end" style="margin-bottom:8px">종료<svg class="ico chev"><use href="#i-down" /></svg></span>
+          <div class="pop result-pop">
+            <p>어떻게 끝났나요?</p>
+            <div class="result-opts">
+              <div class="on"><span class="opt o-green">최종 합격</span></div>
+              <div><span class="opt o-red">불합격</span></div>
+              <div><span class="opt o-gray">지원 포기</span></div>
+              <div><small>나중에 고르기</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 선택 속성 편집 -->
+      <div id="parts-option">
+        <div class="part-label">선택 항목 고르기·추가 <small>회사 칸을 누름</small></div>
+        <div class="stage">
+          <div class="pop opt-pop">
+            <div class="opt-input"><span class="opt o-violet">네오플</span><span style="color:var(--text)">넷마</span><span class="cursor"></span></div>
+            <div class="menu-cap">항목 고르기 또는 새로 만들기</div>
+            <div class="opt-row on"><span>새로 만들기&nbsp; <span class="opt o-pink">넷마</span></span></div>
+            <div class="opt-row"><span class="opt o-violet">네오플</span><span class="dots">···</span></div>
+            <div class="opt-row"><span class="opt o-pink">스마일게이트</span><span class="dots">···</span></div>
+            <div class="opt-row"><span class="opt o-blue">크래프톤</span><span class="dots">···</span></div>
+            <div class="palette">
+              <i style="background:var(--s-prep)"></i><i style="background:var(--s-done)"></i><i style="background:var(--s-stage)"></i><i style="background:var(--s-wait)"></i>
+              <i style="background:var(--o-red)"></i><i style="background:var(--o-violet)"></i><i style="background:var(--o-teal)"></i><i class="sel" style="background:var(--o-pink)"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 속성 추가 -->
+      <div id="parts-add-prop">
+        <div class="part-label">속성 추가 <small>"+ 속성 추가"를 누름</small></div>
+        <div class="stage">
+          <div class="pop prop-menu">
+            <div class="opt-input" style="border-color:var(--border-2)"><span class="placeholder">속성 이름</span></div>
+            <div class="menu-cap">종류</div>
+            <div class="type-list">
+              <div class="menu-row"><svg class="ico sm"><use href="#t-text" /></svg>텍스트</div>
+              <div class="menu-row"><svg class="ico sm"><use href="#t-num" /></svg>숫자</div>
+              <div class="menu-row on"><svg class="ico sm"><use href="#t-select" /></svg>선택</div>
+              <div class="menu-row"><svg class="ico sm"><use href="#t-multi" /></svg>다중 선택</div>
+              <div class="menu-row"><svg class="ico sm"><use href="#t-date" /></svg>날짜</div>
+              <div class="menu-row"><svg class="ico sm"><use href="#t-url" /></svg>URL</div>
+              <div class="menu-row"><svg class="ico sm"><use href="#t-checkbox" /></svg>체크박스</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 삭제 확인 -->
+      <div id="parts-delete">
+        <div class="part-label">삭제 확인 <small>🗑 버튼을 누름</small></div>
+        <div class="stage">
+          <div class="pop confirm">
+            <h4>이 지원을 삭제할까요?</h4>
+            <p>"[던전앤파이터] 클라이언트/엔진 프로그래머"의 속성, 일정, 본문이 모두 지워지고 되돌릴 수 없어요.</p>
+            <div class="btns"><span class="btn-ghost">취소</span><span class="btn-danger">삭제</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 종료 카드 -->
+      <div id="parts-ended-card">
+        <div class="part-label">"종료" 탭의 카드 <small>흐리게 + 결과 칩</small></div>
+        <div class="stage">
+          <div class="card ended">
+            <div class="card-title">게임 서버 프로그래머</div>
+            <div style="display:flex; gap:6px"><span class="badge st-end">종료</span><span class="opt o-red">불합격</span></div>
+            <div class="card-company"><svg class="ico sm"><use href="#i-building" /></svg>카카오게임즈</div>
+            <div class="card-foot"><span class="next none">마지막 일정 10/16 면접</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="parts-notes" class="notes">
+      <div class="note"><b>상태 선택</b><ul>
+        <li>세부 단계가 있는 상태(전형 준비·결과 대기)에만 ▸ 표시</li>
+        <li>종료는 구분선 아래에 따로 두어 어디서든 바로 고를 수 있게 (R20)</li>
+        <li>전형 준비 세부 단계를 고르면 위 "전형 일정 창"과 같은 작은 달력이 이어서 뜸, 건너뛰기 가능 (R22)</li>
+      </ul></div>
+      <div class="note"><b>전형 일정 창</b><ul>
+        <li>종류 버튼 → 달력 날짜 클릭으로 바로 저장 (R25)</li>
+        <li>일정이 있는 날은 달력에 작은 점</li>
+        <li>목록의 줄을 누르면 시간·메모 칸이 펼쳐짐, ✕로 삭제 (R26)</li>
+      </ul></div>
+      <div class="note"><b>선택 항목</b><ul>
+        <li>입력하다가 없는 이름이면 "새로 만들기" (R30)</li>
+        <li>항목 옆 ··· 에서 이름 변경·삭제, 아래 8색에서 색 고르기</li>
+        <li>날짜 속성도 전형 일정 창과 같은 작은 달력을 씀 (R32)</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

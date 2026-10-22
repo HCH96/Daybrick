@@ -1,0 +1,40 @@
+/* 그라파이트 바이올렛 색 조합 (docs/ai/features/main-page.md 색 목록) */
+:root {
+  --bg: #17171a;
+  --sidebar: #1c1c20;
+  --surface: #222227;
+  --surface-2: #28282e; /* 눌린 버튼 등 한 단계 밝은 바탕 (지원 관리 목업) */
+  --popup: #1f1f24; /* 팝업·작은 창 바탕 */
+  --border: #33333b;
+  --border-2: #3d3d46; /* 한 단계 밝은 테두리 */
+  --track: #33333b;
+  --text: #ededf2;
+  --muted: #9b9ba8;
+  --faint: #6b6b78; /* 더 흐린 글자 */
+  --accent: #a68cff;
+  --accent-soft: #2d2745;
+  --on-accent: #17171a;
+
+  /* 지원 상태 */
+  --neutral: #cdcdd6;
+  --neutral-soft: #2b2b31;
+  --blue: #7aa8ff;
+  --blue-soft: #1e2740;
+  --amber: #f0b860;
+  --amber-soft: #3a2f1c;
+  --green: #66cf95;
+  --green-soft: #1a3428;
+
+  /* 선택 항목 색: 위 4색(회색·파랑·주황·초록) + 아래 4색 = 8색 팔레트 (지원 관리 목업) */
+  --red: #ff8a8a;
+  --red-soft: #3a1f22;
+  --violet: #c4b2ff;
+  --violet-soft: #2d2745;
+  --teal: #5fd0c8;
+  --teal-soft: #173230;
+  --pink: #f29ad3;
+  --pink-soft: #3a1f33;
+
+  --radius: 12px;
+  --sidebar-width: 200px;
+}

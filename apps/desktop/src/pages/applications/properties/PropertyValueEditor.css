@@ -1,0 +1,136 @@
+/* 값 칸 공통: 누르는 칸(날짜·선택)과 바로 쓰는 칸(텍스트·숫자·URL) 모양을 맞춘다 */
+.prop-cell,
+.prop-input {
+  width: 100%;
+  min-height: 30px;
+  padding: 5px 8px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 20px;
+  text-align: left;
+}
+
+.prop-cell {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.prop-cell:hover,
+.prop-input:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.prop-cell:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.prop-cell--empty {
+  color: var(--faint);
+}
+
+.prop-cell--chips {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.prop-input {
+  display: block;
+  resize: none;
+  overflow: hidden;
+  outline: none;
+}
+
+.prop-input::placeholder {
+  color: var(--faint);
+}
+
+.prop-input:focus {
+  background: var(--bg);
+  box-shadow: 0 0 0 1px var(--border-2) inset;
+}
+
+.prop-input--invalid,
+.prop-input--invalid:focus {
+  box-shadow: 0 0 0 1px #ff8a8a inset;
+}
+
+/* URL: 편집 중이 아니면 밑줄 링크처럼 */
+.prop-url {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+}
+
+.prop-input--url:not(:focus):not(:placeholder-shown) {
+  text-decoration: underline;
+  text-decoration-color: var(--faint);
+  text-underline-offset: 3px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.prop-url__open {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--faint);
+  cursor: pointer;
+}
+
+.prop-url__open:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text);
+}
+
+/* 체크박스 */
+.prop-check {
+  width: 18px;
+  height: 18px;
+  margin: 6px 8px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1.5px solid var(--muted);
+  border-radius: 4px;
+  background: none;
+  color: var(--on-accent);
+  cursor: pointer;
+}
+
+.prop-check--on {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.prop-check:focus-visible,
+.prop-url__open:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 날짜 고르기 창 */
+.date-pop {
+  padding: 10px;
+}
+
+.date-pop__foot {
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-2);
+}

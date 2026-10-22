@@ -1,0 +1,98 @@
+.popover {
+  position: absolute;
+  z-index: 1; /* 같은 층에 먼저 그려진 팝업보다 위 */
+  max-height: calc(100% - 16px);
+  overflow-y: auto;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-2) transparent;
+}
+
+/* ===== 작은 창 안에서 같이 쓰는 모양 ===== */
+
+/* 줄 하나 (메뉴 항목) */
+.pop-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 8px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--text);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pop-row:hover:not(:disabled),
+.pop-row--active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.pop-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.pop-row:disabled {
+  color: var(--faint);
+  cursor: default;
+}
+
+.pop-row--danger {
+  color: #ff8a8a;
+}
+
+.pop-row__check {
+  color: var(--accent);
+  display: flex;
+}
+
+/* 작은 제목 (예: "종류") */
+.pop-caption {
+  padding: 4px 8px 2px;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.pop-sep {
+  height: 1px;
+  margin: 5px 4px;
+  background: var(--border-2);
+}
+
+/* 글자 입력 칸 */
+.pop-input {
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--border-2);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.pop-input:focus {
+  border-color: var(--accent);
+}
+
+.pop-input::placeholder {
+  color: var(--faint);
+}
+
+/* 짧은 안내 문구 */
+.pop-hint {
+  padding: 4px 8px 6px;
+  font-size: 11.5px;
+  color: var(--faint);
+}

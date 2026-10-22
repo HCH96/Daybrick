@@ -1,0 +1,513 @@
+<!doctype html>
+<!-- 목업 목차: 메인 페이지 홈 배치 후보 비교 (보관용)
+  읽는 법: 필요한 ID만 골라 id="ID" 를 검색해 그 구역만 읽는다. CSS는 그 구역의 클래스만 검색한다.
+  결과: B안 승인 (2026-10-22). 승인된 최종 모습은 main-page.html#home 을 본다.
+  ID                  화면                                    요구사항
+  option-a            A. 최대 너비 1280px + 요약 줄            R13–R14
+    option-a-summary    A-1. 요약 줄 4칸                       R13
+    option-a-grid       A-2. 2×2 카드                          R14
+    option-a-notes      A-3. 좋은 점·아쉬운 점                  -
+  option-b            B. A + 벤토 그리드 (승인)                 R13–R15
+    option-b-summary    B-1. 요약 줄 4칸                       R13
+    option-b-grid       B-2. 12칸 벤토 그리드                   R14–R15
+    option-b-notes      B-3. 좋은 점·아쉬운 점                  -
+  option-c            C. 메인 열 + 오른쪽 보조 열               R14
+    option-c-main       C-1. 메인 열 + 보조 열 배치              R14
+    option-c-notes      C-2. 좋은 점·아쉬운 점                  -
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 홈 배치 대안 비교</title>
+<style>
+  :root {
+    --bg: #17171a; --sidebar: #1c1c20; --surface: #222227; --surface-2: #26262c;
+    --border: #33333b; --track: #33333b;
+    --text: #ededf2; --muted: #9b9ba8; --faint: #6b6b78;
+    --accent: #a68cff; --accent-soft: #2d2745; --on-accent: #17171a;
+    --s1: #cdcdd6; --s1-bg: #2b2b31; --s2: #7aa8ff; --s2-bg: #1e2740;
+    --s3: #f0b860; --s3-bg: #3a2f1c; --s4: #66cf95; --s4-bg: #1a3428;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 32px 80px; background: #0d0d0f; color: var(--text);
+    font-family: "Malgun Gothic", "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5;
+  }
+
+  /* ===== 문서 부분 ===== */
+  .doc { max-width: 1160px; margin: 0 auto; }
+  .doc h1 { margin: 0 0 8px; font-size: 24px; }
+  .doc .lead { margin: 0 0 12px; color: var(--muted); }
+  .toc { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 40px; }
+  .toc a { color: var(--accent); text-decoration: none; border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; font-size: 13px; }
+  .option { margin-bottom: 72px; }
+  .option-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  .option-head h2 { margin: 0; font-size: 20px; }
+  .tag { font-size: 12px; font-weight: 700; color: var(--on-accent); background: var(--accent); border-radius: 99px; padding: 2px 10px; }
+  .option-desc { margin: 0 0 16px; color: var(--muted); }
+  .scale-note { font-size: 12px; color: var(--faint); margin-bottom: 8px; }
+  .notes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+  .note { background: var(--sidebar); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 13px; }
+  .note b { display: block; margin-bottom: 6px; font-size: 13px; }
+  .note ul { margin: 0; padding-left: 18px; color: var(--muted); }
+  .note li + li { margin-top: 3px; }
+
+  /* ===== 1920x1080 창 (60%로 축소해서 보여줌) ===== */
+  .frame {
+    zoom: 0.6; width: 1920px; height: 1080px; display: flex; overflow: hidden;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+  }
+
+  /* 사이드바 */
+  .sidebar { width: 200px; flex-shrink: 0; background: var(--sidebar); border-right: 1px solid var(--border);
+    padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 800; padding: 0 8px 20px; }
+  .brick { width: 26px; height: 26px; border-radius: 6px; background: var(--accent); display: grid;
+    grid-template-columns: 1fr 1fr; gap: 2px; padding: 4px; }
+  .brick i { background: rgba(255,255,255,.85); border-radius: 1px; }
+  .nav { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: var(--muted); font-size: 14px; }
+  .nav.on { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+  .ico { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .spacer { flex: 1; }
+  .version { font-size: 11px; color: var(--muted); padding: 0 12px; }
+
+  /* 본문 */
+  .main { flex: 1; min-width: 0; padding: 36px 48px; position: relative; overflow: hidden; }
+  .wrap { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; position: relative; }
+
+  /* 최대 너비 안내선 */
+  .guide { position: absolute; top: -36px; bottom: -2000px; left: 0; right: 0; pointer-events: none;
+    border-left: 1px dashed rgba(166,140,255,.35); border-right: 1px dashed rgba(166,140,255,.35); }
+  .guide span { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); font-size: 11px; color: rgba(166,140,255,.7);
+    background: var(--bg); padding: 0 8px; }
+  .gap-label { position: absolute; top: 50%; font-size: 12px; color: var(--faint); writing-mode: vertical-rl; letter-spacing: 2px; }
+
+  /* 상단 */
+  .head { display: flex; align-items: flex-end; justify-content: space-between; }
+  .date { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  .hello { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.3px; }
+  .quick { display: flex; align-items: center; gap: 8px; width: 340px; height: 40px; padding: 0 14px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--faint); font-size: 13px; }
+  .quick kbd { margin-left: auto; font-family: inherit; font-size: 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; }
+
+  /* 요약 줄 */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; }
+  .kpi .l { font-size: 12px; color: var(--muted); }
+  .kpi .v { font-size: 24px; font-weight: 800; margin-top: 2px; letter-spacing: -0.3px; }
+  .kpi .v small { font-size: 14px; font-weight: 600; color: var(--muted); margin-left: 2px; }
+  .kpi .s { font-size: 12px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kpi .v.accent { color: var(--accent); }
+
+  /* 카드 */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; display: flex; flex-direction: column; min-width: 0; }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .card-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .badge { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .link { font-size: 12px; color: var(--accent); font-weight: 600; }
+
+  .progress { height: 6px; background: var(--track); border-radius: 99px; overflow: hidden; margin-bottom: 8px; }
+  .progress > div { height: 100%; background: var(--accent); border-radius: 99px; }
+  .todo { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .todo:last-child { border-bottom: none; }
+  .check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--muted); flex-shrink: 0; position: relative; }
+  .todo.done .check { background: var(--accent); border-color: var(--accent); }
+  .todo.done .check::after { content: ""; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid var(--on-accent); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .todo.done span { color: var(--muted); text-decoration: line-through; }
+  .todo .meta { margin-left: auto; font-size: 12px; color: var(--faint); }
+  .chip { font-size: 11px; padding: 1px 8px; border-radius: 99px; background: var(--s1-bg); color: var(--s1); }
+
+  .event { display: flex; gap: 14px; padding: 10px 0; }
+  .event .time { width: 48px; font-size: 13px; font-weight: 700; color: var(--muted); padding-top: 1px; }
+  .event .bar { width: 3px; border-radius: 2px; background: var(--border); }
+  .event .t { font-size: 14px; font-weight: 600; }
+  .event .s { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .event.past .t { color: var(--muted); }
+  .event.now .time { color: var(--accent); }
+  .event.now .bar { background: var(--accent); }
+  .now-tag { font-size: 10px; font-weight: 700; color: var(--on-accent); background: var(--accent); padding: 2px 7px; border-radius: 99px; margin-left: 6px; vertical-align: 2px; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+  .stat { border-radius: 10px; padding: 12px 14px; }
+  .stat .n { font-size: 22px; font-weight: 800; }
+  .stat .l { font-size: 12px; margin-top: 2px; }
+  .st1 { background: var(--s1-bg); color: var(--s1); } .st2 { background: var(--s2-bg); color: var(--s2); }
+  .st3 { background: var(--s3-bg); color: var(--s3); } .st4 { background: var(--s4-bg); color: var(--s4); }
+  .sub-title { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .dl { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 13px; border-bottom: 1px solid var(--border); }
+  .dl:last-child { border-bottom: none; }
+  .dday { font-weight: 800; color: var(--accent); font-size: 13px; }
+  .dday.calm { color: var(--muted); font-weight: 700; }
+
+  .focus { display: flex; align-items: center; gap: 24px; }
+  .ring { width: 132px; height: 132px; border-radius: 50%; flex-shrink: 0;
+    background: conic-gradient(var(--accent) 0 65%, var(--track) 65% 100%); display: grid; place-items: center; }
+  .ring > div { width: 108px; height: 108px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; text-align: center; }
+  .ring b { font-size: 26px; font-weight: 800; display: block; line-height: 1.1; }
+  .ring small { font-size: 11px; color: var(--muted); }
+  .frow { display: flex; justify-content: space-between; gap: 16px; font-size: 13px; padding: 3px 0; }
+  .frow span:first-child { color: var(--muted); }
+  .frow span:last-child { font-weight: 700; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; background: var(--accent); color: var(--on-accent);
+    font-weight: 700; font-size: 13px; border-radius: 8px; padding: 8px 14px; }
+  .btn svg { width: 12px; height: 12px; fill: currentColor; }
+
+  /* 주간 띠 달력 */
+  .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+  .day { border-radius: 10px; padding: 10px 12px; text-align: center; border: 1px solid transparent; }
+  .day .w { font-size: 12px; color: var(--muted); }
+  .day .d { font-size: 18px; font-weight: 800; margin: 2px 0 6px; }
+  .day .dots { display: flex; justify-content: center; gap: 4px; height: 6px; }
+  .day .dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); }
+  .day .dots i.a { background: var(--accent); }
+  .day.today { background: var(--accent-soft); border-color: rgba(166,140,255,.35); }
+  .day.today .d, .day.today .w { color: var(--accent); }
+  .day.past .d { color: var(--muted); }
+
+  /* 주간 집중 막대 */
+  .bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; align-items: end; height: 120px; }
+  .bars div { display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+  .bars i { width: 100%; max-width: 28px; border-radius: 6px 6px 3px 3px; background: var(--track); }
+  .bars i.on { background: var(--accent); }
+  .bars i.empty { height: 4px !important; }
+  .bars span { font-size: 11px; color: var(--muted); }
+  .bars .today span { color: var(--accent); font-weight: 700; }
+
+  /* 미니 달력 */
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12px; }
+  .cal .h { color: var(--faint); padding-bottom: 6px; }
+  .cal span { padding: 6px 0; border-radius: 6px; position: relative; }
+  .cal .o { color: var(--faint); }
+  .cal .ev::after { content: ""; position: absolute; bottom: 2px; left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--accent); }
+  .cal .t { background: var(--accent); color: var(--on-accent); font-weight: 800; }
+  .cal .t::after { background: var(--on-accent); }
+
+  /* ===== 배치별 ===== */
+  /* A: 2x2, 높이는 내용에 맞춤 */
+  .grid-a { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+
+  /* B: 12칸 벤토 */
+  .grid-b { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+  .b-todo { grid-column: span 7; grid-row: span 2; }
+  .b-sched { grid-column: span 5; }
+  .b-focus { grid-column: span 5; }
+  .b-apps { grid-column: span 7; }
+  .b-week { grid-column: span 5; }
+
+  /* C: 메인 열 + 오른쪽 보조 열 */
+  .c-wrap { display: flex; gap: 24px; height: 100%; }
+  .c-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+  .c-rail { width: 380px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
+  .c-cols { display: grid; grid-template-columns: 1.15fr 1fr; gap: 20px; align-items: start; }
+</style>
+</head>
+<body>
+<div class="doc">
+  <h1>홈 배치 대안 비교 · 최대화 1920×1080</h1>
+  <p class="lead">
+    정적 화면이며 데이터는 모두 예시 값입니다. 기능이 다 연결된 뒤의 모습으로 채웠습니다.<br>
+    색: 그라파이트 바이올렛 · 사이드바 영어 메뉴 · 이모지 없음 (현재 앱 기준)
+  </p>
+  <div class="toc">
+    <a href="#option-a">A · 최대 너비 + 요약 줄 (추천)</a>
+    <a href="#option-b">B · A + 벤토 그리드</a>
+    <a href="#option-c">C · 메인 열 + 오른쪽 보조 열</a>
+  </div>
+
+  <!-- 공용 사이드바는 각 화면에 복사해서 넣었다 -->
+
+  <!-- ===================== A ===================== -->
+  <section class="option" id="option-a">
+    <div class="option-head"><h2>A · 최대 너비 1280px + 가운데 정렬 + 요약 줄</h2><span class="tag">추천</span></div>
+    <p class="option-desc">본문 폭을 1280px로 제한하고 가운데에 둡니다. 카드는 창 높이에 맞춰 늘리지 않고 내용만큼만 차지합니다. 맨 위 요약 줄로 오늘 상태를 숫자로 먼저 보여줍니다.</p>
+    <div class="scale-note">60% 축소 · 점선은 최대 너비 1280px 경계</div>
+
+    <div class="frame">
+      <nav class="sidebar">
+        <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+        <div class="nav on"><svg class="ico" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</div>
+        <div class="nav"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>Applications</div>
+        <div class="nav"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4M10 2h4"/></svg>Timer</div>
+        <div class="spacer"></div><div class="version">v0.1.0</div>
+      </nav>
+      <main class="main">
+        <div class="wrap">
+          <div class="guide"><span>최대 너비 1280px</span></div>
+          <div class="head">
+            <div><div class="date">2026년 10월 22일 (목)</div><h1 class="hello">좋은 하루예요</h1></div>
+            <div class="quick">할 일 빠르게 추가<kbd>Ctrl N</kbd></div>
+          </div>
+
+          <div id="option-a-summary" class="kpis">
+            <div class="kpi"><div class="l">오늘 할 일</div><div class="v">3<small>/ 5 완료</small></div><div class="s">남은 일 2개</div></div>
+            <div class="kpi"><div class="l">오늘 집중</div><div class="v">2<small>시간</small> 35<small>분</small></div><div class="s">목표 4시간의 65%</div></div>
+            <div class="kpi"><div class="l">다음 일정</div><div class="v accent">14:00</div><div class="s">A사 1차 면접 · 1시간 20분 뒤</div></div>
+            <div class="kpi"><div class="l">가장 가까운 마감</div><div class="v accent">D-2</div><div class="s">C사 백엔드 신입 서류</div></div>
+          </div>
+
+          <div id="option-a-grid" class="grid-a">
+            <section class="card">
+              <div class="card-head"><div class="card-title">오늘 할 일 <span class="badge">3 / 5</span></div><span class="link">캘린더로 가기 →</span></div>
+              <div class="progress"><div style="width:60%"></div></div>
+              <div class="todo done"><div class="check"></div><span>알고리즘 문제 2개 풀기</span></div>
+              <div class="todo done"><div class="check"></div><span>자기소개서 초안 다듬기</span></div>
+              <div class="todo done"><div class="check"></div><span>운영체제 강의 3강 듣기</span></div>
+              <div class="todo"><div class="check"></div><span>포트폴리오 README 정리</span><span class="meta"><span class="chip">포트폴리오</span></span></div>
+              <div class="todo"><div class="check"></div><span>B사 코딩테스트 기출 확인</span><span class="meta"><span class="chip">지원</span></span></div>
+            </section>
+
+            <section class="card">
+              <div class="card-head"><div class="card-title">오늘 일정 <span class="badge">3개</span></div><span class="link">스케줄러로 가기 →</span></div>
+              <div class="event past"><div class="time">10:00</div><div class="bar"></div><div><div class="t">CS 스터디</div><div class="s">10:00 – 12:00 · 온라인</div></div></div>
+              <div class="event now"><div class="time">14:00</div><div class="bar"></div><div><div class="t">A사 1차 면접 <span class="now-tag">다음</span></div><div class="s">14:00 – 15:00 · 화상 면접</div></div></div>
+              <div class="event"><div class="time">19:30</div><div class="bar" style="background:var(--s2)"></div><div><div class="t">헬스장</div><div class="s">19:30 – 20:30</div></div></div>
+            </section>
+
+            <section class="card">
+              <div class="card-head"><div class="card-title">지원 현황 <span class="badge">13건</span></div><span class="link">지원 현황으로 가기 →</span></div>
+              <div class="stats">
+                <div class="stat st1"><div class="n">8</div><div class="l">지원함</div></div>
+                <div class="stat st2"><div class="n">3</div><div class="l">서류 통과</div></div>
+                <div class="stat st3"><div class="n">2</div><div class="l">면접</div></div>
+                <div class="stat st4"><div class="n">0</div><div class="l">최종 합격</div></div>
+              </div>
+              <div class="sub-title">마감 임박</div>
+              <div class="dl"><span>C사 · 백엔드 신입</span><span class="dday">D-2</span></div>
+              <div class="dl"><span>D사 · 클라이언트 개발</span><span class="dday calm">D-5</span></div>
+            </section>
+
+            <section class="card">
+              <div class="card-head"><div class="card-title">오늘 집중 시간</div><span class="link">타이머로 가기 →</span></div>
+              <div class="focus">
+                <div class="ring"><div><div><b>2:35</b><small>목표 4:00</small></div></div></div>
+                <div style="flex:1">
+                  <div class="frow"><span>집중 횟수</span><span>4회</span></div>
+                  <div class="frow"><span>가장 긴 집중</span><span>58분</span></div>
+                  <div class="frow"><span>이번 주 누적</span><span>11시간 20분</span></div>
+                  <span class="btn"><svg viewBox="0 0 12 12"><path d="M3 1.5v9l7.5-4.5z"/></svg>집중 시작</span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div id="option-a-notes" class="notes">
+      <div class="note"><b>좋은 점</b><ul><li>정돈된 느낌이 가장 강하다</li><li>글줄 길이가 적당해서 읽기 편하다</li><li>지금 구조에서 바꿀 것이 가장 적다</li></ul></div>
+      <div class="note"><b>아쉬운 점</b><ul><li>큰 모니터에서 양옆과 아래에 여백이 남는다</li><li>카드 4개의 중요도 차이가 드러나지 않는다</li></ul></div>
+      <div class="note"><b>창이 작을 때 (1200×800)</b><ul><li>최대 너비보다 좁으므로 지금과 거의 같다</li><li>아래가 넘치면 본문만 스크롤된다</li></ul></div>
+    </div>
+  </section>
+
+  <!-- ===================== B ===================== -->
+  <section class="option" id="option-b">
+    <div class="option-head"><h2>B · A + 벤토 그리드 (크기가 다른 카드)</h2></div>
+    <p class="option-desc">A와 같이 최대 너비 1280px에 요약 줄을 두고, 카드 크기를 중요도에 따라 다르게 나눕니다. "오늘 할 일"이 가장 크게 자리 잡고, 주간 집중 그래프가 추가됩니다.</p>
+    <div class="scale-note">60% 축소 · 12칸 격자 (할 일 7칸 × 2줄, 나머지 5칸 또는 7칸)</div>
+
+    <div class="frame">
+      <nav class="sidebar">
+        <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+        <div class="nav on"><svg class="ico" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</div>
+        <div class="nav"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>Applications</div>
+        <div class="nav"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4M10 2h4"/></svg>Timer</div>
+        <div class="spacer"></div><div class="version">v0.1.0</div>
+      </nav>
+      <main class="main">
+        <div class="wrap">
+          <div class="guide"><span>최대 너비 1280px</span></div>
+          <div class="head">
+            <div><div class="date">2026년 10월 22일 (목)</div><h1 class="hello">좋은 하루예요</h1></div>
+            <div class="quick">할 일 빠르게 추가<kbd>Ctrl N</kbd></div>
+          </div>
+
+          <div id="option-b-summary" class="kpis">
+            <div class="kpi"><div class="l">오늘 할 일</div><div class="v">3<small>/ 5 완료</small></div><div class="s">남은 일 2개</div></div>
+            <div class="kpi"><div class="l">오늘 집중</div><div class="v">2<small>시간</small> 35<small>분</small></div><div class="s">목표 4시간의 65%</div></div>
+            <div class="kpi"><div class="l">다음 일정</div><div class="v accent">14:00</div><div class="s">A사 1차 면접 · 1시간 20분 뒤</div></div>
+            <div class="kpi"><div class="l">가장 가까운 마감</div><div class="v accent">D-2</div><div class="s">C사 백엔드 신입 서류</div></div>
+          </div>
+
+          <div id="option-b-grid" class="grid-b">
+            <section class="card b-todo">
+              <div class="card-head"><div class="card-title">오늘 할 일 <span class="badge">3 / 5</span></div><span class="link">캘린더로 가기 →</span></div>
+              <div class="progress"><div style="width:60%"></div></div>
+              <div class="todo"><div class="check"></div><span>포트폴리오 README 정리</span><span class="meta"><span class="chip">포트폴리오</span></span></div>
+              <div class="todo"><div class="check"></div><span>B사 코딩테스트 기출 확인</span><span class="meta"><span class="chip">지원</span></span></div>
+              <div class="todo done"><div class="check"></div><span>알고리즘 문제 2개 풀기</span><span class="meta">09:40 완료</span></div>
+              <div class="todo done"><div class="check"></div><span>자기소개서 초안 다듬기</span><span class="meta">11:15 완료</span></div>
+              <div class="todo done"><div class="check"></div><span>운영체제 강의 3강 듣기</span><span class="meta">12:50 완료</span></div>
+              <div class="sub-title" style="margin-top:18px">내일 할 일</div>
+              <div class="todo"><div class="check"></div><span>C사 지원서 최종 제출</span><span class="meta"><span class="chip">지원</span></span></div>
+              <div class="todo"><div class="check"></div><span>네트워크 스터디 발표 준비</span></div>
+            </section>
+
+            <section class="card b-sched">
+              <div class="card-head"><div class="card-title">오늘 일정 <span class="badge">3개</span></div><span class="link">스케줄러로 가기 →</span></div>
+              <div class="event past"><div class="time">10:00</div><div class="bar"></div><div><div class="t">CS 스터디</div><div class="s">10:00 – 12:00 · 온라인</div></div></div>
+              <div class="event now"><div class="time">14:00</div><div class="bar"></div><div><div class="t">A사 1차 면접 <span class="now-tag">다음</span></div><div class="s">14:00 – 15:00 · 화상 면접</div></div></div>
+              <div class="event"><div class="time">19:30</div><div class="bar" style="background:var(--s2)"></div><div><div class="t">헬스장</div><div class="s">19:30 – 20:30</div></div></div>
+            </section>
+
+            <section class="card b-focus">
+              <div class="card-head"><div class="card-title">오늘 집중 시간</div><span class="link">타이머로 가기 →</span></div>
+              <div class="focus">
+                <div class="ring"><div><div><b>2:35</b><small>목표 4:00</small></div></div></div>
+                <div style="flex:1">
+                  <div class="frow"><span>집중 횟수</span><span>4회</span></div>
+                  <div class="frow"><span>가장 긴 집중</span><span>58분</span></div>
+                  <span class="btn"><svg viewBox="0 0 12 12"><path d="M3 1.5v9l7.5-4.5z"/></svg>집중 시작</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="card b-apps">
+              <div class="card-head"><div class="card-title">지원 현황 <span class="badge">13건</span></div><span class="link">지원 현황으로 가기 →</span></div>
+              <div class="stats">
+                <div class="stat st1"><div class="n">8</div><div class="l">지원함</div></div>
+                <div class="stat st2"><div class="n">3</div><div class="l">서류 통과</div></div>
+                <div class="stat st3"><div class="n">2</div><div class="l">면접</div></div>
+                <div class="stat st4"><div class="n">0</div><div class="l">최종 합격</div></div>
+              </div>
+              <div class="dl"><span>C사 · 백엔드 신입 · 서류 마감</span><span class="dday">D-2</span></div>
+              <div class="dl"><span>D사 · 클라이언트 개발 · 서류 마감</span><span class="dday calm">D-5</span></div>
+            </section>
+
+            <section class="card b-week">
+              <div class="card-head"><div class="card-title">이번 주 집중 <span class="badge">11시간 20분</span></div></div>
+              <div class="bars">
+                <div><i class="on" style="height:64%"></i><span>월</span></div>
+                <div><i class="on" style="height:30%"></i><span>화</span></div>
+                <div><i class="on" style="height:80%"></i><span>수</span></div>
+                <div class="today"><i class="on" style="height:52%"></i><span>목</span></div>
+                <div><i class="empty"></i><span>금</span></div>
+                <div><i class="empty"></i><span>토</span></div>
+                <div><i class="empty"></i><span>일</span></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <div id="option-b-notes" class="notes">
+      <div class="note"><b>좋은 점</b><ul><li>시선이 "오늘 할 일"에서 시작해 자연스럽게 흐른다</li><li>잡지 같은 리듬감이 있어 가장 세련돼 보인다</li><li>A와 같은 폭이라 정돈된 느낌은 유지된다</li></ul></div>
+      <div class="note"><b>아쉬운 점</b><ul><li>카드마다 칸 수를 정해야 해서 손이 더 간다</li><li>할 일이 적은 날은 큰 카드가 비어 보일 수 있다</li></ul></div>
+      <div class="note"><b>창이 작을 때 (1200×800)</b><ul><li>같은 격자를 쓰되 카드가 좁아진다</li><li>더 좁아지면 2열로 단순하게 바꾸는 규칙이 필요하다</li></ul></div>
+    </div>
+  </section>
+
+  <!-- ===================== C ===================== -->
+  <section class="option" id="option-c">
+    <div class="option-head"><h2>C · 메인 열 + 오른쪽 보조 열</h2></div>
+    <p class="option-desc">최대 너비를 두지 않고 화면을 다 씁니다. 왼쪽 넓은 열에는 오늘의 흐름(주간 띠 달력, 할 일, 일정), 오른쪽 380px 보조 열에는 상태 요약(집중, 지원, 이번 달)을 둡니다.</p>
+    <div class="scale-note">60% 축소 · 오른쪽 보조 열 380px 고정, 메인 열이 남는 폭을 차지</div>
+
+    <div class="frame">
+      <nav class="sidebar">
+        <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+        <div class="nav on"><svg class="ico" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</div>
+        <div class="nav"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>Applications</div>
+        <div class="nav"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4M10 2h4"/></svg>Timer</div>
+        <div class="spacer"></div><div class="version">v0.1.0</div>
+      </nav>
+      <main class="main">
+        <div id="option-c-main" class="c-wrap">
+          <div class="c-main">
+            <div class="head">
+              <div><div class="date">2026년 10월 22일 (목)</div><h1 class="hello">좋은 하루예요</h1></div>
+              <div class="quick">할 일 빠르게 추가<kbd>Ctrl N</kbd></div>
+            </div>
+
+            <section class="card">
+              <div class="card-head"><div class="card-title">이번 주 <span class="badge">10월 19일 – 25일</span></div><span class="link">캘린더로 가기 →</span></div>
+              <div class="week">
+                <div class="day past"><div class="w">월</div><div class="d">19</div><div class="dots"><i></i><i></i></div></div>
+                <div class="day past"><div class="w">화</div><div class="d">20</div><div class="dots"><i></i></div></div>
+                <div class="day past"><div class="w">수</div><div class="d">21</div><div class="dots"><i></i><i></i><i></i></div></div>
+                <div class="day today"><div class="w">목</div><div class="d">22</div><div class="dots"><i class="a"></i><i class="a"></i><i class="a"></i></div></div>
+                <div class="day"><div class="w">금</div><div class="d">23</div><div class="dots"><i></i></div></div>
+                <div class="day"><div class="w">토</div><div class="d">24</div><div class="dots"><i class="a"></i></div></div>
+                <div class="day"><div class="w">일</div><div class="d">25</div><div class="dots"></div></div>
+              </div>
+            </section>
+
+            <div class="c-cols">
+              <section class="card">
+                <div class="card-head"><div class="card-title">오늘 할 일 <span class="badge">3 / 5</span></div><span class="link">캘린더로 가기 →</span></div>
+                <div class="progress"><div style="width:60%"></div></div>
+                <div class="todo"><div class="check"></div><span>포트폴리오 README 정리</span><span class="meta"><span class="chip">포트폴리오</span></span></div>
+                <div class="todo"><div class="check"></div><span>B사 코딩테스트 기출 확인</span><span class="meta"><span class="chip">지원</span></span></div>
+                <div class="todo done"><div class="check"></div><span>알고리즘 문제 2개 풀기</span><span class="meta">09:40</span></div>
+                <div class="todo done"><div class="check"></div><span>자기소개서 초안 다듬기</span><span class="meta">11:15</span></div>
+                <div class="todo done"><div class="check"></div><span>운영체제 강의 3강 듣기</span><span class="meta">12:50</span></div>
+              </section>
+
+              <section class="card">
+                <div class="card-head"><div class="card-title">오늘 일정 <span class="badge">3개</span></div><span class="link">스케줄러로 가기 →</span></div>
+                <div class="event past"><div class="time">10:00</div><div class="bar"></div><div><div class="t">CS 스터디</div><div class="s">10:00 – 12:00 · 온라인</div></div></div>
+                <div class="event now"><div class="time">14:00</div><div class="bar"></div><div><div class="t">A사 1차 면접 <span class="now-tag">다음</span></div><div class="s">14:00 – 15:00 · 화상 면접</div></div></div>
+                <div class="event"><div class="time">19:30</div><div class="bar" style="background:var(--s2)"></div><div><div class="t">헬스장</div><div class="s">19:30 – 20:30</div></div></div>
+              </section>
+            </div>
+          </div>
+
+          <aside class="c-rail">
+            <section class="card">
+              <div class="card-head"><div class="card-title">오늘 집중 시간</div><span class="link">타이머 →</span></div>
+              <div class="focus">
+                <div class="ring"><div><div><b>2:35</b><small>목표 4:00</small></div></div></div>
+                <div style="flex:1">
+                  <div class="frow"><span>집중 횟수</span><span>4회</span></div>
+                  <div class="frow"><span>가장 긴</span><span>58분</span></div>
+                  <span class="btn"><svg viewBox="0 0 12 12"><path d="M3 1.5v9l7.5-4.5z"/></svg>집중 시작</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-head"><div class="card-title">지원 현황 <span class="badge">13건</span></div><span class="link">지원 현황 →</span></div>
+              <div class="stats" style="grid-template-columns:repeat(2,1fr)">
+                <div class="stat st1"><div class="n">8</div><div class="l">지원함</div></div>
+                <div class="stat st2"><div class="n">3</div><div class="l">서류 통과</div></div>
+                <div class="stat st3"><div class="n">2</div><div class="l">면접</div></div>
+                <div class="stat st4"><div class="n">0</div><div class="l">최종 합격</div></div>
+              </div>
+              <div class="dl"><span>C사 · 백엔드 신입</span><span class="dday">D-2</span></div>
+              <div class="dl"><span>D사 · 클라이언트</span><span class="dday calm">D-5</span></div>
+            </section>
+
+            <section class="card">
+              <div class="card-head"><div class="card-title">2026년 10월</div></div>
+              <div class="cal">
+                <div class="h">일</div><div class="h">월</div><div class="h">화</div><div class="h">수</div><div class="h">목</div><div class="h">금</div><div class="h">토</div>
+                <span class="o">27</span><span class="o">28</span><span class="o">29</span><span class="o">30</span><span>1</span><span>2</span><span>3</span>
+                <span>4</span><span>5</span><span class="ev">6</span><span>7</span><span>8</span><span class="ev">9</span><span>10</span>
+                <span>11</span><span>12</span><span>13</span><span class="ev">14</span><span>15</span><span>16</span><span>17</span>
+                <span>18</span><span class="ev">19</span><span>20</span><span class="ev">21</span><span class="t ev">22</span><span>23</span><span class="ev">24</span>
+                <span>25</span><span>26</span><span class="ev">27</span><span>28</span><span>29</span><span class="ev">30</span><span>31</span>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <div id="option-c-notes" class="notes">
+      <div class="note"><b>좋은 점</b><ul><li>넓은 화면을 빈틈없이 쓴다</li><li>"오늘 할 일·일정"과 "상태 요약"이 역할별로 나뉜다</li><li>Calendar, Applications 같은 다른 화면에도 같은 틀을 쓸 수 있다</li></ul></div>
+      <div class="note"><b>아쉬운 점</b><ul><li>보여주는 정보가 많아 A·B보다 덜 차분하다</li><li>아주 넓은 모니터에서는 메인 열의 글줄이 길어진다</li></ul></div>
+      <div class="note"><b>창이 작을 때 (1200×800)</b><ul><li>메인 열이 약 550px로 좁아져 할 일·일정을 위아래로 쌓아야 한다</li><li>보조 열을 접거나 아래로 내리는 규칙이 필요하다</li></ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

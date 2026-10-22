@@ -1,0 +1,69 @@
+/* 홈과 같이 본문은 최대 1280px, 가운데 정렬 */
+.applications-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.applications-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.applications-header__title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.applications-header__sub {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.applications-header__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.applications-header__new {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.applications-header__new:hover {
+  filter: brightness(1.08);
+}
+
+.applications-header__new:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.applications-page__notice {
+  padding: 48px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.applications-page__notice--error {
+  color: #ff8a8a;
+}

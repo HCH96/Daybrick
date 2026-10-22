@@ -1,0 +1,36 @@
+.next-event {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.next-event b {
+  flex-shrink: 0;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.next-event__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.next-event--deadline,
+.next-event--deadline b {
+  color: var(--muted);
+}
+
+.next-event--urgent b {
+  color: #ff8a8a;
+}
+
+.next-event--none {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--faint);
+}

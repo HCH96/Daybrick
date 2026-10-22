@@ -1,0 +1,95 @@
+.prop-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.prop-row {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  align-items: start;
+  min-height: 34px;
+  padding: 2px 0;
+  border-radius: 6px;
+}
+
+.prop-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* 이름 칸: 누르면 메뉴 */
+.prop-row__name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 30px;
+  padding: 0 6px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.prop-row__name:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+}
+
+.prop-row__name:focus-visible,
+.add-prop:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.prop-row__icon {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--faint);
+}
+
+.prop-row__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prop-row__value {
+  min-width: 0;
+}
+
+.add-prop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 8px 6px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--faint);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.add-prop:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+}
+
+/* 속성 메뉴·속성 추가 창 */
+.prop-menu {
+  padding: 6px;
+}
+
+.prop-menu .pop-input {
+  margin-bottom: 4px;
+}
+
+.type-list__icon {
+  display: flex;
+  color: var(--muted);
+}

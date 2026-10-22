@@ -1,0 +1,69 @@
+.segmented {
+  display: flex;
+  padding: 3px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.segmented__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.segmented__item:hover {
+  color: var(--text);
+}
+
+.segmented__item--on {
+  background: var(--surface-2);
+  color: var(--text);
+  box-shadow: 0 0 0 1px var(--border-2) inset;
+}
+
+/* ===== 밑줄 탭 (variant="tabs") ===== */
+.segmented-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.segmented-tabs__item {
+  padding: 8px 12px 10px;
+  margin-bottom: -1px; /* 아래 구분선 위에 밑줄이 겹치도록 */
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  font-size: 14px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.segmented-tabs__item:hover {
+  color: var(--text);
+}
+
+.segmented-tabs__item--on {
+  color: var(--text);
+  font-weight: 700;
+  border-bottom-color: var(--accent);
+}
+
+.segmented-tabs__count {
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--faint);
+}
+
+.segmented-tabs__item--on .segmented-tabs__count {
+  color: var(--accent);
+}

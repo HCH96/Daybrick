@@ -1,0 +1,38 @@
+/* 비활성 상태: 흐리게, 눌러도 반응 없음 */
+.quick-add {
+  width: 340px;
+  height: 40px;
+  flex-shrink: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.quick-add svg {
+  flex-shrink: 0;
+}
+
+.quick-add__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  cursor: not-allowed;
+}
+
+.quick-add__input::placeholder {
+  color: var(--muted);
+}

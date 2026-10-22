@@ -1,0 +1,132 @@
+.option-picker {
+  padding: 8px;
+}
+
+/* 고른 항목 칩 + 입력 칸 */
+.option-picker__input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  margin-bottom: 6px;
+  padding: 5px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 7px;
+  background: var(--bg);
+}
+
+.option-picker__text {
+  flex: 1;
+  min-width: 60px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.option-picker__text::placeholder {
+  color: var(--faint);
+}
+
+.option-picker__list {
+  display: flex;
+  flex-direction: column;
+  max-height: 240px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-2) transparent;
+}
+
+.option-picker__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 32px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.option-picker__row--active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.option-picker__create {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--muted);
+}
+
+.option-picker__tail {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.option-picker__dots {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+  background: none;
+  color: var(--faint);
+  cursor: pointer;
+}
+
+.option-picker__dots:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+
+.option-picker__dots:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* 8색 팔레트 */
+.color-palette {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  padding: 6px 6px 4px;
+}
+
+.color-palette__swatch {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.color-palette__swatch--on,
+.color-palette__swatch:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--surface-2),
+    0 0 0 4px var(--text);
+}
+
+.option-menu {
+  padding: 8px;
+}
+
+.pop-row__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

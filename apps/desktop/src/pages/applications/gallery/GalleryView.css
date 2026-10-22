@@ -1,0 +1,43 @@
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  /* 열 수를 창 폭이 아니라 본문 폭으로 정한다 (사이드바를 접고 펴도 맞게) */
+  container-type: inline-size;
+}
+
+.gallery__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+.gallery__sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* 기본 4열 */
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* 본문 폭이 좁으면 3열 (카드 한 장이 200px 아래로 줄어들 때쯤) */
+@container (max-width: 860px) {
+  .gallery__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.gallery__empty {
+  padding: 48px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+}
