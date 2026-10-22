@@ -201,7 +201,7 @@
 .cal-ev--awaiting { color: var(--green); background: var(--green-soft); }
 .cal-ev--closed { color: var(--muted); background: var(--neutral-soft); }
 
-/* 지원 준비 카드의 마감일: 바탕 없이 점선 테두리 + 회색 글자 (R8) */
+/* 지원 준비 카드의 지원 마감: 바탕 없이 점선 테두리 + 회색 글자 (R8) */
 .cal-ev--deadline {
   color: var(--muted);
   background: transparent;

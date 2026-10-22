@@ -2,7 +2,7 @@ import MiniCalendar from "../../../components/common/MiniCalendar";
 import { EVENT_KIND_LABELS } from "../../../features/applications/statuses";
 import type { StageId } from "../../../features/applications/types";
 
-/** 세부 단계 → 창 제목에 쓸 일정 이름 (과제는 마감일을 고른다) */
+/** 세부 단계 → 창 제목에 쓸 일정 이름 (과제는 과제 마감 날짜를 고른다) */
 const TITLE: Record<StageId, string> = {
   assignment: EVENT_KIND_LABELS["assignment-due"],
   "coding-test": EVENT_KIND_LABELS["coding-test"],

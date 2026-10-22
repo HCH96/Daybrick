@@ -17,11 +17,11 @@ export interface ApplicationsStore {
   deleteApplication: (id: string) => void;
   /** 카드 하나의 속성 값 하나를 바꾼다. null = 없음 (R31) */
   setValue: (id: string, propertyId: string, value: PropertyValue) => void;
-  /** 상태를 바꾼다. 지원 완료면 오늘 일정·지원일을 채운다 (R18~R21, transitions.ts) */
+  /** 상태를 바꾼다. 지원 완료는 상태만 바꾸고 일정을 만들지 않는다 (R18~R21, transitions.ts) */
   changeStatus: (id: string, status: StatusId, stage: StageId | null) => void;
   /** 전형 준비 세부 단계의 날짜를 고르면 그 전형 일정을 만든다 (R22) */
   addStageEvent: (id: string, stage: StageId, date: string) => void;
-  /** 📅 창에서 종류·날짜로 일정을 추가한다. 같은 종류도 여러 개 가능 (R25·R27) */
+  /** 📅 창에서 종류·날짜로 일정을 추가한다. 같은 종류도 여러 개 가능, 지원 마감은 카드당 하나라 날짜만 바뀐다 (R25·R27·R39) */
   addEvent: (id: string, kind: EventKind, date: string) => void;
   /** 저장된 일정의 날짜·시간·메모를 고친다 (R26) */
   updateEvent: (id: string, event: ScheduleEvent) => void;
