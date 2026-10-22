@@ -6,7 +6,8 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             storage::load_applications,
-            storage::save_applications
+            storage::save_applications,
+            storage::save_image
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

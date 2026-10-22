@@ -4,6 +4,7 @@ import Modal from "../../../components/common/Modal";
 import { CloseIcon, MaximizeIcon, RestoreIcon, TrashIcon } from "../../../components/icons/DialogIcons";
 import { useApplications } from "../../../features/applications/store";
 import PropertyList from "../properties/PropertyList";
+import MarkdownBody from "./MarkdownBody";
 import SaveStateLabel from "./SaveStateLabel";
 import StatusRow from "./StatusRow";
 import TitleInput from "./TitleInput";
@@ -17,7 +18,7 @@ interface ApplicationDetailModalProps {
 /**
  * 카드 상세 팝업 (R12~R16).
  * 머리: 왼쪽 최대화 / 오른쪽 저장 표시 → 삭제 → 닫기.
- * 내용: 제목 → 상태 배지 → 속성 목록 → (본문은 7단계에서 채움) (R14)
+ * 내용: 제목 → 상태 배지 → 속성 목록 → 본문 (R14)
  */
 function ApplicationDetailModal({ applicationId, onClose }: ApplicationDetailModalProps) {
   const { state, saveStatus, updateApplication, deleteApplication } = useApplications();
@@ -72,8 +73,11 @@ function ApplicationDetailModal({ applicationId, onClose }: ApplicationDetailMod
           <StatusRow application={application} properties={properties} />
           <PropertyList application={application} properties={properties} />
           <div className="detail-modal__divider" />
-          {/* 본문 편집기(7단계)를 만들기 전까지 쓰는 임시 안내 */}
-          <div className="detail-modal__placeholder">본문은 다음 단계에서 만들어요</div>
+          <MarkdownBody
+            key={application.id}
+            initialValue={application.body}
+            onChange={(body) => updateApplication(application.id, { body })}
+          />
         </div>
       </div>
 
