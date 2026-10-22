@@ -17,7 +17,7 @@ $ARGUMENTS
 내가 초안을 승인하면:
 - docs/features/<기능명>/ai/spec/ 아래에 "명세서 양식"의 파일들로 나눠 저장
 - 기능 허브 docs/features/<기능명>/index.md를 만들기 (아래 "기능 허브 양식")
-- 진행 기록 docs/features/<기능명>/ai/logs/index.md와 L01.md "명세" 항목을 남기기 (/implement 명령의 "진행 기록 쓰는 법")
+- 진행 기록 docs/features/<기능명>/ai/logs/index.md와 L01.md "명세" 항목을 남기기 (docs/common/ai/formats/record-format.md의 "진행 기록 쓰는 법")
 - PROJECT.md의 기능별 상태 표에 기능 허브 경로를 기록
 - DOCS_INDEX.md의 기능 목록에 기능 허브 경로와 한 줄 설명을 추가
 
@@ -37,7 +37,7 @@ $ARGUMENTS
 | data.md | 다룰 데이터: 항목, 종류, 저장 위치 |
 | scope.md | 이번 범위에서 제외하는 것, 나중에 고려할 것 |
 | mockup.md | /mockup 명령이 채운다: 목업 경로(승인 날짜), "목업에서 정한 것", 목업에 넣은 추가 제안 |
-| decisions.md | 결정 사항. 형식: `D번호. 내용 (적용: 계획 단계 범위 또는 "이후 전체") (기록: L번호)`. /implement 명령의 "결정 올리기"를 따른다 |
+| decisions.md | 결정 사항. 형식: `D번호. 내용 (적용: 계획 단계 범위 또는 "이후 전체") (기록: L번호)`. docs/common/ai/formats/record-format.md의 "결정 올리기"를 따른다 |
 
 - 기능에 꼭 필요한 추가 내용(예: 확장 구조, 파일 구조, 창 설정, 완료 기준)은 extension.md, files.md, window.md, done.md처럼 따로 파일을 만들고 index.md 표에 올린다.
 - 묶음 파일 이름은 영어 소문자·하이픈으로 짓는다 (예: req-gallery.md, req-status.md). 묶음이 아주 작으면(R 2~3개) 가까운 묶음과 한 파일에 둘 수 있다.

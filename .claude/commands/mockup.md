@@ -70,4 +70,4 @@ human/mockups/
 내가 목업을 승인하면 다음을 해줘.
 - 명세서 ai/spec/mockup.md에 목업 경로(승인 날짜)와 "목업에서 정한 것"을 기록하고, ai/spec/index.md 표에 올리기
 - 기능 허브(index.md)의 목업 칸에 human/mockups/index.html 링크 추가 (화면별 설명은 목업 목차에만 둔다)
-- 진행 기록에 "목업" 항목을 남기기 (/implement 명령의 "진행 기록 쓰는 법". 기록이 아직 없으면 만든다)
+- 진행 기록에 "목업" 항목을 남기기 (docs/common/ai/formats/record-format.md의 "진행 기록 쓰는 법". 기록이 아직 없으면 만든다)

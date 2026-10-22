@@ -13,4 +13,5 @@
 
 ## 공용 문서 (docs/common)
 - [docs/common/ai/setup/desktop-setup.md](docs/common/ai/setup/desktop-setup.md): PC 앱(Tauri 2 + React + TS) 개발 환경 설치와 프로젝트 생성 기록
-- [docs/common/ai/token-reports/index.md](docs/common/ai/token-reports/index.md): `/implement` 실행별 토큰 사용량·컨텍스트 증가 원인 보고서 목차
+- [docs/common/ai/formats/record-format.md](docs/common/ai/formats/record-format.md): 진행 기록(logs)·결정(decisions.md) 양식, 모든 명령이 공용
+- [docs/common/ai/token-reports/index.md](docs/common/ai/token-reports/index.md): 요청할 때 만드는 세션별 토큰 사용량·컨텍스트 증가 원인 보고서 목차

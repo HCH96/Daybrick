@@ -25,6 +25,6 @@ argument-hint: <기능명>
   - step-NN.md: 단계 하나당 파일 하나. 요구사항(R), 목업 화면 파일, 할 일, 확인할 결과, 이 단계에서 만들거나 고칠 파일만 적는다
 - ai/spec/index.md의 "다른 문서"에 계획 경로(승인 날짜)와 계획에서 정한 것 한두 줄을 기록
 - 기능 허브(index.md)의 구현 계획 칸에 ai/plan/index.md 링크 추가
-- 진행 기록에 "계획" 항목을 남기기 (/implement 명령의 "진행 기록 쓰는 법")
-- 계획 중 정한 결정 중 앞으로 지켜야 할 것은 ai/spec/decisions.md에 D 번호로 올리기 (/implement 명령의 "결정 올리기")
+- 진행 기록에 "계획" 항목을 남기기 (docs/common/ai/formats/record-format.md의 "진행 기록 쓰는 법")
+- 계획 중 정한 결정 중 앞으로 지켜야 할 것은 ai/spec/decisions.md에 D 번호로 올리기 (docs/common/ai/formats/record-format.md의 "결정 올리기")
 - 같은 기능에 새 계획을 세울 때(이전 계획이 구현·테스트까지 끝난 뒤): 이전 plan/ 폴더를 archive/plan-<짧은 이름>/으로 옮기고 새 plan/을 만든다
