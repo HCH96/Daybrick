@@ -49,14 +49,17 @@ export function filterByTab(applications: readonly Application[], tab: GalleryTa
 }
 
 /**
- * 지원 마감이 가까운 순으로 정렬한 새 배열을 돌려준다. 지원 마감이 없는 카드는 맨 뒤 (R5).
- * 지원 마감이 같거나 둘 다 없으면 먼저 만든 카드가 앞에 온다.
- * (카드에 보이는 날짜 순 정렬은 수정1 2단계에서 바꾼다)
+ * 카드 아래쪽 줄에 보이는 날짜(R38)가 가까운 순으로 정렬한 새 배열 (R5).
+ * 날짜가 없는 카드("지원 완료", "예정된 일정 없음", 종료 카드)는 맨 뒤.
+ * 날짜가 같거나 둘 다 없으면 먼저 만든 카드가 앞에 온다.
  */
-export function sortByDeadline(applications: readonly Application[]): Application[] {
+export function sortByNextDate(applications: readonly Application[], today: Date): Application[] {
+  const keys = new Map(
+    applications.map((a) => [a.id, a.status === "closed" ? null : getNextItemDate(getNextItem(a, today))] as const),
+  );
   return [...applications].sort((a, b) => {
-    const da = getApplicationDueDate(a);
-    const db = getApplicationDueDate(b);
+    const da = keys.get(a.id) ?? null;
+    const db = keys.get(b.id) ?? null;
     if (da !== db) {
       if (da === null) return 1;
       if (db === null) return -1;
@@ -74,24 +77,37 @@ function eventSortKey(event: ScheduleEvent): string {
 }
 
 /**
- * 카드에 보여줄 다음 일정.
- * - event: 오늘 이후(오늘 포함) 가장 가까운 전형 일정 (보라색 D-day). 지원 마감은 넣지 않는다.
- * - deadline: 지원 준비 카드의 지원 마감 (회색 "D-n 마감")
- * 둘 다 있으면 더 가까운 쪽. days는 오늘부터 남은 일 수 (0 = 당일).
+ * 카드 아래쪽 줄과 📅 옆에 보여줄 다음 일정 (R38·R24).
+ * - event: 오늘 이후(오늘 포함) 가장 가까운 전형 일정 (보라색 D-day)
+ * - deadline: 지원 준비 카드의 지원 마감 (회색 "D-n 지원 마감")
+ * - applied: 지원 완료 카드에 남은 전형 일정이 없을 때 (카드는 파랑 "지원 완료", 📅 옆은 비움)
+ * days는 오늘부터 남은 일 수 (0 = 당일).
  */
 export type NextItem =
   | { kind: "event"; event: ScheduleEvent; days: number }
-  | { kind: "deadline"; date: string; days: number };
+  | { kind: "deadline"; date: string; days: number }
+  | { kind: "applied" };
 
-/** includeDeadline이 false면 지원 마감은 보지 않는다 (📅 옆 표시용, 수정1 2단계에서 규칙을 합친다) */
-export function getNextItem(application: Application, today: Date, includeDeadline = true): NextItem | null {
+/** 다음 일정의 날짜 (정렬용). 날짜가 없으면 null. */
+function getNextItemDate(item: NextItem | null): string | null {
+  if (!item || item.kind === "applied") return null;
+  return item.kind === "event" ? item.event.date : item.date;
+}
+
+/**
+ * 상태별 다음 일정 (R38).
+ * - 지원 준비: 지원 마감과 다음 전형 일정 중 더 가까운 것
+ * - 지원 완료: 지원 마감은 보지 않는다. 남은 전형 일정, 없으면 applied
+ * - 전형 준비·결과 대기·종료: 다음 전형 일정, 없으면 null (종료 카드 아래쪽 줄은 getLastEvent로 따로 그린다)
+ */
+export function getNextItem(application: Application, today: Date): NextItem | null {
   const todayKey = toDateKey(today);
 
   const upcoming = application.events
     .filter((e) => !isApplicationDue(e) && e.date >= todayKey)
     .sort((a, b) => eventSortKey(a).localeCompare(eventSortKey(b)))[0];
 
-  const deadline = includeDeadline && application.status === "preparing" ? getApplicationDueDate(application) : null;
+  const deadline = application.status === "preparing" ? getApplicationDueDate(application) : null;
   const deadlineUpcoming = deadline !== null && deadline >= todayKey ? deadline : null;
 
   if (upcoming && (deadlineUpcoming === null || upcoming.date <= deadlineUpcoming)) {
@@ -100,6 +116,7 @@ export function getNextItem(application: Application, today: Date, includeDeadli
   if (deadlineUpcoming !== null) {
     return { kind: "deadline", date: deadlineUpcoming, days: daysUntil(deadlineUpcoming, today) };
   }
+  if (application.status === "applied") return { kind: "applied" };
   return null;
 }
 

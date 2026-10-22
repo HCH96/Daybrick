@@ -12,10 +12,16 @@ function formatDDay(days: number): string {
   return days === 0 ? "D-day" : `D-${days}`;
 }
 
-/** 다음 일정 한 줄: 전형 일정은 보라색 "D-3 코딩테스트", 지원 준비 마감일은 회색 "D-5 마감" */
+/**
+ * 다음 일정 한 줄 (R38): 전형 일정은 보라색 "D-3 코딩테스트", 지원 마감은 회색 "D-5 지원 마감",
+ * 지원 완료는 파랑 "지원 완료". emptyText가 없으면(📅 옆) 날짜 없는 경우는 그리지 않는다 (R24).
+ */
 function NextEventLabel({ item, emptyText }: NextEventLabelProps) {
   if (!item) {
     return emptyText ? <span className="next-event next-event--none">{emptyText}</span> : null;
+  }
+  if (item.kind === "applied") {
+    return emptyText ? <span className="next-event next-event--applied">지원 완료</span> : null;
   }
 
   const classes = ["next-event"];
@@ -25,7 +31,7 @@ function NextEventLabel({ item, emptyText }: NextEventLabelProps) {
   const text =
     item.kind === "event"
       ? `${EVENT_KIND_LABELS[item.event.kind]}${item.event.time ? ` ${item.event.time}` : ""}`
-      : "마감";
+      : EVENT_KIND_LABELS["application-due"];
 
   return (
     <span className={classes.join(" ")}>

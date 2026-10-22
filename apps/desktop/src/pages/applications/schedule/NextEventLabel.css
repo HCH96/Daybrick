@@ -29,6 +29,10 @@
   color: #ff8a8a;
 }
 
+.next-event--applied {
+  color: var(--blue);
+}
+
 .next-event--none {
   font-size: 12px;
   font-weight: 400;

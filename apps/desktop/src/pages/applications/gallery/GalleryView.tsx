@@ -2,8 +2,9 @@ import { useMemo } from "react";
 import SegmentedControl, { type SegmentOption } from "../../../components/common/SegmentedControl";
 import { SortIcon } from "../../../components/icons/ApplicationIcons";
 import { findPropertyByRole } from "../../../features/applications/properties";
-import { filterByTab, sortByDeadline, type GalleryTab } from "../../../features/applications/schedule";
+import { filterByTab, sortByNextDate, type GalleryTab } from "../../../features/applications/schedule";
 import type { Application, PropertyDef } from "../../../features/applications/types";
+import { parseDateKey, toDateKey } from "../../../utils/date";
 import ApplicationCard, { type CardProperties } from "./ApplicationCard";
 import "./GalleryView.css";
 
@@ -21,7 +22,7 @@ const EMPTY_TEXT: Record<GalleryTab, string> = {
   all: "아직 지원 카드가 없어요. 오른쪽 위 \"새 지원\"으로 카드를 만들어 보세요.",
 };
 
-/** 갤러리: 진행 중·종료·전체 탭 + 마감일 순 카드 바둑판 (R3~R5) */
+/** 갤러리: 진행 중·종료·전체 탭 + 일정 가까운 순 카드 바둑판 (R3~R5) */
 function GalleryView({ applications, properties, tab, onTabChange, onOpen }: GalleryViewProps) {
   const cardProperties = useMemo<CardProperties>(
     () => ({
@@ -32,7 +33,13 @@ function GalleryView({ applications, properties, tab, onTabChange, onOpen }: Gal
     [properties],
   );
 
-  const visible = useMemo(() => sortByDeadline(filterByTab(applications, tab)), [applications, tab]);
+  const today = new Date();
+  const todayKey = toDateKey(today);
+  // 보이는 날짜 순 정렬 (R5). 날짜가 바뀌면(todayKey) 다시 정렬한다.
+  const visible = useMemo(
+    () => sortByNextDate(filterByTab(applications, tab), parseDateKey(todayKey)),
+    [applications, tab, todayKey],
+  );
 
   const tabOptions: SegmentOption<GalleryTab>[] = [
     { value: "active", label: "진행 중", count: filterByTab(applications, "active").length },
@@ -40,15 +47,13 @@ function GalleryView({ applications, properties, tab, onTabChange, onOpen }: Gal
     { value: "all", label: "전체", count: applications.length },
   ];
 
-  const today = new Date();
-
   return (
     <section className="gallery">
       <div className="gallery__toolbar">
         <SegmentedControl options={tabOptions} value={tab} onChange={onTabChange} ariaLabel="지원 거르기" variant="tabs" />
         <div className="gallery__sort">
           <SortIcon />
-          마감일 가까운 순
+          일정 가까운 순
         </div>
       </div>
       {visible.length === 0 ? (

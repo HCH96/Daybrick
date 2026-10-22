@@ -12,13 +12,13 @@ interface ScheduleButtonProps {
 }
 
 /**
- * 상태 배지 옆 📅 버튼 (R24·R25). 옆에 앞으로 남은 전형 일정 하나만 보여준다.
- * 지원 마감은 아직 넣지 않는다 (수정1 2단계에서 카드와 같은 규칙으로 바꾼다).
+ * 상태 배지 옆 📅 버튼 (R24·R25). 옆에 카드 아래쪽 줄과 같은 규칙(R38)으로 다음 일정 하나를 보여준다.
+ * "지원 완료"·"예정된 일정 없음"이면 아무것도 보이지 않는다 (NextEventLabel에 emptyText를 주지 않음).
  */
 function ScheduleButton({ application }: ScheduleButtonProps) {
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = useState(false);
-  const next = getNextItem(application, new Date(), false);
+  const next = getNextItem(application, new Date());
 
   return (
     <>
