@@ -25,5 +25,5 @@
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (2026-10-22 승인, 10단계). 계획에서 정한 것: JSON 파일 저장 + `images/` 폴더, Tiptap 편집기, 역할 있는 기본 속성(마감일·지원일·우선순위·결과·회사)은 종류 변경 금지, 홈 요약 줄 "지원 관리" 칸에 진행 중 개수 표시
-- 테스트 문서: (아직 없음)
+- 테스트 문서: AI 테스트 [../tests/r1/index.md](../tests/r1/index.md), 사용자 테스트 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md) (r1, 2026-10-23)
 - 진행 기록: [../logs/index.md](../logs/index.md)
