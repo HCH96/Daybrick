@@ -1,7 +1,7 @@
 # 지원 관리 (applications)
 지원한 채용 공고를 카드로 정리하고, 상태와 전형 일정을 갤러리와 달력으로 관리한다.
 
-- 상태: 수정 구현 완료 (테스트 대기)
+- 상태: 수정1 완료 (테스트 r2 통과)
 - 이어서 작업할 때: [notes.md](notes.md)만 먼저 읽는다. 읽을 파일이 다 적혀 있다.
 
 ## 문서 색인 (필요한 색인만 열고, 거기서 필요한 파일만 읽기)
@@ -11,10 +11,11 @@
 | 구현 계획 | [ai/plan/index.md](ai/plan/index.md) | 수정 계획 수정1 (근거 L18): 결정·작은 규칙, 단계별 파일 step-01~05 |
 | 진행 기록 | [ai/logs/index.md](ai/logs/index.md) | 기록 목차, 항목별 파일 L01~ |
 | 목업 | [human/mockups/index.html](human/mockups/index.html) | 화면별 파일 (갤러리, 달력, 팝업, 작은 창 7개) |
-| AI 테스트 | [ai/tests/r1/index.md](ai/tests/r1/index.md) | r1 (2026-10-23): 16개 모두 통과 |
-| 사용자 테스트 | [human/tests/r1-user-test.md](human/tests/r1-user-test.md) | r1 체크리스트 35개 (통과 29, 실패 3, 판정 없음 3) |
+| AI 테스트 | [ai/tests/r2/index.md](ai/tests/r2/index.md) | r2 (2026-10-23, 수정1): 16개 모두 통과 |
+| 사용자 테스트 | [human/tests/r2-user-test.md](human/tests/r2-user-test.md) | r2 체크리스트 14개 모두 통과, 옛 형식 예시 파일 human/tests/r2-data/ |
 
 ## 보관 문서 (평소 읽지 않음)
 | 폴더 | 내용 |
 |---|---|
 | [archive/plan-initial/](archive/plan-initial/index.md) | 처음 구현 계획 (10단계, 2026-10-22 승인, 구현·테스트 r1 완료) |
+| [archive/tests/](archive/tests/r1-user-test.md) | 테스트 r1: AI 보고서 r1-ai/ (16개 통과), 사용자 체크리스트 r1-user-test.md (통과 29, 실패 3, 판정 없음 3) + image.png |
