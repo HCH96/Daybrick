@@ -22,3 +22,8 @@ export interface ServerConfig {
   welcomeDismissed: boolean; // 첫 실행 안내에서 [나중에 하기]를 눌렀는지
   lastCheck: { status: ServerStatus; at: string } | null;
 }
+
+/** 로그인 전 접속 확인(RPC `daybrick_schema_version`) 결과. schema가 null이면 Daybrick 구조가 없는 빈 서버. */
+export type ProbeResult =
+  | { kind: "ok"; schema: number | null }
+  | { kind: "bad-url" | "bad-key" | "unreachable" | "paused" };

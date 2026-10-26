@@ -59,3 +59,82 @@ export function ArrowRightIcon({ size = 18 }: { size?: number }) {
     </LineIcon>
   );
 }
+
+/** 도움말: 동그라미 속 물음표 ("어디서 찾나요?") */
+export function HelpIcon({ size = 18 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7M12 17v.5" />
+    </LineIcon>
+  );
+}
+
+/** 오류: X */
+export function CrossIcon({ size = 18 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <path d="M6 6l12 12M18 6L6 18" />
+    </LineIcon>
+  );
+}
+
+/** 접속 불가: 빗금 친 구름 */
+export function CloudOffIcon({ size = 18 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z" />
+      <path d="M3 3l18 18" />
+    </LineIcon>
+  );
+}
+
+/** 일시정지: 동그라미 속 두 줄 */
+export function PauseIcon({ size = 18 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M10 9v6M14 9v6" />
+    </LineIcon>
+  );
+}
+
+/** 사용자 (이미 세팅된 서버 → 로그인) */
+export function UserIcon({ size = 18 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21a8 8 0 0 1 16 0" />
+    </LineIcon>
+  );
+}
+
+/** 업데이트: 위쪽 화살표 */
+export function ArrowUpIcon({ size = 18 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <path d="M12 19V5M6 11l6-6 6 6" />
+    </LineIcon>
+  );
+}
+
+/** 값 보기: 눈 */
+export function EyeIcon({ size = 18 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+      <circle cx="12" cy="12" r="3" />
+    </LineIcon>
+  );
+}
+
+/** 값 가리기: 빗금 친 눈 */
+export function EyeOffIcon({ size = 18 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+      <circle cx="12" cy="12" r="3" />
+      <path d="M3 3l18 18" />
+    </LineIcon>
+  );
+}

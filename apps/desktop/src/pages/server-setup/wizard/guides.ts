@@ -16,7 +16,7 @@ export interface StepGuide {
   tip?: { title: string; paragraphs: string[] };
 }
 
-/** 단계별 가이드 (R7). ✓ 자동 체크는 하지 않고 번호 목록만 보여준다. 나머지 단계는 3·4·6단계에서 채운다. */
+/** 단계별 가이드 (R7). ✓ 자동 체크는 하지 않고 번호 목록만 보여준다. 나머지 단계는 4·6단계에서 채운다. */
 export const GUIDES: Partial<Record<WizardStepId, StepGuide>> = {
   prepare: {
     stepName: "① 준비",
@@ -41,4 +41,52 @@ export const GUIDES: Partial<Record<WizardStepId, StepGuide>> = {
       ],
     },
   },
+  keys: {
+    stepName: "② 주소·키",
+    items: [
+      {
+        title: "Supabase 대시보드 열기",
+        link: { label: "supabase.com/dashboard 열기", url: "https://supabase.com/dashboard" },
+      },
+      { title: "방금 만든 프로젝트 선택", desc: '프로젝트가 "Healthy"가 될 때까지 1~2분 기다리기' },
+      { title: "Project Settings → Data API", desc: "Project URL을 복사해 첫 칸에 붙여넣기" },
+      { title: "Project Settings → API Keys", desc: "Publishable key(또는 예전 anon key)를 복사해 둘째 칸에" },
+      { title: "[확인] 누르기", desc: "서버에 접속해 상태를 확인합니다" },
+    ],
+    tip: {
+      title: "Secret 키는 넣지 마세요",
+      paragraphs: ["secret / service_role 키는 서버의 모든 데이터를 열 수 있는 키라 앱에 넣지 않습니다."],
+    },
+  },
 };
+
+/** 입력칸 아래 "어디서 찾나요?" 도움말 (R8): 메뉴 경로 칩과 그 화면을 흉내 낸 작은 그림 */
+export interface FieldHelp {
+  title: string;
+  link?: { label: string; url: string };
+  /** 메뉴 경로 (칩으로 그림) */
+  path: string[];
+  /** 작은 그림의 줄: 왼쪽 이름, 오른쪽 값. highlight면 복사할 값으로 강조 */
+  shot: { name: string; value: string; highlight?: boolean }[];
+}
+
+const DASHBOARD_LINK = { label: "대시보드 열기", url: "https://supabase.com/dashboard" };
+
+export const FIELD_HELPS = {
+  supabaseUrl: {
+    title: "Supabase 대시보드에서 찾기",
+    link: DASHBOARD_LINK,
+    path: ["내 프로젝트", "Project Settings", "Data API"],
+    shot: [{ name: "Project URL", value: "https://xxxx.supabase.co", highlight: true }],
+  },
+  supabaseKey: {
+    title: "Supabase 대시보드에서 찾기",
+    link: DASHBOARD_LINK,
+    path: ["내 프로젝트", "Project Settings", "API Keys"],
+    shot: [
+      { name: "Publishable key", value: "sb_publishable_…", highlight: true },
+      { name: "Secret key", value: "사용하지 마세요" },
+      { name: "Legacy API Keys 탭의 anon", value: "eyJ… (이것도 됩니다)" },
+    ],
+  },
+} satisfies Record<string, FieldHelp>;

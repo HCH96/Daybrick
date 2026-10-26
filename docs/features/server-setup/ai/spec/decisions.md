@@ -21,3 +21,6 @@
 - D19. `clear_server_connection`은 server.json을 통째로 지우고, `ServerProvider.clearConnection`이 그 뒤 `welcomeDismissed: true`만 든 설정을 다시 저장한다. 연결 해제 뒤에는 첫 실행 안내 대신 설정의 "연결 안 함" 칸이 보인다. (적용: 6, 9단계) (기록: L06)
 - D20. 연결 마법사가 열려 있는지는 `ServerProvider`의 `setupOpen`·`openSetup()`·`closeSetup()`로 공유하고, 입력값·지금 단계는 마법사 안의 `useWizard`에만 둔다 (마법사가 닫히면 함께 사라짐). 어느 화면을 그릴지는 `App.tsx`의 `AppScreens`가 정하고, 사이드바 없는 화면은 `TitleBar`를 `onToggleSidebar` 없이 그려 앱 이름만 보인다. (적용: 이후 전체) (기록: L07)
 - D21. 첫 실행 안내·마법사의 버튼은 `wizard/WizardShell.css`의 `setup-btn`(`--primary`·`--ghost`·`--lg`)을 쓴다. 마법사 단계 화면은 `wiz-form__inner` 안에 그린다. (적용: 3~8단계) (기록: L07)
+- D22. 마법사 입력칸·"어디서 찾나요?"·결과 줄은 `wizard/WizardFields.css`의 `wiz-field`·`wiz-input`(`--ok`·`--bad`)·`wiz-help`·`wiz-help-pop`·`wiz-alert`(`--ok`·`--bad`·`--warn`·`--info`)를 쓰고, 도움말 내용은 `guides.ts`의 `FIELD_HELPS`, 비밀값 칸은 `SecretInput`, 외부 링크는 `wizard/openExternal.ts`로 연다. (적용: 4~9단계) (기록: L08)
+- D23. 마법사 갈래는 `useWizard`의 `route`(`KeysRoute`: setup·login·login-update·app-update, ② 확인 성공 때 정해짐)로 `ROUTE_STEPS`에서 네 칸을 고른다. 셋째 칸 이름은 "자동 세팅"/"로그인"/"앱 업데이트". 아직 화면이 없는 칸은 `WizardShell`의 `PendingStep`이 그리고, 6·8단계가 그 자리를 화면으로 바꾼다. 서버 업데이트는 login-update 갈래의 로그인 뒤에 끼워 넣는다. (적용: 4~8단계) (기록: L08)
+- D24. 앱의 최신 서버 구조 번호는 지금 `features/server/probe.ts`의 `APP_SCHEMA_VERSION = 1` 상수다. 5단계에서 Rust `migrations.rs`의 최신 번호를 받아 오도록 바꾼다 (D15). (적용: 5, 8단계) (기록: L08)

@@ -1,12 +1,7 @@
-import { openUrl } from "@tauri-apps/plugin-opener";
 import { ExternalLinkIcon } from "../../../components/icons/CommonIcons";
 import { WarnIcon } from "../../../components/icons/ServerIcons";
 import type { StepGuide } from "./guides";
-
-/** 외부 링크는 앱 안이 아니라 기본 브라우저로 연다 (R9) */
-function openExternal(url: string) {
-  openUrl(url).catch((e: unknown) => console.error("링크 열기 실패", e));
-}
+import { openExternal } from "./openExternal";
 
 /** 오른쪽 가이드: 이 단계에서 할 일 번호 목록 + 맨 아래 주의 상자 (R7, R10) */
 function WizardGuide({ guide }: { guide: StepGuide }) {

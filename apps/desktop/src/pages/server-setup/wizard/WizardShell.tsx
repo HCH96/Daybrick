@@ -1,28 +1,45 @@
 import { ServerIcon } from "../../../components/icons/ServerIcons";
 import { useServer } from "../../../features/server/useServer";
 import { GUIDES } from "./guides";
+import KeysStep from "./KeysStep";
 import PrepareStep from "./PrepareStep";
-import { useWizard, type WizardStepId } from "./useWizard";
+import { useWizard, type Wizard, type WizardStepId } from "./useWizard";
 import WizardFooter from "./WizardFooter";
 import WizardGuide from "./WizardGuide";
 import WizardProgress from "./WizardProgress";
 import "./WizardShell.css";
+import "./WizardFields.css";
 
-/** 단계마다 [다음] 버튼 글자 */
-const NEXT_LABELS: Record<WizardStepId, string> = {
-  prepare: "준비했어요",
-  keys: "확인",
-  setup: "다음",
-  done: "다음",
+/** 아직 만들지 않은 단계에 잠시 보여주는 자리 (해당 화면은 뒤 단계에서 연결) */
+const PENDING_TEXT: Partial<Record<WizardStepId, string>> = {
+  setup: "③ 자동 세팅 화면은 다음 단계에서 연결합니다.",
+  login: "로그인 화면은 다음 단계에서 연결합니다.",
+  "app-update": "앱 업데이트 안내 화면은 다음 단계에서 연결합니다.",
+  done: "완료 화면은 다음 단계에서 연결합니다.",
 };
 
-/** 아직 만들지 않은 단계(3단계 이후 구현)에 잠시 보여주는 자리 */
-function PendingStep() {
+function PendingStep({ step }: { step: WizardStepId }) {
   return (
     <div className="wiz-form__inner">
-      <p className="wiz-form__desc">이 단계는 아직 준비 중입니다.</p>
+      <p className="wiz-form__desc">{PENDING_TEXT[step] ?? "이 화면은 다음 단계에서 연결합니다."}</p>
     </div>
   );
+}
+
+/** 오른쪽 아래 버튼: 글자·동작·비활성 여부. ②는 확인 전 [확인], 성공하면 [다음] (R4) */
+function nextButton(wizard: Wizard): { label: string; onClick: () => void; disabled: boolean } {
+  switch (wizard.step) {
+    case "prepare":
+      return { label: "준비했어요", onClick: wizard.next, disabled: false };
+    case "keys": {
+      if (wizard.checkingKeys) return { label: "확인 중…", onClick: () => undefined, disabled: true };
+      if (wizard.canGoNext) return { label: "다음", onClick: wizard.next, disabled: false };
+      const empty = wizard.inputs.url.trim() === "" || wizard.inputs.anonKey.trim() === "";
+      return { label: "확인", onClick: () => void wizard.runKeysCheck(), disabled: empty };
+    }
+    default:
+      return { label: "다음", onClick: wizard.next, disabled: !wizard.canGoNext };
+  }
 }
 
 /**
@@ -33,6 +50,28 @@ function WizardShell() {
   const { closeSetup } = useServer();
   const wizard = useWizard(closeSetup);
   const guide = GUIDES[wizard.step];
+  const button = nextButton(wizard);
+
+  function renderStep() {
+    switch (wizard.step) {
+      case "prepare":
+        return <PrepareStep />;
+      case "keys":
+        return (
+          <KeysStep
+            inputs={wizard.inputs}
+            setInputs={wizard.setInputs}
+            check={wizard.keysCheck}
+            checking={wizard.checkingKeys}
+            onSubmit={() => {
+              if (!button.disabled) button.onClick();
+            }}
+          />
+        );
+      default:
+        return <PendingStep step={wizard.step} />;
+    }
+  }
 
   return (
     <div className="wiz">
@@ -41,11 +80,11 @@ function WizardShell() {
           <ServerIcon />
           서버 연결
         </div>
-        <WizardProgress current={wizard.stepIndex} />
+        <WizardProgress steps={wizard.steps} current={wizard.stepIndex} />
       </div>
 
       <div className="wiz-main">
-        <div className="wiz-form">{wizard.step === "prepare" ? <PrepareStep /> : <PendingStep />}</div>
+        <div className="wiz-form">{renderStep()}</div>
         {guide ? <WizardGuide guide={guide} /> : <aside className="wiz-guide" />}
       </div>
 
@@ -53,9 +92,9 @@ function WizardShell() {
         onCancel={wizard.cancel}
         onPrev={wizard.prev}
         canGoPrev={wizard.canGoPrev}
-        onNext={wizard.next}
-        nextLabel={NEXT_LABELS[wizard.step]}
-        nextDisabled={wizard.step !== "prepare"}
+        onNext={button.onClick}
+        nextLabel={button.label}
+        nextDisabled={button.disabled}
       />
     </div>
   );

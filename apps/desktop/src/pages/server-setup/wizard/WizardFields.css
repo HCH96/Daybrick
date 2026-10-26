@@ -1,0 +1,231 @@
+/* 마법사 입력칸·"어디서 찾나요?"·결과 줄 (②~③ 단계가 함께 쓴다). 서버 연결 목업 common.css·wizard.css 기준 */
+
+/* ===== 입력칸 ===== */
+.wiz-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.wiz-field + .wiz-field {
+  margin-top: 20px;
+}
+
+.wiz-field__label {
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wiz-field__note {
+  font-weight: 400;
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.wiz-input {
+  align-self: stretch;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--border-2) inset;
+  color: var(--text);
+}
+
+.wiz-input:focus-within {
+  box-shadow: 0 0 0 1px var(--accent) inset, 0 0 0 3px rgba(166, 140, 255, 0.18);
+}
+
+.wiz-input--ok {
+  box-shadow: 0 0 0 1px #2f6b4b inset;
+}
+
+.wiz-input--bad,
+.wiz-input--bad:focus-within {
+  box-shadow: 0 0 0 1px var(--red) inset;
+}
+
+.wiz-input__field {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: none;
+  color: inherit;
+  font-family: Consolas, "Malgun Gothic", monospace;
+  font-size: 14px;
+}
+
+.wiz-input__field::placeholder {
+  color: var(--faint);
+}
+
+.wiz-input__ok {
+  flex-shrink: 0;
+  display: grid;
+  color: var(--green);
+}
+
+/* ===== "어디서 찾나요?" ===== */
+.wiz-help {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.wiz-help:hover,
+.wiz-help--open {
+  color: var(--accent);
+}
+
+.wiz-help:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.wiz-help-pop {
+  align-self: stretch;
+  margin-top: 6px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--popup);
+  box-shadow: 0 0 0 1px var(--border-2) inset, 0 8px 24px rgba(0, 0, 0, 0.35);
+  font-size: 13px;
+}
+
+.wiz-help-pop__title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.wiz-path {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.wiz-path i {
+  font-style: normal;
+  font-size: 12px;
+  padding: 1px 7px;
+  border-radius: 5px;
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.wiz-path em {
+  font-style: normal;
+  color: var(--faint);
+  font-size: 11px;
+}
+
+.wiz-shot {
+  margin-top: 10px;
+  border-radius: 8px;
+  background: var(--bg);
+  box-shadow: 0 0 0 1px var(--border) inset;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.wiz-shot__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 0;
+}
+
+.wiz-shot__row + .wiz-shot__row {
+  border-top: 1px dashed var(--border);
+}
+
+.wiz-shot__hl {
+  color: var(--text);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent) inset;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: Consolas, monospace;
+}
+
+/* ===== 결과 줄 ===== */
+.wiz-result {
+  margin-top: 22px;
+}
+
+.wiz-alert {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.wiz-alert__icon {
+  flex-shrink: 0;
+  display: grid;
+  margin-top: 1px;
+}
+
+.wiz-alert b {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.wiz-alert p {
+  margin: 0;
+  color: var(--text);
+  opacity: 0.82;
+}
+
+.wiz-alert--ok {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.wiz-alert--warn {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.wiz-alert--bad {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.wiz-alert--info {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.wiz-alert--checking {
+  background: var(--surface);
+  color: var(--muted);
+}
