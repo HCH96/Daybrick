@@ -2,6 +2,8 @@ import { ArrowRightIcon } from "../../../components/icons/ServerIcons";
 
 interface WizardFooterProps {
   onCancel: () => void;
+  /** 실행 중처럼 취소하면 안 될 때 false */
+  canCancel?: boolean;
   onPrev: () => void;
   canGoPrev: boolean;
   onNext: () => void;
@@ -10,10 +12,10 @@ interface WizardFooterProps {
 }
 
 /** 아래 버튼 줄: [취소]는 왼쪽 끝, [이전]·[다음]은 오른쪽 (R3) */
-function WizardFooter({ onCancel, onPrev, canGoPrev, onNext, nextLabel, nextDisabled = false }: WizardFooterProps) {
+function WizardFooter({ onCancel, canCancel = true, onPrev, canGoPrev, onNext, nextLabel, nextDisabled = false }: WizardFooterProps) {
   return (
     <div className="wiz-foot">
-      <button type="button" className="setup-btn setup-btn--ghost" onClick={onCancel}>
+      <button type="button" className="setup-btn setup-btn--ghost" onClick={onCancel} disabled={!canCancel}>
         취소
       </button>
       <div className="wiz-foot__spacer" />

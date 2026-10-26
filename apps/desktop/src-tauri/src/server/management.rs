@@ -1,11 +1,12 @@
 //! Supabase 관리 API(`api.supabase.com/v1`) 호출.
 //! PAT는 호출마다 인자로만 받고 저장하지 않는다 (D11). 오류는 원인 종류 코드만 돌려준다 (R18).
-//! 4단계: PAT 접근 확인(R13), 빈 프로젝트 검사(R14). 5단계 이후 SQL 적용·함수 배포 등을 더한다.
+//! 4단계: PAT 접근 확인(R13), 빈 프로젝트 검사(R14).
+//! 5단계: 인증 설정, 서버 구조 적용, 서버 함수 배포, 비밀값 등록 (R15, R16, R26).
 
 use serde::Serialize;
 use serde_json::Value;
 
-use super::http;
+use super::{http, migrations};
 
 const API_BASE: &str = "https://api.supabase.com/v1";
 
@@ -83,4 +84,173 @@ pub async fn inspect_project(pat: String, project_ref: String) -> Result<Project
         }),
         _ => Err(http::ERR_BAD_RESPONSE.to_string()),
     }
+}
+
+/// 응답 본문을 보지 않고 성공 여부만 보는 SQL 실행 (여러 문을 한 요청으로 보낼 때)
+async fn run_statement(pat: &str, project_ref: &str, sql: &str) -> Result<(), String> {
+    let response = http::client()?
+        .post(project_url(project_ref, "/database/query")?)
+        .bearer_auth(pat.trim())
+        .json(&serde_json::json!({ "query": sql }))
+        .send()
+        .await
+        .map_err(http::network_error)?;
+    http::check_status(response).map(|_| ())
+}
+
+/// 로그인 결과를 받는 앱의 리디렉션 주소 (127.0.0.1 임시 포트, D13). 포트 와일드카드가 통하는지는 추측.
+const REDIRECT_ALLOW: &str = "http://127.0.0.1:*/**";
+
+/// 인증 설정: Google 로그인 켜기(클라이언트 ID·비밀값), 이메일 로그인 끄기, 리디렉션 허용 주소 추가 (R15 1단계).
+/// 새 가입 막기(`disable_signup`)는 건드리지 않아 다시 실행해도 켠 상태가 유지된다 (D12).
+#[tauri::command]
+pub async fn configure_auth(
+    pat: String,
+    project_ref: String,
+    google_client_id: String,
+    google_client_secret: String,
+) -> Result<(), String> {
+    let url = project_url(&project_ref, "/config/auth")?;
+    let current: Value = http::check_status(
+        http::client()?
+            .get(&url)
+            .bearer_auth(pat.trim())
+            .send()
+            .await
+            .map_err(http::network_error)?,
+    )?
+    .json()
+    .await
+    .map_err(|_| http::ERR_BAD_RESPONSE.to_string())?;
+
+    // 이미 있는 허용 주소는 그대로 두고 앱 주소만 더한다 (R16)
+    let existing = current.get("uri_allow_list").and_then(Value::as_str).unwrap_or("");
+    let mut allow: Vec<&str> = existing.split(',').map(str::trim).filter(|s| !s.is_empty()).collect();
+    if !allow.contains(&REDIRECT_ALLOW) {
+        allow.push(REDIRECT_ALLOW);
+    }
+
+    let body = serde_json::json!({
+        "external_google_enabled": true,
+        "external_google_client_id": google_client_id.trim(),
+        "external_google_secret": google_client_secret.trim(),
+        "external_email_enabled": false,
+        "uri_allow_list": allow.join(","),
+    });
+    let response = http::client()?
+        .patch(&url)
+        .bearer_auth(pat.trim())
+        .json(&body)
+        .send()
+        .await
+        .map_err(http::network_error)?;
+    http::check_status(response).map(|_| ())
+}
+
+/// 서버의 지금 구조 번호 (구조 기록 테이블이 없으면 0)
+async fn current_schema_version(pat: &str, project_ref: &str) -> Result<u32, String> {
+    let rows = run_query(pat, project_ref, INSPECT_SQL).await?;
+    let has_table = rows
+        .first()
+        .and_then(|row| row.get("has_schema_table"))
+        .and_then(Value::as_bool)
+        .ok_or_else(|| http::ERR_BAD_RESPONSE.to_string())?;
+    if !has_table {
+        return Ok(0);
+    }
+    let rows = run_query(
+        pat,
+        project_ref,
+        "select coalesce(max(version), 0)::int as version from public.daybrick_schema_versions",
+    )
+    .await?;
+    let version = rows
+        .first()
+        .and_then(|row| row.get("version"))
+        .and_then(Value::as_u64)
+        .ok_or_else(|| http::ERR_BAD_RESPONSE.to_string())?;
+    Ok(u32::try_from(version).unwrap_or(u32::MAX))
+}
+
+/// 서버 구조 적용 결과: 적용 전 번호와 적용 뒤 번호
+#[derive(Serialize)]
+pub struct AppliedMigrations {
+    pub from: u32,
+    pub to: u32,
+}
+
+/// 서버의 지금 번호 다음부터 앱의 최신 번호까지 차례로 적용한다 (R22).
+/// 시작 번호는 프론트가 넘기지 않고 매번 서버에서 읽는다 (실패 뒤 다시 시도해도 성공한 단계를 건너뜀).
+/// 단계마다 `begin; SQL; 번호 기록; commit;`을 한 요청으로 보내, 실패하면 그 단계는 적용 전으로 돌아가고
+/// 번호는 성공한 단계까지만 오른다 (R26, D16).
+#[tauri::command]
+pub async fn apply_migrations(pat: String, project_ref: String) -> Result<AppliedMigrations, String> {
+    let from = current_schema_version(&pat, &project_ref).await?;
+    let app_version = env!("CARGO_PKG_VERSION");
+    let mut to = from;
+    for (version, sql) in migrations::MIGRATIONS.iter().filter(|(v, _)| *v > from) {
+        let statement = format!(
+            "begin;\n{sql}\ninsert into public.daybrick_schema_versions (version, app_version) \
+             values ({version}, '{app_version}') on conflict (version) do nothing;\ncommit;"
+        );
+        run_statement(&pat, &project_ref, &statement).await?;
+        to = *version;
+    }
+    Ok(AppliedMigrations { from, to })
+}
+
+/// 앱이 가진 서버 함수를 모두 배포한다 (JWT 확인 켬, R35). 같은 이름이면 새 내용으로 바뀐다 (D16).
+/// 원본 파일은 멀티파트 `file` 칸에 `supabase/functions/` 기준 경로를 파일 이름으로 붙여 보낸다.
+#[tauri::command]
+pub async fn deploy_functions(pat: String, project_ref: String) -> Result<(), String> {
+    let base = project_url(&project_ref, "/functions/deploy")?;
+    for function in migrations::FUNCTIONS {
+        let metadata = serde_json::json!({
+            "entrypoint_path": function.entrypoint,
+            "name": function.slug,
+            "verify_jwt": true,
+        });
+        let mut form = reqwest::multipart::Form::new().text("metadata", metadata.to_string());
+        for (path, content) in function.files {
+            let part = reqwest::multipart::Part::text(*content)
+                .file_name(*path)
+                .mime_str("application/typescript")
+                .map_err(|_| http::ERR_BAD_RESPONSE.to_string())?;
+            form = form.part("file", part);
+        }
+        let response = http::client()?
+            .post(format!("{base}?slug={}", function.slug))
+            .bearer_auth(pat.trim())
+            .multipart(form)
+            .send()
+            .await
+            .map_err(http::network_error)?;
+        http::check_status(response)?;
+    }
+    Ok(())
+}
+
+/// 서버 함수 비밀값 등록 (R15 4단계). 같은 이름이 있으면 새 값으로 바뀐다.
+/// 값은 요청 본문에만 싣고 오류에는 넣지 않는다 (R18).
+#[tauri::command]
+pub async fn set_secrets(
+    pat: String,
+    project_ref: String,
+    anthropic_key: String,
+    google_client_id: String,
+    google_client_secret: String,
+) -> Result<(), String> {
+    let body = serde_json::json!([
+        { "name": "ANTHROPIC_API_KEY", "value": anthropic_key.trim() },
+        { "name": "GOOGLE_CLIENT_ID", "value": google_client_id.trim() },
+        { "name": "GOOGLE_CLIENT_SECRET", "value": google_client_secret.trim() },
+    ]);
+    let response = http::client()?
+        .post(project_url(&project_ref, "/secrets")?)
+        .bearer_auth(pat.trim())
+        .json(&body)
+        .send()
+        .await
+        .map_err(http::network_error)?;
+    http::check_status(response).map(|_| ())
 }

@@ -1,5 +1,6 @@
-import { APP_SCHEMA_VERSION, type KeysCheck } from "./probe";
+import type { KeysCheck } from "./probe";
 import type { ApiErrorKind, SetupPrecheck } from "./management";
+import { RUN_STEPS, type RunFailure } from "./setupRunner";
 
 /** 서버 연결 화면의 안내·오류 문구는 모두 여기 둔다. PAT·키 값은 어떤 문구에도 넣지 않는다. */
 
@@ -62,12 +63,12 @@ export function keysCheckMessage(check: KeysCheck): ServerMessage {
         link: { label: "대시보드 열기", url: projectDashboardUrl(check.ref) },
       };
     case "ok":
-      return okMessage(check.schema, check.route);
+      return okMessage(check);
   }
 }
 
-function okMessage(schema: number | null, route: Extract<KeysCheck, { kind: "ok" }>["route"]): ServerMessage {
-  const versions = `구조 ${schema ?? 0} / 앱 ${APP_SCHEMA_VERSION}`;
+function okMessage({ schema, appSchema, route }: Extract<KeysCheck, { kind: "ok" }>): ServerMessage {
+  const versions = `구조 ${schema ?? 0} / 앱 ${appSchema}`;
   switch (route) {
     case "setup":
       return {
@@ -153,4 +154,38 @@ export function notEmptyConfirm(otherTables: number): { title: string; message: 
     message: `Daybrick 구조는 없는데 다른 테이블이 ${otherTables}개 있습니다. 계속하면 기존 테이블은 그대로 두고 Daybrick 테이블을 추가합니다. 새 프로젝트를 쓰는 것을 권장합니다.`,
     confirmLabel: "그래도 계속",
   };
+}
+
+/** 실패 문구 끝에 붙이는 말: 다시 시도는 실패한 단계부터 (R17) */
+const RETRY_NOTE = "완료된 단계는 다시 하지 않습니다.";
+
+/** ③ 실행 중 단계가 실패했을 때 그 줄 아래 보여주는 이유 (R17) */
+export function runFailMessage(failure: RunFailure): { title: string; desc: string } {
+  const name = RUN_STEPS[failure.index]?.name ?? "세팅";
+  switch (failure.reason) {
+    case "network":
+      return {
+        title: "서버에 접속할 수 없습니다",
+        desc: `인터넷 연결을 확인한 뒤 [다시 시도]를 누르세요. ${RETRY_NOTE}`,
+      };
+    case "rate-limited":
+      return { title: "Supabase가 요청을 거절했습니다 (429)", desc: `잠시 뒤 다시 시도하세요. ${RETRY_NOTE}` };
+    case "unauthorized":
+      return {
+        title: "PAT가 만료됐거나 취소됐습니다",
+        desc: "[이전]을 눌러 새 PAT를 넣고 다시 [세팅 시작]을 누르세요. 끝난 단계는 다시 해도 데이터가 지워지지 않습니다.",
+      };
+    case "forbidden":
+    case "not-found":
+      return {
+        title: `${name} 권한이 없습니다`,
+        desc: "PAT를 만든 계정이 이 프로젝트를 관리할 수 있는지 확인하세요.",
+      };
+    case "server":
+    case "bad-response":
+      return {
+        title: `${name}에 실패했습니다`,
+        desc: `Supabase가 예상하지 못한 응답을 보냈습니다. 잠시 뒤 다시 시도하세요. ${RETRY_NOTE}`,
+      };
+  }
 }

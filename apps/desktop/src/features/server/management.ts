@@ -60,6 +60,58 @@ export function inspectProject(pat: string, projectRef: string): Promise<ApiResu
   return call<ProjectInspection>("inspect_project", { pat, projectRef });
 }
 
+/** 인증 설정: Google 로그인 켜기, 이메일 로그인 끄기, 리디렉션 허용 주소 (R15 1단계) */
+export function configureAuth(
+  pat: string,
+  projectRef: string,
+  googleClientId: string,
+  googleClientSecret: string,
+): Promise<ApiResult<null>> {
+  return call<null>("configure_auth", { pat, projectRef, googleClientId, googleClientSecret });
+}
+
+export interface AppliedMigrations {
+  /** 적용 전 서버 구조 번호 */
+  from: number;
+  /** 적용 뒤 서버 구조 번호 */
+  to: number;
+}
+
+/** 서버의 지금 번호 다음부터 앱의 최신 번호까지 적용 (R22, R26). 시작 번호는 Rust가 서버에서 읽는다. */
+export function applyMigrations(pat: string, projectRef: string): Promise<ApiResult<AppliedMigrations>> {
+  return call<AppliedMigrations>("apply_migrations", { pat, projectRef });
+}
+
+/** 앱이 가진 서버 함수 묶음을 모두 배포 (D16) */
+export function deployFunctions(pat: string, projectRef: string): Promise<ApiResult<null>> {
+  return call<null>("deploy_functions", { pat, projectRef });
+}
+
+/** 서버 함수 비밀값 등록: ANTHROPIC_API_KEY, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET (R15 4단계) */
+export function setSecrets(
+  pat: string,
+  projectRef: string,
+  anthropicKey: string,
+  googleClientId: string,
+  googleClientSecret: string,
+): Promise<ApiResult<null>> {
+  return call<null>("set_secrets", { pat, projectRef, anthropicKey, googleClientId, googleClientSecret });
+}
+
+/** Tauri 밖(브라우저 미리보기)에서 쓰는 최신 서버 구조 번호. 기준은 Rust `migrations.rs` (D15). */
+const PREVIEW_SCHEMA_VERSION = 1;
+let appSchemaVersion: Promise<number> | null = null;
+
+/** 앱의 최신 서버 구조 번호를 Rust에서 한 번 받아 와 기억한다 (D24) */
+export function getAppSchemaVersion(): Promise<number> {
+  if (!isTauri()) return Promise.resolve(PREVIEW_SCHEMA_VERSION);
+  appSchemaVersion ??= invoke<number>("latest_schema_version").catch(() => {
+    appSchemaVersion = null;
+    return PREVIEW_SCHEMA_VERSION;
+  });
+  return appSchemaVersion;
+}
+
 /** [세팅 시작] 전 사전 확인 결과. 실패하면 어느 확인에서 왜 실패했는지만 담는다. */
 export type SetupPrecheck =
   | { kind: "ok" }

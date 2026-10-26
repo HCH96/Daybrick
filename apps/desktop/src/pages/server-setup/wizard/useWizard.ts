@@ -1,6 +1,13 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { runSetupPrecheck, type SetupPrecheck } from "../../../features/server/management";
 import { checkKeys, type KeysCheck, type KeysRoute } from "../../../features/server/probe";
+import {
+  initialRunProgress,
+  runSetup,
+  type RunOutcome,
+  type RunProgress,
+  type SetupSecrets,
+} from "../../../features/server/setupRunner";
 
 /**
  * 마법사 단계. 진행 표시는 ①~④ 네 칸이고, 셋째 칸은 ② 확인 결과(갈래)에 따라 바뀐다 (R6).
@@ -25,7 +32,7 @@ const ROUTE_STEPS: Record<KeysRoute, readonly WizardStepInfo[]> = {
   "app-update": [PREPARE, KEYS, { id: "app-update", label: "앱 업데이트" }, DONE],
 };
 
-/** ③ 자동 세팅 단계 안의 화면: 입력 → (사전 확인 통과) 실행. 실행 화면은 5단계에서 붙인다. */
+/** ③ 자동 세팅 단계 안의 화면: 입력 → (사전 확인 통과) 실행 (D26) */
 export type SetupPhase = "input" | "run";
 
 /** ③에서 받는 값 (비밀값 포함). 하나라도 비면 [세팅 시작]이 꺼진다. */
@@ -76,6 +83,15 @@ export interface Wizard {
   confirmNotEmpty: () => void;
   /** "빈 프로젝트가 아닙니다" 팝업에서 [취소]: 입력 화면에 남는다 */
   dismissNotEmpty: () => void;
+  /** ③ 실행 단계별 상태와 실패 */
+  runProgress: RunProgress;
+  /** 실행 중이면 [이전]·[취소]를 막는다 */
+  running: boolean;
+  /** 마지막 실행이 끝난 까닭 (실행 중이거나 시작 전이면 null) */
+  runOutcome: RunOutcome | null;
+  /** [다시 시도]: 실패한 단계부터 이어서 (R17) */
+  retryRun: () => void;
+  canCancel: boolean;
   canGoPrev: boolean;
   /** 지금 단계에서 다음으로 갈 수 있는지 (② 단계는 확인 성공 뒤에만) */
   canGoNext: boolean;
@@ -100,6 +116,18 @@ export function useWizard(onClose: () => void): Wizard {
   const [checkingSetup, setCheckingSetup] = useState(false);
   // ③ 사전 확인 중에 값을 고치거나 취소하면 늦게 온 결과를 버리기 위한 번호
   const setupSeq = useRef(0);
+  const [runProgress, setRunProgress] = useState<RunProgress>(initialRunProgress);
+  const [running, setRunning] = useState(false);
+  const [runOutcome, setRunOutcome] = useState<RunOutcome | null>(null);
+  // 실행 중에 마법사가 닫히거나 입력 화면으로 돌아가면 늦게 온 결과를 버리기 위한 번호
+  const runSeq = useRef(0);
+
+  useEffect(
+    () => () => {
+      runSeq.current += 1;
+    },
+    [],
+  );
 
   const route: KeysRoute = keysCheck?.kind === "ok" ? keysCheck.route : "setup";
   const steps = ROUTE_STEPS[route];
@@ -125,6 +153,52 @@ export function useWizard(onClose: () => void): Wizard {
     [clearSetupCheck],
   );
 
+  /** 실행에 넘길 값 (② 확인에서 뽑은 프로젝트 id + ③ 입력값) */
+  const secrets: SetupSecrets | null =
+    keysCheck?.kind === "ok"
+      ? {
+          pat: inputs.pat,
+          projectRef: keysCheck.ref,
+          anthropicKey: inputs.anthropicKey,
+          googleClientId: inputs.googleClientId,
+          googleClientSecret: inputs.googleClientSecret,
+        }
+      : null;
+
+  const beginRun = useCallback(async (values: SetupSecrets, from: RunProgress, startIndex: number) => {
+    const seq = ++runSeq.current;
+    setRunning(true);
+    setRunOutcome(null);
+    const outcome = await runSetup(
+      values,
+      from,
+      startIndex,
+      (progress) => {
+        if (seq === runSeq.current) setRunProgress(progress);
+      },
+      () => seq !== runSeq.current,
+    );
+    if (seq !== runSeq.current) return;
+    setRunning(false);
+    setRunOutcome(outcome);
+  }, []);
+
+  /** 실행 화면으로 바꾸고 1단계부터 시작한다 */
+  const enterRun = useCallback(
+    (values: SetupSecrets) => {
+      const fresh = initialRunProgress();
+      setRunProgress(fresh);
+      setSetupPhase("run");
+      void beginRun(values, fresh, 0);
+    },
+    [beginRun],
+  );
+
+  const retryRun = useCallback(() => {
+    if (running || !secrets || !runProgress.failure) return;
+    void beginRun(secrets, runProgress, runProgress.failure.index);
+  }, [running, secrets, runProgress, beginRun]);
+
   const startSetup = useCallback(async () => {
     if (keysCheck?.kind !== "ok" || !setupFilled) return;
     const seq = ++setupSeq.current;
@@ -134,13 +208,13 @@ export function useWizard(onClose: () => void): Wizard {
     if (seq !== setupSeq.current) return;
     setCheckingSetup(false);
     setSetupPrecheck(result);
-    if (result.kind === "ok") setSetupPhase("run");
-  }, [keysCheck, setupFilled, inputs.anthropicKey, inputs.pat]);
+    if (result.kind === "ok" && secrets) enterRun(secrets);
+  }, [keysCheck, setupFilled, inputs.anthropicKey, inputs.pat, secrets, enterRun]);
 
   const confirmNotEmpty = useCallback(() => {
     setSetupPrecheck(null);
-    setSetupPhase("run");
-  }, []);
+    if (secrets) enterRun(secrets);
+  }, [secrets, enterRun]);
 
   const dismissNotEmpty = useCallback(() => {
     setSetupPrecheck(null);
@@ -163,17 +237,29 @@ export function useWizard(onClose: () => void): Wizard {
     setStepIndex((i) => Math.min(i + 1, steps.length - 1));
   }, [canGoNext, steps.length]);
 
+  const resetRun = useCallback(() => {
+    runSeq.current += 1;
+    setRunProgress(initialRunProgress());
+    setRunning(false);
+    setRunOutcome(null);
+  }, []);
+
   const prev = useCallback(() => {
+    if (running) return;
     clearSetupCheck();
     // ③ 실행 화면에서 [이전]은 같은 단계의 입력 화면으로
     if (step === "setup" && setupPhase === "run") {
+      resetRun();
       setSetupPhase("input");
       return;
     }
     setStepIndex((i) => Math.max(i - 1, 0));
-  }, [clearSetupCheck, step, setupPhase]);
+  }, [running, clearSetupCheck, resetRun, step, setupPhase]);
 
   const cancel = useCallback(() => {
+    // 실행 중에는 서버를 바꾸는 요청이 가고 있어 취소를 막는다
+    if (running) return;
+    resetRun();
     checkSeq.current += 1;
     clearSetupCheck();
     setInputsState(EMPTY_INPUTS);
@@ -182,7 +268,7 @@ export function useWizard(onClose: () => void): Wizard {
     setSetupPhase("input");
     setStepIndex(0);
     onClose();
-  }, [onClose, clearSetupCheck]);
+  }, [running, resetRun, onClose, clearSetupCheck]);
 
   return {
     step,
@@ -201,7 +287,12 @@ export function useWizard(onClose: () => void): Wizard {
     startSetup,
     confirmNotEmpty,
     dismissNotEmpty,
-    canGoPrev: stepIndex > 0 && !checkingSetup,
+    runProgress,
+    running,
+    runOutcome,
+    retryRun,
+    canCancel: !running,
+    canGoPrev: stepIndex > 0 && !checkingSetup && !running,
     canGoNext,
     next,
     prev,

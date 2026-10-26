@@ -1,12 +1,7 @@
+import { getAppSchemaVersion } from "./management";
 import { createServerClient } from "./supabaseClient";
 import type { ProbeResult } from "./types";
 import { keyFormat, parseSupabaseUrl } from "./validate";
-
-/**
- * 이 앱이 아는 최신 서버 구조 번호.
- * 5단계에서 Rust `migrations.rs`의 최신 번호를 받아 오도록 바꾼다 (D15). 그 전까지는 1번으로 둔다.
- */
-export const APP_SCHEMA_VERSION = 1;
 
 /** 접속 확인을 기다리는 최대 시간. 넘으면 접속 불가로 본다. */
 const PROBE_TIMEOUT_MS = 10_000;
@@ -44,16 +39,28 @@ export async function probeServer(url: string, anonKey: string): Promise<ProbeRe
 /** 접속에 성공한 뒤 갈 곳 (R6) */
 export type KeysRoute = "setup" | "login" | "login-update" | "app-update";
 
-/** 서버 구조 번호로 다음 화면을 정한다: 없음 → 자동 세팅, 같음 → 로그인, 낮음 → 로그인 후 서버 업데이트, 높음 → 앱 업데이트 */
-export function routeForSchema(schema: number | null): KeysRoute {
+/**
+ * 서버 구조 번호와 앱의 최신 번호(Rust `migrations.rs`, D24)로 다음 화면을 정한다:
+ * 없음 → 자동 세팅, 같음 → 로그인, 낮음 → 로그인 후 서버 업데이트, 높음 → 앱 업데이트
+ */
+export function routeForSchema(schema: number | null, appSchema: number): KeysRoute {
   if (schema === null) return "setup";
-  if (schema === APP_SCHEMA_VERSION) return "login";
-  return schema < APP_SCHEMA_VERSION ? "login-update" : "app-update";
+  if (schema === appSchema) return "login";
+  return schema < appSchema ? "login-update" : "app-update";
 }
 
 /** ② 주소·키 [확인] 결과. 형식 오류는 서버에 묻지 않고 앱에서 바로 정한다. */
 export type KeysCheck =
-  | { kind: "ok"; url: string; ref: string; anonKey: string; schema: number | null; route: KeysRoute }
+  | {
+      kind: "ok";
+      url: string;
+      ref: string;
+      anonKey: string;
+      schema: number | null;
+      /** 앱의 최신 서버 구조 번호 */
+      appSchema: number;
+      route: KeysRoute;
+    }
   | { kind: "bad-url" | "bad-key-format" | "secret-key" | "bad-key" | "unreachable" }
   | { kind: "paused"; ref: string };
 
@@ -68,8 +75,11 @@ export async function checkKeys(urlInput: string, keyInput: string): Promise<Key
   const anonKey = keyInput.trim();
   const probe = await probeServer(address.url, anonKey);
   switch (probe.kind) {
-    case "ok":
-      return { kind: "ok", ...address, anonKey, schema: probe.schema, route: routeForSchema(probe.schema) };
+    case "ok": {
+      const appSchema = await getAppSchemaVersion();
+      const route = routeForSchema(probe.schema, appSchema);
+      return { kind: "ok", ...address, anonKey, schema: probe.schema, appSchema, route };
+    }
     case "paused":
       return { kind: "paused", ref: address.ref };
     default:

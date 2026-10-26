@@ -14,7 +14,12 @@ pub fn run() {
             server::config::clear_server_connection,
             server::anthropic::check_anthropic_key,
             server::management::check_pat_access,
-            server::management::inspect_project
+            server::management::inspect_project,
+            server::management::configure_auth,
+            server::management::apply_migrations,
+            server::management::deploy_functions,
+            server::management::set_secrets,
+            server::migrations::latest_schema_version
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

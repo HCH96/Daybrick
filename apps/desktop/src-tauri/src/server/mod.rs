@@ -4,3 +4,4 @@ pub mod anthropic;
 pub mod config;
 mod http;
 pub mod management;
+pub mod migrations;
