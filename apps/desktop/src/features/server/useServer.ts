@@ -26,6 +26,11 @@ export interface ServerState {
   clearConnection: () => Promise<void>;
   /** 로그인한 상태 (없으면 null). 켤 때 저장된 로그인 정보로 복원한다 (R31). */
   session: ServerSession | null;
+  /**
+   * 서버 기능이 쓸 세션. 서버 업데이트·앱 업데이트가 필요하면 null (끝날 때까지 서버 기능을 막음, R24, R25).
+   * 서버 연결 화면(업데이트·설정)은 위의 session을 쓴다.
+   */
+  serverSession: ServerSession | null;
   /** 켤 때 로그인 복원을 마쳤는지 (연결 정보가 없으면 바로 true) */
   sessionReady: boolean;
   /**
@@ -39,6 +44,12 @@ export interface ServerState {
   openSetup: () => void;
   /** 연결 마법사를 닫고 원래 화면으로 돌아간다 */
   closeSetup: () => void;
+  /** 서버 업데이트 화면이 본문 자리에 열려 있는지 (사이드바는 그대로) */
+  updateOpen: boolean;
+  /** 서버 업데이트 화면을 연다 ("서버 업데이트가 필요합니다" 띠) */
+  openUpdate: () => void;
+  /** 서버 업데이트 화면을 닫는다 ([나중에], 다른 메뉴로 이동) */
+  closeUpdate: () => void;
 }
 
 /** 서버 연결 정보와 상태를 하위 컴포넌트에 공유한다. ServerProvider가 값을 넣는다. */

@@ -1,7 +1,8 @@
 import { SmallCheckIcon } from "../../../components/icons/CommonIcons";
 import { CrossIcon, RefreshIcon, WarnIcon } from "../../../components/icons/ServerIcons";
 import { runFailMessage } from "../../../features/server/messages";
-import { RUN_STEPS, type RunProgress, type RunStepState } from "../../../features/server/setupRunner";
+import { stepsForFlow, type RunFlow } from "../../../features/server/serverUpdate";
+import type { RunProgress, RunStepState } from "../../../features/server/setupRunner";
 
 const STATE_LABEL: Record<RunStepState, string> = {
   wait: "대기",
@@ -28,16 +29,20 @@ interface RunStepListProps {
   progress: RunProgress;
   onRetry: () => void;
   onCancel: () => void;
+  /** 어느 단계 목록인지 (기본: ③ 자동 세팅). 서버 업데이트 화면도 이 목록을 쓴다. */
+  flow?: RunFlow;
+  /** 실패 줄의 [취소] 글자 (서버 업데이트는 [나중에]) */
+  cancelLabel?: string;
 }
 
-/** ③ 실행 단계 목록. 실패한 줄 아래에 이유와 [다시 시도]·[취소] (R15, R17) */
-function RunStepList({ progress, onRetry, onCancel }: RunStepListProps) {
+/** ③ 실행·서버 업데이트 단계 목록. 실패한 줄 아래에 이유와 [다시 시도]·[취소] (R15, R17, R23) */
+function RunStepList({ progress, onRetry, onCancel, flow = "setup", cancelLabel = "취소" }: RunStepListProps) {
   const { failure } = progress;
   return (
     <ul className="wiz-run">
-      {RUN_STEPS.map((def, index) => {
+      {stepsForFlow(flow).map((def, index) => {
         const view = progress.steps[index];
-        const message = failure?.index === index ? runFailMessage(failure) : null;
+        const message = failure?.index === index ? runFailMessage(failure, flow) : null;
         // 진행 중일 때 따로 보여줄 글이 있으면 (브라우저 로그인 대기)
         const running = view.state === "run" ? def.running : undefined;
         return [
@@ -66,7 +71,7 @@ function RunStepList({ progress, onRetry, onCancel }: RunStepListProps) {
                       다시 시도
                     </button>
                     <button type="button" className="setup-btn setup-btn--ghost setup-btn--sm" onClick={onCancel}>
-                      취소
+                      {cancelLabel}
                     </button>
                   </div>
                 </div>

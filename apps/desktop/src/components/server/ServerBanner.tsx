@@ -24,7 +24,7 @@ function isBannerStatus(status: ServerStatus): status is BannerStatus {
  * 띠를 누르면 해결할 곳으로 가고, [×]는 이번 실행 동안만 숨긴다.
  */
 function ServerBanner() {
-  const { status, dismissedBanners, dismissBanner } = useServer();
+  const { status, dismissedBanners, dismissBanner, openUpdate } = useServer();
   const { navigate } = useNavigation();
   const [resumeOpen, setResumeOpen] = useState(false);
 
@@ -35,7 +35,12 @@ function ServerBanner() {
       setResumeOpen(true);
       return;
     }
-    // 서버 업데이트 화면은 8단계에서 붙인다. 그 전까지는 설정 → 서버 연결로 간다.
+    // 서버 업데이트는 본문 자리에 업데이트 화면을 연다 (사이드바는 그대로)
+    if (status === "server-update") {
+      openUpdate();
+      return;
+    }
+    // 그 밖(로그인·앱 업데이트·접속 불가)은 설정 → 서버 연결 칸에서 안내한다
     navigate("settings");
   };
 

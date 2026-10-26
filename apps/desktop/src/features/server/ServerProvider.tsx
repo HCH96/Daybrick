@@ -136,6 +136,15 @@ export function ServerProvider({ children }: { children: ReactNode }) {
     setDismissedBanners((prev) => (prev.includes(s) ? prev : [...prev, s]));
   }, []);
 
+  // 서버 업데이트 화면 (본문 자리, R23)
+  const [updateOpen, setUpdateOpen] = useState(false);
+  const openUpdate = useCallback(() => setUpdateOpen(true), []);
+  const closeUpdate = useCallback(() => setUpdateOpen(false), []);
+
+  // 서버·앱 구조 번호가 맞지 않으면 서버 기능에 세션을 내주지 않는다 (R24, R25). 로컬 기능은 그대로.
+  const blocked = status === "server-update" || status === "app-update";
+  const serverSession = blocked ? null : session;
+
   const { checking, recheck, resuming, resumeChecks, startResume } = health;
   const value = useMemo<ServerState>(
     () => ({
@@ -151,11 +160,15 @@ export function ServerProvider({ children }: { children: ReactNode }) {
       updateConfig,
       clearConnection,
       session,
+      serverSession,
       sessionReady,
       completeLogin,
       setupOpen,
       openSetup,
       closeSetup,
+      updateOpen,
+      openUpdate,
+      closeUpdate,
     }),
     [
       config,
@@ -170,11 +183,15 @@ export function ServerProvider({ children }: { children: ReactNode }) {
       updateConfig,
       clearConnection,
       session,
+      serverSession,
       sessionReady,
       completeLogin,
       setupOpen,
       openSetup,
       closeSetup,
+      updateOpen,
+      openUpdate,
+      closeUpdate,
     ],
   );
 

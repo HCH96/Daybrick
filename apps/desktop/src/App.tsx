@@ -1,6 +1,7 @@
-import { useMemo, type ReactNode } from "react";
+import { useCallback, useMemo, type ReactNode } from "react";
 import { findPage } from "./app/pages";
 import { NavigationContext, type Navigation } from "./app/navigation";
+import type { PageId } from "./app/types";
 import { useHistory } from "./app/useHistory";
 import { useSidebarCollapsed } from "./app/useSidebarCollapsed";
 import { useGlobalShortcuts } from "./app/useGlobalShortcuts";
@@ -8,6 +9,7 @@ import AppLayout from "./components/layout/AppLayout";
 import Sidebar from "./components/layout/Sidebar";
 import TitleBar from "./components/layout/TitleBar";
 import ServerBanner from "./components/server/ServerBanner";
+import ServerUpdateScreen from "./components/server/ServerUpdateScreen";
 import { ApplicationsProvider } from "./features/applications/store";
 import { ServerProvider } from "./features/server/ServerProvider";
 import { useServer } from "./features/server/useServer";
@@ -48,17 +50,36 @@ function AppScreens({ main }: { main: ReactNode }) {
   return main;
 }
 
-function App() {
+/** 평소 화면. 서버 업데이트 화면이 열려 있으면 본문 자리에 그것을 그린다 (사이드바는 그대로). */
+function AppMain() {
   const history = useHistory("home");
   const [sidebarCollapsed, toggleSidebar] = useSidebarCollapsed();
+  const { updateOpen, closeUpdate } = useServer();
+
+  // 다른 메뉴로 가면(뒤로·앞으로 포함) 서버 업데이트 화면을 닫는다
+  const { currentPage, navigate: go, goBack: back, goForward: forward, canGoBack, canGoForward } = history;
+  const navigate = useCallback(
+    (id: PageId) => {
+      closeUpdate();
+      go(id);
+    },
+    [closeUpdate, go],
+  );
+  const goBack = useCallback(() => {
+    closeUpdate();
+    back();
+  }, [closeUpdate, back]);
+  const goForward = useCallback(() => {
+    closeUpdate();
+    forward();
+  }, [closeUpdate, forward]);
 
   useGlobalShortcuts({
     onToggleSidebar: toggleSidebar,
-    onBack: history.goBack,
-    onForward: history.goForward,
+    onBack: goBack,
+    onForward: goForward,
   });
 
-  const { currentPage, navigate, goBack, goForward, canGoBack, canGoForward } = history;
   const navigation = useMemo<Navigation>(
     () => ({ currentPage, navigate, goBack, goForward, canGoBack, canGoForward }),
     [currentPage, navigate, goBack, goForward, canGoBack, canGoForward],
@@ -67,23 +88,29 @@ function App() {
 
   return (
     <NavigationContext.Provider value={navigation}>
-      <ServerProvider>
-        <ApplicationsProvider>
-          <AppScreens
-            main={
-              <AppLayout
-                titleBar={<TitleBar sidebarOpen={!sidebarCollapsed} onToggleSidebar={toggleSidebar} />}
-                banner={<ServerBanner />}
-                sidebar={<Sidebar />}
-                sidebarCollapsed={sidebarCollapsed}
-              >
-                <Page />
-              </AppLayout>
-            }
-          />
-        </ApplicationsProvider>
-      </ServerProvider>
+      <ApplicationsProvider>
+        <AppScreens
+          main={
+            <AppLayout
+              titleBar={<TitleBar sidebarOpen={!sidebarCollapsed} onToggleSidebar={toggleSidebar} />}
+              banner={<ServerBanner />}
+              sidebar={<Sidebar />}
+              sidebarCollapsed={sidebarCollapsed}
+            >
+              {updateOpen ? <ServerUpdateScreen /> : <Page />}
+            </AppLayout>
+          }
+        />
+      </ApplicationsProvider>
     </NavigationContext.Provider>
+  );
+}
+
+function App() {
+  return (
+    <ServerProvider>
+      <AppMain />
+    </ServerProvider>
   );
 }
 

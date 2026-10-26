@@ -172,3 +172,12 @@
   color: var(--on-accent);
   box-shadow: none;
 }
+
+.settings-state--warn {
+  color: var(--amber);
+}
+
+/* 칸 본문 안쪽 여백 (안내 문구 등) */
+.settings-card__pad {
+  padding: 20px 22px;
+}

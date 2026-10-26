@@ -88,7 +88,8 @@ export interface RunContext {
   onVerified: (health: HealthInfo) => void;
 }
 
-type StepResult = { ok: true; value: string | null } | { ok: false; error: RunErrorKind };
+/** 단계 하나의 결과: 성공하면 작은 글씨에 보여줄 결과(없으면 null) */
+export type StepResult = { ok: true; value: string | null } | { ok: false; error: RunErrorKind };
 
 /** 단계 실행: 성공하면 작은 글씨에 보여줄 결과(없으면 null) */
 type StepAction = (ctx: RunContext) => Promise<StepResult>;
@@ -144,19 +145,22 @@ const ACTIONS: Record<RunStepId, StepAction> = {
   },
 };
 
-export function initialRunProgress(): RunProgress {
-  return { steps: RUN_STEPS.map(() => ({ state: "wait" })), failure: null };
+/** 단계 목록의 시작 상태 (모두 대기). 서버 업데이트는 자기 단계 목록을 넘긴다. */
+export function initialRunProgress(defs: readonly RunStepDef[] = RUN_STEPS): RunProgress {
+  return { steps: defs.map(() => ({ state: "wait" })), failure: null };
 }
 
 /** 실행이 끝난 까닭: 모두 완료, 실패, 바깥에서 멈춤 */
 export type RunOutcome = "done" | "failed" | "stopped";
 
 /**
- * startIndex 단계부터 차례로 실행한다. 상태가 바뀔 때마다 onChange로 새 진행 상태를 넘긴다.
+ * 단계 목록을 startIndex부터 차례로 실행하는 공통 고리 (자동 세팅·서버 업데이트가 함께 씀).
+ * 상태가 바뀔 때마다 onChange로 새 진행 상태를 넘긴다.
  * shouldStop()이 참이면 (마법사가 닫힘 등) 다음 단계로 가지 않고 알리지도 않는다.
  */
-export async function runSetup(
-  ctx: RunContext,
+export async function runSteps(
+  count: number,
+  actionAt: (index: number) => Promise<StepResult>,
   start: RunProgress,
   startIndex: number,
   onChange: (progress: RunProgress) => void,
@@ -168,10 +172,9 @@ export async function runSetup(
     onChange({ steps, failure });
   };
 
-  for (let index = startIndex; index < RUN_STEPS.length; index++) {
-    const action = ACTIONS[RUN_STEPS[index].id];
+  for (let index = startIndex; index < count; index++) {
     update(index, { state: "run" });
-    const result = await action(ctx);
+    const result = await actionAt(index);
     if (shouldStop()) return "stopped";
     if (!result.ok) {
       update(index, { state: "fail" }, { index, reason: result.error });
@@ -180,4 +183,16 @@ export async function runSetup(
     update(index, { state: "done", detail: result.value ?? undefined });
   }
   return "done";
+}
+
+/** ③ 자동 세팅 여섯 단계를 startIndex부터 실행한다 */
+export function runSetup(
+  ctx: RunContext,
+  start: RunProgress,
+  startIndex: number,
+  onChange: (progress: RunProgress) => void,
+  shouldStop: () => boolean,
+): Promise<RunOutcome> {
+  const actionAt = (index: number) => ACTIONS[RUN_STEPS[index].id](ctx);
+  return runSteps(RUN_STEPS.length, actionAt, start, startIndex, onChange, shouldStop);
 }

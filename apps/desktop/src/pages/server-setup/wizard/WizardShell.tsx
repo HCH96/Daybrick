@@ -1,5 +1,7 @@
 import { useNavigation } from "../../../app/navigation";
 import { ServerIcon } from "../../../components/icons/ServerIcons";
+import AppUpdateNotice from "../../../components/server/AppUpdateNotice";
+import { ServerUpdatePanel } from "../../../components/server/ServerUpdateScreen";
 import { useServer } from "../../../features/server/useServer";
 import DoneStep from "./DoneStep";
 import { GUIDES } from "./guides";
@@ -15,22 +17,19 @@ import WizardProgress from "./WizardProgress";
 import "./WizardShell.css";
 import "./WizardFields.css";
 
-/** 아직 만들지 않은 단계에 잠시 보여주는 자리 (해당 화면은 뒤 단계에서 연결) */
-const PENDING_TEXT: Partial<Record<WizardStepId, string>> = {
-  "app-update": "앱 업데이트 안내 화면은 다음 단계에서 연결합니다.",
-};
-
+/** ② 확인 결과가 없어 그릴 수 없는 단계에 잠시 보여주는 자리 */
 function PendingStep({ step }: { step: WizardStepId }) {
   return (
-    <div className="wiz-form__inner">
-      <p className="wiz-form__desc">{PENDING_TEXT[step] ?? "이 화면은 다음 단계에서 연결합니다."}</p>
+    <div className="wiz-form__inner" data-step={step}>
+      <p className="wiz-form__desc">이 화면은 주소·키 확인 뒤에 보입니다.</p>
     </div>
   );
 }
 
 /**
  * 오른쪽 아래 버튼: 글자·동작·비활성 여부. ②는 확인 전 [확인], 성공하면 [다음] (R4).
- * ③ 실행은 끝나면 스스로 ④로 가므로 버튼은 늘 꺼져 있다. 로그인 화면은 버튼이 없다.
+ * ③ 실행은 끝나면 스스로 ④로 가므로 버튼은 늘 꺼져 있다. 로그인(·서버 업데이트) 화면은 버튼이 없다.
+ * 앱 업데이트 안내는 [닫기]로 마법사를 닫는다 (서버 기능은 쓰지 않음, R24).
  */
 function nextButton(wizard: Wizard, onFinish: () => void): FooterNext | null {
   switch (wizard.step) {
@@ -52,6 +51,8 @@ function nextButton(wizard: Wizard, onFinish: () => void): FooterNext | null {
     }
     case "login":
       return null;
+    case "app-update":
+      return { label: "닫기", onClick: wizard.cancel, disabled: false };
     case "done":
       return { label: "시작하기", onClick: onFinish, disabled: false };
     default:
@@ -64,7 +65,7 @@ function nextButton(wizard: Wizard, onFinish: () => void): FooterNext | null {
  * 제목 표시줄 아래 창 전체를 쓰고 사이드바는 없다.
  */
 function WizardShell() {
-  const { closeSetup } = useServer();
+  const { closeSetup, recheck } = useServer();
   const { navigate } = useNavigation();
   const wizard = useWizard(closeSetup);
   const guide = GUIDES[wizard.step];
@@ -117,6 +118,23 @@ function WizardShell() {
         );
       case "login":
         if (wizard.keysCheck?.kind !== "ok") return <PendingStep step="login" />;
+        // login-update 갈래: 로그인 뒤 서버 업데이트 (R23)
+        if (wizard.updateSession) {
+          return (
+            <div className="wiz-form__inner">
+              <ServerUpdatePanel
+                url={wizard.keysCheck.url}
+                anonKey={wizard.keysCheck.anonKey}
+                session={wizard.updateSession}
+                onLater={wizard.finishUpdate}
+                onDone={wizard.finishUpdate}
+                onUpdated={recheck}
+                onRunningChange={wizard.setUpdateRunning}
+                embedded
+              />
+            </div>
+          );
+        }
         return (
           <LoginStep
             url={wizard.keysCheck.url}
@@ -126,6 +144,17 @@ function WizardShell() {
             onReopenBrowser={wizard.login.reopenBrowser}
             onCancelLogin={wizard.login.cancelLogin}
           />
+        );
+      case "app-update":
+        if (wizard.keysCheck?.kind !== "ok") return <PendingStep step="app-update" />;
+        return (
+          <div className="wiz-form__inner">
+            <h2>앱을 업데이트하세요</h2>
+            <p className="wiz-form__desc">
+              이 서버는 이 앱보다 새로운 버전의 서버 구조를 쓰고 있습니다. 앱을 최신 버전으로 바꾼 뒤 다시 연결하세요.
+            </p>
+            <AppUpdateNotice serverSchema={wizard.keysCheck.schema} appSchema={wizard.keysCheck.appSchema} />
+          </div>
         );
       case "done":
         if (!wizard.done) return <PendingStep step="done" />;

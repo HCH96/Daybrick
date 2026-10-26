@@ -1,0 +1,19 @@
+/* 앱 업데이트 안내 (목업 server-update.html의 app-update 구역) */
+
+.app-update-notice {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.app-update-notice__row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+}
+
+.app-update-notice__key {
+  width: 110px;
+  color: var(--muted);
+}

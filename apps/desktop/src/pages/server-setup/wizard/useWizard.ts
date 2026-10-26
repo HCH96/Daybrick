@@ -15,7 +15,7 @@ import { useWizardLogin, type WizardLogin } from "./useWizardLogin";
 
 /**
  * 마법사 단계. 진행 표시는 ①~④ 네 칸이고, 셋째 칸은 ② 확인 결과(갈래)에 따라 바뀐다 (R6).
- * app-update는 8단계에서 화면을 붙인다.
+ * login-update 갈래는 로그인 칸 안에서 로그인 뒤 서버 업데이트 화면을 보여준다 (updateSession).
  */
 export type WizardStepId = "prepare" | "keys" | "setup" | "login" | "app-update" | "done";
 
@@ -30,7 +30,7 @@ const DONE: WizardStepInfo = { id: "done", label: "완료" };
 /** 갈래마다 넷째 칸이 완료 */
 const DONE_INDEX = 3;
 
-/** 갈래마다 네 칸. 서버 업데이트(login-update)는 로그인 뒤에 8단계에서 끼워 넣는다. */
+/** 갈래마다 네 칸. 서버 업데이트(login-update)는 로그인 칸 안에서 로그인 뒤에 보여준다 (D23). */
 const ROUTE_STEPS: Record<KeysRoute, readonly WizardStepInfo[]> = {
   setup: [PREPARE, KEYS, { id: "setup", label: "자동 세팅" }, DONE],
   login: [PREPARE, KEYS, { id: "login", label: "로그인" }, DONE],
@@ -112,8 +112,14 @@ export interface Wizard {
   retryRun: () => void;
   /** Google 로그인 (③ 계정 등록과 로그인 화면이 함께 씀) */
   login: WizardLogin;
-  /** 로그인 화면의 [Google로 로그인]: 성공하면 ④ 완료로 */
+  /** 로그인 화면의 [Google로 로그인]: 성공하면 ④ 완료로 (서버 번호가 낮으면 서버 업데이트 화면으로) */
   startLogin: () => Promise<void>;
+  /** login-update 갈래에서 로그인한 뒤: 서버 업데이트 화면에 넘길 세션 (그 전에는 null) */
+  updateSession: ServerSession | null;
+  /** 서버 업데이트 실행 중인지 알린다 ([취소]·[이전]을 막음) */
+  setUpdateRunning: (running: boolean) => void;
+  /** 서버 업데이트를 마쳤거나 [나중에]: ④ 완료로 */
+  finishUpdate: () => void;
   /** ④ 완료 요약 (완료 단계에서만 값이 있음) */
   done: DoneSummary | null;
   /** ④ [시작하기]: 마법사를 닫는다 */
@@ -152,6 +158,8 @@ export function useWizard(onClose: () => void): Wizard {
   // 마무리 확인에서 받은 health 결과 (④ 요약에 씀)
   const verifiedRef = useRef<HealthInfo | null>(null);
   const login = useWizardLogin(keysCheck);
+  const [updateSession, setUpdateSession] = useState<ServerSession | null>(null);
+  const [updateRunning, setUpdateRunning] = useState(false);
 
   useEffect(
     () => () => {
@@ -290,8 +298,19 @@ export function useWizard(onClose: () => void): Wizard {
 
   const startLogin = useCallback(async () => {
     const result = await login.startLogin();
-    if (result?.ok) await finishLogin(result.session);
-  }, [login, finishLogin]);
+    if (!result?.ok) return;
+    // 서버 번호가 앱보다 낮으면 로그인 뒤 서버 업데이트 화면을 먼저 보여준다 (R23)
+    if (route === "login-update") {
+      setUpdateSession(result.session);
+      return;
+    }
+    await finishLogin(result.session);
+  }, [login, finishLogin, route]);
+
+  const finishUpdate = useCallback(() => {
+    if (!updateSession || updateRunning) return;
+    void finishLogin(updateSession);
+  }, [updateSession, updateRunning, finishLogin]);
 
   const startSetup = useCallback(async () => {
     if (keysCheck?.kind !== "ok" || !setupFilled) return;
@@ -339,7 +358,7 @@ export function useWizard(onClose: () => void): Wizard {
   }, []);
 
   const prev = useCallback(() => {
-    if (running) return;
+    if (running || updateSession) return;
     login.cancelLogin();
     clearSetupCheck();
     // ③ 실행 화면에서 [이전]은 같은 단계의 입력 화면으로
@@ -353,7 +372,7 @@ export function useWizard(onClose: () => void): Wizard {
 
   const cancel = useCallback(() => {
     // 실행 중에는 서버를 바꾸는 요청이 가고 있어 취소를 막는다
-    if (running) return;
+    if (running || updateRunning) return;
     login.cancelLogin();
     resetRun();
     checkSeq.current += 1;
@@ -363,8 +382,9 @@ export function useWizard(onClose: () => void): Wizard {
     setCheckingKeys(false);
     setSetupPhase("input");
     setStepIndex(0);
+    setUpdateSession(null);
     onClose();
-  }, [running, login, resetRun, onClose, clearSetupCheck]);
+  }, [running, updateRunning, login, resetRun, onClose, clearSetupCheck]);
 
   const finish = useCallback(() => {
     setInputsState(EMPTY_INPUTS);
@@ -394,10 +414,13 @@ export function useWizard(onClose: () => void): Wizard {
     retryRun,
     login,
     startLogin,
+    updateSession,
+    setUpdateRunning,
+    finishUpdate,
     done,
     finish,
-    canCancel: !running,
-    canGoPrev: stepIndex > 0 && step !== "done" && !checkingSetup && !running,
+    canCancel: !running && !updateRunning,
+    canGoPrev: stepIndex > 0 && step !== "done" && !checkingSetup && !running && !updateSession,
     canGoNext,
     next,
     prev,

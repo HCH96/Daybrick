@@ -1,7 +1,8 @@
 import type { LoginErrorKind } from "./googleLogin";
 import type { KeysCheck } from "./probe";
 import type { ApiErrorKind, SetupPrecheck } from "./management";
-import { RUN_STEPS, type RunFailure } from "./setupRunner";
+import { stepsForFlow, type RunFlow } from "./serverUpdate";
+import type { RunFailure } from "./setupRunner";
 import type { ServerStatus } from "./types";
 
 /** 서버 연결 화면의 안내·오류 문구는 모두 여기 둔다. PAT·키 값은 어떤 문구에도 넣지 않는다. */
@@ -229,10 +230,10 @@ export function loginFailMessage(kind: LoginErrorKind): { title: string; desc: s
   }
 }
 
-/** ③ 실행 중 단계가 실패했을 때 그 줄 아래 보여주는 이유 (R17) */
-export function runFailMessage(failure: RunFailure): { title: string; desc: string } {
-  const step = RUN_STEPS[failure.index];
-  const name = step?.name ?? "세팅";
+/** ③ 실행·서버 업데이트 중 단계가 실패했을 때 그 줄 아래 보여주는 이유 (R17, R23) */
+export function runFailMessage(failure: RunFailure, flow: RunFlow = "setup"): { title: string; desc: string } {
+  const step = stepsForFlow(flow)[failure.index];
+  const name = step?.name ?? (flow === "update" ? "서버 업데이트" : "세팅");
   switch (failure.reason) {
     case "login-denied":
     case "login-timeout":
@@ -268,6 +269,12 @@ export function runFailMessage(failure: RunFailure): { title: string; desc: stri
     case "rate-limited":
       return { title: "Supabase가 요청을 거절했습니다 (429)", desc: `잠시 뒤 다시 시도하세요. ${RETRY_NOTE}` };
     case "unauthorized":
+      if (flow === "update") {
+        return {
+          title: "PAT가 맞지 않습니다",
+          desc: "토큰이 틀렸거나 만료됐습니다. [나중에]를 누르고 다시 열어 새 PAT로 [업데이트]를 누르세요. 끝난 단계는 다시 해도 데이터가 지워지지 않습니다.",
+        };
+      }
       return {
         title: "PAT가 만료됐거나 취소됐습니다",
         desc: "[이전]을 눌러 새 PAT를 넣고 다시 [세팅 시작]을 누르세요. 끝난 단계는 다시 해도 데이터가 지워지지 않습니다.",
