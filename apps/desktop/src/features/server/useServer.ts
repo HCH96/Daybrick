@@ -5,8 +5,21 @@ import type { ServerConfig, ServerStatus } from "./types";
 export interface ServerState {
   /** 파일을 다 읽기 전에는 null */
   config: ServerConfig | null;
-  /** 1단계에서는 연결 정보가 있으면 connected, 없으면 off (7단계에서 접속 확인으로 넓힌다) */
+  /** 연결 정보가 없으면 off, 있으면 마지막 접속 확인 결과 (첫 확인 전에는 connected) */
   status: ServerStatus;
+  /** 접속 확인 중인지 */
+  checking: boolean;
+  /** 바로 다시 확인한다 (설정의 [지금 다시 확인] 등, R44) */
+  recheck: () => void;
+  /** 재개를 요청해 서버가 켜지기를 기다리는 중인지 (10초마다 확인, R43) */
+  resuming: boolean;
+  /** 재개를 요청한 뒤 확인한 횟수 */
+  resumeChecks: number;
+  /** 재개를 요청했다 (대시보드·PAT 둘 다): 켜질 때까지 10초마다 확인한다 */
+  startResume: () => void;
+  /** [×]로 숨긴 안내 띠 상태들 (이번 실행 동안만) */
+  dismissedBanners: readonly ServerStatus[];
+  dismissBanner: (status: ServerStatus) => void;
   /** 연결 정보 일부를 바꾸고 바로 저장한다 */
   updateConfig: (patch: Partial<Omit<ServerConfig, "version">>) => Promise<void>;
   /** 이 PC에 저장한 연결 정보와 로그인 정보를 지운다 */

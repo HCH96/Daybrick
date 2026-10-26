@@ -165,3 +165,13 @@ export function RefreshIcon({ size = 18 }: { size?: number }) {
     </LineIcon>
   );
 }
+
+/** 안내: 동그라미 안의 i (앱 업데이트 띠) */
+export function InfoIcon({ size = 18 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v6M12 7.5v.5" />
+    </LineIcon>
+  );
+}

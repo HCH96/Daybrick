@@ -1,0 +1,36 @@
+/* 서버가 필요한 화면 안의 "서버 연결 필요". 서버 연결 목업 parts.css의 need-server 기준 */
+.server-required {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px dashed var(--border-2);
+  background: var(--sidebar);
+}
+
+.server-required__icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.server-required__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.server-required__text b {
+  display: block;
+  font-size: 14px;
+}
+
+.server-required__text span {
+  font-size: 12px;
+  color: var(--muted);
+}

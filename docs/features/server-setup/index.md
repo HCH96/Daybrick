@@ -1,7 +1,7 @@
 # 서버 연결 (server-setup)
 사용자마다 자기 Supabase와 Anthropic API 키를 연결하는 기능. 첫 실행 안내·설치 가이드, 빈 서버 자동 세팅, 서버 구조 갱신, 로그인, 접속 확인·일시정지 안내, 설정 화면.
 
-- 상태: 구현 중 (6/9 단계 완료)
+- 상태: 구현 중 (7/9 단계 완료)
 - 작업 노트: [notes.md](notes.md)
 - 이 기능을 먼저 쓰는 기능: notifications, job-search
 

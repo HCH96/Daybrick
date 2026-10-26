@@ -103,6 +103,39 @@ export function disableSignup(pat: string, projectRef: string): Promise<ApiResul
   return call<null>("disable_signup", { pat, projectRef });
 }
 
+/**
+ * 관리 API의 프로젝트 상태를 재개 판단에 필요한 만큼만 나눈 것.
+ * `INACTIVE` = 일시정지(추측), `ACTIVE_HEALTHY` = 켜짐, 그 밖(`RESTORING`·`COMING_UP` 등) = 켜지는 중.
+ */
+export type ProjectRunState = "paused" | "active" | "starting";
+
+/** 프로젝트가 일시정지인지·켜졌는지·켜지는 중인지 (R42) */
+export async function getProjectRunState(pat: string, projectRef: string): Promise<ApiResult<ProjectRunState>> {
+  const result = await call<string>("project_status", { pat, projectRef });
+  if (!result.ok) return result;
+  const status = result.value.toUpperCase();
+  if (status === "INACTIVE" || status === "PAUSED") return { ok: true, value: "paused" };
+  if (status === "ACTIVE_HEALTHY") return { ok: true, value: "active" };
+  return { ok: true, value: "starting" };
+}
+
+/** 일시정지된 프로젝트 재개 요청 (R42). 켜지는 데 1~2분 걸린다. */
+export function restoreProject(pat: string, projectRef: string): Promise<ApiResult<null>> {
+  return call<null>("restore_project", { pat, projectRef });
+}
+
+/** [여기서 재개] 결과: 재개를 요청함 / 이미 켜지는 중 / 이미 켜짐 / 실패 */
+export type ResumeRequest = { kind: "requested" | "starting" | "active" } | { kind: "failed"; reason: ApiErrorKind };
+
+/** 상태를 먼저 보고, 일시정지일 때만 재개를 요청한다 (이미 켜지는 중이면 기다리기만). */
+export async function requestResume(pat: string, projectRef: string): Promise<ResumeRequest> {
+  const state = await getProjectRunState(pat, projectRef);
+  if (!state.ok) return { kind: "failed", reason: state.error };
+  if (state.value !== "paused") return { kind: state.value };
+  const restored = await restoreProject(pat, projectRef);
+  return restored.ok ? { kind: "requested" } : { kind: "failed", reason: restored.error };
+}
+
 /** Tauri 밖(브라우저 미리보기)에서 쓰는 최신 서버 구조 번호. 기준은 Rust `migrations.rs` (D15). */
 const PREVIEW_SCHEMA_VERSION = 1;
 let appSchemaVersion: Promise<number> | null = null;

@@ -7,6 +7,7 @@ import { useGlobalShortcuts } from "./app/useGlobalShortcuts";
 import AppLayout from "./components/layout/AppLayout";
 import Sidebar from "./components/layout/Sidebar";
 import TitleBar from "./components/layout/TitleBar";
+import ServerBanner from "./components/server/ServerBanner";
 import { ApplicationsProvider } from "./features/applications/store";
 import { ServerProvider } from "./features/server/ServerProvider";
 import { useServer } from "./features/server/useServer";
@@ -72,6 +73,7 @@ function App() {
             main={
               <AppLayout
                 titleBar={<TitleBar sidebarOpen={!sidebarCollapsed} onToggleSidebar={toggleSidebar} />}
+                banner={<ServerBanner />}
                 sidebar={<Sidebar />}
                 sidebarCollapsed={sidebarCollapsed}
               >

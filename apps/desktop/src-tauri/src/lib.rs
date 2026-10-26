@@ -21,6 +21,8 @@ pub fn run() {
             server::management::deploy_functions,
             server::management::set_secrets,
             server::management::disable_signup,
+            server::management::project_status,
+            server::management::restore_project,
             server::oauth_listener::start_oauth_listener,
             server::oauth_listener::wait_oauth_callback,
             server::oauth_listener::cancel_oauth_listener,

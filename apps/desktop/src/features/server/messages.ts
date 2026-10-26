@@ -2,6 +2,7 @@ import type { LoginErrorKind } from "./googleLogin";
 import type { KeysCheck } from "./probe";
 import type { ApiErrorKind, SetupPrecheck } from "./management";
 import { RUN_STEPS, type RunFailure } from "./setupRunner";
+import type { ServerStatus } from "./types";
 
 /** 서버 연결 화면의 안내·오류 문구는 모두 여기 둔다. PAT·키 값은 어떤 문구에도 넣지 않는다. */
 
@@ -155,6 +156,49 @@ export function notEmptyConfirm(otherTables: number): { title: string; message: 
     message: `Daybrick 구조는 없는데 다른 테이블이 ${otherTables}개 있습니다. 계속하면 기존 테이블은 그대로 두고 Daybrick 테이블을 추가합니다. 새 프로젝트를 쓰는 것을 권장합니다.`,
     confirmLabel: "그래도 계속",
   };
+}
+
+/** 안내 띠가 있는 상태 (연결됨·연결 안 함은 띠 없음, R40) */
+export type BannerStatus = Exclude<ServerStatus, "connected" | "off">;
+
+/** 안내 띠 색: 할 일이 있음 주황, 접속 불가 빨강, 앱 업데이트 보라 */
+export type BannerTone = "warn" | "bad" | "info";
+
+/** 안내 띠 문구 (R40). link는 밑줄 링크 글자. */
+export const BANNER_TEXTS: Record<BannerStatus, { tone: BannerTone; message: string; link: string }> = {
+  "login-needed": { tone: "warn", message: "로그인이 필요합니다.", link: "설정에서 로그인" },
+  "server-update": { tone: "warn", message: "서버 업데이트가 필요합니다.", link: "업데이트하기" },
+  "app-update": { tone: "info", message: "앱을 업데이트하세요.", link: "자세히" },
+  paused: { tone: "warn", message: "서버가 일시정지됐습니다.", link: "재개 방법 보기" },
+  unreachable: { tone: "bad", message: "서버에 접속할 수 없습니다.", link: "몇 분마다 다시 확인 중 · 설정 열기" },
+};
+
+/** 재개 안내 팝업의 이유 (R42) */
+export const RESUME_REASON =
+  "Supabase 무료 플랜은 7일 동안 쓰지 않으면 서버를 멈춥니다. 데이터는 그대로 있고, 다시 켜면 1~2분 뒤 이어서 쓸 수 있습니다.";
+
+/** [여기서 재개] 실패 문구 (R42). PAT 값은 넣지 않는다. */
+export function resumeFailMessage(reason: ApiErrorKind): { title: string; desc: string } {
+  switch (reason) {
+    case "unauthorized":
+      return { title: "PAT가 맞지 않습니다", desc: "토큰이 틀렸거나 만료됐습니다. 새로 발급해 붙여넣으세요." };
+    case "forbidden":
+    case "not-found":
+      return {
+        title: "이 프로젝트를 재개할 권한이 없습니다",
+        desc: "PAT를 만든 계정이 이 프로젝트를 관리할 수 있는지 확인하세요. 대시보드에서 직접 재개할 수도 있습니다.",
+      };
+    case "network":
+      return { title: "Supabase에 접속할 수 없습니다", desc: "인터넷 연결을 확인한 뒤 다시 시도하세요." };
+    case "rate-limited":
+      return { title: "Supabase가 요청을 거절했습니다 (429)", desc: "잠시 뒤 다시 시도하세요." };
+    case "server":
+    case "bad-response":
+      return {
+        title: "재개를 요청하지 못했습니다",
+        desc: "Supabase가 예상하지 못한 응답을 보냈습니다. 대시보드에서 직접 재개해 보세요.",
+      };
+  }
 }
 
 /** 실패 문구 끝에 붙이는 말: 다시 시도는 실패한 단계부터 (R17) */

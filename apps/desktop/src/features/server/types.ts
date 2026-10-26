@@ -1,4 +1,4 @@
-/** 서버 연결 상태. 1단계에서는 off/connected만 쓰고, 나머지는 7·8단계에서 판정한다. */
+/** 서버 연결 상태 (R40). 연결 정보가 없으면 off, 있으면 접속 확인(`health.ts`)으로 정한다. */
 export type ServerStatus =
   | "connected"
   | "off"

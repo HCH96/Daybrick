@@ -2,9 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { clearServerConnection, createDefaultServerConfig, loadServerConfig, saveServerConfig } from "./config";
 import { deleteSavedLogin, restoreSession, stopSession, type ServerSession } from "./session";
 import type { ServerConfig, ServerStatus } from "./types";
+import { useHealthCheck } from "./useHealthCheck";
 import { ServerContext, type ServerState } from "./useServer";
 
-/** 앱을 켤 때 server.json을 읽고 로그인을 복원해, 연결 정보·세션·상태를 앱 전체에 공유한다. */
+/**
+ * 앱을 켤 때 server.json을 읽고 로그인을 복원해, 연결 정보·세션·상태를 앱 전체에 공유한다.
+ * 상태는 앱이 그려진 뒤 접속 확인으로 정한다 (useHealthCheck, R37–R44).
+ */
 export function ServerProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<ServerConfig | null>(null);
   // 연달아 바꿀 때도 최신 값을 기준으로 합치기 위해 따로 들고 있는다
@@ -91,12 +95,59 @@ export function ServerProvider({ children }: { children: ReactNode }) {
   const openSetup = useCallback(() => setSetupOpen(true), []);
   const closeSetup = useCallback(() => setSetupOpen(false), []);
 
-  const status: ServerStatus = config?.connection ? "connected" : "off";
+  /** 세션이 없으면 저장된 로그인으로 다시 받아 본다 (켤 때 인터넷이 끊겨 복원하지 못했을 수 있다) */
+  const ensureSession = useCallback(async () => {
+    if (sessionRef.current) return sessionRef.current;
+    const connection = configRef.current?.connection;
+    if (!connection) return null;
+    const restored = await restoreSession(connection);
+    if (!restored) return sessionRef.current;
+    if (sessionRef.current || configRef.current?.connection?.url !== connection.url) {
+      stopSession(restored);
+      return sessionRef.current;
+    }
+    replaceSession(restored);
+    return restored;
+  }, [replaceSession]);
 
+  const saveLastCheck = useCallback(
+    (checked: ServerStatus, at: string) => {
+      updateConfig({ lastCheck: { status: checked, at } }).catch((e: unknown) =>
+        console.error("접속 확인 결과를 저장하지 못함", e),
+      );
+    },
+    [updateConfig],
+  );
+
+  const health = useHealthCheck({
+    connection: config?.connection ?? null,
+    sessionReady,
+    session,
+    ensureSession,
+    onChecked: saveLastCheck,
+  });
+
+  // 확인 결과가 나오기 전에는 띠를 띄우지 않도록 연결됨으로 둔다
+  const status: ServerStatus = config?.connection ? (health.status ?? "connected") : "off";
+
+  // [×]로 숨긴 안내 띠 (이번 실행 동안만, 파일에 남기지 않음, R41)
+  const [dismissedBanners, setDismissedBanners] = useState<readonly ServerStatus[]>([]);
+  const dismissBanner = useCallback((s: ServerStatus) => {
+    setDismissedBanners((prev) => (prev.includes(s) ? prev : [...prev, s]));
+  }, []);
+
+  const { checking, recheck, resuming, resumeChecks, startResume } = health;
   const value = useMemo<ServerState>(
     () => ({
       config,
       status,
+      checking,
+      recheck,
+      resuming,
+      resumeChecks,
+      startResume,
+      dismissedBanners,
+      dismissBanner,
       updateConfig,
       clearConnection,
       session,
@@ -106,7 +157,25 @@ export function ServerProvider({ children }: { children: ReactNode }) {
       openSetup,
       closeSetup,
     }),
-    [config, status, updateConfig, clearConnection, session, sessionReady, completeLogin, setupOpen, openSetup, closeSetup],
+    [
+      config,
+      status,
+      checking,
+      recheck,
+      resuming,
+      resumeChecks,
+      startResume,
+      dismissedBanners,
+      dismissBanner,
+      updateConfig,
+      clearConnection,
+      session,
+      sessionReady,
+      completeLogin,
+      setupOpen,
+      openSetup,
+      closeSetup,
+    ],
   );
 
   return <ServerContext.Provider value={value}>{children}</ServerContext.Provider>;

@@ -3,6 +3,7 @@
 //! 4단계: PAT 접근 확인(R13), 빈 프로젝트 검사(R14).
 //! 5단계: 인증 설정, 서버 구조 적용, 서버 함수 배포, 비밀값 등록 (R15, R16, R26).
 //! 6단계: 첫 로그인 뒤 새 가입 막기 (R29, D12).
+//! 7단계: 프로젝트 상태 읽기, 일시정지 재개 (R42, R43).
 
 use serde::Serialize;
 use serde_json::Value;
@@ -264,6 +265,41 @@ pub async fn disable_signup(pat: String, project_ref: String) -> Result<(), Stri
         .patch(project_url(&project_ref, "/config/auth")?)
         .bearer_auth(pat.trim())
         .json(&serde_json::json!({ "disable_signup": true }))
+        .send()
+        .await
+        .map_err(http::network_error)?;
+    http::check_status(response).map(|_| ())
+}
+
+/// 프로젝트 상태 글자를 읽는다 (`GET /v1/projects/{ref}`의 `status`, 예: `ACTIVE_HEALTHY`, `INACTIVE`, `RESTORING`, `COMING_UP`).
+/// 일시정지 프로젝트는 `INACTIVE`로 온다고 보았다 (추측, 실제 일시정지 프로젝트로 확인하지 못함).
+#[tauri::command]
+pub async fn project_status(pat: String, project_ref: String) -> Result<String, String> {
+    let body: Value = http::check_status(
+        http::client()?
+            .get(project_url(&project_ref, "")?)
+            .bearer_auth(pat.trim())
+            .send()
+            .await
+            .map_err(http::network_error)?,
+    )?
+    .json()
+    .await
+    .map_err(|_| http::ERR_BAD_RESPONSE.to_string())?;
+    body.get("status")
+        .and_then(Value::as_str)
+        .map(str::to_string)
+        .ok_or_else(|| http::ERR_BAD_RESPONSE.to_string())
+}
+
+/// 일시정지된 프로젝트 재개를 요청한다 (`POST /v1/projects/{ref}/restore`, R42).
+/// 요청은 바로 끝나고 서버는 1~2분 뒤 켜진다. 켜졌는지는 프론트가 접속 확인으로 본다 (R43).
+#[tauri::command]
+pub async fn restore_project(pat: String, project_ref: String) -> Result<(), String> {
+    let response = http::client()?
+        .post(project_url(&project_ref, "/restore")?)
+        .bearer_auth(pat.trim())
+        .json(&serde_json::json!({}))
         .send()
         .await
         .map_err(http::network_error)?;
