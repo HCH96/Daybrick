@@ -22,8 +22,19 @@ pub fn client() -> Result<reqwest::Client, String> {
         .map_err(|_| ERR_NETWORK.to_string())
 }
 
-/// 요청 자체가 실패했을 때 (오류 내용에는 주소·머리글이 들어 있을 수 있어 버린다)
-pub fn network_error(_: reqwest::Error) -> String {
+/// 요청 자체가 실패했을 때.
+/// 요청을 만들지 못한 경우(키·토큰에 줄바꿈처럼 머리글에 넣을 수 없는 글자가 섞임)는 값이 틀린 것으로 본다.
+/// 그 밖에는 접속 실패로 보고, 원인을 찾을 수 있게 종류만 터미널에 남긴다 (주소는 빼고, 머리글·본문은 원래 들어 있지 않다).
+pub fn network_error(error: reqwest::Error) -> String {
+    if error.is_builder() {
+        return ERR_UNAUTHORIZED.to_string();
+    }
+    eprintln!(
+        "[server] 요청 실패: timeout={} connect={} {:?}",
+        error.is_timeout(),
+        error.is_connect(),
+        error.without_url()
+    );
     ERR_NETWORK.to_string()
 }
 

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, type ReactNode } from "react";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { findPage } from "./app/pages";
 import { NavigationContext, type Navigation } from "./app/navigation";
 import type { PageId } from "./app/types";
@@ -6,6 +6,7 @@ import { useHistory } from "./app/useHistory";
 import { useSidebarCollapsed } from "./app/useSidebarCollapsed";
 import { useGlobalShortcuts } from "./app/useGlobalShortcuts";
 import AppLayout from "./components/layout/AppLayout";
+import { OverlayRootContext } from "./components/layout/overlayRoot";
 import Sidebar from "./components/layout/Sidebar";
 import TitleBar from "./components/layout/TitleBar";
 import ServerBanner from "./components/server/ServerBanner";
@@ -16,13 +17,22 @@ import { useServer } from "./features/server/useServer";
 import WelcomeScreen from "./pages/server-setup/WelcomeScreen";
 import WizardShell from "./pages/server-setup/wizard/WizardShell";
 
-/** 사이드바 없이 제목 표시줄 + 창 전체를 쓰는 화면 (첫 실행 안내, 연결 마법사) */
+/**
+ * 사이드바 없이 제목 표시줄 + 창 전체를 쓰는 화면 (첫 실행 안내, 연결 마법사).
+ * 마법사 안의 확인 창(빈 프로젝트 경고 등)도 그려지도록 AppLayout처럼 팝업 겹침 층을 둔다.
+ */
 function FullScreen({ children }: { children?: ReactNode }) {
+  const [overlayRoot, setOverlayRoot] = useState<HTMLElement | null>(null);
   return (
-    <div className="app-layout">
-      <TitleBar />
-      <div className="app-layout__body">{children}</div>
-    </div>
+    <OverlayRootContext.Provider value={overlayRoot}>
+      <div className="app-layout">
+        <TitleBar />
+        <div className="app-layout__body">
+          {children}
+          <div ref={setOverlayRoot} className="app-layout__overlay app-layout__overlay--sidebar-collapsed" />
+        </div>
+      </div>
+    </OverlayRootContext.Provider>
   );
 }
 

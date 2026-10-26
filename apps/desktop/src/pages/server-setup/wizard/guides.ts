@@ -86,7 +86,11 @@ export const GUIDES: Partial<Record<WizardStepId, StepGuide>> = {
       },
       {
         title: "OAuth 클라이언트 만들기",
-        desc: '유형 "웹 애플리케이션", 승인된 리디렉션 URI에 왼쪽 주소 붙여넣기',
+        desc: '사용자 인증 정보 → 사용자 인증 정보 만들기 → OAuth 클라이언트 ID, 유형 "웹 애플리케이션"',
+      },
+      {
+        title: "리디렉션 주소 등록하고 저장",
+        desc: '왼쪽 "리디렉션 주소"의 [복사] → 같은 화면의 "승인된 리디렉션 URI"에서 [+ URI 추가] → 붙여넣기 → 맨 아래 [만들기](이미 만든 클라이언트면 [저장]). 빠뜨리면 로그인 단계에서 redirect_uri_mismatch 오류가 납니다.',
       },
       { title: "클라이언트 ID·비밀번호 복사", desc: "만들고 나면 뜨는 창에서 두 값을 복사해 왼쪽 칸에" },
     ],

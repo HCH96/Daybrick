@@ -3,8 +3,8 @@ import { checkServerStatus } from "./health";
 import type { ServerSession } from "./session";
 import type { ServerConnection, ServerStatus } from "./types";
 
-/** 접속 불가일 때 다시 확인하는 간격 (R44) */
-const UNREACHABLE_RETRY_MS = 3 * 60_000;
+/** 앱이 켜져 있는 동안 다시 확인하는 간격. 접속 불가일 때도, 연결됨일 때도 같다 (R44, r1 U28) */
+const RECHECK_MS = 3 * 60_000;
 /** 재개를 요청한 뒤 다시 확인하는 간격 (R43) */
 const RESUME_RETRY_MS = 10_000;
 
@@ -40,7 +40,7 @@ export interface HealthCheck {
 
 /**
  * 앱을 켤 때·연결이나 로그인이 바뀔 때 서버 상태를 확인한다 (R37). 앱이 그려진 뒤 비동기로 해서 시작을 막지 않는다 (R38).
- * 접속 불가면 3분마다, 재개 중이면 10초마다 다시 확인한다 (R43, R44).
+ * 그 뒤로는 3분마다(재개 중이면 10초마다) 다시 확인하고, 네트워크가 끊기거나 다시 붙으면 바로 확인한다 (R43, R44).
  */
 export function useHealthCheck({
   connection,
@@ -105,16 +105,26 @@ export function useHealthCheck({
     void run();
   }, [url, run, session]);
 
-  // 다시 확인 타이머: 재개 중 10초, 접속 불가 3분
+  // 다시 확인 타이머: 재개 중 10초, 그 밖에는 3분. 연결됨일 때도 돌려 실행 중에 끊긴 것을 알아챈다.
   useEffect(() => {
-    if (!url || checking) return;
-    let delay: number | null = null;
-    if (resuming && stillDown(status)) delay = RESUME_RETRY_MS;
-    else if (status === "unreachable") delay = UNREACHABLE_RETRY_MS;
-    if (delay === null) return;
+    if (!url || checking || status === null) return;
+    const delay = resuming && stillDown(status) ? RESUME_RETRY_MS : RECHECK_MS;
     const timer = window.setTimeout(() => void run(), delay);
     return () => window.clearTimeout(timer);
   }, [url, checking, resuming, status, checkCount, run]);
+
+  // 운영체제가 네트워크가 끊기거나 다시 붙었다고 알려 주면 기다리지 않고 바로 확인한다.
+  // (가상 네트워크 어댑터가 있으면 이 신호가 안 올 수 있어 위의 3분 확인도 함께 둔다)
+  useEffect(() => {
+    if (!url) return;
+    const onChange = () => void run();
+    window.addEventListener("online", onChange);
+    window.addEventListener("offline", onChange);
+    return () => {
+      window.removeEventListener("online", onChange);
+      window.removeEventListener("offline", onChange);
+    };
+  }, [url, run]);
 
   const recheck = useCallback(() => void run(), [run]);
 

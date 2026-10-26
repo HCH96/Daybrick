@@ -35,7 +35,7 @@ function RedirectUrlRow({ projectRef }: { projectRef: string }) {
     <div className="wiz-field">
       <label className="wiz-field__label" htmlFor="wiz-redirect-url">
         리디렉션 주소
-        <span className="wiz-field__note">Google OAuth 클라이언트의 "승인된 리디렉션 URI"에 붙여넣기</span>
+        <span className="wiz-field__note">Google OAuth 클라이언트의 "승인된 리디렉션 URI"에 붙여넣고 저장</span>
       </label>
       <div className="wiz-redirect">
         <div className="wiz-input wiz-input--ro">

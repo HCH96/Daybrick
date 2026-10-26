@@ -115,6 +115,38 @@ function transientDesc(reason: ApiErrorKind): string | null {
   }
 }
 
+/**
+ * PAT 접근 확인 실패 문구 (R13). 제목도 원인에 맞춘다: 틀린 토큰(401) / 권한 없음(403·404) / 접속 실패.
+ * Supabase는 형식이 틀린 토큰에도 401을 돌려준다 (2026-10-27 확인).
+ */
+function patFailMessage(reason: ApiErrorKind, ref: string): ServerMessage {
+  switch (reason) {
+    case "unauthorized":
+      return {
+        tone: "bad",
+        title: "PAT가 맞지 않습니다",
+        desc: "토큰이 틀렸거나 만료됐습니다. 새로 발급해 붙여넣으세요.",
+      };
+    case "forbidden":
+    case "not-found":
+      return {
+        tone: "bad",
+        title: "PAT로 이 프로젝트에 접근할 수 없습니다",
+        desc: `PAT를 만든 계정이 이 프로젝트(${ref})를 관리할 수 있는지 확인하세요.`,
+      };
+    case "network":
+      return {
+        tone: "bad",
+        title: "Supabase에 접속하지 못해 PAT를 확인하지 못했습니다",
+        desc: "인터넷 연결을 확인하고 다시 [세팅 시작]을 누르세요.",
+      };
+    case "rate-limited":
+    case "server":
+    case "bad-response":
+      return { tone: "bad", title: "PAT를 확인하지 못했습니다", desc: transientDesc(reason) ?? "" };
+  }
+}
+
 /** ③ [세팅 시작] 전 사전 확인 실패 문구 (R12–R14). 성공·빈 프로젝트 아님은 null. */
 export function setupPrecheckMessage(precheck: SetupPrecheck, ref: string): ServerMessage | null {
   switch (precheck.kind) {
@@ -130,15 +162,7 @@ export function setupPrecheckMessage(precheck: SetupPrecheck, ref: string): Serv
           "키가 틀렸거나 결제 수단이 등록되지 않았습니다. 세팅은 시작하지 않았습니다.",
       };
     case "pat-failed":
-      return {
-        tone: "bad",
-        title: "PAT로 이 프로젝트에 접근할 수 없습니다",
-        desc:
-          transientDesc(precheck.reason) ??
-          (precheck.reason === "unauthorized"
-            ? "토큰이 틀렸거나 만료됐습니다. 새로 발급해 붙여넣으세요."
-            : `프로젝트 ${ref}에 권한이 있는 계정의 토큰인지, 만료되지 않았는지 확인하세요.`),
-      };
+      return patFailMessage(precheck.reason, ref);
     case "inspect-failed":
       return {
         tone: "bad",

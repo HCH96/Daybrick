@@ -47,9 +47,12 @@ function stringOrNull(value: unknown): string | null {
   return typeof value === "string" ? value : null;
 }
 
+/** `health`를 기다리는 최대 시간. 끊긴 연결에서 응답을 끝없이 기다려 다음 확인이 막히지 않게 한다. */
+const HEALTH_TIMEOUT_MS = 15_000;
+
 /** 로그인 뒤 접속 확인: DB를 실제로 읽는 `health` 서버 함수 (D17) */
 export async function fetchHealth(client: SupabaseClient): Promise<ApiResult<HealthInfo>> {
-  const { data, error } = await client.functions.invoke<unknown>("health");
+  const { data, error } = await client.functions.invoke<unknown>("health", { timeout: HEALTH_TIMEOUT_MS });
   if (error) return { ok: false, error: functionError(error) };
   if (!isRecord(data)) return { ok: false, error: "bad-response" };
   return {
