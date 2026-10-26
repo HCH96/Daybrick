@@ -67,7 +67,7 @@
 }
 
 .sidebar__version {
-  padding: 0 12px;
+  padding: 8px 12px 0; /* 위의 Settings 메뉴와 띄운다 */
   font-size: 11px;
   color: var(--muted);
 }

@@ -8,6 +8,7 @@ import AppLayout from "./components/layout/AppLayout";
 import Sidebar from "./components/layout/Sidebar";
 import TitleBar from "./components/layout/TitleBar";
 import { ApplicationsProvider } from "./features/applications/store";
+import { ServerProvider } from "./features/server/ServerProvider";
 
 function App() {
   const history = useHistory("home");
@@ -28,15 +29,17 @@ function App() {
 
   return (
     <NavigationContext.Provider value={navigation}>
-      <ApplicationsProvider>
-        <AppLayout
-          titleBar={<TitleBar sidebarOpen={!sidebarCollapsed} onToggleSidebar={toggleSidebar} />}
-          sidebar={<Sidebar />}
-          sidebarCollapsed={sidebarCollapsed}
-        >
-          <Page />
-        </AppLayout>
-      </ApplicationsProvider>
+      <ServerProvider>
+        <ApplicationsProvider>
+          <AppLayout
+            titleBar={<TitleBar sidebarOpen={!sidebarCollapsed} onToggleSidebar={toggleSidebar} />}
+            sidebar={<Sidebar />}
+            sidebarCollapsed={sidebarCollapsed}
+          >
+            <Page />
+          </AppLayout>
+        </ApplicationsProvider>
+      </ServerProvider>
     </NavigationContext.Provider>
   );
 }

@@ -19,7 +19,7 @@
 | [data.md](data.md) | 다룰 데이터와 저장 위치, 비밀값 규칙 |
 | [scope.md](scope.md) | 제외, 나중에 고려할 것, 계획 단계에서 확인할 것 |
 | [mockup.md](mockup.md) | 목업 경로(2026-10-26 승인)와 목업에서 정한 것 |
-| [decisions.md](decisions.md) | 결정 사항 D1–D17 |
+| [decisions.md](decisions.md) | 결정 사항 D1–D19 |
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (2026-10-26 승인). 관리 API·로그인 수신은 Rust에서, 계정 하나 허용은 첫 로그인 뒤 가입 막기, 자격 증명 관리자에는 refresh 토큰만 (D11–D17)

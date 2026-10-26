@@ -17,3 +17,5 @@
 - D15. 서버 구조 단계 SQL은 `supabase/migrations/NNNN_*.sql`, 서버 함수는 `supabase/functions/`에 두고 Rust가 빌드 때 포함한다. 앱의 최신 번호 기준은 Rust `migrations.rs`. (적용: 이후 전체) (기록: L05)
 - D16. 서버 함수는 단계별로 나누지 않고 앱이 가진 최신 묶음을 매번 다시 배포한다. SQL 단계는 번호 기록과 함께 한 트랜잭션으로 적용한다. (적용: 이후 전체) (기록: L05)
 - D17. 접속 확인은 로그인 전에는 공개 RPC `daybrick_schema_version()`, 로그인 뒤에는 `health` 서버 함수로 하고, 둘 다 DB를 실제로 읽는다. (적용: 이후 전체) (기록: L05)
+- D18. 서버 연결 화면에서 쓰는 아이콘(서버·새로고침·열쇠 등)은 `components/icons/ServerIcons.tsx`에 모은다. (적용: 이후 전체) (기록: L06)
+- D19. `clear_server_connection`은 server.json을 통째로 지우고, `ServerProvider.clearConnection`이 그 뒤 `welcomeDismissed: true`만 든 설정을 다시 저장한다. 연결 해제 뒤에는 첫 실행 안내 대신 설정의 "연결 안 함" 칸이 보인다. (적용: 6, 9단계) (기록: L06)

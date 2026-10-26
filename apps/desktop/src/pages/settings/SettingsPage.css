@@ -1,0 +1,174 @@
+/* 설정 화면 (서버 연결 목업 settings.html: set-page·set-card·set-empty) */
+
+.settings-page {
+  max-width: 880px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settings-page__title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.settings-page__sub {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* 칸 이름 줄 (칸이 늘어나면 바로 가기로 쓴다) */
+.settings-page__anchors {
+  display: flex;
+  gap: 6px;
+}
+
+.settings-page__anchor {
+  padding: 5px 12px;
+  border-radius: 99px;
+  font-size: 13px;
+  color: var(--muted);
+  box-shadow: 0 0 0 1px var(--border) inset;
+}
+
+.settings-page__anchor--on {
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: none;
+  font-weight: 700;
+}
+
+/* 설정 칸 */
+.settings-card {
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--border) inset;
+  overflow: hidden;
+}
+
+.settings-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-card__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+}
+
+.settings-card__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.settings-card__title small {
+  display: block;
+  font-size: 12px;
+  color: var(--faint);
+  font-weight: 400;
+}
+
+.settings-card__right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* 상태 글자 (앞에 색 점) */
+.settings-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.settings-state::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.settings-state--ok {
+  color: var(--green);
+}
+
+.settings-state--none {
+  color: var(--muted);
+}
+
+/* 연결 안 함 본문 */
+.settings-empty {
+  padding: 28px 22px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.settings-empty__txt {
+  flex: 1;
+}
+
+.settings-empty__txt b {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 15px;
+}
+
+.settings-empty__txt ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* 버튼 */
+.settings-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  box-shadow: 0 0 0 1px var(--border-2) inset;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.settings-btn:hover {
+  filter: brightness(1.08);
+}
+
+.settings-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.settings-btn--primary {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: none;
+}

@@ -10,6 +10,7 @@ export const PAGE_LABELS: Record<PageId, string> = {
   scheduler: "스케줄러",
   applications: "지원 현황",
   timer: "타이머",
+  settings: "설정",
 };
 
 /** 사이드바에 보일 영어 메뉴 이름. 화면 제목과 카드 버튼은 위의 한글 이름을 쓴다. */
@@ -19,4 +20,5 @@ export const NAV_LABELS: Record<PageId, string> = {
   scheduler: "Scheduler",
   applications: "Applications",
   timer: "Timer",
+  settings: "Settings",
 };
