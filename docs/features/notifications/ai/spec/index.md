@@ -21,7 +21,7 @@
 | [extension.md](extension.md) | 다른 기능이 알림을 보내는 법. **알림을 보내는 기능을 만들 때 읽기** |
 | [data.md](data.md) | 다룰 데이터와 저장 위치 |
 | [scope.md](scope.md) | 제외, 나중에 고려할 것, 계획 단계에서 확인할 것 |
-| mockup.md | (아직 없음) |
+| [mockup.md](mockup.md) | 목업 경로(2026-10-26 승인)와 목업에서 정한 것 |
 | [decisions.md](decisions.md) | 결정 사항 D1–D7 |
 
 ## 다른 문서

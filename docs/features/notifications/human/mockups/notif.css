@@ -1,0 +1,77 @@
+/* 알림: 종 아이콘·배지, 펼침 패널, 알림 행 */
+
+/* ===== 종 아이콘 + 배지 (R1–R3) ===== */
+.bell { position: relative; margin-right: 4px; }
+.bell.open { background: rgba(255,255,255,.08); color: var(--text); }
+.badge {
+  position: absolute; top: 1px; left: 15px; min-width: 16px; height: 16px; padding: 0 4px;
+  border-radius: 99px; background: var(--badge); color: var(--on-badge);
+  font-size: 10px; font-weight: 700; line-height: 16px; text-align: center;
+  box-shadow: 0 0 0 2px var(--sidebar); font-family: "Segoe UI", sans-serif;
+}
+
+/* 제목 표시줄 오른쪽 끝만 잘라 크게 보여주는 띠 (1. 종 아이콘 화면) */
+.strip-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.strip { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.strip .titlebar { zoom: 1.5; border-bottom: 0; }
+.strip-cap { padding: 10px 14px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); }
+.strip-cap b { color: var(--text); font-weight: 700; margin-right: 6px; }
+
+/* ===== 펼침 패널 (R6–R9) ===== */
+.panel {
+  width: 360px; max-height: 630px; display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: 0 16px 40px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4); overflow: hidden;
+}
+/* 앱 창 안에서: 종 아이콘 바로 아래, 오른쪽 끝을 종에 맞춤 */
+.frame .panel { position: absolute; top: 44px; right: 142px; }
+
+.panel-head { padding: 14px 14px 10px; border-bottom: 1px solid var(--border); }
+.panel-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.panel-title h3 { margin: 0; font-size: 15px; font-weight: 800; }
+.panel-title .count { font-size: 12px; color: var(--muted); font-weight: 400; margin-left: 6px; }
+.panel-bar { display: flex; align-items: center; justify-content: space-between; }
+
+.seg { display: inline-flex; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 2px; }
+.seg span { padding: 3px 12px; border-radius: 6px; font-size: 12px; color: var(--muted); }
+.seg span.on { background: var(--neutral-soft); color: var(--text); font-weight: 700; }
+
+.link-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--accent); padding: 4px 6px; border-radius: 6px; }
+.link-btn.off { color: var(--faint); opacity: .6; }
+
+.panel-list { flex: 1; min-height: 0; overflow-y: auto; }
+.panel-list::-webkit-scrollbar { width: 8px; }
+.panel-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; border: 2px solid var(--surface); }
+
+/* ===== 알림 행 (R11–R15) ===== */
+.n-row { display: flex; gap: 10px; padding: 12px 10px 12px 14px; border-bottom: 1px solid var(--border); }
+.n-row:last-child { border-bottom: 0; }
+.n-row.hover { background: rgba(255,255,255,.035); }
+.n-lead { width: 18px; flex-shrink: 0; display: flex; justify-content: center; padding-top: 2px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); margin-top: 4px; }
+.warn { color: var(--amber); }
+.n-body { flex: 1; min-width: 0; }
+.n-meta { font-size: 11px; color: var(--muted); }
+.n-title { font-size: 13px; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.n-text { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+.n-act { width: 28px; height: 28px; flex-shrink: 0; display: grid; place-items: center; border-radius: 7px; color: var(--muted); }
+.n-act.hover { background: var(--accent-soft); color: var(--accent); }
+
+/* 안 읽음: 진하게 / 확인함: 흐리게 (R13) */
+.n-row.unread .n-title { font-weight: 700; color: var(--text); }
+.n-row.unread .n-meta b { color: var(--text); font-weight: 600; }
+.n-row.read .n-lead, .n-row.read .n-body { opacity: .45; }
+.n-row.read .n-title { font-weight: 400; }
+.n-row.unread.warn-row .n-title { color: var(--text); }
+.n-row.just-read { background: rgba(255,255,255,.02); }
+
+/* 빈 상태 (R20) */
+.empty { padding: 56px 20px 60px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.empty .icon-box { width: 44px; height: 44px; border-radius: 12px; background: var(--neutral-soft); display: grid; place-items: center; color: var(--muted); }
+.empty p { margin: 0; color: var(--muted); font-size: 13px; }
+
+/* 패널 상태 모음 (3. 패널 상태 화면) */
+.panel-row { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+.panel-cell { display: flex; flex-direction: column; gap: 8px; }
+.panel-cell .cap { font-size: 12px; color: var(--muted); max-width: 360px; }
+.panel-cell .cap b { color: var(--text); display: block; }

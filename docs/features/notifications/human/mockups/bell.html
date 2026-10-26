@@ -1,0 +1,70 @@
+<!doctype html>
+<!-- 목업: 알림 / 1. 종 아이콘·배지
+  목차와 다른 화면: index.html
+  CSS: common.css, notif.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  bell                1. 종 아이콘·배지             R1–R5
+    bell-states         1-1. 배지 상태 4가지         R2–R3, R6
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>알림 목업 · 1. 종 아이콘·배지</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="notif.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <h1>알림 목업</h1>
+  <p class="lead">제목 표시줄 오른쪽 끝(최소화 버튼 바로 왼쪽)에 종 아이콘을 둔다. 어느 화면에서든 같은 자리.</p>
+  <nav class="toc"><a href="index.html">목차</a><a href="bell.html">1. 종 아이콘·배지</a><a href="panel.html">2. 펼친 목록</a><a href="panel-states.html">3. 목록 상태</a></nav>
+
+  <section class="screen" id="bell">
+    <div class="screen-head"><h2>1. 종 아이콘·배지</h2><span class="tag">R1–R5</span></div>
+    <p class="screen-desc">제목 표시줄 오른쪽 끝만 잘라 1.5배로 키워 보여준다. 다른 버튼과 같은 30px 칸, 같은 회색 아이콘.</p>
+
+    <div class="strip-row" id="bell-states">
+      <div class="strip">
+        <div class="titlebar">
+          <div class="tb-drag"></div>
+          <div class="tb-btn bell"><svg class="ico sm"><use href="#i-bell"/></svg></div>
+          <div class="win"><span><svg><use href="#i-min"/></svg></span><span><svg><use href="#i-max"/></svg></span><span><svg><use href="#i-close"/></svg></span></div>
+        </div>
+        <div class="strip-cap"><b>안 읽음 0개</b>배지 숨김 (R3)</div>
+      </div>
+      <div class="strip">
+        <div class="titlebar">
+          <div class="tb-drag"></div>
+          <div class="tb-btn bell"><svg class="ico sm"><use href="#i-bell"/></svg><span class="badge">3</span></div>
+          <div class="win"><span><svg><use href="#i-min"/></svg></span><span><svg><use href="#i-max"/></svg></span><span><svg><use href="#i-close"/></svg></span></div>
+        </div>
+        <div class="strip-cap"><b>안 읽음 3개</b>오른쪽 위 빨간 원 (R2)</div>
+      </div>
+      <div class="strip">
+        <div class="titlebar">
+          <div class="tb-drag"></div>
+          <div class="tb-btn bell"><svg class="ico sm"><use href="#i-bell"/></svg><span class="badge">99+</span></div>
+          <div class="win"><span><svg><use href="#i-min"/></svg></span><span><svg><use href="#i-max"/></svg></span><span><svg><use href="#i-close"/></svg></span></div>
+        </div>
+        <div class="strip-cap"><b>안 읽음 124개</b>100개 이상은 99+ (R3)</div>
+      </div>
+      <div class="strip">
+        <div class="titlebar">
+          <div class="tb-drag"></div>
+          <div class="tb-btn bell open"><svg class="ico sm"><use href="#i-bell"/></svg><span class="badge">3</span></div>
+          <div class="win"><span><svg><use href="#i-min"/></svg></span><span><svg><use href="#i-max"/></svg></span><span><svg><use href="#i-close"/></svg></span></div>
+        </div>
+        <div class="strip-cap"><b>패널 열림</b>버튼 배경이 밝아짐 (R6)</div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>배지</b><ul><li>지름 16px, 숫자가 길어지면 옆으로 늘어나는 알약 모양</li><li>제목 표시줄 색 테두리 2px로 아이콘과 떨어져 보이게</li><li>색은 알림 전용 진한 빨강(--badge)</li></ul></div>
+      <div class="note"><b>숫자</b><ul><li>목록에 보이는 50개가 아니라 저장된 안 읽은 알림 전체 (R4)</li><li>1–99는 그대로, 100 이상은 99+</li></ul></div>
+      <div class="note"><b>서버 없이도</b><ul><li>서버 연결이 없어도 아이콘·로컬 알림은 그대로 보인다 (R5)</li><li>서버 연결 문제는 알림이 아니라 안내 띠로 (R35)</li></ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

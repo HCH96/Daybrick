@@ -1,0 +1,29 @@
+<!doctype html>
+<!-- 목업 목차: 알림
+  읽는 법: 이 목차에서 필요한 화면 파일만 골라 읽는다. CSS는 그 화면 파일 머리에 적힌 파일에서 필요한 클래스만 검색한다.
+  파일                  화면                         요구사항
+  bell.html             1. 종 아이콘·배지             R1–R5          부분 ID: bell-states
+  panel.html            2. 펼친 목록 (앱 창 위)       R6–R16, R23, R26  부분 ID: panel-head, panel-list
+  panel-states.html     3. 목록 상태                  R18–R20        부분 ID: states-unread, -all-read, -empty, -empty-unread
+  CSS: common.css(색 토큰·앱 틀, main-page 목업 값 이어 씀), notif.css(종·배지·패널·알림 행)
+  아이콘: icons.js
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>알림 목업 · 목차</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="notif.css">
+</head>
+<body>
+<div class="doc">
+  <h1>알림 목업</h1>
+  <p class="lead">앱 공용 알림 센터. 제목 표시줄 종 아이콘·빨간 숫자 배지, 화면 이동 없이 펼쳐지는 목록, 체크로 확인. 디자인 확인용 정적 화면이다.</p>
+  <ul class="links">
+    <li><a href="bell.html"><b>1. 종 아이콘·배지</b><span>배지 없음 / 3개 / 99+ / 패널 열림 상태 (R1–R5)</span></a></li>
+    <li><a href="panel.html"><b>2. 펼친 목록</b><span>앱 창 위에 패널이 열린 모습, 안 읽음·확인함·마우스 올림 행 (R6–R16, R23, R26)</span></a></li>
+    <li><a href="panel-states.html"><b>3. 목록 상태</b><span>안 읽음 필터에서 방금 확인, 모두 확인 뒤, 빈 목록 두 가지 (R18–R20)</span></a></li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<!-- 목업: 알림 / 3. 목록 상태
+  목차와 다른 화면: index.html
+  CSS: common.css, notif.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  states              3. 목록 상태                  R18–R20
+    states-unread       3-1. 안 읽음 필터·방금 확인   R19
+    states-all-read     3-2. 모두 확인한 뒤           R18
+    states-empty        3-3. 알림 없음                R20
+    states-empty-unread 3-4. 안 읽은 알림 없음        R20
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>알림 목업 · 3. 목록 상태</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="notif.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <h1>알림 목업</h1>
+  <p class="lead">패널만 떼어 실제 크기(100%)로 보여준다. 위치·그림자는 2번 화면과 같다.</p>
+  <nav class="toc"><a href="index.html">목차</a><a href="bell.html">1. 종 아이콘·배지</a><a href="panel.html">2. 펼친 목록</a><a href="panel-states.html">3. 목록 상태</a></nav>
+
+  <section class="screen" id="states">
+    <div class="screen-head"><h2>3. 목록 상태</h2><span class="tag">R18–R20</span></div>
+    <p class="screen-desc">필터와 빈 상태, 모두 확인 비활성 모습.</p>
+
+    <div class="panel-row">
+      <div class="panel-cell" id="states-unread">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><h3>알림<span class="count">안 읽음 2</span></h3></div>
+            <div class="panel-bar">
+              <div class="seg"><span>전체</span><span class="on">안 읽음</span></div>
+              <span class="link-btn"><svg class="ico xs"><use href="#i-check-all"/></svg>모두 확인</span>
+            </div>
+          </div>
+          <div class="panel-list">
+            <div class="n-row unread">
+              <div class="n-lead"><svg class="ico sm warn"><use href="#i-warn"/></svg></div>
+              <div class="n-body"><div class="n-meta"><b>구직 관리</b> · 방금</div><div class="n-title">수집 실패: 게임잡</div><div class="n-text">페이지 구조가 바뀌어 공고를 읽지 못했습니다. 수집 설정을 확인해 주세요.</div></div>
+              <div class="n-act"><svg class="ico sm"><use href="#i-check"/></svg></div>
+            </div>
+            <div class="n-row read just-read">
+              <div class="n-lead"><span class="dot"></span></div>
+              <div class="n-body"><div class="n-meta"><b>구직 관리</b> · 12분 전</div><div class="n-title">새 추천 공고 5개</div><div class="n-text">넥슨 · 게임 클라이언트 프로그래머 외 4개, 최고 92점</div></div>
+              <div class="n-act"><svg class="ico sm"><use href="#i-undo"/></svg></div>
+            </div>
+            <div class="n-row unread">
+              <div class="n-lead"><svg class="ico sm warn"><use href="#i-warn"/></svg></div>
+              <div class="n-body"><div class="n-meta"><b>구직 관리</b> · 3시간 전</div><div class="n-title">AI 사용액이 이번 달 한도의 80%에 도달</div><div class="n-text">$8.04 / $10.00 사용. 한도에 닿으면 공고 채점이 멈춥니다.</div></div>
+              <div class="n-act"><svg class="ico sm"><use href="#i-check"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div class="cap"><b>3-1. 안 읽음 필터에서 하나를 방금 확인</b>확인한 행은 흐리게 그 자리에 남고(↺), 패널을 다시 열면 빠진다. (R19)</div>
+      </div>
+
+      <div class="panel-cell" id="states-all-read">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><h3>알림</h3></div>
+            <div class="panel-bar">
+              <div class="seg"><span class="on">전체</span><span>안 읽음</span></div>
+              <span class="link-btn off"><svg class="ico xs"><use href="#i-check-all"/></svg>모두 확인</span>
+            </div>
+          </div>
+          <div class="panel-list">
+            <div class="n-row read">
+              <div class="n-lead"><svg class="ico sm warn"><use href="#i-warn"/></svg></div>
+              <div class="n-body"><div class="n-meta"><b>구직 관리</b> · 방금</div><div class="n-title">수집 실패: 게임잡</div><div class="n-text">페이지 구조가 바뀌어 공고를 읽지 못했습니다. 수집 설정을 확인해 주세요.</div></div>
+              <div class="n-act"><svg class="ico sm"><use href="#i-undo"/></svg></div>
+            </div>
+            <div class="n-row read">
+              <div class="n-lead"><span class="dot"></span></div>
+              <div class="n-body"><div class="n-meta"><b>구직 관리</b> · 12분 전</div><div class="n-title">새 추천 공고 5개</div><div class="n-text">넥슨 · 게임 클라이언트 프로그래머 외 4개, 최고 92점</div></div>
+              <div class="n-act"><svg class="ico sm"><use href="#i-undo"/></svg></div>
+            </div>
+            <div class="n-row read">
+              <div class="n-lead"><span class="dot"></span></div>
+              <div class="n-body"><div class="n-meta"><b>구직 관리</b> · 어제</div><div class="n-title">메일 제안 2개</div><div class="n-text">크래프톤 서류 합격, 스마일게이트 1차 면접 일정 안내</div></div>
+              <div class="n-act"><svg class="ico sm"><use href="#i-undo"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div class="cap"><b>3-2. 모두 확인한 뒤</b>안 읽은 개수 표시가 사라지고 [모두 확인]은 회색 비활성. 종 배지도 숨김. (R18)</div>
+      </div>
+
+      <div class="panel-cell" id="states-empty">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><h3>알림</h3></div>
+            <div class="panel-bar">
+              <div class="seg"><span class="on">전체</span><span>안 읽음</span></div>
+              <span class="link-btn off"><svg class="ico xs"><use href="#i-check-all"/></svg>모두 확인</span>
+            </div>
+          </div>
+          <div class="empty"><div class="icon-box"><svg class="ico"><use href="#i-bell"/></svg></div><p>새 알림이 없습니다</p></div>
+        </div>
+        <div class="cap"><b>3-3. 알림이 하나도 없음</b>처음 설치했을 때나 30일이 지나 모두 지워졌을 때. (R20)</div>
+      </div>
+
+      <div class="panel-cell" id="states-empty-unread">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><h3>알림</h3></div>
+            <div class="panel-bar">
+              <div class="seg"><span>전체</span><span class="on">안 읽음</span></div>
+              <span class="link-btn off"><svg class="ico xs"><use href="#i-check-all"/></svg>모두 확인</span>
+            </div>
+          </div>
+          <div class="empty"><div class="icon-box"><svg class="ico"><use href="#i-check"/></svg></div><p>안 읽은 알림이 없습니다</p></div>
+        </div>
+        <div class="cap"><b>3-4. 안 읽음 필터, 남은 것 없음</b>확인한 알림은 "전체"에서 볼 수 있다. (R20)</div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>
