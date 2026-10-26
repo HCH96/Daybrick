@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { findPage } from "./app/pages";
 import { NavigationContext, type Navigation } from "./app/navigation";
+import { PageIntentProvider } from "./app/pageIntent";
 import type { PageId } from "./app/types";
 import { useHistory } from "./app/useHistory";
 import { useSidebarCollapsed } from "./app/useSidebarCollapsed";
@@ -102,14 +103,17 @@ function AppMain() {
       <ApplicationsProvider>
         <AppScreens
           main={
-            <AppLayout
-              titleBar={<TitleBar sidebarOpen={!sidebarCollapsed} onToggleSidebar={toggleSidebar} />}
-              banner={<ServerBanner />}
-              sidebar={<Sidebar />}
-              sidebarCollapsed={sidebarCollapsed}
-            >
-              {updateOpen ? <ServerUpdateScreen /> : <Page />}
-            </AppLayout>
+            // 갈 곳 이동은 평소 화면에서만 한다. 전체 화면(FullScreen)에는 Provider가 없어 이동할 수 없는 상태다 (D10)
+            <PageIntentProvider>
+              <AppLayout
+                titleBar={<TitleBar sidebarOpen={!sidebarCollapsed} onToggleSidebar={toggleSidebar} />}
+                banner={<ServerBanner />}
+                sidebar={<Sidebar />}
+                sidebarCollapsed={sidebarCollapsed}
+              >
+                {updateOpen ? <ServerUpdateScreen /> : <Page />}
+              </AppLayout>
+            </PageIntentProvider>
           }
         />
       </ApplicationsProvider>

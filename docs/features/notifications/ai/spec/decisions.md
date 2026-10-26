@@ -12,3 +12,4 @@
 - D10. 갈 곳 이동은 `navigate`를 고치지 않고 열기 요청 Context(`app/pageIntent.tsx`의 `openTarget`/`usePageIntent`)로 한다. 이동할 수 없으면 확인 처리만 한다. (적용: 5단계 이후 전체) (기록: L03)
 - D11. 서버 알림 정리는 pg_cron 없이 앱이 받아 올 때 확인한 지 30일 지난 행을 지운다. 서버 합치기는 SQL 함수 `daybrick_notify`와 부분 고유 인덱스로 한다. (적용: 6단계 이후 전체) (기록: L03)
 - D12. 실시간은 `user_id`로 걸러 구독하고, `SUBSCRIBED`가 될 때마다 전체를 다시 받아 끊긴 동안 빠진 알림을 메운다. (적용: 7단계 이후 전체) (기록: L03)
+- D13. `openTarget`은 `useOpenTarget()` 훅으로 얻는다. `PageIntentProvider`는 평소 화면(AppLayout)만 감싸고, 전체 화면(FullScreen)에는 두지 않아 그곳에서는 `openTarget`이 늘 false다. 이미 확인한 알림의 본문을 눌러도 확인 시각은 바꾸지 않는다. (적용: 5단계 이후 전체) (기록: L08)

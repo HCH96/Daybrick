@@ -16,4 +16,13 @@
 - 예: job-search R80–R81.
 
 ## 갈 곳 처리
-- 페이지가 탭·팝업 이름을 받아 여는 방법은 계획 단계에서 main-page의 페이지 목록(PageDef, main-page extension.md)에 맞춰 정한다.
+- 알림의 갈 곳 `{page, tab?, popup?}`의 `page`는 main-page 페이지 목록(`app/pages.ts`)의 id다. 목록에 없으면 이동하지 않고 확인 처리만 한다 (R17).
+- 알림 패널이 본문 누르기에서 `app/pageIntent.tsx`의 `openTarget`(`useOpenTarget()`으로 얻음)을 불러 요청을 맡기고 그 페이지로 이동한다. `navigate`는 고치지 않는다 (D10).
+- 탭·팝업을 실제로 여는 화면은 페이지 컴포넌트에서 `usePageIntent(페이지 id, handler)`를 한 번 부른다. 화면이 마운트되거나 새 요청이 오면 자기 요청을 한 번 꺼내 넘겨준다. 예:
+  ```tsx
+  usePageIntent("applications", (intent) => {
+    if (intent.tab) setTab(intent.tab);
+    if (intent.popup) openPopup(intent.popup);
+  });
+  ```
+- 연결 마법사 등 전체 화면에서는 이동할 수 없어(Provider 없음) 확인 처리만 한다.

@@ -7,17 +7,15 @@
 - 2단계: 종 아이콘·배지 (자동 진행, 최종 테스트 대기)
 - 3단계: 펼침 패널과 알림 행 (자동 진행, 최종 테스트 대기)
 - 4단계: 확인·필터·모두 확인 (자동 진행, 최종 테스트 대기)
+- 5단계: 갈 곳 이동 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 5단계: 갈 곳 이동 (`app/pageIntent.tsx`의 `openTarget`/`usePageIntent`, 행 본문 누르면 확인 후 이동·패널 닫기)
-- 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8, D9, D10 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: `NotificationRow`는 지금 `onMarkRead`·`onMarkUnread`만 받고 행 본문(`div.notification-row`)에 onClick이 없다. ✓/↺ 버튼은 이미 `stopPropagation`한다. 본문 클릭 확인도 `NotificationPanel`의 `handleMarkRead`를 거치면 안 읽음 필터의 흐리게 남기기(R19)가 함께 된다. 패널을 닫는 것은 `NotificationPanel`의 `onClose`.
+- 6단계: 서버 구조 0002 (`supabase/migrations/0002_notifications.sql`로 테이블·인덱스·RLS·`daybrick_notify`·실시간 발행을 만들고 `migrations.rs`에 2번 추가)
+- 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D13 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: 0001 SQL은 고치지 않는다. RLS 작성 방식과 단계 규칙은 `supabase/migrations/0001_*.sql`과 `src-tauri/src/server/migrations.rs` 머리 주석을 grep으로 확인한다. Rust를 고치므로 `cargo check`도 한다.
 
 ## 확인할 문서 (경로는 docs/features/notifications/ 기준, 파일 통째로 읽기)
-- ai/plan/step-05.md
-- ai/plan/index.md
-- ai/spec/req-panel.md
-- ai/spec/req-send.md
-- ai/logs/L07.md
-- human/mockups/panel.html의 panel-list 구역 (행 클릭 동작만, CSS: notif.css에서 클래스 검색)
-- ai/plan/structure.md의 app/pageIntent.tsx 줄 (새 파일 위치를 정할 때만)
+- ai/plan/step-06.md
+- ai/spec/req-server.md
+- ai/logs/L08.md
+- ai/plan/structure.md의 "1. 파일 목록 > 서버" 줄과 "2. 데이터 모양" 구역 (열 정의)

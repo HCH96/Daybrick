@@ -15,6 +15,8 @@ interface NotificationRowProps {
   onMarkRead: (id: string) => void;
   /** ↺ 버튼: 안 읽음으로 되돌리기 (R15) */
   onMarkUnread: (id: string) => void;
+  /** 본문 누르기: 확인 처리하고 갈 곳이 있으면 이동 (R16, R17) */
+  onOpen: (notification: AppNotification) => void;
 }
 
 function rowClassName(unread: boolean, justRead: boolean): string {
@@ -26,22 +28,22 @@ function rowClassName(unread: boolean, justRead: boolean): string {
 /**
  * 알림 행 하나 (R11–R15, R23).
  * 왼쪽: 주의는 주황 경고, 정보는 회색 점 / 가운데: 보낸 기능 · 시각, 제목, 내용 / 오른쪽: ✓ 또는 ↺.
- * 본문 누르기(이동)는 5단계에서 붙인다.
+ * 행 본문을 누르면 onOpen(확인 + 갈 곳 이동)을 부른다.
  */
-function NotificationRow({ notification, now, justRead = false, onMarkRead, onMarkUnread }: NotificationRowProps) {
+function NotificationRow({ notification, now, justRead = false, onMarkRead, onMarkUnread, onOpen }: NotificationRowProps) {
   const unread = notification.readAt === null;
   const time = formatRelativeTime(notification.updatedAt, now);
   const actLabel = unread ? "확인" : "안 읽음으로 되돌리기";
 
   const handleAct = (e: MouseEvent<HTMLButtonElement>) => {
-    // 버튼 누르기가 행 본문 누르기(5단계의 이동)로 이어지지 않게 한다
+    // 버튼 누르기가 행 본문 누르기(이동)로 이어지지 않게 한다
     e.stopPropagation();
     if (unread) onMarkRead(notification.id);
     else onMarkUnread(notification.id);
   };
 
   return (
-    <div className={rowClassName(unread, justRead)}>
+    <div className={rowClassName(unread, justRead)} onClick={() => onOpen(notification)}>
       <div className="notification-row__lead">
         {notification.importance === "warning" ? (
           <span className="notification-row__warn" role="img" aria-label="주의">

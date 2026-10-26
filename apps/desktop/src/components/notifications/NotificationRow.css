@@ -4,6 +4,7 @@
   gap: 10px;
   padding: 12px 10px 12px 14px;
   border-bottom: 1px solid var(--border);
+  cursor: pointer; /* 본문을 누르면 확인하고 갈 곳으로 이동 (R16) */
 }
 
 .notification-row:last-child {
