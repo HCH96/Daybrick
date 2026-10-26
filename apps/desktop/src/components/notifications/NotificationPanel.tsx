@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { AppNotification } from "../../features/notifications/types";
 import { useNotifications } from "../../features/notifications/useNotifications";
 import Popover from "../common/Popover";
 import NotificationRow from "./NotificationRow";
@@ -25,15 +26,45 @@ function useMinuteClock(): Date {
   return now;
 }
 
+/** 필터에 맞는 행만 고른다. 안 읽음 필터는 방금 확인해 남겨 둔 행(kept)도 그 자리에 둔다 (R19). */
+function filterList(
+  list: readonly AppNotification[],
+  filter: NotificationFilter,
+  kept: ReadonlySet<string>,
+): AppNotification[] {
+  if (filter === "all") return [...list];
+  return list.filter((n) => n.readAt === null || kept.has(n.id));
+}
+
 /**
- * 종 아래로 펼쳐지는 알림 목록 패널 (R6–R13, R20).
+ * 종 아래로 펼쳐지는 알림 목록 패널 (R6–R15, R18–R20).
  * 바깥 누르기·Esc로 닫는 일은 Popover(useOutsideLayer·useEscapeLayer)가 맡는다.
  * 종 버튼은 anchor라 바깥 누르기로 치지 않고, 종의 클릭이 열고 닫기를 맡는다.
+ * 필터와 "방금 확인한 행" 기억은 패널 상태라, 패널이 닫혀 언마운트되면 비워지고 다시 열면 "전체"로 시작한다.
  */
 function NotificationPanel({ anchor, onClose }: NotificationPanelProps) {
-  const { list, unreadCount } = useNotifications();
+  const { list, unreadCount, markRead, markUnread, markAllRead } = useNotifications();
   const now = useMinuteClock();
-  const filter: NotificationFilter = "all"; // 필터 바꾸기는 4단계
+  const [filter, setFilter] = useState<NotificationFilter>("all");
+  const [kept, setKept] = useState<ReadonlySet<string>>(() => new Set());
+
+  /** 안 읽음 필터에서 확인한 id를 기억해 흐리게 남긴다 */
+  const keep = (ids: readonly string[]) => {
+    if (filter !== "unread" || ids.length === 0) return;
+    setKept((prev) => new Set([...prev, ...ids]));
+  };
+
+  const handleMarkRead = (id: string) => {
+    keep([id]);
+    markRead(id);
+  };
+
+  const handleMarkAll = () => {
+    keep(list.filter((n) => n.readAt === null).map((n) => n.id));
+    markAllRead();
+  };
+
+  const visible = filterList(list, filter, kept);
 
   return (
     <Popover
@@ -44,12 +75,21 @@ function NotificationPanel({ anchor, onClose }: NotificationPanelProps) {
       ariaLabel="알림"
       className="notification-panel"
     >
-      <PanelHead unreadCount={unreadCount} filter={filter} />
+      <PanelHead unreadCount={unreadCount} filter={filter} onFilterChange={setFilter} onMarkAll={handleMarkAll} />
       <div className="notification-panel__list">
-        {list.length === 0 ? (
+        {visible.length === 0 ? (
           <PanelEmpty filter={filter} />
         ) : (
-          list.map((n) => <NotificationRow key={n.id} notification={n} now={now} />)
+          visible.map((n) => (
+            <NotificationRow
+              key={n.id}
+              notification={n}
+              now={now}
+              justRead={filter === "unread" && n.readAt !== null}
+              onMarkRead={handleMarkRead}
+              onMarkUnread={markUnread}
+            />
+          ))
         )}
       </div>
     </Popover>

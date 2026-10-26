@@ -11,13 +11,16 @@ const FILTERS: readonly { value: NotificationFilter; label: string }[] = [
 interface PanelHeadProps {
   unreadCount: number;
   filter: NotificationFilter;
+  onFilterChange: (filter: NotificationFilter) => void;
+  /** [모두 확인]: 목록 밖의 것까지 안 읽은 알림 전체를 확인 처리 (R18) */
+  onMarkAll: () => void;
 }
 
 /**
  * 패널 머리 (R9). 1줄: "알림"과 안 읽은 수(0이면 숨김), 2줄: [전체 | 안 읽음]과 [모두 확인].
- * 필터 바꾸기와 모두 확인 동작은 4단계에서 붙인다.
+ * [모두 확인]은 안 읽은 알림이 0개면 비활성 (R18).
  */
-function PanelHead({ unreadCount, filter }: PanelHeadProps) {
+function PanelHead({ unreadCount, filter, onFilterChange, onMarkAll }: PanelHeadProps) {
   return (
     <div className="notification-panel__head">
       <div className="notification-panel__title">
@@ -41,13 +44,19 @@ function PanelHead({ unreadCount, filter }: PanelHeadProps) {
                     ? "notification-panel__seg-item notification-panel__seg-item--on"
                     : "notification-panel__seg-item"
                 }
+                onClick={() => onFilterChange(option.value)}
               >
                 {option.label}
               </button>
             );
           })}
         </div>
-        <button type="button" className="notification-panel__mark-all" disabled={unreadCount === 0}>
+        <button
+          type="button"
+          className="notification-panel__mark-all"
+          disabled={unreadCount === 0}
+          onClick={onMarkAll}
+        >
           <CheckAllIcon />
           모두 확인
         </button>
