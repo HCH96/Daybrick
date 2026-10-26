@@ -42,6 +42,22 @@ export interface NotificationsFile {
   pendingAcks: PendingAck[];
 }
 
+/** 서버 `notifications` 테이블 한 행 (열 이름은 snake_case, 0002_notifications.sql) */
+export type ServerNotificationRow = {
+  id: string;
+  user_id: string;
+  source: string;
+  kind: string;
+  importance: string;
+  title: string;
+  body: string;
+  target: unknown;
+  merge_key: string | null;
+  created_at: string;
+  updated_at: string;
+  read_at: string | null;
+};
+
 /** notify()에 넘기는 값 (R22) */
 export type NotifyInput = Pick<
   AppNotification,
