@@ -1,0 +1,112 @@
+/* ===== 알림 행 (R11–R13, R23) ===== */
+.notification-row {
+  display: flex;
+  gap: 10px;
+  padding: 12px 10px 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.notification-row:last-child {
+  border-bottom: 0;
+}
+
+.notification-row:hover {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+/* 왼쪽 18px 칸: 주의 = 주황 경고 삼각형, 정보 = 회색 점 */
+.notification-row__lead {
+  width: 18px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 2px;
+}
+
+.notification-row__warn {
+  display: flex;
+  color: var(--amber);
+}
+
+.notification-row__dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+/* 가운데 3줄: 보낸 기능 · 시각 / 제목 / 내용 (제목·내용은 한 줄 말줄임) */
+.notification-row__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-row__meta {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.notification-row__meta b {
+  font-weight: 400;
+}
+
+.notification-row__title {
+  margin-top: 1px;
+  font-size: 13px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notification-row__text {
+  margin-top: 1px;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 오른쪽 28px 버튼 칸: 안 읽음 ✓, 확인함 ↺. 행에 마우스를 올리면 보라 바탕 */
+.notification-row__act {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.notification-row:hover .notification-row__act,
+.notification-row__act:focus-visible {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.notification-row__act:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* 안 읽음: 제목 굵게, 보낸 기능 이름 밝게 (R13) */
+.notification-row--unread .notification-row__title {
+  font-weight: 700;
+}
+
+.notification-row--unread .notification-row__meta b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* 확인함: 왼쪽 표시와 글만 45%로 흐리게, 버튼은 흐리지 않는다 */
+.notification-row--read .notification-row__lead,
+.notification-row--read .notification-row__body {
+  opacity: 0.45;
+}

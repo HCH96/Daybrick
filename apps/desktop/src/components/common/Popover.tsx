@@ -5,8 +5,11 @@ import { useEscapeLayer } from "./useEscapeLayer";
 import { useOutsideLayer } from "./useOutsideLayer";
 import "./Popover.css";
 
-/** 버튼 아래(왼쪽 맞춤) 또는 버튼 오른쪽(위 맞춤)에 띄운다. 자리가 모자라면 반대쪽으로 뒤집는다. */
-export type PopoverPlacement = "bottom-start" | "right-start";
+/**
+ * 버튼 아래(왼쪽 맞춤), 버튼 아래(오른쪽 맞춤) 또는 버튼 오른쪽(위 맞춤)에 띄운다.
+ * 자리가 모자라면 반대쪽으로 뒤집는다.
+ */
+export type PopoverPlacement = "bottom-start" | "bottom-end" | "right-start";
 
 interface PopoverProps {
   /** 이 요소 옆에 띄운다 (보통 창을 연 버튼) */
@@ -45,8 +48,9 @@ function Popover({ anchor, onClose, placement = "bottom-start", width, ariaLabel
 
     let top: number;
     let left: number;
-    if (placement === "bottom-start") {
-      left = a.left - area.left;
+    if (placement === "bottom-start" || placement === "bottom-end") {
+      // bottom-end: 창의 오른쪽 끝을 버튼 오른쪽 끝에 맞춘다 (제목 표시줄 오른쪽 알림 패널)
+      left = placement === "bottom-start" ? a.left - area.left : a.right - area.left - w;
       top = a.bottom - area.top + GAP;
       if (top + h > area.height - MARGIN) top = a.top - area.top - GAP - h; // 아래가 모자라면 위로
     } else {
