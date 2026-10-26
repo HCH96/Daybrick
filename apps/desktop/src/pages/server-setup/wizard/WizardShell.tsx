@@ -176,7 +176,7 @@ function WizardShell() {
 
       {/* 가이드가 없는 화면(로그인, 완료)은 가이드 칸 없이 가운데 정렬 */}
       <div className={guide ? "wiz-main" : "wiz-main wiz-main--full"}>
-        <div className="wiz-form">{renderStep()}</div>
+        <div className={wizard.step === "prepare" ? "wiz-form wiz-form--prepare" : "wiz-form"}>{renderStep()}</div>
         {guide && <WizardGuide guide={guide} />}
       </div>
 

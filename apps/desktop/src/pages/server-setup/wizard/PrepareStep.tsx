@@ -38,7 +38,7 @@ const PREP_CARDS: PrepCard[] = [
 /** ① 준비: 입력 없이 준비할 계정을 카드로 보여준다 */
 function PrepareStep() {
   return (
-    <div className="wiz-form__inner">
+    <div className="wiz-form__inner wiz-form__inner--prepare">
       <h2>먼저 계정 세 개를 준비하세요</h2>
       <p className="wiz-form__desc">
         Daybrick은 내 서버에 내 데이터를 저장합니다. 아래 계정을 만들어 두면 다음 단계부터 값을 붙여넣기만 하면

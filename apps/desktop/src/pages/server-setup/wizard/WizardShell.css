@@ -101,8 +101,34 @@
   overflow-y: auto;
 }
 
+/* 마법사의 스크롤 칸: 스크롤은 되지만 스크롤 바는 보이지 않게 (앱 본문과 같음, r1 디자인 의견) */
+.wiz-form,
+.wiz-guide {
+  scrollbar-width: none;
+}
+
+.wiz-form::-webkit-scrollbar,
+.wiz-guide::-webkit-scrollbar {
+  display: none;
+}
+
+/* 큰 창에서 왼쪽 위에 붙지 않게 가로 가운데 */
 .wiz-form__inner {
   max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ① 준비: 입력이 없어 내용이 바뀌지 않으므로 세로도 가운데, 큰 창에서는 더 넓게.
+   내용이 넘치면 auto 여백이 0이 되어 위부터 보인다. */
+.wiz-form--prepare {
+  display: flex;
+  flex-direction: column;
+}
+
+.wiz-form__inner--prepare {
+  width: 100%;
+  max-width: 880px;
+  margin: auto;
 }
 
 .wiz-form__inner h2 {
@@ -387,11 +413,87 @@
     gap: 24px;
   }
 
+  /* 가이드를 좁혀 왼쪽에 준비물 카드 두 줄이 들어가게 */
+  .wiz-main {
+    grid-template-columns: minmax(0, 1fr) 380px;
+  }
+
+  .wiz-main--full {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .wiz-form {
     padding: 32px;
   }
 
+  .wiz-guide {
+    padding: 24px;
+    gap: 14px;
+  }
+}
+
+/* ===== 낮은 창 (640px 등): 위아래 여백을 줄여 스크롤 없이 들어가게 ===== */
+@media (max-height: 760px) {
+  .wiz-top {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .wiz-foot {
+    height: 58px;
+  }
+
+  .wiz-form {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  .wiz-form__inner h2 {
+    font-size: 21px;
+  }
+
+  .wiz-form__desc {
+    margin-bottom: 18px;
+    font-size: 13px;
+  }
+
+  .wiz-guide {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    gap: 10px;
+  }
+
+  .wiz-guide__title {
+    margin-top: -8px;
+  }
+
+  .wiz-guide__list {
+    gap: 8px;
+  }
+
+  .wiz-guide__list li {
+    font-size: 12.5px;
+  }
+
+  .wiz-guide__tip {
+    padding: 10px 12px;
+  }
+
+  .wiz-guide__tip p + p {
+    margin-top: 2px;
+  }
+
   .prep-cards {
-    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .prep-card {
+    padding: 12px 14px;
+    gap: 4px;
+  }
+
+  .prep-card__icon {
+    width: 28px;
+    height: 28px;
   }
 }
