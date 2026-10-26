@@ -27,7 +27,7 @@
 | 캘린더 계획 | 시작 전 | - |
 | 일정 관리 | 시작 전 | - |
 | 지원 관리 | 수정1 완료 (테스트 r2 통과) | docs/features/applications/index.md |
-| 서버 연결 | AI 테스트 r1 통과, 사용자 테스트 대기 (notifications·job-search의 선행) | docs/features/server-setup/index.md |
+| 서버 연결 | AI 테스트 r1 통과, 사용자 테스트 진행 중 (U8 주소 형식 수정) (notifications·job-search의 선행) | docs/features/server-setup/index.md |
 | 알림 | 계획 승인 (구현 대기) (선행: server-setup, job-search의 선행) | docs/features/notifications/index.md |
 | 구직 관리 | 명세 완료 (선행: server-setup, notifications) | docs/features/job-search/index.md |
 | 집중 타이머 | 시작 전 | - |

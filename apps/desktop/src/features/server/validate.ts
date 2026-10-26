@@ -6,12 +6,19 @@ export interface SupabaseAddress {
   ref: string;
 }
 
-/** 프로젝트 id(ref)는 영문 소문자·숫자 (보통 20자). 너무 엄격하게 막지 않도록 길이는 넉넉히 둔다. */
-const URL_PATTERN = /^https:\/\/([a-z0-9]{10,40})\.supabase\.co\/?$/;
+/**
+ * 프로젝트 id(ref)는 영문 소문자·숫자 (보통 20자). 너무 엄격하게 막지 않도록 길이는 넉넉히 둔다.
+ * 대시보드 Data API 화면은 `…supabase.co/rest/v1/`처럼 REST 경로를 붙여 보여 줄 수 있어 그 꼴도 받는다.
+ * 끝의 / 는 몇 개든 받는다.
+ */
+const URL_PATTERN = /^https:\/\/([a-z0-9]{10,40})\.supabase\.co(?:\/rest\/v1)?\/*$/;
+
+/** 공백·줄바꿈과 복사할 때 섞여 들어오는 보이지 않는 글자(폭 없는 공백, BOM 등). 주소에는 원래 없는 글자다. */
+const INVISIBLE_CHARS = /[\s​-‍⁠﻿]/g;
 
 /** 주소 형식이 맞으면 정리한 주소와 ref, 아니면 null */
 export function parseSupabaseUrl(input: string): SupabaseAddress | null {
-  const match = URL_PATTERN.exec(input.trim().toLowerCase());
+  const match = URL_PATTERN.exec(input.replace(INVISIBLE_CHARS, "").toLowerCase());
   if (!match) return null;
   const ref = match[1];
   return { url: `https://${ref}.supabase.co`, ref };

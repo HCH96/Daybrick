@@ -3,6 +3,7 @@ import { runSetupPrecheck, type SetupPrecheck } from "../../../features/server/m
 import { checkKeys, type KeysCheck, type KeysRoute } from "../../../features/server/probe";
 import { fetchHealth, type HealthInfo } from "../../../features/server/serverFunctions";
 import type { ServerSession } from "../../../features/server/session";
+import { parseSupabaseUrl } from "../../../features/server/validate";
 import {
   initialRunProgress,
   runSetup,
@@ -337,6 +338,9 @@ export function useWizard(onClose: () => void): Wizard {
     const seq = ++checkSeq.current;
     setCheckingKeys(true);
     setKeysCheck(null);
+    // 형식이 맞으면 입력칸도 정리한 주소(끝 / 와 REST 경로를 뗀 것)로 바꿔 보여 준다
+    const address = parseSupabaseUrl(inputs.url);
+    if (address && address.url !== inputs.url) setInputsState((prev) => ({ ...prev, url: address.url }));
     const result = await checkKeys(inputs.url, inputs.anonKey);
     if (seq !== checkSeq.current) return;
     setKeysCheck(result);

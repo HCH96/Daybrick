@@ -110,7 +110,7 @@ export const FIELD_HELPS = {
     title: "Supabase 대시보드에서 찾기",
     link: DASHBOARD_LINK,
     path: ["내 프로젝트", "Project Settings", "Data API"],
-    shot: [{ name: "Project URL", value: "https://xxxx.supabase.co", highlight: true }],
+    shot: [{ name: "Project URL", value: "https://xxxx.supabase.co/rest/v1/", highlight: true }],
   },
   supabaseKey: {
     title: "Supabase 대시보드에서 찾기",
