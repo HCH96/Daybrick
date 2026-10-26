@@ -19,3 +19,5 @@
 - D17. 접속 확인은 로그인 전에는 공개 RPC `daybrick_schema_version()`, 로그인 뒤에는 `health` 서버 함수로 하고, 둘 다 DB를 실제로 읽는다. (적용: 이후 전체) (기록: L05)
 - D18. 서버 연결 화면에서 쓰는 아이콘(서버·새로고침·열쇠 등)은 `components/icons/ServerIcons.tsx`에 모은다. (적용: 이후 전체) (기록: L06)
 - D19. `clear_server_connection`은 server.json을 통째로 지우고, `ServerProvider.clearConnection`이 그 뒤 `welcomeDismissed: true`만 든 설정을 다시 저장한다. 연결 해제 뒤에는 첫 실행 안내 대신 설정의 "연결 안 함" 칸이 보인다. (적용: 6, 9단계) (기록: L06)
+- D20. 연결 마법사가 열려 있는지는 `ServerProvider`의 `setupOpen`·`openSetup()`·`closeSetup()`로 공유하고, 입력값·지금 단계는 마법사 안의 `useWizard`에만 둔다 (마법사가 닫히면 함께 사라짐). 어느 화면을 그릴지는 `App.tsx`의 `AppScreens`가 정하고, 사이드바 없는 화면은 `TitleBar`를 `onToggleSidebar` 없이 그려 앱 이름만 보인다. (적용: 이후 전체) (기록: L07)
+- D21. 첫 실행 안내·마법사의 버튼은 `wizard/WizardShell.css`의 `setup-btn`(`--primary`·`--ghost`·`--lg`)을 쓴다. 마법사 단계 화면은 `wiz-form__inner` 안에 그린다. (적용: 3~8단계) (기록: L07)

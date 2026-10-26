@@ -10,6 +10,12 @@ export interface ServerState {
   updateConfig: (patch: Partial<Omit<ServerConfig, "version">>) => Promise<void>;
   /** 이 PC에 저장한 연결 정보를 지운다 */
   clearConnection: () => Promise<void>;
+  /** 연결 마법사가 열려 있는지 */
+  setupOpen: boolean;
+  /** 연결 마법사를 연다 (첫 실행 안내·설정의 [서버 연결 시작]) */
+  openSetup: () => void;
+  /** 연결 마법사를 닫고 원래 화면으로 돌아간다 */
+  closeSetup: () => void;
 }
 
 /** 서버 연결 정보와 상태를 하위 컴포넌트에 공유한다. ServerProvider가 값을 넣는다. */

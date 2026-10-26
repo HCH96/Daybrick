@@ -52,6 +52,17 @@
 }
 
 /* 버튼이 없는 빈 곳: 끌어서 창 이동 */
+/* 사이드바 없는 화면에서 왼쪽에 보이는 앱 이름 */
+.titlebar__title {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
 .titlebar__drag {
   flex: 1;
   height: 100%;

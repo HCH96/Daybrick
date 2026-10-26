@@ -42,11 +42,16 @@ export function ServerProvider({ children }: { children: ReactNode }) {
     await saveServerConfig(next);
   }, []);
 
+  // 연결 마법사가 열려 있는지 (첫 실행 안내와 설정 화면 양쪽에서 연다). 입력값은 마법사 안에만 둔다
+  const [setupOpen, setSetupOpen] = useState(false);
+  const openSetup = useCallback(() => setSetupOpen(true), []);
+  const closeSetup = useCallback(() => setSetupOpen(false), []);
+
   const status: ServerStatus = config?.connection ? "connected" : "off";
 
   const value = useMemo<ServerState>(
-    () => ({ config, status, updateConfig, clearConnection }),
-    [config, status, updateConfig, clearConnection],
+    () => ({ config, status, updateConfig, clearConnection, setupOpen, openSetup, closeSetup }),
+    [config, status, updateConfig, clearConnection, setupOpen, openSetup, closeSetup],
   );
 
   return <ServerContext.Provider value={value}>{children}</ServerContext.Provider>;

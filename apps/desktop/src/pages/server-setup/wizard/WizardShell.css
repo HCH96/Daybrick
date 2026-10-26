@@ -1,0 +1,379 @@
+/* 서버 연결 마법사 틀 (제목 표시줄 아래 창 전체, 사이드바 없음). 서버 연결 목업 wizard.css 기준 */
+
+/* ===== 버튼 (첫 실행 안내도 함께 쓴다) ===== */
+.setup-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text);
+  box-shadow: 0 0 0 1px var(--border-2) inset;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.setup-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.setup-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.setup-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.setup-btn--primary {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: none;
+}
+
+.setup-btn--ghost {
+  background: transparent;
+  color: var(--muted);
+  box-shadow: none;
+}
+
+.setup-btn--ghost:hover:not(:disabled) {
+  filter: none;
+  color: var(--text);
+}
+
+.setup-btn--lg {
+  height: 46px;
+  padding: 0 24px;
+  font-size: 15px;
+  border-radius: 12px;
+}
+
+/* ===== 틀 ===== */
+.wiz {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.wiz-top {
+  padding: 22px 56px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.wiz-top__title {
+  font-size: 18px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+/* 가이드는 460px 고정, 왼쪽은 남는 폭 (좁은 창에서도 겹치지 않게 minmax(0, 1fr)) */
+.wiz-main {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 460px;
+}
+
+.wiz-form {
+  min-width: 0;
+  padding: 40px 56px;
+  overflow-y: auto;
+}
+
+.wiz-form__inner {
+  max-width: 640px;
+}
+
+.wiz-form__inner h2 {
+  margin: 0 0 6px;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.wiz-form__desc {
+  margin: 0 0 28px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.wiz-foot {
+  height: 76px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  padding: 0 56px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wiz-foot__spacer {
+  flex: 1;
+}
+
+/* ===== 진행 표시 ===== */
+.wiz-steps {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 760px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wiz-steps__step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+.wiz-steps__num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 0 0 1.5px var(--border-2) inset;
+}
+
+.wiz-steps__step--on {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.wiz-steps__step--on .wiz-steps__num {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: none;
+}
+
+.wiz-steps__step--done {
+  color: var(--muted);
+}
+
+.wiz-steps__step--done .wiz-steps__num {
+  background: var(--green-soft);
+  color: var(--green);
+  box-shadow: none;
+}
+
+.wiz-steps__line {
+  flex: 1;
+  height: 2px;
+  min-width: 24px;
+  border-radius: 2px;
+  background: var(--border);
+}
+
+.wiz-steps__line--done {
+  background: #2f6b4b;
+}
+
+/* ===== 가이드 ===== */
+.wiz-guide {
+  min-width: 0;
+  background: var(--sidebar);
+  border-left: 1px solid var(--border);
+  padding: 32px 30px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.wiz-guide__head {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+}
+
+.wiz-guide__title {
+  margin: -12px 0 0;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.wiz-guide__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  counter-reset: guide;
+}
+
+.wiz-guide__list li {
+  counter-increment: guide;
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.wiz-guide__list li::before {
+  content: counter(guide);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.wiz-guide__list b {
+  display: block;
+}
+
+.wiz-guide__list span {
+  display: block;
+  color: var(--muted);
+}
+
+.wiz-guide__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.wiz-guide__link:hover {
+  text-decoration: underline;
+}
+
+.wiz-guide__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 주의 상자는 가이드 맨 아래에 붙는다 */
+.wiz-guide__tip {
+  margin-top: auto;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  background: var(--amber-soft);
+  color: var(--text);
+}
+
+.wiz-guide__tip b {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  color: var(--amber);
+  font-size: 12px;
+}
+
+.wiz-guide__tip p {
+  margin: 0;
+  opacity: 0.85;
+}
+
+.wiz-guide__tip p + p {
+  margin-top: 4px;
+}
+
+/* ===== ① 준비 카드 ===== */
+.prep-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.prep-card {
+  padding: 18px;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--border) inset;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.prep-card__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.prep-card__icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+}
+
+.prep-card p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.prep-card__cost {
+  margin-top: auto;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* ===== 좁은 창 (960px 등): 여백을 줄여 가이드와 입력이 겹치지 않게 ===== */
+@media (max-width: 1100px) {
+  .wiz-top,
+  .wiz-foot {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .wiz-top {
+    gap: 24px;
+  }
+
+  .wiz-form {
+    padding: 32px;
+  }
+
+  .prep-cards {
+    grid-template-columns: 1fr;
+  }
+}
