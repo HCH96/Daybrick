@@ -27,13 +27,13 @@ async function loadAndPrune(): Promise<NotificationsFile> {
 
 /**
  * 알림 데이터를 들고, notify()로 온 알림을 받아 합치고, 바뀌면 자동 저장한다 (R21).
- * 서버 알림은 서버 사본으로 받아 로컬 알림과 합쳐 보여준다 (R30, D3).
+ * 서버 알림은 서버 사본으로 받아 로컬 알림과 합쳐 보여주고, 확인 기록은 서버에 쓴다 (R30, R33, D3).
  */
 export function NotificationsProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(notificationsReducer, { kind: "loading" });
   const ready = state.kind === "ready";
   useAutoSave(ready ? state.file : null);
-  useServerNotifications(ready, dispatch);
+  useServerNotifications(ready ? state.file.pendingAcks : null, dispatch);
 
   useEffect(() => {
     installDevNotify();
@@ -68,7 +68,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       list: sortForList(all),
       unreadCount: countUnread(all),
       markRead: (id) => dispatch({ type: "mark-read", id, now: new Date().toISOString() }),
-      markUnread: (id) => dispatch({ type: "mark-unread", id }),
+      markUnread: (id) => dispatch({ type: "mark-unread", id, now: new Date().toISOString() }),
       markAllRead: () => dispatch({ type: "mark-all-read", now: new Date().toISOString() }),
     }),
     [state, all],

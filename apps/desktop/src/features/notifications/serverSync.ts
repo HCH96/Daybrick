@@ -3,7 +3,7 @@ import { READ_KEEP_DAYS } from "./logic";
 import type { AppNotification, NotificationTarget, ServerNotificationRow } from "./types";
 
 /**
- * 서버 알림 받기·정리·실시간 구독 (R30–R32, D11, D12).
+ * 서버 알림 받기·정리·확인 기록·실시간 구독 (R30–R33, D11, D12).
  * 서버 행은 snake_case 열이라 앱의 AppNotification(`origin: "server"`)으로 바꿔서 넘긴다.
  */
 
@@ -60,6 +60,16 @@ export async function fetchServerNotifications(client: SupabaseClient, now: Date
   if (error) throw new Error(error.message);
   const rows = (data ?? []) as unknown as ServerNotificationRow[];
   return rows.map(rowToNotification);
+}
+
+/**
+ * 서버 알림 여러 개의 확인 시각(read_at)을 한 번에 쓴다 (R33). null이면 안 읽음으로 되돌린다.
+ * RLS가 본인 행만 바꾸게 한다. 실패하면 예외를 던진다 (호출한 쪽이 대기 기록에 남겨 둔다).
+ */
+export async function writeReadState(client: SupabaseClient, ids: readonly string[], readAt: string | null): Promise<void> {
+  if (ids.length === 0) return;
+  const { error } = await client.from(TABLE).update({ read_at: readAt }).in("id", [...ids]);
+  if (error) throw new Error(error.message);
 }
 
 /**
