@@ -181,3 +181,26 @@
 .settings-card__pad {
   padding: 20px 22px;
 }
+
+.settings-state--bad {
+  color: var(--red);
+}
+
+.settings-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  filter: none;
+}
+
+.settings-btn--sm {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.settings-btn--danger {
+  background: transparent;
+  color: var(--red);
+  box-shadow: 0 0 0 1px #5a2f33 inset;
+}

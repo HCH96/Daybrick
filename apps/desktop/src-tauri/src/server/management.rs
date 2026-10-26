@@ -103,7 +103,7 @@ async fn run_statement(pat: &str, project_ref: &str, sql: &str) -> Result<(), St
 /// 로그인 결과를 받는 앱의 리디렉션 주소 (127.0.0.1 임시 포트, D13). 포트 와일드카드가 통하는지는 추측.
 const REDIRECT_ALLOW: &str = "http://127.0.0.1:*/**";
 
-/// 인증 설정: Google 로그인 켜기(클라이언트 ID·비밀값), 이메일 로그인 끄기, 리디렉션 허용 주소 추가 (R15 1단계).
+/// 인증 설정: Google 로그인 켜기(클라이언트 ID·비밀값, 빈 값은 지금 값 유지), 이메일 로그인 끄기, 리디렉션 허용 주소 추가 (R15 1단계).
 /// 새 가입 막기(`disable_signup`)는 건드리지 않아 다시 실행해도 켠 상태가 유지된다 (D12).
 #[tauri::command]
 pub async fn configure_auth(
@@ -132,13 +132,18 @@ pub async fn configure_auth(
         allow.push(REDIRECT_ALLOW);
     }
 
-    let body = serde_json::json!({
+    let mut body = serde_json::json!({
         "external_google_enabled": true,
-        "external_google_client_id": google_client_id.trim(),
-        "external_google_secret": google_client_secret.trim(),
         "external_email_enabled": false,
         "uri_allow_list": allow.join(","),
     });
+    // 자동 세팅 다시 실행에서 Google 값을 비워 두면 서버의 지금 값을 그대로 둔다 (R49)
+    if !google_client_id.trim().is_empty() {
+        body["external_google_client_id"] = Value::from(google_client_id.trim());
+    }
+    if !google_client_secret.trim().is_empty() {
+        body["external_google_secret"] = Value::from(google_client_secret.trim());
+    }
     let response = http::client()?
         .patch(&url)
         .bearer_auth(pat.trim())
@@ -232,7 +237,7 @@ pub async fn deploy_functions(pat: String, project_ref: String) -> Result<(), St
     Ok(())
 }
 
-/// 서버 함수 비밀값 등록 (R15 4단계). 같은 이름이 있으면 새 값으로 바뀐다.
+/// 서버 함수 비밀값 등록 (R15 4단계). 같은 이름이 있으면 새 값으로 바뀌고, 빈 값은 건너뛴다.
 /// 값은 요청 본문에만 싣고 오류에는 넣지 않는다 (R18).
 #[tauri::command]
 pub async fn set_secrets(
@@ -242,11 +247,19 @@ pub async fn set_secrets(
     google_client_id: String,
     google_client_secret: String,
 ) -> Result<(), String> {
-    let body = serde_json::json!([
-        { "name": "ANTHROPIC_API_KEY", "value": anthropic_key.trim() },
-        { "name": "GOOGLE_CLIENT_ID", "value": google_client_id.trim() },
-        { "name": "GOOGLE_CLIENT_SECRET", "value": google_client_secret.trim() },
-    ]);
+    // 빈 값은 보내지 않아 서버의 지금 값을 그대로 둔다 (키 교체·자동 세팅 다시 실행, R49)
+    let body: Vec<Value> = [
+        ("ANTHROPIC_API_KEY", anthropic_key.trim()),
+        ("GOOGLE_CLIENT_ID", google_client_id.trim()),
+        ("GOOGLE_CLIENT_SECRET", google_client_secret.trim()),
+    ]
+    .into_iter()
+    .filter(|(_, value)| !value.is_empty())
+    .map(|(name, value)| serde_json::json!({ "name": name, "value": value }))
+    .collect();
+    if body.is_empty() {
+        return Ok(());
+    }
     let response = http::client()?
         .post(project_url(&project_ref, "/secrets")?)
         .bearer_auth(pat.trim())

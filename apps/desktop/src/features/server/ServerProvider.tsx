@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { clearServerConnection, createDefaultServerConfig, loadServerConfig, saveServerConfig } from "./config";
-import { deleteSavedLogin, restoreSession, stopSession, type ServerSession } from "./session";
+import { deleteSavedLogin, restoreSession, signOut, stopSession, type ServerSession } from "./session";
 import type { ServerConfig, ServerStatus } from "./types";
 import { useHealthCheck } from "./useHealthCheck";
 import { ServerContext, type ServerState } from "./useServer";
@@ -90,6 +90,21 @@ export function ServerProvider({ children }: { children: ReactNode }) {
     await saveServerConfig(next);
   }, [replaceSession]);
 
+  // 로그아웃: 저장된 로그인을 먼저 지운 뒤 세션을 비운다 (그래야 다시 확인 때 복원하지 않는다)
+  const logout = useCallback(async () => {
+    const current = sessionRef.current;
+    const url = configRef.current?.connection?.url;
+    if (current && url) {
+      try {
+        await signOut(current, url);
+      } catch (e: unknown) {
+        console.error("로그아웃 중 오류", e);
+        await deleteSavedLogin(url);
+      }
+    }
+    if (sessionRef.current === current) replaceSession(null);
+  }, [replaceSession]);
+
   // 연결 마법사가 열려 있는지 (첫 실행 안내와 설정 화면 양쪽에서 연다). 입력값은 마법사 안에만 둔다
   const [setupOpen, setSetupOpen] = useState(false);
   const openSetup = useCallback(() => setSetupOpen(true), []);
@@ -159,6 +174,7 @@ export function ServerProvider({ children }: { children: ReactNode }) {
       dismissBanner,
       updateConfig,
       clearConnection,
+      logout,
       session,
       serverSession,
       sessionReady,
@@ -182,6 +198,7 @@ export function ServerProvider({ children }: { children: ReactNode }) {
       dismissBanner,
       updateConfig,
       clearConnection,
+      logout,
       session,
       serverSession,
       sessionReady,

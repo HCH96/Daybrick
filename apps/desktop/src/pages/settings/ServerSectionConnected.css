@@ -1,0 +1,127 @@
+/* 서버 연결 칸 본문 (연결됨·로그인 필요). 서버 연결 목업 settings.css의 set-rows·set-row·ver-pair·set-actions·set-danger, common.css의 pill 기준 */
+.settings-rows {
+  padding: 4px 22px;
+}
+
+.settings-row {
+  display: grid;
+  grid-template-columns: 150px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  min-height: 54px;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.settings-row + .settings-row {
+  border-top: 1px solid var(--border);
+}
+
+.settings-row__k {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.settings-row__v {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.settings-row__v small {
+  margin-left: 8px;
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.settings-row__v--mono {
+  font-family: Consolas, monospace;
+  font-size: 13px;
+}
+
+.settings-row__v--faint {
+  color: var(--faint);
+}
+
+.settings-ver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.settings-ver b {
+  font-family: Consolas, monospace;
+}
+
+.settings-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.settings-pill--ok {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.settings-pill--none {
+  color: var(--muted);
+  background: var(--surface-2);
+}
+
+/* 관리 버튼 줄 */
+.settings-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 22px;
+  border-top: 1px solid var(--border);
+  background: var(--sidebar);
+}
+
+.settings-actions__help {
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* 맨 아래 위험한 버튼 줄 */
+.settings-danger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 22px;
+  border-top: 1px solid var(--border);
+}
+
+.settings-danger__hint {
+  margin-right: auto;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* 로그인 필요 칸: 브라우저 로그인 기다리는 중 */
+.settings-login-wait {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.settings-link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.settings-card__pad--top {
+  padding-top: 0;
+}

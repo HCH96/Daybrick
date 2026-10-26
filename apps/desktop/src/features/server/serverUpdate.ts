@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { applyMigrations, deployFunctions, getAppSchemaVersion } from "./management";
 import { probeServer } from "./probe";
+import { RERUN_STEPS } from "./rerunSetup";
 import { fetchHealth } from "./serverFunctions";
 import type { ServerSession } from "./session";
 import {
@@ -26,11 +27,12 @@ export const UPDATE_STEPS: readonly RunStepDef[] = [
   { id: "verify", name: "마무리 확인", desc: "접속·서버 구조 번호 확인" },
 ];
 
-/** 실행 단계 목록의 종류: 자동 세팅(③)과 서버 업데이트 */
-export type RunFlow = "setup" | "update";
+/** 실행 단계 목록의 종류: 자동 세팅(③), 서버 업데이트, 자동 세팅 다시 실행(설정) */
+export type RunFlow = "setup" | "update" | "rerun";
 
 export function stepsForFlow(flow: RunFlow): readonly RunStepDef[] {
-  return flow === "update" ? UPDATE_STEPS : RUN_STEPS;
+  if (flow === "update") return UPDATE_STEPS;
+  return flow === "rerun" ? RERUN_STEPS : RUN_STEPS;
 }
 
 /** 업데이트에 넘기는 것. PAT는 메모리에만 두고, 끝나면 화면이 버린다. */

@@ -110,17 +110,25 @@ async function registerAccount(ctx: RunContext): Promise<StepResult> {
   return { ok: true, value: login.session.email ? `${login.session.email}로 로그인` : null };
 }
 
-/** 6단계 마무리 확인: health로 DB 읽기, ai-key-check로 비밀값 동작 확인 (D17) */
-async function verifyServer(ctx: RunContext, session: ServerSession): Promise<StepResult> {
+/**
+ * 6단계 마무리 확인: health로 DB 읽기, ai-key-check로 비밀값 동작 확인 (D17).
+ * 자동 세팅 다시 실행도 이것을 쓴다. 성공하면 health 결과를 돌려준다.
+ */
+export async function verifyServer(
+  session: ServerSession,
+  appSchema: number,
+): Promise<{ ok: true; health: HealthInfo } | { ok: false; error: RunErrorKind }> {
   const health = await fetchHealth(session.client);
   if (!health.ok) return health;
-  if (health.value.schema !== ctx.appSchema) return { ok: false, error: "schema-mismatch" };
+  if (health.value.schema !== appSchema) return { ok: false, error: "schema-mismatch" };
   const key = await checkServerAiKey(session.client);
   if (!key.ok) return key;
   if (!key.value.ok) return { ok: false, error: "key-check-failed" };
-  ctx.onVerified(health.value);
-  return { ok: true, value: "접속·Anthropic 키 동작 확인" };
+  return { ok: true, health: health.value };
 }
+
+/** 마무리 확인 성공 때 단계 작은 글씨 */
+export const VERIFIED_DETAIL = "접속·Anthropic 키 동작 확인";
 
 /** 단계별 동작 */
 const ACTIONS: Record<RunStepId, StepAction> = {
@@ -141,7 +149,10 @@ const ACTIONS: Record<RunStepId, StepAction> = {
     // 계정 등록에서 로그인했으므로 브라우저를 다시 열지 않고 그 세션을 받는다
     const login = await ctx.login();
     if (!login.ok) return login;
-    return verifyServer(ctx, login.session);
+    const verified = await verifyServer(login.session, ctx.appSchema);
+    if (!verified.ok) return verified;
+    ctx.onVerified(verified.health);
+    return { ok: true, value: VERIFIED_DETAIL };
   },
 };
 

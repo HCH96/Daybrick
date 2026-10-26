@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { createPortal } from "react-dom";
+import { SmallCheckIcon } from "../icons/CommonIcons";
 import { useOverlayRoot } from "../layout/overlayRoot";
 import { useDialogFocus } from "./useDialogFocus";
 import { useEscapeLayer } from "./useEscapeLayer";
@@ -12,6 +13,10 @@ interface ConfirmDialogProps {
   confirmLabel: string;
   onConfirm: () => void;
   onCancel: () => void;
+  /** 메시지 아래 초록 안심 문구 (예: "서버의 데이터는 지워지지 않습니다") */
+  note?: string;
+  /** 확인 버튼 색: 빨강(기본, 지우는 동작) 또는 보라(바꾸는 동작) */
+  confirmTone?: "danger" | "primary";
 }
 
 /**
@@ -19,7 +24,15 @@ interface ConfirmDialogProps {
  * 다른 팝업 위에 한 겹 더 어둡게 덮는다. Esc·바깥 클릭·취소는 모두 취소로 처리한다.
  * 실수로 Enter를 눌러 지우지 않도록 처음 포커스는 "취소"에 둔다.
  */
-function ConfirmDialog({ title, message, confirmLabel, onConfirm, onCancel }: ConfirmDialogProps) {
+function ConfirmDialog({
+  title,
+  message,
+  confirmLabel,
+  onConfirm,
+  onCancel,
+  note,
+  confirmTone = "danger",
+}: ConfirmDialogProps) {
   const root = useOverlayRoot();
   const boxRef = useRef<HTMLDivElement>(null);
 
@@ -39,11 +52,21 @@ function ConfirmDialog({ title, message, confirmLabel, onConfirm, onCancel }: Co
       <div ref={boxRef} className="confirm" role="alertdialog" aria-modal="true" aria-label={title} tabIndex={-1}>
         <h4 className="confirm__title">{title}</h4>
         <p className="confirm__message">{message}</p>
+        {note && (
+          <div className="confirm__note">
+            <SmallCheckIcon size={14} />
+            {note}
+          </div>
+        )}
         <div className="confirm__buttons">
           <button type="button" className="confirm__cancel" onClick={onCancel} autoFocus>
             취소
           </button>
-          <button type="button" className="confirm__danger" onClick={onConfirm}>
+          <button
+            type="button"
+            className={confirmTone === "primary" ? "confirm__primary" : "confirm__danger"}
+            onClick={onConfirm}
+          >
             {confirmLabel}
           </button>
         </div>

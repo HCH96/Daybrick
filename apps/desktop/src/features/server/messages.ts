@@ -233,7 +233,7 @@ export function loginFailMessage(kind: LoginErrorKind): { title: string; desc: s
 /** ③ 실행·서버 업데이트 중 단계가 실패했을 때 그 줄 아래 보여주는 이유 (R17, R23) */
 export function runFailMessage(failure: RunFailure, flow: RunFlow = "setup"): { title: string; desc: string } {
   const step = stepsForFlow(flow)[failure.index];
-  const name = step?.name ?? (flow === "update" ? "서버 업데이트" : "세팅");
+  const name = step?.name ?? (flow === "update" ? "서버 업데이트" : flow === "rerun" ? "다시 실행" : "세팅");
   switch (failure.reason) {
     case "login-denied":
     case "login-timeout":
@@ -243,6 +243,12 @@ export function runFailMessage(failure: RunFailure, flow: RunFlow = "setup"): { 
       return { title: login.title, desc: `${login.desc} [다시 시도]를 누르면 브라우저를 다시 엽니다.` };
     }
     case "key-check-failed":
+      if (flow === "rerun") {
+        return {
+          title: "서버에서 Anthropic 키가 동작하지 않습니다",
+          desc: "등록된 키가 만료됐거나 결제 수단에 문제가 있을 수 있습니다. 창을 닫고 Anthropic 키 [교체]로 새 키를 넣으세요.",
+        };
+      }
       return {
         title: "서버에서 Anthropic 키가 동작하지 않습니다",
         desc: `비밀값 등록이 아직 반영되지 않았을 수 있습니다. 잠시 뒤 다시 시도하세요. ${RETRY_NOTE}`,
@@ -269,6 +275,12 @@ export function runFailMessage(failure: RunFailure, flow: RunFlow = "setup"): { 
     case "rate-limited":
       return { title: "Supabase가 요청을 거절했습니다 (429)", desc: `잠시 뒤 다시 시도하세요. ${RETRY_NOTE}` };
     case "unauthorized":
+      if (flow === "rerun") {
+        return {
+          title: "PAT가 맞지 않습니다",
+          desc: "토큰이 틀렸거나 만료됐습니다. 창을 닫고 새 PAT로 다시 실행하세요. 끝난 단계는 다시 해도 데이터가 지워지지 않습니다.",
+        };
+      }
       if (flow === "update") {
         return {
           title: "PAT가 맞지 않습니다",
@@ -293,3 +305,79 @@ export function runFailMessage(failure: RunFailure, flow: RunFlow = "setup"): { 
       };
   }
 }
+
+/** 설정 서버 연결 칸 머리 오른쪽의 상태 점·글자 (R40 색): 연결됨 초록, 할 일 있음 주황, 접속 불가 빨강, 연결 안 함 회색 */
+export const SETTINGS_STATE: Record<ServerStatus, { tone: "ok" | "warn" | "bad" | "none"; label: string }> = {
+  connected: { tone: "ok", label: "연결됨" },
+  off: { tone: "none", label: "연결 안 함" },
+  "login-needed": { tone: "warn", label: "로그인 필요" },
+  "server-update": { tone: "warn", label: "서버 업데이트 필요" },
+  "app-update": { tone: "warn", label: "앱 업데이트 필요" },
+  paused: { tone: "warn", label: "일시정지" },
+  unreachable: { tone: "bad", label: "접속 불가" },
+};
+
+/** Anthropic 키 교체에서 어느 단계가 실패했는지 */
+export type KeyReplaceFailure =
+  | { step: "anthropic" | "pat" | "record"; reason: ApiErrorKind }
+  | { step: "server-check"; reason: ApiErrorKind | "key-check-failed" };
+
+/** Anthropic 키 교체 실패 문구 (R49). 키·PAT 값은 넣지 않는다. */
+export function keyReplaceFailMessage(failure: KeyReplaceFailure): ServerMessage {
+  // 인터넷·Supabase 쪽 원인이면 값이 아니라 잠시 뒤 다시 하라고 안내한다
+  const transient =
+    failure.reason === "network" || failure.reason === "rate-limited" || failure.reason === "server"
+      ? "인터넷 연결을 확인하고 잠시 뒤 다시 [확인 후 교체]를 누르세요. 서버의 키는 바뀌지 않았습니다."
+      : null;
+  switch (failure.step) {
+    case "anthropic":
+      return {
+        tone: "bad",
+        title: "새 Anthropic 키를 확인하지 못했습니다",
+        desc: transient ?? "키가 틀렸거나 결제 수단이 등록되지 않았습니다. 서버의 키는 바뀌지 않았습니다.",
+      };
+    case "pat":
+      return {
+        tone: "bad",
+        title: "서버의 키를 바꾸지 못했습니다",
+        desc:
+          transient ??
+          (failure.reason === "unauthorized"
+            ? "PAT가 틀렸거나 만료됐습니다. 새로 발급해 붙여넣으세요. 서버의 키는 바뀌지 않았습니다."
+            : "PAT를 만든 계정이 이 프로젝트를 관리할 수 있는지 확인하세요. 서버의 키는 바뀌지 않았습니다."),
+      };
+    case "record":
+      return {
+        tone: "warn",
+        title: "키는 바꿨지만 등록일을 기록하지 못했습니다",
+        desc: "서버의 키는 새 키로 바뀌었습니다. 로그인이 풀렸을 수 있으니 확인한 뒤 다시 교체하면 등록일이 기록됩니다.",
+      };
+    case "server-check":
+      return {
+        tone: "warn",
+        title: "키는 바꿨지만 서버에서 아직 확인되지 않았습니다",
+        desc: "비밀값이 반영되는 데 잠시 걸릴 수 있습니다. 조금 뒤 [자동 세팅 다시 실행]으로 마무리 확인을 해 보세요.",
+      };
+  }
+}
+
+/** 서버 연결 해제 확인 팝업 (R50) */
+export const DISCONNECT_CONFIRM = {
+  title: "서버 연결을 해제할까요?",
+  message:
+    "이 PC에 저장한 서버 주소·키와 로그인 정보를 지웁니다. 알림·구직 관리처럼 서버가 필요한 기능은 쓸 수 없게 됩니다. 같은 주소로 다시 연결하면 데이터를 그대로 이어서 씁니다.",
+  confirmLabel: "연결 해제",
+};
+
+/** 다른 Supabase로 바꾸기 확인 팝업 (R50) */
+export function switchConfirm(ref: string | null): { title: string; message: string; confirmLabel: string } {
+  const current = ref ? `지금 연결(${ref})` : "지금 연결";
+  return {
+    title: "다른 Supabase로 바꿀까요?",
+    message: `${current}을 해제하고 처음 연결 화면을 엽니다. 지금 서버의 데이터는 새 서버로 옮겨지지 않습니다.`,
+    confirmLabel: "해제하고 새로 연결",
+  };
+}
+
+/** 연결 해제·바꾸기 팝업의 초록 문구 (R50) */
+export const SERVER_DATA_KEPT = "서버의 데이터는 지워지지 않습니다";

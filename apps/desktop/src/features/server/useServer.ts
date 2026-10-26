@@ -22,8 +22,10 @@ export interface ServerState {
   dismissBanner: (status: ServerStatus) => void;
   /** 연결 정보 일부를 바꾸고 바로 저장한다 */
   updateConfig: (patch: Partial<Omit<ServerConfig, "version">>) => Promise<void>;
-  /** 이 PC에 저장한 연결 정보와 로그인 정보를 지운다 */
+  /** 이 PC에 저장한 연결 정보와 로그인 정보를 지운다 (서버 데이터는 그대로, R49) */
   clearConnection: () => Promise<void>;
+  /** 로그아웃: 저장된 로그인 정보를 지우고 세션을 비운다. 연결 정보는 남아 "로그인 필요"가 된다 (R49). */
+  logout: () => Promise<void>;
   /** 로그인한 상태 (없으면 null). 켤 때 저장된 로그인 정보로 복원한다 (R31). */
   session: ServerSession | null;
   /**

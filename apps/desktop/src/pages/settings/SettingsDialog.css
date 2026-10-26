@@ -1,0 +1,115 @@
+/* 설정 서버 연결 칸의 작은 창 (520px). 서버 연결 목업 parts.css의 modal·modal-head·modal-body·modal-foot·keep-note 기준 */
+.set-dialog-layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(8, 8, 10, 0.62);
+  pointer-events: auto;
+}
+
+.set-dialog {
+  width: min(520px, 100%);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--popup);
+  border: 1px solid var(--border-2);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  outline: none;
+}
+
+.set-dialog__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 22px 4px;
+}
+
+.set-dialog__head h3 {
+  margin: 0;
+  flex: 1;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.set-dialog__icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.set-dialog__x {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--faint);
+  cursor: pointer;
+}
+
+.set-dialog__x:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.set-dialog__body {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 14px;
+}
+
+.set-dialog__body > p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.set-dialog__body .wiz-field + .wiz-field {
+  margin-top: 0;
+}
+
+.set-dialog__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.12);
+}
+
+/* 초록 안심 문구 */
+.set-dialog__keep {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Google ID·비밀값 두 칸 */
+.set-dialog__pair {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
