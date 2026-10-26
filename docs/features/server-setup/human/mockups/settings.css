@@ -1,0 +1,35 @@
+/* 설정 화면: 칸(섹션) 목록 + 서버 연결 칸 */
+.set-page { max-width: 880px; display: flex; flex-direction: column; gap: 20px; }
+.set-anchor { display: flex; gap: 6px; }
+.set-anchor span { font-size: 13px; padding: 5px 12px; border-radius: 99px; color: var(--muted); box-shadow: 0 0 0 1px var(--border) inset; }
+.set-anchor span.on { color: var(--accent); background: var(--accent-soft); box-shadow: none; font-weight: 700; }
+.set-anchor span.later { color: var(--faint); border-style: dashed; }
+
+.set-card { border-radius: 14px; background: var(--surface); box-shadow: 0 0 0 1px var(--border) inset; overflow: hidden; }
+.set-card-head { display: flex; align-items: center; gap: 12px; padding: 18px 22px; border-bottom: 1px solid var(--border); }
+.set-card-head .icon-box { width: 36px; height: 36px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+.set-card-head h3 { margin: 0; font-size: 16px; font-weight: 800; }
+.set-card-head small { display: block; font-size: 12px; color: var(--faint); font-weight: 400; }
+.set-card-head .right { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--faint); }
+
+.set-rows { padding: 4px 22px; }
+.set-row { display: grid; grid-template-columns: 150px 1fr auto; gap: 16px; align-items: center; min-height: 54px; padding: 8px 0; font-size: 14px; }
+.set-row + .set-row { border-top: 1px solid var(--border); }
+.set-row .k { color: var(--muted); font-size: 13px; }
+.set-row .v small { color: var(--faint); font-size: 12px; margin-left: 8px; }
+.set-row .v .mono { font-size: 13px; }
+.ver-pair { display: inline-flex; gap: 6px; align-items: center; }
+.ver-pair b { font-family: Consolas, monospace; }
+
+.set-actions { display: flex; gap: 8px; padding: 16px 22px; border-top: 1px solid var(--border); background: var(--sidebar); }
+.set-danger { display: flex; align-items: center; gap: 8px; padding: 16px 22px; border-top: 1px solid var(--border); }
+.set-danger .hint { font-size: 12px; color: var(--faint); margin-right: auto; }
+
+/* 연결 안 함·로그인 필요 */
+.set-empty { padding: 28px 22px; display: flex; align-items: center; gap: 20px; }
+.set-empty .txt { flex: 1; }
+.set-empty b { display: block; font-size: 15px; margin-bottom: 4px; }
+.set-empty p { margin: 0; font-size: 13px; color: var(--muted); }
+.set-empty ul { margin: 8px 0 0; padding-left: 18px; font-size: 13px; color: var(--muted); }
+.set-later { border-radius: 14px; border: 1px dashed var(--border-2); padding: 16px 22px; font-size: 13px; color: var(--faint); }
+.card-pad { padding: 0 22px 18px; }

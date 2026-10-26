@@ -1,0 +1,130 @@
+<!doctype html>
+<!-- 목업: 서버 연결 (server-setup) / 2-3. 연결 마법사 ③ 자동 세팅 (입력)
+  목차와 다른 화면: index.html
+  CSS: common.css, wizard.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                                  요구사항
+  wiz-setup           2-3. ③ 자동 세팅 입력                 R11–R14, R54
+    wiz-setup-form      2-3-1. PAT·Anthropic 키·Google 값    R11
+    wiz-setup-redirect  2-3-2. 리디렉션 주소 + [복사]        R54
+    wiz-setup-guide     2-3-3. 오른쪽 가이드                 R7, R9
+    wiz-setup-check     2-3-4. 사전 확인 실패·빈 서버 아님 경고 R12–R14
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 서버 연결 목업 · 2-3. ③ 자동 세팅 (입력)</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="wizard.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다.</p>
+
+  <section class="screen" id="wiz-setup">
+    <div class="screen-head"><h2>2-3. 연결 마법사 ③ 자동 세팅 (입력)</h2><span class="tag">R11–R14, R54</span></div>
+    <p class="screen-desc">자동 세팅에 필요한 값 네 개를 받습니다. 비밀값 칸은 가려서 보여주고, 이 값들은 세팅이 끝나면 버립니다. Google 칸에 넣기 전에 리디렉션 주소를 Google Cloud에 붙여넣어야 해서 그 줄을 Google 칸 위에 둡니다.</p>
+    <div class="scale-note">1440 × 900 창, 80% 축소</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-title">Daybrick</div>
+        <div class="tb-drag"></div>
+        <div class="win"><span>—</span><span>☐</span><span>✕</span></div>
+      </div>
+      <div class="wiz">
+        <div class="wiz-top">
+          <div class="wiz-title"><svg class="ico"><use href="#i-server" /></svg>서버 연결</div>
+          <div class="steps">
+            <div class="step done"><span class="num">✓</span>준비</div><div class="step-line done"></div>
+            <div class="step done"><span class="num">✓</span>주소·키</div><div class="step-line done"></div>
+            <div class="step on"><span class="num">3</span>자동 세팅</div><div class="step-line"></div>
+            <div class="step"><span class="num">4</span>완료</div>
+          </div>
+        </div>
+
+        <div class="wiz-main">
+          <div class="wiz-form">
+            <div class="form-inner" id="wiz-setup-form">
+              <h2>자동 세팅</h2>
+              <p class="desc">앱이 서버에 테이블·로그인 설정·서버 함수를 만들어 줍니다. 아래 값은 세팅하는 동안에만 쓰고 저장하지 않습니다.</p>
+
+              <div class="section-label">SUPABASE · ANTHROPIC</div>
+              <div class="field">
+                <div class="label">Supabase 개인 액세스 토큰 (PAT)</div>
+                <div class="input"><span class="grow">••••••••••••••••••••••••••••••••</span><svg class="ico sm eye"><use href="#i-eye" /></svg></div>
+                <span class="help"><svg class="ico sm"><use href="#i-help" /></svg>어디서 찾나요?</span>
+              </div>
+              <div class="field">
+                <div class="label">Anthropic API 키</div>
+                <div class="input"><span class="grow">sk-ant-••••••••••••••••••••••••</span><svg class="ico sm eye"><use href="#i-eye" /></svg></div>
+                <span class="help"><svg class="ico sm"><use href="#i-help" /></svg>어디서 찾나요?</span>
+              </div>
+
+              <div class="section-label">GOOGLE 로그인</div>
+              <div class="field" id="wiz-setup-redirect">
+                <div class="label">리디렉션 주소 <span class="opt-note">Google OAuth 클라이언트의 "승인된 리디렉션 URI"에 붙여넣기</span></div>
+                <div class="redirect">
+                  <div class="input ro"><span class="grow">https://qzkvtmhrwplxbnde.supabase.co/auth/v1/callback</span></div>
+                  <span class="btn"><svg class="ico sm"><use href="#i-copy" /></svg>복사</span>
+                </div>
+              </div>
+              <div class="two-col mt-20">
+                <div class="field">
+                  <div class="label">클라이언트 ID</div>
+                  <div class="input focus"><span class="grow">418820395561-k2v9qs8m1a7d3hfb.apps.googleusercontent.com</span></div>
+                  <span class="help"><svg class="ico sm"><use href="#i-help" /></svg>어디서 찾나요?</span>
+                </div>
+                <div class="field">
+                  <div class="label">클라이언트 보안 비밀번호</div>
+                  <div class="input"><span class="grow ph">GOCSPX-…</span><svg class="ico sm eye"><use href="#i-eye" /></svg></div>
+                  <span class="help"><svg class="ico sm"><use href="#i-help" /></svg>어디서 찾나요?</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="wiz-guide" id="wiz-setup-guide">
+            <div class="guide-head">가이드 · ③ 자동 세팅</div>
+            <h3 class="guide-title">이 단계에서 할 일</h3>
+            <ol class="guide-list">
+              <li class="guide-group">Supabase</li>
+              <li><div><b>PAT 발급</b><span>계정 설정 → Access Tokens → Generate. 이름 "Daybrick", 만료는 짧게(1일) 권장</span><br /><span class="link">토큰 페이지 열기 <svg class="ico sm"><use href="#i-ext" /></svg></span></div></li>
+              <li class="guide-group">Anthropic</li>
+              <li><div><b>① 단계에서 만든 API 키 붙여넣기</b><span>요금이 들지 않는 방법으로 먼저 확인합니다</span></div></li>
+              <li class="guide-group">Google Cloud</li>
+              <li><div><b>OAuth 동의 화면 만들기</b><span>외부(External) 선택, 앱 이름 Daybrick, 마지막에 <b class="inline">프로덕션으로 게시</b></span><br /><span class="link">Google Cloud 콘솔 열기 <svg class="ico sm"><use href="#i-ext" /></svg></span></div></li>
+              <li><div><b>OAuth 클라이언트 만들기</b><span>유형 "웹 애플리케이션", 승인된 리디렉션 URI에 왼쪽 주소 붙여넣기</span></div></li>
+              <li><div><b>클라이언트 ID·비밀번호 복사</b><span>만들고 나면 뜨는 창에서 두 값을 복사해 왼쪽 칸에</span></div></li>
+            </ol>
+          </aside>
+        </div>
+
+        <div class="wiz-foot">
+          <span class="btn ghost">취소</span>
+          <div class="spacer"></div>
+          <span class="btn">이전</span>
+          <span class="btn primary">세팅 시작 <svg class="ico sm"><use href="#i-fwd" /></svg></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub-label" id="wiz-setup-check">[세팅 시작]을 누른 직후 사전 확인 결과 (입력칸 아래에 뜸)</div>
+    <div class="result-grid">
+      <div class="alert bad"><svg class="ico"><use href="#i-key" /></svg><div><b>Anthropic 키를 확인하지 못했습니다</b><p>키가 틀렸거나 결제 수단이 등록되지 않았습니다. 세팅은 시작하지 않았습니다.</p></div></div>
+      <div class="alert bad"><svg class="ico"><use href="#i-lock" /></svg><div><b>PAT로 이 프로젝트에 접근할 수 없습니다</b><p>프로젝트 qzkvtmhrwplxbnde에 권한이 있는 계정의 토큰인지, 만료되지 않았는지 확인하세요.</p></div></div>
+      <div class="alert warn span-all"><svg class="ico"><use href="#i-warn" /></svg><div><b>빈 프로젝트가 아닙니다</b><p>Daybrick 구조는 없는데 다른 테이블이 12개 있습니다. 계속하면 기존 테이블은 그대로 두고 Daybrick 테이블을 추가합니다. 새 프로젝트를 쓰는 것을 권장합니다.</p>
+        <div class="btn-row mt-10"><span class="btn sm">이전으로 (주소 바꾸기)</span><span class="btn sm primary amber">그래도 계속</span></div></div></div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>입력칸</b><ul><li>비밀값 칸은 ●로 가리고 눈 아이콘으로 잠깐 보기</li><li>리디렉션 주소는 읽기 전용, [복사]를 누르면 "복사됨"으로 잠깐 바뀜</li><li>네 칸이 다 차야 [세팅 시작]이 켜짐</li></ul></div>
+      <div class="note"><b>가이드</b><ul><li>Supabase · Anthropic · Google 묶음으로 나눔</li><li>Google 쪽 할 일이 가장 길어서 가이드도 가장 김</li></ul></div>
+      <div class="note"><b>사전 확인</b><ul><li>실패하면 2-4 실행 화면으로 넘어가지 않고 여기 머묾</li><li>"빈 프로젝트가 아닙니다"는 경고만, 계속 여부는 사용자가 정함</li></ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

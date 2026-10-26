@@ -1,0 +1,80 @@
+<!doctype html>
+<!-- 목업: 서버 연결 (server-setup) / 2-6. 연결 마법사 ④ 완료
+  목차와 다른 화면: index.html
+  CSS: common.css, wizard.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                                  요구사항
+  wiz-done            2-6. ④ 완료                           R19
+    wiz-done-summary    2-6-1. 연결 요약 (주소·계정·구조)    R19
+    wiz-done-next       2-6-2. 다음에 할 일                  R7
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 서버 연결 목업 · 2-6. ④ 완료</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="wizard.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다.</p>
+
+  <section class="screen" id="wiz-done">
+    <div class="screen-head"><h2>2-6. 연결 마법사 ④ 완료</h2><span class="tag">R19</span></div>
+    <p class="screen-desc">자동 세팅(또는 로그인)이 끝나면 로그인한 상태로 이 화면이 나옵니다. [시작하기]를 누르면 홈으로 갑니다.</p>
+    <div class="scale-note">1440 × 900 창, 80% 축소</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-title">Daybrick</div>
+        <div class="tb-drag"></div>
+        <div class="win"><span>—</span><span>☐</span><span>✕</span></div>
+      </div>
+      <div class="wiz">
+        <div class="wiz-top">
+          <div class="wiz-title"><svg class="ico"><use href="#i-server" /></svg>서버 연결</div>
+          <div class="steps">
+            <div class="step done"><span class="num">✓</span>준비</div><div class="step-line done"></div>
+            <div class="step done"><span class="num">✓</span>주소·키</div><div class="step-line done"></div>
+            <div class="step done"><span class="num">✓</span>자동 세팅</div><div class="step-line done"></div>
+            <div class="step on"><span class="num">4</span>완료</div>
+          </div>
+        </div>
+        <div class="fill">
+          <div class="center-card">
+            <div class="big-mark ok"><svg class="ico"><use href="#i-check" /></svg></div>
+            <h2>서버 연결을 마쳤습니다</h2>
+            <p>이제 이 서버가 Daybrick의 데이터를 보관합니다.</p>
+
+            <div class="summary" id="wiz-done-summary">
+              <div><span>서버</span><b class="mono">qzkvtmhrwplxbnde.supabase.co</b></div>
+              <div><span>로그인 계정</span><b>sjrn.dev@gmail.com</b></div>
+              <div><span>서버 구조</span><b>1 (앱 1)</b></div>
+              <div><span>Anthropic 키</span><b>등록됨 · 2026-10-26</b></div>
+            </div>
+
+            <div class="next-list" id="wiz-done-next">
+              <div><svg class="ico"><use href="#i-gear" /></svg><p class="m0">연결 정보는 <b>Settings → 서버 연결</b>에서 볼 수 있습니다<span>로그아웃, 키 교체, 연결 해제도 여기서 합니다</span></p></div>
+              <div><svg class="ico"><use href="#i-pause" /></svg><p class="m0">7일 동안 앱을 안 켜면 서버가 멈출 수 있습니다<span>앱 위쪽에 안내 띠가 뜨면 눌러서 다시 켜세요</span></p></div>
+              <div><svg class="ico"><use href="#i-key" /></svg><p class="m0">세팅에 쓴 PAT는 이제 지워도 됩니다<span>Supabase 계정 설정 → Access Tokens</span></p></div>
+            </div>
+          </div>
+        </div>
+        <div class="wiz-foot">
+          <div class="spacer"></div>
+          <span class="btn primary">시작하기 <svg class="ico sm"><use href="#i-fwd" /></svg></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>완료 화면</b><ul><li>[취소]·[이전] 없음, [시작하기]만</li><li>요약은 설정 화면에서 보는 값과 같은 항목</li></ul></div>
+      <div class="note"><b>로그인으로 끝난 경우</b><ul><li>진행 표시 3번이 "로그인"</li><li>Anthropic 키 줄은 서버에 기록된 등록일을 보여줌</li></ul></div>
+      <div class="note"><b>정하지 않은 것</b><ul><li>PAT 지우기 안내는 자동 세팅으로 끝난 경우에만</li></ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

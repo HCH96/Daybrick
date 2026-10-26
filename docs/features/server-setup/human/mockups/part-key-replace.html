@@ -1,0 +1,77 @@
+<!doctype html>
+<!-- 목업: 서버 연결 (server-setup) / 3-1. Anthropic 키 교체·자동 세팅 다시 실행 (작은 창)
+  목차와 다른 화면: index.html
+  CSS: common.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                                  요구사항
+  key-replace         3-1-1. Anthropic 키 교체              R49, R12, R18
+  rerun-setup         3-1-2. 자동 세팅 다시 실행            R49, R16, R18
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 서버 연결 목업 · 3-1. 키 교체·자동 세팅 다시 실행</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="parts.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 작은 창은 실제 크기(100%)로 보여줍니다.</p>
+
+  <section class="screen">
+    <div class="screen-head"><h2>3-1. 키 교체 · 자동 세팅 다시 실행</h2><span class="tag">R49</span></div>
+    <p class="screen-desc">설정 화면 위에 어두운 막을 깔고 가운데에 뜨는 작은 창. 둘 다 PAT가 필요하고, 넣은 값은 작업이 끝나면 버립니다.</p>
+
+    <div class="parts-row">
+      <div id="key-replace">
+        <div class="cap">3-1-1. Anthropic 키 교체 (설정 → [교체])</div>
+        <div class="modal">
+          <div class="modal-head"><span class="icon-box info"><svg class="ico"><use href="#i-key" /></svg></span><h3>Anthropic 키 교체</h3><svg class="ico x"><use href="#i-x" /></svg></div>
+          <div class="modal-body">
+            <p>새 키가 동작하는지 먼저 확인한 뒤 서버의 키를 바꿉니다. 지금 등록된 키: 2026-10-26 등록.</p>
+            <div class="field">
+              <div class="label">새 Anthropic API 키</div>
+              <div class="input focus"><span class="grow">sk-ant-••••••••••••••••••••</span><svg class="ico sm eye"><use href="#i-eye" /></svg></div>
+            </div>
+            <div class="field">
+              <div class="label">Supabase PAT</div>
+              <div class="input"><span class="grow">••••••••••••••••••••••••</span><svg class="ico sm eye"><use href="#i-eye" /></svg></div>
+              <span class="help"><svg class="ico sm"><use href="#i-help" /></svg>어디서 찾나요?</span>
+            </div>
+          </div>
+          <div class="modal-foot"><span class="btn ghost">취소</span><span class="btn primary">확인 후 교체</span></div>
+        </div>
+      </div>
+
+      <div id="rerun-setup">
+        <div class="cap">3-1-2. 자동 세팅 다시 실행 (설정 → [자동 세팅 다시 실행])</div>
+        <div class="modal">
+          <div class="modal-head"><span class="icon-box info"><svg class="ico"><use href="#i-refresh" /></svg></span><h3>자동 세팅 다시 실행</h3><svg class="ico x"><use href="#i-x" /></svg></div>
+          <div class="modal-body">
+            <p>인증 설정, 서버 구조, 서버 함수, 비밀값을 다시 맞추고 마무리 확인을 합니다. 이미 있는 것은 건너뜁니다.</p>
+            <div class="keep-note"><svg class="ico sm"><use href="#i-check" /></svg>데이터와 로그인 계정은 그대로 둡니다</div>
+            <div class="field">
+              <div class="label">Supabase PAT</div>
+              <div class="input focus"><span class="grow">••••••••••••••••••••••••</span><svg class="ico sm eye"><use href="#i-eye" /></svg></div>
+            </div>
+            <div class="field">
+              <div class="label">Google 클라이언트 ID·비밀번호 <span class="opt-note">바꿀 때만 입력</span></div>
+              <div class="input"><span class="grow ph">비워 두면 지금 값 유지</span></div>
+            </div>
+          </div>
+          <div class="modal-foot"><span class="btn ghost">취소</span><span class="btn primary">다시 실행</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>진행 중</b><ul><li>[다시 실행]을 누르면 같은 창 안에 2-4의 단계 목록(1~4, 6단계)이 나옴</li><li>실패 처리도 2-4와 같음</li></ul></div>
+      <div class="note"><b>키 교체</b><ul><li>새 키 확인 실패 → 창 안에 빨간 결과 줄, 서버 키는 안 바뀜</li><li>성공 → 창이 닫히고 설정의 등록일이 바뀜</li></ul></div>
+      <div class="note"><b>정하지 않은 것</b><ul><li>Google 값 칸은 ID·비밀번호 두 칸으로 나눌지 계획에서 정함</li></ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

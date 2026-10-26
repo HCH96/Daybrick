@@ -1,0 +1,62 @@
+<!doctype html>
+<!-- 목업: 서버 연결 (server-setup) / 3-2. 연결 해제·다른 Supabase로 바꾸기 확인 팝업
+  목차와 다른 화면: index.html
+  CSS: common.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                                  요구사항
+  confirm-disconnect  3-2-1. 서버 연결 해제 확인            R49–R50
+  confirm-switch      3-2-2. 다른 Supabase로 바꾸기 확인    R49–R50
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 서버 연결 목업 · 3-2. 확인 팝업</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="parts.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 작은 창은 실제 크기(100%)로 보여줍니다.</p>
+
+  <section class="screen">
+    <div class="screen-head"><h2>3-2. 연결 해제 · 다른 Supabase로 바꾸기 확인</h2><span class="tag">R50</span></div>
+    <p class="screen-desc">두 작업 모두 이 PC에 저장한 연결 정보만 지웁니다. 서버 데이터가 남는다는 문구를 초록 상자로 눈에 띄게 둡니다.</p>
+
+    <div class="parts-row">
+      <div id="confirm-disconnect">
+        <div class="cap">3-2-1. 서버 연결 해제</div>
+        <div class="modal">
+          <div class="modal-head"><span class="icon-box bad"><svg class="ico"><use href="#i-cloud-off" /></svg></span><h3>서버 연결을 해제할까요?</h3></div>
+          <div class="modal-body">
+            <p>이 PC에 저장한 서버 주소·키와 로그인 정보를 지웁니다. 알림·구직 관리처럼 서버가 필요한 기능은 쓸 수 없게 됩니다.</p>
+            <div class="keep-note"><svg class="ico sm"><use href="#i-check" /></svg>서버의 데이터는 지워지지 않습니다</div>
+            <p class="small">같은 주소로 다시 연결하면 데이터를 그대로 이어서 씁니다.</p>
+          </div>
+          <div class="modal-foot"><span class="btn ghost">취소</span><span class="btn danger-fill">연결 해제</span></div>
+        </div>
+      </div>
+
+      <div id="confirm-switch">
+        <div class="cap">3-2-2. 다른 Supabase로 바꾸기</div>
+        <div class="modal">
+          <div class="modal-head"><span class="icon-box warn"><svg class="ico"><use href="#i-server" /></svg></span><h3>다른 Supabase로 바꿀까요?</h3></div>
+          <div class="modal-body">
+            <p>지금 연결(<span class="mono t-text">qzkvtmhrwplxbnde</span>)을 해제하고 처음 연결 화면을 엽니다. 지금 서버의 데이터는 새 서버로 옮겨지지 않습니다.</p>
+            <div class="keep-note"><svg class="ico sm"><use href="#i-check" /></svg>서버의 데이터는 지워지지 않습니다</div>
+          </div>
+          <div class="modal-foot"><span class="btn ghost">취소</span><span class="btn primary">해제하고 새로 연결</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>버튼</b><ul><li>연결 해제는 빨간 버튼, 바꾸기는 보라 버튼</li><li>[취소]가 기본 (Enter = 취소)</li></ul></div>
+      <div class="note"><b>실행 중 [취소] 확인</b><ul><li>2-4 실행 중 [취소]도 이 틀: "세팅을 멈출까요? 완료된 단계는 서버에 남습니다"</li></ul></div>
+      <div class="note"><b>정하지 않은 것</b><ul><li>데이터 이전 기능은 이번 범위 밖</li></ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

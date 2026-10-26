@@ -1,0 +1,93 @@
+<!doctype html>
+<!-- 목업: 서버 연결 (server-setup) / 2-5. 연결 마법사 로그인 (이미 세팅된 서버)
+  목차와 다른 화면: index.html
+  CSS: common.css, wizard.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                                  요구사항
+  wiz-login           2-5. 로그인 (다른 PC·재설치)          R6, R51, R53
+    wiz-login-start     2-5-1. [Google로 로그인]             R51
+    wiz-login-wait      2-5-2. 브라우저 로그인 대기          R51
+    wiz-login-denied    2-5-3. 등록되지 않은 계정 거부       R53
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 서버 연결 목업 · 2-5. 로그인</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="wizard.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다.</p>
+
+  <section class="screen" id="wiz-login">
+    <div class="screen-head"><h2>2-5. 연결 마법사 로그인 (이미 세팅된 서버)</h2><span class="tag">R6, R51, R53</span></div>
+    <p class="screen-desc">② 단계에서 "이미 세팅된 서버"로 확인되면 ③ 자동 세팅 대신 이 화면이 나옵니다. 진행 표시의 3번 이름이 "로그인"으로 바뀝니다. 가이드 칸 없이 가운데 정렬.</p>
+    <div class="scale-note">1440 × 900 창, 80% 축소 (아래쪽은 잘라서 보여줌)</div>
+
+    <div class="frame short">
+      <div class="titlebar">
+        <div class="tb-title">Daybrick</div>
+        <div class="tb-drag"></div>
+        <div class="win"><span>—</span><span>☐</span><span>✕</span></div>
+      </div>
+      <div class="wiz">
+        <div class="wiz-top">
+          <div class="wiz-title"><svg class="ico"><use href="#i-server" /></svg>서버 연결</div>
+          <div class="steps">
+            <div class="step done"><span class="num">✓</span>준비</div><div class="step-line done"></div>
+            <div class="step done"><span class="num">✓</span>주소·키</div><div class="step-line done"></div>
+            <div class="step on"><span class="num">3</span>로그인</div><div class="step-line"></div>
+            <div class="step"><span class="num">4</span>완료</div>
+          </div>
+        </div>
+        <div class="fill">
+          <div class="center-card" id="wiz-login-start">
+            <div class="big-mark info"><svg class="ico"><use href="#i-user" /></svg></div>
+            <h2>이 서버에 로그인하세요</h2>
+            <p>이미 Daybrick이 세팅된 서버입니다. 처음 세팅할 때 쓴 Google 계정으로 로그인하면 데이터를 그대로 이어서 씁니다.</p>
+            <span class="server-chip"><svg class="ico sm"><use href="#i-server" /></svg>qzkvtmhrwplxbnde.supabase.co · 구조 1</span>
+            <span class="btn google mt-8"><svg class="ico"><use href="#i-google" /></svg>Google로 로그인</span>
+            <span class="help">기본 브라우저에서 Google 로그인 창이 열립니다. 앱은 Google 비밀번호를 받지 않습니다.</span>
+          </div>
+        </div>
+        <div class="wiz-foot">
+          <span class="btn ghost">취소</span>
+          <div class="spacer"></div>
+          <span class="btn">이전</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row-2 mt-28">
+      <div>
+        <div class="sub-label" id="wiz-login-wait">버튼을 누른 뒤: 브라우저 로그인 대기</div>
+        <div class="center-card boxed">
+          <div class="big-mark info"><span class="spin lg"></span></div>
+          <h2 class="h-sm">브라우저에서 로그인을 마쳐 주세요</h2>
+          <p>로그인이 끝나면 자동으로 이 화면으로 돌아옵니다.</p>
+          <div class="btn-row"><span class="btn sm">브라우저 다시 열기</span><span class="btn sm ghost">취소</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="sub-label" id="wiz-login-denied">등록되지 않은 계정으로 로그인했을 때</div>
+        <div class="center-card boxed">
+          <div class="big-mark bad"><svg class="ico"><use href="#i-lock" /></svg></div>
+          <h2 class="h-sm">이 서버에 등록된 계정이 아닙니다</h2>
+          <p><span class="mono t-text">jiwoo.park.work@gmail.com</span> 으로 로그인했습니다. 이 서버는 처음 세팅한 계정 하나만 쓸 수 있습니다.</p>
+          <div class="btn-row"><span class="btn sm primary"><svg class="ico sm"><use href="#i-google" /></svg>다른 계정으로 로그인</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>흐름</b><ul><li>로그인 성공 → 서버와 앱 번호가 같으면 ④ 완료</li><li>서버 번호가 낮으면 로그인 후 5. 서버 업데이트</li></ul></div>
+      <div class="note"><b>Google 버튼</b><ul><li>Google 버튼만 밝은 흰색으로 다른 버튼과 구별</li><li>설정 화면의 [Google로 로그인]도 같은 모양 (3)</li></ul></div>
+      <div class="note"><b>거부</b><ul><li>거부된 계정의 로그인 정보는 바로 버림</li><li>어떤 계정이 등록됐는지는 보여주지 않음</li></ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

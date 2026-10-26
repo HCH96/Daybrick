@@ -1,0 +1,113 @@
+<!doctype html>
+<!-- 목업: 서버 연결 (server-setup) / 2-1. 연결 마법사 ① 준비
+  목차와 다른 화면: index.html
+  CSS: common.css, wizard.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                                  요구사항
+  wiz-prep            2-1. ① 준비                           R3, R7, R9–R10
+    wiz-prep-steps      2-1-1. 진행 표시 (마법사 공통)       R3
+    wiz-prep-cards      2-1-2. 준비물 카드                   R10
+    wiz-prep-guide      2-1-3. 오른쪽 가이드 + 무료·비용 주의 R7, R9–R10
+    wiz-prep-foot       2-1-4. 아래 버튼 줄 (마법사 공통)    R3
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 서버 연결 목업 · 2-1. ① 준비</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="wizard.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다.</p>
+
+  <section class="screen" id="wiz-prep">
+    <div class="screen-head"><h2>2-1. 연결 마법사 ① 준비</h2><span class="tag">R3, R7, R9–R10</span></div>
+    <p class="screen-desc">마법사의 기본 틀: 위에 진행 표시, 왼쪽에 할 일, 오른쪽에 가이드, 아래에 버튼 줄. 이 단계는 입력 없이 계정 세 개를 미리 준비하게 합니다.</p>
+    <div class="scale-note">1440 × 900 창, 80% 축소</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-title">Daybrick</div>
+        <div class="tb-drag"></div>
+        <div class="win"><span>—</span><span>☐</span><span>✕</span></div>
+      </div>
+      <div class="wiz">
+        <div class="wiz-top">
+          <div class="wiz-title"><svg class="ico"><use href="#i-server" /></svg>서버 연결</div>
+          <div class="steps" id="wiz-prep-steps">
+            <div class="step on"><span class="num">1</span>준비</div><div class="step-line"></div>
+            <div class="step"><span class="num">2</span>주소·키</div><div class="step-line"></div>
+            <div class="step"><span class="num">3</span>자동 세팅</div><div class="step-line"></div>
+            <div class="step"><span class="num">4</span>완료</div>
+          </div>
+        </div>
+
+        <div class="wiz-main">
+          <div class="wiz-form">
+            <div class="form-inner">
+              <h2>먼저 계정 세 개를 준비하세요</h2>
+              <p class="desc">Daybrick은 내 서버에 내 데이터를 저장합니다. 아래 계정을 만들어 두면 다음 단계부터 값을 붙여넣기만 하면 됩니다. 오른쪽 가이드를 순서대로 따라 하세요.</p>
+              <div class="prep-cards" id="wiz-prep-cards">
+                <div class="prep-card">
+                  <div class="ph-head"><span class="icon-box"><svg class="ico"><use href="#i-server" /></svg></span>Supabase 프로젝트</div>
+                  <p>데이터를 저장할 서버. 새 프로젝트를 하나 만들어 비워 두세요.</p>
+                  <span class="cost">무료 플랜</span>
+                </div>
+                <div class="prep-card">
+                  <div class="ph-head"><span class="icon-box"><svg class="ico"><use href="#i-key" /></svg></span>Anthropic API 키</div>
+                  <p>AI 기능(공고 정리, 메일 분류)에 쓰입니다. 결제 수단 등록이 필요합니다.</p>
+                  <span class="cost">쓴 만큼 요금</span>
+                </div>
+                <div class="prep-card">
+                  <div class="ph-head"><span class="icon-box"><svg class="ico"><use href="#i-google" /></svg></span>Google Cloud 프로젝트</div>
+                  <p>Google 로그인을 켜는 데 필요합니다. 프로젝트만 만들어 두면 설정은 ③ 단계에서 안내합니다.</p>
+                  <span class="cost">무료</span>
+                </div>
+                <div class="prep-card">
+                  <div class="ph-head"><span class="icon-box"><svg class="ico"><use href="#i-clock" /></svg></span>걸리는 시간</div>
+                  <p>처음이면 20~30분 정도. 중간에 [취소]하면 입력한 값은 남지 않습니다.</p>
+                  <span class="cost">한 번만 하면 됨</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="wiz-guide" id="wiz-prep-guide">
+            <div class="guide-head">가이드 · ① 준비</div>
+            <h3 class="guide-title">이 단계에서 할 일</h3>
+            <ol class="guide-list">
+              <li><div><b>Supabase 가입</b><span class="link">supabase.com 열기 <svg class="ico sm"><use href="#i-ext" /></svg></span></div></li>
+              <li><div><b>새 프로젝트 만들기</b><span>지역은 Northeast Asia (Seoul), DB 비밀번호는 따로 적어 두기</span></div></li>
+              <li><div><b>Anthropic 콘솔 가입·결제 수단 등록</b><span class="link">console.anthropic.com 열기 <svg class="ico sm"><use href="#i-ext" /></svg></span></div></li>
+              <li><div><b>API 키 발급</b><span>Settings → API Keys → Create Key. 키는 한 번만 보이니 복사해 두기</span></div></li>
+              <li><div><b>Google Cloud 프로젝트 만들기</b><span class="link">console.cloud.google.com 열기 <svg class="ico sm"><use href="#i-ext" /></svg></span></div></li>
+            </ol>
+            <div class="guide-tip">
+              <b><svg class="ico sm"><use href="#i-warn" /></svg>무료 플랜·비용 주의</b>
+              <p>Supabase 무료 플랜은 7일 동안 쓰지 않으면 서버가 일시정지됩니다. 대시보드에서 [Restore]를 누르거나 앱에서 PAT로 다시 켤 수 있습니다.</p>
+              <p>Anthropic API는 쓴 만큼 요금이 나갑니다. 콘솔에서 월 사용 한도를 정해 두세요.</p>
+            </div>
+          </aside>
+        </div>
+
+        <div class="wiz-foot" id="wiz-prep-foot">
+          <span class="btn ghost">취소</span>
+          <div class="spacer"></div>
+          <span class="btn off">이전</span>
+          <span class="btn primary">준비했어요 <svg class="ico sm"><use href="#i-fwd" /></svg></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>마법사 공통</b><ul><li>진행 표시: 지난 단계 초록 ✓, 지금 단계 보라, 남은 단계 회색</li><li>[취소]는 왼쪽 끝, [이전]·[다음]은 오른쪽</li><li>① 단계에서 [이전]은 흐리게</li></ul></div>
+      <div class="note"><b>가이드</b><ul><li>보라색 링크는 기본 브라우저로 열림 (R9)</li><li>주의 상자는 가이드 맨 아래에 고정</li></ul></div>
+      <div class="note"><b>정하지 않은 것</b><ul><li>"걸리는 시간" 카드는 빼도 됨</li><li>[준비했어요] 문구는 [다음]으로 바꿔도 됨</li></ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

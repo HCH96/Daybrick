@@ -1,0 +1,74 @@
+<!doctype html>
+<!-- 목업 목차: 서버 연결 (server-setup)
+  읽는 법: 이 목차에서 필요한 화면 파일만 골라 읽는다. CSS는 그 화면 파일 머리에 적힌 파일에서 필요한 클래스만 검색한다.
+  파일                  화면                                  요구사항          부분 ID
+  welcome.html          1. 첫 실행 안내                        R1–R2            welcome-actions, -needs
+  wizard-prepare.html   2-1. 마법사 ① 준비 (마법사 공통 틀)    R3, R7, R9–R10   wiz-prep-steps, -cards, -guide, -foot
+  wizard-keys.html      2-2. 마법사 ② 주소·키                  R4–R6, R8        wiz-keys-form, -guide, -result
+  wizard-setup.html     2-3. 마법사 ③ 자동 세팅 (입력)         R11–R14, R54     wiz-setup-form, -redirect, -guide, -check
+  wizard-run.html       2-4. 마법사 ③ 자동 세팅 (실행·실패)    R15–R18          wiz-run-list, -login, -fail
+  wizard-login.html     2-5. 마법사 로그인 (이미 세팅된 서버)  R6, R51, R53     wiz-login-start, -wait, -denied
+  wizard-done.html      2-6. 마법사 ④ 완료                     R19              wiz-done-summary, -next
+  settings.html         3. 설정 → 서버 연결 칸                 R32, R45–R49     settings-nav, -server, -actions, -off, -login
+  part-key-replace.html 3-1. 키 교체·자동 세팅 다시 실행 창    R49              key-replace, rerun-setup
+  part-confirm.html     3-2. 연결 해제·바꾸기 확인 팝업        R50              confirm-disconnect, confirm-switch
+  banners.html          4. 안내 띠 (상태별) + 서버 연결 필요   R40–R41          banners-kinds, -need
+  part-resume.html      4-1. 재개 안내 팝업                    R42–R43          resume, resume-wait
+  server-update.html    5. 서버 업데이트 · 앱 업데이트 안내    R23–R26          server-update-run, app-update
+  CSS: common.css(색 토큰·앱 틀·버튼·입력칸·상태·도우미), wizard.css(첫 실행·마법사·단계 목록), settings.css(설정 칸), parts.css(팝업·띠·업데이트 화면)
+  아이콘: icons.js (id로 검색)
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 서버 연결 목업 · 목차</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="parts.css" />
+</head>
+<body>
+<div class="doc">
+  <h1>서버 연결 (server-setup) 목업</h1>
+  <p class="lead">내 Supabase 서버와 Anthropic 키를 연결하는 화면들입니다. 디자인 확인용 정적 화면이고 버튼은 동작하지 않습니다. 색과 앱 창 틀은 지원 관리 목업과 같습니다.</p>
+
+  <div class="sub-label">1. 처음 켤 때</div>
+  <div class="toc">
+    <a href="welcome.html">1. 첫 실행 안내</a>
+  </div>
+
+  <div class="sub-label">2. 서버 연결 마법사 (① 준비 → ② 주소·키 → ③ 자동 세팅 또는 로그인 → ④ 완료)</div>
+  <div class="toc">
+    <a href="wizard-prepare.html">2-1. ① 준비</a>
+    <a href="wizard-keys.html">2-2. ② 주소·키</a>
+    <a href="wizard-setup.html">2-3. ③ 자동 세팅 입력</a>
+    <a href="wizard-run.html">2-4. ③ 자동 세팅 실행·실패</a>
+    <a href="wizard-login.html">2-5. 로그인 (이미 세팅된 서버)</a>
+    <a href="wizard-done.html">2-6. ④ 완료</a>
+  </div>
+
+  <div class="sub-label">3. 설정</div>
+  <div class="toc">
+    <a href="settings.html">3. 설정 → 서버 연결 (연결됨·연결 안 함·로그인 필요)</a>
+    <a href="part-key-replace.html">3-1. 키 교체·자동 세팅 다시 실행</a>
+    <a href="part-confirm.html">3-2. 연결 해제 확인</a>
+  </div>
+
+  <div class="sub-label">4. 접속 상태 안내</div>
+  <div class="toc">
+    <a href="banners.html">4. 안내 띠</a>
+    <a href="part-resume.html">4-1. 재개 안내 팝업</a>
+  </div>
+
+  <div class="sub-label">5. 서버 구조 갱신</div>
+  <div class="toc">
+    <a href="server-update.html">5. 서버 업데이트 · 앱 업데이트 안내</a>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>색 규칙</b><ul><li>보라: 지금 단계, 주요 버튼, 진행 중</li><li>초록: 연결됨, 완료</li><li>주황: 사용자가 할 일 (로그인, 업데이트, 재개)</li><li>빨강: 오류, 접속 불가, 연결 해제</li></ul></div>
+    <div class="note"><b>마법사 틀</b><ul><li>위: 진행 표시 4단계</li><li>왼쪽: 입력, 오른쪽 460px: 단계별 가이드</li><li>아래: [취소] … [이전] [다음]</li></ul></div>
+    <div class="note"><b>비밀값</b><ul><li>PAT·Anthropic 키·Google 비밀번호 칸은 항상 ●로 가림</li><li>Anthropic 키는 설정에서도 "등록됨"과 날짜만</li></ul></div>
+  </div>
+</div>
+</body>
+</html>

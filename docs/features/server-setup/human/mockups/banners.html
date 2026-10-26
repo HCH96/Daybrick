@@ -1,0 +1,83 @@
+<!doctype html>
+<!-- 목업: 서버 연결 (server-setup) / 4. 안내 띠
+  목차와 다른 화면: index.html
+  CSS: common.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                                  요구사항
+  banners             4. 안내 띠 (일시정지 예시 창)          R40–R41
+    banners-kinds       4-a. 상태별 띠 5종                   R40
+    banners-need        4-b. 서버 필요 화면의 "서버 연결 필요" R40
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 서버 연결 목업 · 4. 안내 띠</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="parts.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다.</p>
+
+  <section class="screen" id="banners">
+    <div class="screen-head"><h2>4. 안내 띠</h2><span class="tag">R40–R41</span></div>
+    <p class="screen-desc">앱을 켤 때 접속 확인 결과가 "연결됨"이 아니면 제목 표시줄 바로 아래에 가로 띠가 뜹니다. 띠 전체를 누르면 해결 화면으로 가고, [×]는 이번 실행 동안만 숨깁니다. 예시는 일시정지 상태입니다.</p>
+    <div class="scale-note">1440 × 900 창, 80% 축소 (아래쪽은 잘라서 보여줌)</div>
+
+    <div class="frame short">
+      <div class="titlebar">
+        <div class="tb-nav">
+          <span class="tb-btn"><svg class="ico"><use href="#i-side" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-back" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-fwd" /></svg></span>
+        </div>
+        <div class="tb-drag"></div>
+        <div class="win"><span>—</span><span>☐</span><span>✕</span></div>
+      </div>
+      <div class="banner warn"><svg class="ico sm"><use href="#i-pause" /></svg><span class="msg">서버가 일시정지됐습니다.</span><span class="go">재개 방법 보기</span><span class="x"><svg class="ico sm"><use href="#i-x" /></svg></span></div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+          <div class="nav on"><svg class="ico"><use href="#i-home" /></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-cal" /></svg>Calendar</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock" /></svg>Scheduler</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag" /></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer" /></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="nav"><svg class="ico"><use href="#i-gear" /></svg>Settings</div>
+        </nav>
+        <main class="main">
+          <h1 class="page-title">좋은 아침이에요</h1>
+          <div class="page-sub">2026년 10월 26일 월요일 · 로컬 기능은 그대로 쓸 수 있습니다</div>
+          <div class="ghost-cards mt-22"><div></div><div></div><div></div></div>
+        </main>
+      </div>
+    </div>
+
+    <div class="sub-label" id="banners-kinds">4-a. 상태별 띠 (연결됨·연결 안 함은 띠 없음)</div>
+    <div class="banner-stack">
+      <div class="banner-demo"><div class="banner warn"><svg class="ico sm"><use href="#i-user" /></svg><span class="msg">로그인이 필요합니다.</span><span class="go">설정에서 로그인</span><span class="x"><svg class="ico sm"><use href="#i-x" /></svg></span></div><div class="when">로그아웃 후, 토큰 만료 · 누르면 설정 → 서버 연결</div></div>
+      <div class="banner-demo"><div class="banner warn"><svg class="ico sm"><use href="#i-up" /></svg><span class="msg">서버 업데이트가 필요합니다.</span><span class="go">업데이트하기</span><span class="x"><svg class="ico sm"><use href="#i-x" /></svg></span></div><div class="when">서버 구조 1 &lt; 앱 2 · 누르면 5. 서버 업데이트 화면</div></div>
+      <div class="banner-demo"><div class="banner info"><svg class="ico sm"><use href="#i-info" /></svg><span class="msg">앱을 업데이트하세요.</span><span class="go">자세히</span><span class="x"><svg class="ico sm"><use href="#i-x" /></svg></span></div><div class="when">서버 구조 3 &gt; 앱 2, 서버 기능 꺼짐 · 누르면 설정 → 서버 연결</div></div>
+      <div class="banner-demo"><div class="banner warn"><svg class="ico sm"><use href="#i-pause" /></svg><span class="msg">서버가 일시정지됐습니다.</span><span class="go">재개 방법 보기</span><span class="x"><svg class="ico sm"><use href="#i-x" /></svg></span></div><div class="when">무료 플랜 7일 미사용 · 누르면 재개 안내 팝업 (4-1)</div></div>
+      <div class="banner-demo"><div class="banner bad"><svg class="ico sm"><use href="#i-cloud-off" /></svg><span class="msg">서버에 접속할 수 없습니다.</span><span class="go">몇 분마다 다시 확인 중 · 설정 열기</span><span class="x"><svg class="ico sm"><use href="#i-x" /></svg></span></div><div class="when">인터넷 끊김, 주소 오류 · 누르면 설정 → 서버 연결</div></div>
+    </div>
+
+    <div class="sub-label" id="banners-need">4-b. 서버가 필요한 화면 (연결 안 함일 때, 예: 이후 기능의 화면)</div>
+    <div class="need-server">
+      <span class="icon-box"><svg class="ico"><use href="#i-server" /></svg></span>
+      <div><b>서버 연결 필요</b><span>이 기능은 내 Supabase 서버에 데이터를 저장합니다.</span></div>
+      <span class="btn sm primary">설정에서 연결하기</span>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>띠 색</b><ul><li>주황: 사용자가 할 일이 있음 (로그인, 업데이트, 재개)</li><li>빨강: 접속 불가</li><li>보라: 앱 업데이트 안내</li></ul></div>
+      <div class="note"><b>띠 위치</b><ul><li>제목 표시줄 바로 아래, 사이드바·본문 위 전체 폭</li><li>띠가 뜨면 본문이 40px 아래로 밀림 (겹치지 않음)</li></ul></div>
+      <div class="note"><b>한 번에 하나</b><ul><li>상태는 하나뿐이라 띠도 하나만 뜸</li><li>상태가 "연결됨"으로 바뀌면 띠가 바로 사라짐</li></ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

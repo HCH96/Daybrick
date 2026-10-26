@@ -1,0 +1,134 @@
+<!doctype html>
+<!-- 목업: 서버 연결 (server-setup) / 3. 설정 → 서버 연결 칸
+  목차와 다른 화면: index.html
+  CSS: common.css, settings.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                                  요구사항
+  settings            3. 설정 화면 (연결됨)                  R45, R47–R49
+    settings-nav        3-a. 사이드바 맨 아래 Settings       R45
+    settings-server     3-b. 서버 연결 칸 (연결됨)           R47–R48
+    settings-actions    3-c. 관리 버튼 줄                    R49–R50
+    settings-off        3-d. 연결 안 함                      R46
+    settings-login      3-e. 로그인 필요                     R32
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 서버 연결 목업 · 3. 설정 화면</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="settings.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 디자인 확인용 정적 화면입니다. 창 크기 1440×900을 80%로 줄여서 보여줍니다.</p>
+
+  <section class="screen" id="settings">
+    <div class="screen-head"><h2>3. 설정 → 서버 연결 (연결됨)</h2><span class="tag">R45, R47–R49</span></div>
+    <p class="screen-desc">사이드바 맨 아래에 Settings가 새로 생깁니다. 설정 화면은 칸 단위로 쌓이고 이번에는 "서버 연결" 칸만 있습니다. 위쪽 칸 이름 줄은 칸이 늘어나면 바로 가기로 씁니다.</p>
+    <div class="scale-note">1440 × 900 창, 80% 축소</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav">
+          <span class="tb-btn"><svg class="ico"><use href="#i-side" /></svg></span>
+          <span class="tb-btn"><svg class="ico"><use href="#i-back" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-fwd" /></svg></span>
+        </div>
+        <div class="tb-drag"></div>
+        <div class="win"><span>—</span><span>☐</span><span>✕</span></div>
+      </div>
+      <div class="body">
+        <nav class="sidebar" id="settings-nav">
+          <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home" /></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-cal" /></svg>Calendar</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock" /></svg>Scheduler</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag" /></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer" /></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="nav on"><svg class="ico"><use href="#i-gear" /></svg>Settings</div>
+          <div class="version">v0.2.0</div>
+        </nav>
+        <main class="main">
+          <div class="set-page">
+            <div>
+              <h1 class="page-title">Settings</h1>
+              <div class="page-sub">앱 설정. 기능이 늘면 아래에 칸이 추가됩니다.</div>
+            </div>
+            <div class="set-anchor"><span class="on">서버 연결</span></div>
+
+            <div class="set-card" id="settings-server">
+              <div class="set-card-head">
+                <span class="icon-box"><svg class="ico"><use href="#i-server" /></svg></span>
+                <h3>서버 연결<small>내 Supabase 서버와 로그인</small></h3>
+                <div class="right"><span class="state ok">연결됨</span></div>
+              </div>
+              <div class="set-rows">
+                <div class="set-row"><span class="k">마지막 접속</span><span class="v">2026-10-26 09:12<small>앱을 켤 때마다 확인</small></span><span class="btn sm"><svg class="ico sm"><use href="#i-refresh" /></svg>지금 다시 확인</span></div>
+                <div class="set-row"><span class="k">서버 주소</span><span class="v mono">https://qzkvtmhrwplxbnde.supabase.co</span><span></span></div>
+                <div class="set-row"><span class="k">로그인 계정</span><span class="v">sjrn.dev@gmail.com<small>Google</small></span><span class="btn sm">로그아웃</span></div>
+                <div class="set-row"><span class="k">서버 구조</span><span class="v"><span class="ver-pair">서버 <b>1</b> / 앱 <b>1</b></span><small>최신</small></span><span></span></div>
+                <div class="set-row"><span class="k">Anthropic 키</span><span class="v"><span class="pill ok">등록됨</span><small>2026-10-26 등록</small></span><span class="btn sm"><svg class="ico sm"><use href="#i-key" /></svg>교체</span></div>
+              </div>
+              <div class="set-actions" id="settings-actions">
+                <span class="btn sm"><svg class="ico sm"><use href="#i-refresh" /></svg>자동 세팅 다시 실행</span>
+                <span class="help self-center">로그인 설정·서버 함수가 망가졌을 때 복구용. 데이터는 그대로입니다.</span>
+              </div>
+              <div class="set-danger">
+                <span class="hint">이 PC에 저장한 주소·로그인 정보만 지웁니다. 서버의 데이터는 지워지지 않습니다.</span>
+                <span class="btn sm">다른 Supabase로 바꾸기</span>
+                <span class="btn sm danger">서버 연결 해제</span>
+              </div>
+            </div>
+
+            <div class="set-later">알림, Gmail 연결 같은 다음 기능의 설정 칸이 여기 아래에 추가됩니다.</div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="row-2 mt-28">
+      <div>
+        <div class="sub-label" id="settings-off">연결 안 함 ([나중에 하기]를 눌렀거나 연결 해제 후)</div>
+        <div class="set-card">
+          <div class="set-card-head">
+            <span class="icon-box"><svg class="ico"><use href="#i-server" /></svg></span>
+            <h3>서버 연결<small>내 Supabase 서버와 로그인</small></h3>
+            <div class="right"><span class="state none">연결 안 함</span></div>
+          </div>
+          <div class="set-empty">
+            <div class="txt"><b>서버를 연결하면 쓸 수 있는 것</b>
+              <ul><li>알림</li><li>구직 관리 (공고 정리, 메일 확인)</li><li>다른 PC와 데이터 이어 쓰기</li></ul>
+            </div>
+            <span class="btn primary"><svg class="ico sm"><use href="#i-server" /></svg>서버 연결 시작</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="sub-label" id="settings-login">로그인 필요 (로그아웃 후, 토큰 만료, 다른 PC)</div>
+        <div class="set-card">
+          <div class="set-card-head">
+            <span class="icon-box"><svg class="ico"><use href="#i-server" /></svg></span>
+            <h3>서버 연결<small>내 Supabase 서버와 로그인</small></h3>
+            <div class="right"><span class="state warn">로그인 필요</span></div>
+          </div>
+          <div class="set-rows">
+            <div class="set-row"><span class="k">서버 주소</span><span class="v mono">qzkvtmhrwplxbnde.supabase.co</span><span></span></div>
+            <div class="set-row"><span class="k">로그인 계정</span><span class="v t-faint">로그인하지 않음</span><span class="btn sm google"><svg class="ico sm"><use href="#i-google" /></svg>Google로 로그인</span></div>
+          </div>
+          <div class="set-danger"><span class="hint">로그인 전에는 서버 기능을 쓸 수 없습니다.</span><span class="btn sm danger">서버 연결 해제</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>상태 표시</b><ul><li>칸 머리 오른쪽에 점 + 글자: 연결됨 초록, 로그인 필요·업데이트 필요·일시정지 주황, 접속 불가 빨강, 연결 안 함 회색</li></ul></div>
+      <div class="note"><b>관리 버튼</b><ul><li>[교체]·[자동 세팅 다시 실행] → PAT 입력 작은 창 (3-1)</li><li>[다른 Supabase로 바꾸기]·[서버 연결 해제] → 확인 팝업 (3-2)</li><li>위험한 버튼은 맨 아래 줄에 따로</li></ul></div>
+      <div class="note"><b>Anthropic 키</b><ul><li>키 값은 어디에도 보이지 않음, "등록됨"과 등록일만</li></ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>
