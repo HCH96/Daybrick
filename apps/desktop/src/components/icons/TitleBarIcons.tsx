@@ -28,6 +28,17 @@ export function ForwardIcon() {
   );
 }
 
+/* ===== 제목 표시줄 오른쪽 알림 버튼 (16px 선 아이콘) ===== */
+
+export function BellIcon() {
+  return (
+    <LineIcon size={16}>
+      <path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9" />
+      <path d="M10 19a2 2 0 0 0 4 0" />
+    </LineIcon>
+  );
+}
+
 /* ===== 창 버튼 (Windows 기본 모양과 비슷한 10px 가는 선) ===== */
 
 function WindowIcon({ children }: { children: ReactNode }) {

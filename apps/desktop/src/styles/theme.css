@@ -35,6 +35,10 @@
   --pink: #f29ad3;
   --pink-soft: #3a1f33;
 
+  /* 알림 배지 전용: 작은 크기에서도 보이도록 진한 빨강 (알림 목업) */
+  --badge: #f0524f;
+  --on-badge: #ffffff;
+
   --radius: 12px;
   --sidebar-width: 200px;
 }

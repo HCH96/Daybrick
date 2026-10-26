@@ -1,5 +1,6 @@
 import { useNavigation } from "../../app/navigation";
 import { BackIcon, ForwardIcon, SidebarToggleIcon } from "../icons/TitleBarIcons";
+import NotificationBell from "../notifications/NotificationBell";
 import WindowControls from "./WindowControls";
 import "./TitleBar.css";
 
@@ -11,7 +12,7 @@ interface TitleBarProps {
 
 /**
  * 앱이 직접 그리는 창 제목 표시줄.
- * 왼쪽: 사이드바 접기, 뒤로, 앞으로 / 가운데 빈 곳: 끌어서 창 이동, 더블클릭 최대화 / 오른쪽: 창 버튼
+ * 왼쪽: 사이드바 접기, 뒤로, 앞으로 / 가운데 빈 곳: 끌어서 창 이동, 더블클릭 최대화 / 오른쪽: 알림 종, 창 버튼
  * data-tauri-drag-region이 붙은 요소 자체를 누를 때만 창이 끌린다 (그 안의 버튼은 제외).
  */
 function TitleBar({ sidebarOpen = false, onToggleSidebar }: TitleBarProps) {
@@ -25,6 +26,7 @@ function TitleBar({ sidebarOpen = false, onToggleSidebar }: TitleBarProps) {
           Daybrick
         </div>
         <div className="titlebar__drag" data-tauri-drag-region />
+        <NotificationBell />
         <WindowControls />
       </header>
     );
@@ -67,6 +69,7 @@ function TitleBar({ sidebarOpen = false, onToggleSidebar }: TitleBarProps) {
 
       <div className="titlebar__drag" data-tauri-drag-region />
 
+      <NotificationBell />
       <WindowControls />
     </header>
   );

@@ -1,0 +1,27 @@
+/* 제목 표시줄 알림 종 버튼. 크기·hover·focus는 .titlebar__button을 그대로 쓴다. */
+.notification-bell {
+  position: relative;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
+/* 안 읽은 수 배지: 높이 16px 알약 모양, 숫자가 길면 옆으로 늘어난다 */
+.notification-bell__badge {
+  position: absolute;
+  top: 1px;
+  left: 15px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: 99px;
+  background: var(--badge);
+  color: var(--on-badge);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 0 0 2px var(--sidebar);
+  pointer-events: none;
+}
