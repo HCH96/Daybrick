@@ -23,5 +23,5 @@
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (2026-10-26 승인). 관리 API·로그인 수신은 Rust에서, 계정 하나 허용은 첫 로그인 뒤 가입 막기, 자격 증명 관리자에는 refresh 토큰만 (D11–D17)
-- 테스트 문서: (아직 없음)
+- 테스트 문서: AI 테스트 [../tests/r1/index.md](../tests/r1/index.md) · 사용자 테스트 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md)
 - 진행 기록: [../logs/index.md](../logs/index.md)
