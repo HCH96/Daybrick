@@ -13,9 +13,6 @@
 - 9단계: 설정 서버 연결 칸과 관리 작업 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 모든 단계 완료
-- 관련 결정: D1–D20, D22, D25, D27, D29–D38 (ai/spec/decisions.md에서 이 줄만 읽기)
+- `/test server-setup`
 
 ## 확인할 문서 (경로는 docs/features/server-setup/ 기준, 파일 통째로 읽기)
-- ai/plan/index.md
-- ai/logs/L14.md
