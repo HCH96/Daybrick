@@ -13,8 +13,6 @@
 - 8단계: 서버 확인 기록·오프라인 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 모든 단계 완료
-- 관련 결정: D1–D9, D11–D16 (ai/spec/decisions.md)
+- `/test notifications`
 
 ## 확인할 문서 (경로는 docs/features/notifications/ 기준, 파일 통째로 읽기)
-- ai/logs/L11.md
