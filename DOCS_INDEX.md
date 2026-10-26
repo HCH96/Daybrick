@@ -10,6 +10,7 @@
 ## 기능 허브 (docs/features/<기능명>/index.md)
 - [메인 페이지](docs/features/main-page/index.md): 사이드바 레이아웃 + 홈 대시보드, 제목 표시줄·사이드바 접기·뒤로/앞으로 (완료)
 - [지원 관리](docs/features/applications/index.md): 갤러리·달력, 상태 5단계와 세부 단계, 전형 일정, 속성, 마크다운 상세 팝업 (구현 중)
+- [구직 관리](docs/features/job-search/index.md): 공고 자동 수집·AI 채점 추천, 지원 관리 연결, Gmail 상태 제안, AI 사용액·한도 (명세 완료)
 
 ## 공용 문서 (docs/common)
 - [docs/common/ai/setup/desktop-setup.md](docs/common/ai/setup/desktop-setup.md): PC 앱(Tauri 2 + React + TS) 개발 환경 설치와 프로젝트 생성 기록
