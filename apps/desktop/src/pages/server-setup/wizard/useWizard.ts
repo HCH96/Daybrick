@@ -1,17 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { runSetupPrecheck, type SetupPrecheck } from "../../../features/server/management";
 import { checkKeys, type KeysCheck, type KeysRoute } from "../../../features/server/probe";
+import { fetchHealth, type HealthInfo } from "../../../features/server/serverFunctions";
+import type { ServerSession } from "../../../features/server/session";
 import {
   initialRunProgress,
   runSetup,
+  type RunContext,
   type RunOutcome,
   type RunProgress,
   type SetupSecrets,
 } from "../../../features/server/setupRunner";
+import { useWizardLogin, type WizardLogin } from "./useWizardLogin";
 
 /**
  * 마법사 단계. 진행 표시는 ①~④ 네 칸이고, 셋째 칸은 ② 확인 결과(갈래)에 따라 바뀐다 (R6).
- * login·app-update는 6·8단계에서 화면을 붙인다.
+ * app-update는 8단계에서 화면을 붙인다.
  */
 export type WizardStepId = "prepare" | "keys" | "setup" | "login" | "app-update" | "done";
 
@@ -23,6 +27,8 @@ export interface WizardStepInfo {
 const PREPARE: WizardStepInfo = { id: "prepare", label: "준비" };
 const KEYS: WizardStepInfo = { id: "keys", label: "주소·키" };
 const DONE: WizardStepInfo = { id: "done", label: "완료" };
+/** 갈래마다 넷째 칸이 완료 */
+const DONE_INDEX = 3;
 
 /** 갈래마다 네 칸. 서버 업데이트(login-update)는 로그인 뒤에 8단계에서 끼워 넣는다. */
 const ROUTE_STEPS: Record<KeysRoute, readonly WizardStepInfo[]> = {
@@ -46,6 +52,19 @@ export interface WizardInputs {
   anthropicKey: string;
   googleClientId: string;
   googleClientSecret: string;
+}
+
+/** ④ 완료 화면 요약 (R19) */
+export interface DoneSummary {
+  url: string;
+  email: string | null;
+  /** 서버 구조 번호 */
+  schema: number | null;
+  appSchema: number;
+  /** 서버에 기록된 Anthropic 키 등록일 (ISO). 읽지 못했으면 null. */
+  keyRegisteredAt: string | null;
+  /** 자동 세팅으로 끝났는지 (PAT 지우기 안내는 이때만) */
+  viaSetup: boolean;
 }
 
 const EMPTY_INPUTS: WizardInputs = {
@@ -91,6 +110,14 @@ export interface Wizard {
   runOutcome: RunOutcome | null;
   /** [다시 시도]: 실패한 단계부터 이어서 (R17) */
   retryRun: () => void;
+  /** Google 로그인 (③ 계정 등록과 로그인 화면이 함께 씀) */
+  login: WizardLogin;
+  /** 로그인 화면의 [Google로 로그인]: 성공하면 ④ 완료로 */
+  startLogin: () => Promise<void>;
+  /** ④ 완료 요약 (완료 단계에서만 값이 있음) */
+  done: DoneSummary | null;
+  /** ④ [시작하기]: 마법사를 닫는다 */
+  finish: () => void;
   canCancel: boolean;
   canGoPrev: boolean;
   /** 지금 단계에서 다음으로 갈 수 있는지 (② 단계는 확인 성공 뒤에만) */
@@ -121,6 +148,10 @@ export function useWizard(onClose: () => void): Wizard {
   const [runOutcome, setRunOutcome] = useState<RunOutcome | null>(null);
   // 실행 중에 마법사가 닫히거나 입력 화면으로 돌아가면 늦게 온 결과를 버리기 위한 번호
   const runSeq = useRef(0);
+  const [done, setDone] = useState<DoneSummary | null>(null);
+  // 마무리 확인에서 받은 health 결과 (④ 요약에 씀)
+  const verifiedRef = useRef<HealthInfo | null>(null);
+  const login = useWizardLogin(keysCheck);
 
   useEffect(
     () => () => {
@@ -165,12 +196,19 @@ export function useWizard(onClose: () => void): Wizard {
         }
       : null;
 
-  const beginRun = useCallback(async (values: SetupSecrets, from: RunProgress, startIndex: number) => {
+  /** ④ 완료로 간다. 비밀값(PAT·키)은 여기서 버린다 (R18). */
+  const goDone = useCallback((summary: DoneSummary) => {
+    setInputsState((prev) => ({ ...EMPTY_INPUTS, url: prev.url, anonKey: prev.anonKey }));
+    setDone(summary);
+    setStepIndex(DONE_INDEX);
+  }, []);
+
+  const beginRun = useCallback(async (ctx: RunContext, from: RunProgress, startIndex: number) => {
     const seq = ++runSeq.current;
     setRunning(true);
     setRunOutcome(null);
     const outcome = await runSetup(
-      values,
+      ctx,
       from,
       startIndex,
       (progress) => {
@@ -183,21 +221,77 @@ export function useWizard(onClose: () => void): Wizard {
     setRunOutcome(outcome);
   }, []);
 
+  /** 실행에 넘길 것: 비밀값, 앱 구조 번호, 로그인, 마무리 확인 결과 받기 */
+  const runContext = useCallback(
+    (values: SetupSecrets): RunContext | null => {
+      if (keysCheck?.kind !== "ok") return null;
+      return {
+        secrets: values,
+        appSchema: keysCheck.appSchema,
+        login: login.login,
+        onVerified: (health) => {
+          verifiedRef.current = health;
+        },
+      };
+    },
+    [keysCheck, login.login],
+  );
+
+  // 여섯 단계가 모두 끝나면 로그인한 상태로 ④ 완료 (R19)
+  useEffect(() => {
+    if (runOutcome !== "done" || keysCheck?.kind !== "ok") return;
+    const health = verifiedRef.current;
+    goDone({
+      url: keysCheck.url,
+      email: health?.email ?? null,
+      schema: health?.schema ?? null,
+      appSchema: keysCheck.appSchema,
+      keyRegisteredAt: health?.keyRegisteredAt ?? null,
+      viaSetup: true,
+    });
+  }, [runOutcome, keysCheck, goDone]);
+
   /** 실행 화면으로 바꾸고 1단계부터 시작한다 */
   const enterRun = useCallback(
     (values: SetupSecrets) => {
+      const ctx = runContext(values);
+      if (!ctx) return;
       const fresh = initialRunProgress();
       setRunProgress(fresh);
       setSetupPhase("run");
-      void beginRun(values, fresh, 0);
+      void beginRun(ctx, fresh, 0);
     },
-    [beginRun],
+    [beginRun, runContext],
   );
 
   const retryRun = useCallback(() => {
     if (running || !secrets || !runProgress.failure) return;
-    void beginRun(secrets, runProgress, runProgress.failure.index);
-  }, [running, secrets, runProgress, beginRun]);
+    const ctx = runContext(secrets);
+    if (ctx) void beginRun(ctx, runProgress, runProgress.failure.index);
+  }, [running, secrets, runProgress, beginRun, runContext]);
+
+  /** 로그인으로 끝나는 갈래: health로 요약을 채워 ④ 완료로 (읽지 못하면 아는 값만) */
+  const finishLogin = useCallback(
+    async (session: ServerSession) => {
+      if (keysCheck?.kind !== "ok") return;
+      const health = await fetchHealth(session.client);
+      const info = health.ok ? health.value : null;
+      goDone({
+        url: keysCheck.url,
+        email: info?.email ?? session.email,
+        schema: info?.schema ?? keysCheck.schema,
+        appSchema: keysCheck.appSchema,
+        keyRegisteredAt: info?.keyRegisteredAt ?? null,
+        viaSetup: false,
+      });
+    },
+    [keysCheck, goDone],
+  );
+
+  const startLogin = useCallback(async () => {
+    const result = await login.startLogin();
+    if (result?.ok) await finishLogin(result.session);
+  }, [login, finishLogin]);
 
   const startSetup = useCallback(async () => {
     if (keysCheck?.kind !== "ok" || !setupFilled) return;
@@ -246,6 +340,7 @@ export function useWizard(onClose: () => void): Wizard {
 
   const prev = useCallback(() => {
     if (running) return;
+    login.cancelLogin();
     clearSetupCheck();
     // ③ 실행 화면에서 [이전]은 같은 단계의 입력 화면으로
     if (step === "setup" && setupPhase === "run") {
@@ -254,11 +349,12 @@ export function useWizard(onClose: () => void): Wizard {
       return;
     }
     setStepIndex((i) => Math.max(i - 1, 0));
-  }, [running, clearSetupCheck, resetRun, step, setupPhase]);
+  }, [running, login, clearSetupCheck, resetRun, step, setupPhase]);
 
   const cancel = useCallback(() => {
     // 실행 중에는 서버를 바꾸는 요청이 가고 있어 취소를 막는다
     if (running) return;
+    login.cancelLogin();
     resetRun();
     checkSeq.current += 1;
     clearSetupCheck();
@@ -268,7 +364,12 @@ export function useWizard(onClose: () => void): Wizard {
     setSetupPhase("input");
     setStepIndex(0);
     onClose();
-  }, [running, resetRun, onClose, clearSetupCheck]);
+  }, [running, login, resetRun, onClose, clearSetupCheck]);
+
+  const finish = useCallback(() => {
+    setInputsState(EMPTY_INPUTS);
+    onClose();
+  }, [onClose]);
 
   return {
     step,
@@ -291,8 +392,12 @@ export function useWizard(onClose: () => void): Wizard {
     running,
     runOutcome,
     retryRun,
+    login,
+    startLogin,
+    done,
+    finish,
     canCancel: !running,
-    canGoPrev: stepIndex > 0 && !checkingSetup && !running,
+    canGoPrev: stepIndex > 0 && step !== "done" && !checkingSetup && !running,
     canGoNext,
     next,
     prev,

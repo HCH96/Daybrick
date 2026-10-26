@@ -2,6 +2,8 @@
 
 pub mod anthropic;
 pub mod config;
+pub mod credentials;
 mod http;
 pub mod management;
 pub mod migrations;
+pub mod oauth_listener;

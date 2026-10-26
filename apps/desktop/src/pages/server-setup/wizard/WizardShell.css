@@ -91,6 +91,10 @@
   grid-template-columns: minmax(0, 1fr) 460px;
 }
 
+.wiz-main--full {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .wiz-form {
   min-width: 0;
   padding: 40px 56px;

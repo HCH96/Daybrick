@@ -41,7 +41,7 @@ pub fn save_server_config(app: AppHandle, json: String) -> Result<(), String> {
 }
 
 /// 이 PC에 저장한 연결 정보(server.json)를 지운다. 서버의 데이터는 건드리지 않는다.
-/// 로그인 정보(자격 증명 관리자) 삭제는 6단계에서 여기에 더한다.
+/// 로그인 정보(자격 증명 관리자)는 프론트 `ServerProvider.clearConnection`이 먼저 지운다.
 #[tauri::command]
 pub fn clear_server_connection(app: AppHandle) -> Result<(), String> {
     let path = data_dir(&app)?.join(SERVER_FILE);

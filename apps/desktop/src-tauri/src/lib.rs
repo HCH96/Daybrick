@@ -5,6 +5,7 @@ mod storage;
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .manage(server::oauth_listener::OAuthListenerState::default())
         .invoke_handler(tauri::generate_handler![
             storage::load_applications,
             storage::save_applications,
@@ -19,6 +20,13 @@ pub fn run() {
             server::management::apply_migrations,
             server::management::deploy_functions,
             server::management::set_secrets,
+            server::management::disable_signup,
+            server::oauth_listener::start_oauth_listener,
+            server::oauth_listener::wait_oauth_callback,
+            server::oauth_listener::cancel_oauth_listener,
+            server::credentials::save_refresh_token,
+            server::credentials::load_refresh_token,
+            server::credentials::delete_refresh_token,
             server::migrations::latest_schema_version
         ])
         .run(tauri::generate_context!())

@@ -1,0 +1,167 @@
+/* 가이드 칸 없이 가운데 정렬하는 마법사 화면 (로그인, ④ 완료). 목업 wizard.css의 center-card·big-mark·summary·next-list */
+
+.wiz-center {
+  max-width: 520px;
+  margin: 30px auto 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.wiz-center h2 {
+  margin: 6px 0 0;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.wiz-center p {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* 테두리 있는 작은 카드 (브라우저 대기, 거부) */
+.wiz-center--boxed {
+  padding: 28px;
+  border-radius: 14px;
+  background: var(--bg);
+  box-shadow: 0 0 0 1px var(--border) inset;
+}
+
+.wiz-center--boxed h2 {
+  font-size: 19px;
+}
+
+.wiz-center__help {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.wiz-center__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.wiz-big-mark {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+.wiz-big-mark--ok {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.wiz-big-mark--info {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.wiz-big-mark--bad {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.wiz-big-mark__spin {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid rgba(166, 140, 255, 0.25);
+  border-top-color: var(--accent);
+  animation: wiz-center-spin 0.9s linear infinite;
+}
+
+@keyframes wiz-center-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.wiz-server-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 99px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--border) inset;
+  font-size: 12px;
+  color: var(--muted);
+  font-family: Consolas, monospace;
+}
+
+/* ④ 완료 요약 */
+.wiz-summary {
+  width: 100%;
+  text-align: left;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--border) inset;
+  padding: 6px 18px;
+}
+
+.wiz-summary div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  font-size: 13px;
+}
+
+.wiz-summary div + div {
+  border-top: 1px solid var(--border);
+}
+
+.wiz-summary span {
+  color: var(--muted);
+}
+
+.wiz-summary__mono {
+  font-family: Consolas, monospace;
+}
+
+/* ④ 다음에 할 일 */
+.wiz-next-list {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wiz-next-list > div {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--sidebar);
+}
+
+.wiz-next-list svg {
+  flex-shrink: 0;
+  color: var(--accent);
+  margin-top: 1px;
+}
+
+.wiz-next-list p {
+  margin: 0;
+  color: var(--text);
+}
+
+.wiz-next-list span {
+  color: var(--muted);
+  display: block;
+  font-size: 12px;
+}
+
+/* 가운데 화면 안의 결과 줄은 왼쪽 정렬 */
+.wiz-center .wiz-alert {
+  width: 100%;
+  text-align: left;
+}

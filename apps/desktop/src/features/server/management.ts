@@ -98,6 +98,11 @@ export function setSecrets(
   return call<null>("set_secrets", { pat, projectRef, anthropicKey, googleClientId, googleClientSecret });
 }
 
+/** 새 가입 막기 켜기: 처음 로그인한 계정 하나만 남긴다 (R29, D12) */
+export function disableSignup(pat: string, projectRef: string): Promise<ApiResult<null>> {
+  return call<null>("disable_signup", { pat, projectRef });
+}
+
 /** Tauri 밖(브라우저 미리보기)에서 쓰는 최신 서버 구조 번호. 기준은 Rust `migrations.rs` (D15). */
 const PREVIEW_SCHEMA_VERSION = 1;
 let appSchemaVersion: Promise<number> | null = null;

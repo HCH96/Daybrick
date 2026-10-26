@@ -1,12 +1,15 @@
+import { useNavigation } from "../../../app/navigation";
 import { ServerIcon } from "../../../components/icons/ServerIcons";
 import { useServer } from "../../../features/server/useServer";
+import DoneStep from "./DoneStep";
 import { GUIDES } from "./guides";
 import KeysStep from "./KeysStep";
+import LoginStep from "./LoginStep";
 import PrepareStep from "./PrepareStep";
 import SetupInputStep from "./SetupInputStep";
 import SetupRunStep from "./SetupRunStep";
 import { useWizard, type Wizard, type WizardStepId } from "./useWizard";
-import WizardFooter from "./WizardFooter";
+import WizardFooter, { type FooterNext } from "./WizardFooter";
 import WizardGuide from "./WizardGuide";
 import WizardProgress from "./WizardProgress";
 import "./WizardShell.css";
@@ -14,9 +17,7 @@ import "./WizardFields.css";
 
 /** 아직 만들지 않은 단계에 잠시 보여주는 자리 (해당 화면은 뒤 단계에서 연결) */
 const PENDING_TEXT: Partial<Record<WizardStepId, string>> = {
-  login: "로그인 화면은 다음 단계에서 연결합니다.",
   "app-update": "앱 업데이트 안내 화면은 다음 단계에서 연결합니다.",
-  done: "완료 화면은 다음 단계에서 연결합니다.",
 };
 
 function PendingStep({ step }: { step: WizardStepId }) {
@@ -27,8 +28,11 @@ function PendingStep({ step }: { step: WizardStepId }) {
   );
 }
 
-/** 오른쪽 아래 버튼: 글자·동작·비활성 여부. ②는 확인 전 [확인], 성공하면 [다음] (R4) */
-function nextButton(wizard: Wizard): { label: string; onClick: () => void; disabled: boolean } {
+/**
+ * 오른쪽 아래 버튼: 글자·동작·비활성 여부. ②는 확인 전 [확인], 성공하면 [다음] (R4).
+ * ③ 실행은 끝나면 스스로 ④로 가므로 버튼은 늘 꺼져 있다. 로그인 화면은 버튼이 없다.
+ */
+function nextButton(wizard: Wizard, onFinish: () => void): FooterNext | null {
   switch (wizard.step) {
     case "prepare":
       return { label: "준비했어요", onClick: wizard.next, disabled: false };
@@ -40,12 +44,16 @@ function nextButton(wizard: Wizard): { label: string; onClick: () => void; disab
     }
     case "setup": {
       if (wizard.setupPhase === "run") {
-        if (wizard.running) return { label: "세팅 중…", onClick: () => undefined, disabled: true };
-        return { label: "다음", onClick: wizard.next, disabled: !wizard.canGoNext };
+        const label = wizard.running ? "세팅 중…" : "다음";
+        return { label, onClick: () => undefined, disabled: true };
       }
       if (wizard.checkingSetup) return { label: "확인 중…", onClick: () => undefined, disabled: true };
       return { label: "세팅 시작", onClick: () => void wizard.startSetup(), disabled: !wizard.setupFilled };
     }
+    case "login":
+      return null;
+    case "done":
+      return { label: "시작하기", onClick: onFinish, disabled: false };
     default:
       return { label: "다음", onClick: wizard.next, disabled: !wizard.canGoNext };
   }
@@ -57,9 +65,17 @@ function nextButton(wizard: Wizard): { label: string; onClick: () => void; disab
  */
 function WizardShell() {
   const { closeSetup } = useServer();
+  const { navigate } = useNavigation();
   const wizard = useWizard(closeSetup);
   const guide = GUIDES[wizard.step];
-  const button = nextButton(wizard);
+  // ④ [시작하기]: 마법사를 닫고 홈으로
+  const button = nextButton(wizard, () => {
+    navigate("home");
+    wizard.finish();
+  });
+  const submit = () => {
+    if (button && !button.disabled) button.onClick();
+  };
 
   function renderStep() {
     switch (wizard.step) {
@@ -72,9 +88,7 @@ function WizardShell() {
             setInputs={wizard.setInputs}
             check={wizard.keysCheck}
             checking={wizard.checkingKeys}
-            onSubmit={() => {
-              if (!button.disabled) button.onClick();
-            }}
+            onSubmit={submit}
           />
         );
       case "setup":
@@ -82,9 +96,9 @@ function WizardShell() {
           return (
             <SetupRunStep
               progress={wizard.runProgress}
-              outcome={wizard.runOutcome}
               onRetry={wizard.retryRun}
               onCancel={wizard.cancel}
+              onReopenBrowser={wizard.login.loginUrl ? wizard.login.reopenBrowser : null}
             />
           );
         }
@@ -96,13 +110,26 @@ function WizardShell() {
             setInputs={wizard.setInputs}
             precheck={wizard.setupPrecheck}
             checking={wizard.checkingSetup}
-            onSubmit={() => {
-              if (!button.disabled) button.onClick();
-            }}
+            onSubmit={submit}
             onConfirmNotEmpty={wizard.confirmNotEmpty}
             onDismissNotEmpty={wizard.dismissNotEmpty}
           />
         );
+      case "login":
+        if (wizard.keysCheck?.kind !== "ok") return <PendingStep step="login" />;
+        return (
+          <LoginStep
+            url={wizard.keysCheck.url}
+            schema={wizard.keysCheck.schema}
+            phase={wizard.login.phase}
+            onLogin={() => void wizard.startLogin()}
+            onReopenBrowser={wizard.login.reopenBrowser}
+            onCancelLogin={wizard.login.cancelLogin}
+          />
+        );
+      case "done":
+        if (!wizard.done) return <PendingStep step="done" />;
+        return <DoneStep summary={wizard.done} />;
       default:
         return <PendingStep step={wizard.step} />;
     }
@@ -118,9 +145,10 @@ function WizardShell() {
         <WizardProgress steps={wizard.steps} current={wizard.stepIndex} />
       </div>
 
-      <div className="wiz-main">
+      {/* 가이드가 없는 화면(로그인, 완료)은 가이드 칸 없이 가운데 정렬 */}
+      <div className={guide ? "wiz-main" : "wiz-main wiz-main--full"}>
         <div className="wiz-form">{renderStep()}</div>
-        {guide ? <WizardGuide guide={guide} /> : <aside className="wiz-guide" />}
+        {guide && <WizardGuide guide={guide} />}
       </div>
 
       <WizardFooter
@@ -128,9 +156,8 @@ function WizardShell() {
         canCancel={wizard.canCancel}
         onPrev={wizard.prev}
         canGoPrev={wizard.canGoPrev}
-        onNext={button.onClick}
-        nextLabel={button.label}
-        nextDisabled={button.disabled}
+        next={button}
+        hideBack={wizard.step === "done"}
       />
     </div>
   );

@@ -2,6 +2,7 @@
 //! PAT는 호출마다 인자로만 받고 저장하지 않는다 (D11). 오류는 원인 종류 코드만 돌려준다 (R18).
 //! 4단계: PAT 접근 확인(R13), 빈 프로젝트 검사(R14).
 //! 5단계: 인증 설정, 서버 구조 적용, 서버 함수 배포, 비밀값 등록 (R15, R16, R26).
+//! 6단계: 첫 로그인 뒤 새 가입 막기 (R29, D12).
 
 use serde::Serialize;
 use serde_json::Value;
@@ -11,7 +12,7 @@ use super::{http, migrations};
 const API_BASE: &str = "https://api.supabase.com/v1";
 
 /// 프로젝트 ref는 소문자·숫자만 (주소에 그대로 넣으므로 다른 글자를 막는다)
-fn valid_ref(project_ref: &str) -> Result<&str, String> {
+pub(super) fn valid_ref(project_ref: &str) -> Result<&str, String> {
     let ok = !project_ref.is_empty() && project_ref.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit());
     if ok {
         Ok(project_ref)
@@ -249,6 +250,20 @@ pub async fn set_secrets(
         .post(project_url(&project_ref, "/secrets")?)
         .bearer_auth(pat.trim())
         .json(&body)
+        .send()
+        .await
+        .map_err(http::network_error)?;
+    http::check_status(response).map(|_| ())
+}
+
+/// 새 가입 막기(`disable_signup`)를 켠다: 자동 세팅에서 처음 로그인한 계정 하나만 남긴다 (R29, D12).
+/// 다른 인증 설정은 건드리지 않는다.
+#[tauri::command]
+pub async fn disable_signup(pat: String, project_ref: String) -> Result<(), String> {
+    let response = http::client()?
+        .patch(project_url(&project_ref, "/config/auth")?)
+        .bearer_auth(pat.trim())
+        .json(&serde_json::json!({ "disable_signup": true }))
         .send()
         .await
         .map_err(http::network_error)?;

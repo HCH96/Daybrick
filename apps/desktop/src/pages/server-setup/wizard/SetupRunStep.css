@@ -147,8 +147,12 @@
   border-radius: 8px;
 }
 
-.wiz-run__pending {
-  margin: 16px 0 0;
-  font-size: 13px;
+/* 계정 등록 중: [브라우저 다시 열기]와 도움말 */
+.wiz-run__reopen {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  font-size: 12px;
   color: var(--muted);
 }

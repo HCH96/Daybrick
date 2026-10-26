@@ -1,3 +1,4 @@
+import type { LoginErrorKind } from "./googleLogin";
 import type { KeysCheck } from "./probe";
 import type { ApiErrorKind, SetupPrecheck } from "./management";
 import { RUN_STEPS, type RunFailure } from "./setupRunner";
@@ -159,9 +160,61 @@ export function notEmptyConfirm(otherTables: number): { title: string; message: 
 /** 실패 문구 끝에 붙이는 말: 다시 시도는 실패한 단계부터 (R17) */
 const RETRY_NOTE = "완료된 단계는 다시 하지 않습니다.";
 
+/** 로그인 실패 문구 (R51, R53). 등록되지 않은 계정은 따로 거부 카드를 보여준다. */
+export function loginFailMessage(kind: LoginErrorKind): { title: string; desc: string } {
+  switch (kind) {
+    case "login-denied":
+      return {
+        title: "이 서버에 등록된 계정이 아닙니다",
+        desc: "이 서버는 처음 세팅한 Google 계정 하나만 쓸 수 있습니다.",
+      };
+    case "login-timeout":
+      return {
+        title: "로그인을 기다리다 시간이 지났습니다",
+        desc: "5분 안에 브라우저에서 로그인을 마치지 않았습니다. 다시 로그인하세요.",
+      };
+    case "login-cancelled":
+      return { title: "로그인을 마치지 않았습니다", desc: "브라우저에서 로그인을 취소했습니다. 다시 로그인하세요." };
+    case "network":
+      return { title: "서버에 접속할 수 없습니다", desc: "인터넷 연결을 확인한 뒤 다시 로그인하세요." };
+    case "login-failed":
+      return {
+        title: "Google 로그인에 실패했습니다",
+        desc: "서버의 Google 로그인 설정(클라이언트 ID·비밀값, 리디렉션 주소)을 확인한 뒤 다시 시도하세요.",
+      };
+  }
+}
+
 /** ③ 실행 중 단계가 실패했을 때 그 줄 아래 보여주는 이유 (R17) */
 export function runFailMessage(failure: RunFailure): { title: string; desc: string } {
-  const name = RUN_STEPS[failure.index]?.name ?? "세팅";
+  const step = RUN_STEPS[failure.index];
+  const name = step?.name ?? "세팅";
+  switch (failure.reason) {
+    case "login-denied":
+    case "login-timeout":
+    case "login-cancelled":
+    case "login-failed": {
+      const login = loginFailMessage(failure.reason);
+      return { title: login.title, desc: `${login.desc} [다시 시도]를 누르면 브라우저를 다시 엽니다.` };
+    }
+    case "key-check-failed":
+      return {
+        title: "서버에서 Anthropic 키가 동작하지 않습니다",
+        desc: `비밀값 등록이 아직 반영되지 않았을 수 있습니다. 잠시 뒤 다시 시도하세요. ${RETRY_NOTE}`,
+      };
+    case "schema-mismatch":
+      return {
+        title: "서버 구조 번호가 앱과 다릅니다",
+        desc: `서버 구조 적용이 끝나지 않았을 수 있습니다. 다시 시도하세요. ${RETRY_NOTE}`,
+      };
+  }
+  // 마무리 확인의 서버 오류는 PAT가 아니라 로그인·서버 함수 쪽 원인이다
+  if (step?.id === "verify" && failure.reason !== "network" && failure.reason !== "rate-limited") {
+    return {
+      title: `${name}에 실패했습니다`,
+      desc: `서버 함수가 아직 준비되지 않았거나 로그인이 풀렸습니다. 잠시 뒤 다시 시도하세요. ${RETRY_NOTE}`,
+    };
+  }
   switch (failure.reason) {
     case "network":
       return {

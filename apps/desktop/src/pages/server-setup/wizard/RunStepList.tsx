@@ -38,6 +38,8 @@ function RunStepList({ progress, onRetry, onCancel }: RunStepListProps) {
       {RUN_STEPS.map((def, index) => {
         const view = progress.steps[index];
         const message = failure?.index === index ? runFailMessage(failure) : null;
+        // 진행 중일 때 따로 보여줄 글이 있으면 (브라우저 로그인 대기)
+        const running = view.state === "run" ? def.running : undefined;
         return [
           <li key={def.id} className={`wiz-run__item wiz-run__item--${view.state}`}>
             <span className="wiz-run__mark">
@@ -45,9 +47,9 @@ function RunStepList({ progress, onRetry, onCancel }: RunStepListProps) {
             </span>
             <div className="wiz-run__text">
               {def.name}
-              <small>{view.detail ?? def.desc}</small>
+              <small>{view.detail ?? running?.desc ?? def.desc}</small>
             </div>
-            <span className="wiz-run__state">{STATE_LABEL[view.state]}</span>
+            <span className="wiz-run__state">{running?.label ?? STATE_LABEL[view.state]}</span>
           </li>,
           message && (
             <li key={`${def.id}-fail`} className="wiz-run__fail">
