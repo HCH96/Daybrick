@@ -23,3 +23,5 @@
 - 게임잡·넥슨 채용 페이지가 서버 함수에서 HTML/JSON으로 바로 읽히는지 (브라우저 스크립트로 그리는 페이지는 규칙 파일로 읽기 어려울 수 있음)
 - 각 사이트의 이용약관·robots 규칙
 - Supabase 무료 플랜의 예약 실행(pg_cron)과 서버 함수 실행 시간 제한
+- server-setup의 Google 클라이언트로 Gmail 권한을 추가하고 갱신 토큰을 받는 방법 (Supabase Google 로그인 재요청 / 앱이 직접 Google 인증)
+- Gmail 연결 해제 때 Google 권한을 취소하면 앱 로그인에 영향이 있는지

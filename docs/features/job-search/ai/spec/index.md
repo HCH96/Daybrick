@@ -29,7 +29,7 @@
 | [data.md](data.md) | 다룰 데이터와 저장 위치 |
 | [scope.md](scope.md) | 제외, 다른 기능으로 넘긴 것, 나중에 고려할 것, 계획 단계에서 확인할 것 |
 | mockup.md | (아직 없음) |
-| [decisions.md](decisions.md) | 결정 사항 D1–D12 |
+| [decisions.md](decisions.md) | 결정 사항 D1–D13 |
 
 ## 다른 문서
 - 구현 계획: (아직 없음)
