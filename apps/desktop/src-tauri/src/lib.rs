@@ -1,3 +1,4 @@
+mod notifications;
 mod server;
 mod storage;
 
@@ -10,6 +11,8 @@ pub fn run() {
             storage::load_applications,
             storage::save_applications,
             storage::save_image,
+            notifications::load_notifications,
+            notifications::save_notifications,
             server::config::load_server_config,
             server::config::save_server_config,
             server::config::clear_server_connection,

@@ -12,6 +12,7 @@ import TitleBar from "./components/layout/TitleBar";
 import ServerBanner from "./components/server/ServerBanner";
 import ServerUpdateScreen from "./components/server/ServerUpdateScreen";
 import { ApplicationsProvider } from "./features/applications/store";
+import { NotificationsProvider } from "./features/notifications/NotificationsProvider";
 import { ServerProvider } from "./features/server/ServerProvider";
 import { useServer } from "./features/server/useServer";
 import WelcomeScreen from "./pages/server-setup/WelcomeScreen";
@@ -119,7 +120,10 @@ function AppMain() {
 function App() {
   return (
     <ServerProvider>
-      <AppMain />
+      {/* 알림은 제목 표시줄(종)과 전체 화면(마법사 등) 모두에서 쓰므로 그 둘을 함께 감싼다 */}
+      <NotificationsProvider>
+        <AppMain />
+      </NotificationsProvider>
     </ServerProvider>
   );
 }
