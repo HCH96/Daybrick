@@ -8,14 +8,16 @@
 - 3단계: 펼침 패널과 알림 행 (자동 진행, 최종 테스트 대기)
 - 4단계: 확인·필터·모두 확인 (자동 진행, 최종 테스트 대기)
 - 5단계: 갈 곳 이동 (자동 진행, 최종 테스트 대기)
+- 6단계: 서버 구조 0002 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 6단계: 서버 구조 0002 (`supabase/migrations/0002_notifications.sql`로 테이블·인덱스·RLS·`daybrick_notify`·실시간 발행을 만들고 `migrations.rs`에 2번 추가)
-- 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D13 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 0001 SQL은 고치지 않는다. RLS 작성 방식과 단계 규칙은 `supabase/migrations/0001_*.sql`과 `src-tauri/src/server/migrations.rs` 머리 주석을 grep으로 확인한다. Rust를 고치므로 `cargo check`도 한다.
+- 7단계: 서버 알림 받기·실시간·사본 (`serverSync.ts`·`useServerNotifications.ts`로 받기·30일 정리·실시간 구독·`serverCopy` 반영)
+- 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8, D9, D11, D12, D13, D14 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: 서버 열 이름은 snake_case(`merge_key`, `read_at` 등)이니 `AppNotification`으로 바꿀 때 옮긴다. `useServer()`·Supabase 클라이언트는 `src/features/server/`에서 export만 grep으로 확인한다.
 
 ## 확인할 문서 (경로는 docs/features/notifications/ 기준, 파일 통째로 읽기)
-- ai/plan/step-06.md
+- ai/plan/step-07.md
 - ai/spec/req-server.md
-- ai/logs/L08.md
-- ai/plan/structure.md의 "1. 파일 목록 > 서버" 줄과 "2. 데이터 모양" 구역 (열 정의)
+- ai/logs/L09.md
+- ai/plan/structure.md의 "1. 파일 목록 > 프론트 로직" 표와 "2. 데이터 모양" 구역
+- supabase/migrations/0002_notifications.sql (저장소 루트 기준, 열 정의 확인)

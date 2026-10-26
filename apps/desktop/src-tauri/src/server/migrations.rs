@@ -12,10 +12,16 @@
 //! 번호를 더한 앱을 켜면 접속 확인이 "서버 업데이트 필요"를 알리고, 서버 업데이트 화면이 빠진 단계를 적용한다.
 
 /// 서버 구조 단계: (번호, SQL). 번호는 1부터 빠짐없이 차례로.
-pub const MIGRATIONS: &[(u32, &str)] = &[(
-    1,
-    include_str!("../../../../../supabase/migrations/0001_server_setup.sql"),
-)];
+pub const MIGRATIONS: &[(u32, &str)] = &[
+    (
+        1,
+        include_str!("../../../../../supabase/migrations/0001_server_setup.sql"),
+    ),
+    (
+        2,
+        include_str!("../../../../../supabase/migrations/0002_notifications.sql"),
+    ),
+];
 
 /// 서버 함수 하나: 배포 이름(slug), 진입 파일, 함께 올릴 원본 파일들 (경로는 `supabase/functions/` 기준)
 pub struct EdgeFunction {
