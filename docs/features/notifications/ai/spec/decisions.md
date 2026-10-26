@@ -7,3 +7,8 @@
 - D5. 확인한 알림은 30일 뒤 지우고, 목록은 최근 50개까지 보여준다. 안 읽은 알림은 지우지 않는다. (적용: 이후 전체) (기록: L01)
 - D6. 같은 합치기 키의 안 읽은 알림이 있으면 새로 만들지 않고 갱신한다. (적용: 이후 전체) (기록: L01)
 - D7. 서버 연결 상태 문제는 알림이 아니라 server-setup 안내 띠로만 보여준다. (적용: 이후 전체) (기록: L01)
+- D8. 로컬 알림은 Rust 명령으로 앱 데이터 폴더 `notifications.json`(`{version, local, serverCopy, pendingAcks}`)에 저장하고, 임시 파일 바꿔치기로 쓴다. 지원 관리와 같은 방식이다. (적용: 이후 전체) (기록: L03)
+- D9. 다른 기능은 `features/notifications/notify.ts`의 `notify(input)` 하나로 알림을 보낸다. Provider 등록 전에 온 알림은 대기 줄에 두었다가 처리하고, 합치기는 순수 함수 `mergeNotification`이 한다. (적용: 이후 전체) (기록: L03)
+- D10. 갈 곳 이동은 `navigate`를 고치지 않고 열기 요청 Context(`app/pageIntent.tsx`의 `openTarget`/`usePageIntent`)로 한다. 이동할 수 없으면 확인 처리만 한다. (적용: 5단계 이후 전체) (기록: L03)
+- D11. 서버 알림 정리는 pg_cron 없이 앱이 받아 올 때 확인한 지 30일 지난 행을 지운다. 서버 합치기는 SQL 함수 `daybrick_notify`와 부분 고유 인덱스로 한다. (적용: 6단계 이후 전체) (기록: L03)
+- D12. 실시간은 `user_id`로 걸러 구독하고, `SUBSCRIBED`가 될 때마다 전체를 다시 받아 끊긴 동안 빠진 알림을 메운다. (적용: 7단계 이후 전체) (기록: L03)

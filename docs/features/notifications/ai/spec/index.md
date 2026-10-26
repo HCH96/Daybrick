@@ -25,6 +25,6 @@
 | [decisions.md](decisions.md) | 결정 사항 D1–D7 |
 
 ## 다른 문서
-- 구현 계획: (아직 없음)
+- 구현 계획: [../plan/index.md](../plan/index.md) (2026-10-26 승인) — 8단계. 로컬은 `notifications.json` + `notify()` 하나, 갈 곳은 열기 요청 Context(`openTarget`/`usePageIntent`), 서버는 `0002_notifications.sql`·`daybrick_notify`·실시간 구독 (D8–D12)
 - 테스트 문서: (아직 없음)
 - 진행 기록: [../logs/index.md](../logs/index.md)
