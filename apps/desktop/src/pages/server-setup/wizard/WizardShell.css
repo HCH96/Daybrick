@@ -249,6 +249,20 @@
   color: var(--muted);
 }
 
+/* 번호 없는 묶음 이름 줄 (③: Supabase · Anthropic · Google Cloud) */
+.wiz-guide__list li.wiz-guide__group {
+  counter-increment: none;
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--faint);
+}
+
+.wiz-guide__list li.wiz-guide__group::before {
+  content: none;
+}
+
 .wiz-guide__list b {
   display: block;
 }

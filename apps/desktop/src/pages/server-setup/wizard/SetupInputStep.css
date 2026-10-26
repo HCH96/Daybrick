@@ -1,0 +1,38 @@
+/* ③ 자동 세팅 입력 화면. 서버 연결 목업 wizard.css의 section-label·redirect·two-col 기준 */
+
+.wiz-section-label {
+  margin: 26px 0 12px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  color: var(--faint);
+}
+
+/* 리디렉션 주소 줄: 읽기 전용 칸 + [복사] */
+.wiz-redirect {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wiz-redirect .wiz-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.wiz-input--ro {
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.wiz-two-col {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+.wiz-two-col .wiz-field + .wiz-field {
+  margin-top: 0;
+}

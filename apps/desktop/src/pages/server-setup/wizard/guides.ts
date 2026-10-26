@@ -3,6 +3,8 @@ import type { WizardStepId } from "./useWizard";
 /** 가이드 한 줄: 굵은 제목 + 설명 또는 외부 링크 */
 export interface GuideItem {
   title: string;
+  /** 이 줄 위에 묶음 이름(번호 없는 작은 머리 줄)을 붙인다 */
+  group?: string;
   desc?: string;
   /** 기본 브라우저로 여는 외부 링크 (R9) */
   link?: { label: string; url: string };
@@ -16,7 +18,11 @@ export interface StepGuide {
   tip?: { title: string; paragraphs: string[] };
 }
 
-/** 단계별 가이드 (R7). ✓ 자동 체크는 하지 않고 번호 목록만 보여준다. 나머지 단계는 4·6단계에서 채운다. */
+const SUPABASE_TOKENS_URL = "https://supabase.com/dashboard/account/tokens";
+const ANTHROPIC_KEYS_URL = "https://console.anthropic.com/settings/keys";
+const GOOGLE_CREDENTIALS_URL = "https://console.cloud.google.com/apis/credentials";
+
+/** 단계별 가이드 (R7). ✓ 자동 체크는 하지 않고 번호 목록만 보여준다. 로그인 단계는 6단계에서 채운다. */
 export const GUIDES: Partial<Record<WizardStepId, StepGuide>> = {
   prepare: {
     stepName: "① 준비",
@@ -58,6 +64,33 @@ export const GUIDES: Partial<Record<WizardStepId, StepGuide>> = {
       paragraphs: ["secret / service_role 키는 서버의 모든 데이터를 열 수 있는 키라 앱에 넣지 않습니다."],
     },
   },
+  setup: {
+    stepName: "③ 자동 세팅",
+    items: [
+      {
+        group: "Supabase",
+        title: "PAT 발급",
+        desc: '계정 설정 → Access Tokens → Generate. 이름 "Daybrick", 만료는 짧게(1일) 권장',
+        link: { label: "토큰 페이지 열기", url: SUPABASE_TOKENS_URL },
+      },
+      {
+        group: "Anthropic",
+        title: "① 단계에서 만든 API 키 붙여넣기",
+        desc: "요금이 들지 않는 방법으로 먼저 확인합니다",
+      },
+      {
+        group: "Google Cloud",
+        title: "OAuth 동의 화면 만들기",
+        desc: "외부(External) 선택, 앱 이름 Daybrick, 마지막에 프로덕션으로 게시",
+        link: { label: "Google Cloud 콘솔 열기", url: GOOGLE_CREDENTIALS_URL },
+      },
+      {
+        title: "OAuth 클라이언트 만들기",
+        desc: '유형 "웹 애플리케이션", 승인된 리디렉션 URI에 왼쪽 주소 붙여넣기',
+      },
+      { title: "클라이언트 ID·비밀번호 복사", desc: "만들고 나면 뜨는 창에서 두 값을 복사해 왼쪽 칸에" },
+    ],
+  },
 };
 
 /** 입력칸 아래 "어디서 찾나요?" 도움말 (R8): 메뉴 경로 칩과 그 화면을 흉내 낸 작은 그림 */
@@ -87,6 +120,40 @@ export const FIELD_HELPS = {
       { name: "Publishable key", value: "sb_publishable_…", highlight: true },
       { name: "Secret key", value: "사용하지 마세요" },
       { name: "Legacy API Keys 탭의 anon", value: "eyJ… (이것도 됩니다)" },
+    ],
+  },
+  pat: {
+    title: "Supabase 계정 설정에서 발급",
+    link: { label: "토큰 페이지 열기", url: SUPABASE_TOKENS_URL },
+    path: ["계정 설정", "Access Tokens", "Generate new token"],
+    shot: [
+      { name: "Name", value: "Daybrick" },
+      { name: "Expires in", value: "1 day (권장)" },
+      { name: "새 토큰", value: "sbp_… (한 번만 보임)", highlight: true },
+    ],
+  },
+  anthropicKey: {
+    title: "Anthropic 콘솔에서 찾기",
+    link: { label: "콘솔 열기", url: ANTHROPIC_KEYS_URL },
+    path: ["Settings", "API Keys", "Create Key"],
+    shot: [{ name: "API Key", value: "sk-ant-… (만들 때 한 번만 보임)", highlight: true }],
+  },
+  googleClientId: {
+    title: "Google Cloud 콘솔에서 찾기",
+    link: { label: "사용자 인증 정보 열기", url: GOOGLE_CREDENTIALS_URL },
+    path: ["API 및 서비스", "사용자 인증 정보", "OAuth 2.0 클라이언트 ID"],
+    shot: [
+      { name: "클라이언트 ID", value: "….apps.googleusercontent.com", highlight: true },
+      { name: "클라이언트 보안 비밀번호", value: "GOCSPX-…" },
+    ],
+  },
+  googleClientSecret: {
+    title: "Google Cloud 콘솔에서 찾기",
+    link: { label: "사용자 인증 정보 열기", url: GOOGLE_CREDENTIALS_URL },
+    path: ["API 및 서비스", "사용자 인증 정보", "OAuth 2.0 클라이언트 ID"],
+    shot: [
+      { name: "클라이언트 ID", value: "….apps.googleusercontent.com" },
+      { name: "클라이언트 보안 비밀번호", value: "GOCSPX-…", highlight: true },
     ],
   },
 } satisfies Record<string, FieldHelp>;

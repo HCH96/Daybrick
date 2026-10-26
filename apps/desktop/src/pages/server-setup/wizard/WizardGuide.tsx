@@ -10,7 +10,12 @@ function WizardGuide({ guide }: { guide: StepGuide }) {
       <div className="wiz-guide__head">가이드 · {guide.stepName}</div>
       <h3 className="wiz-guide__title">이 단계에서 할 일</h3>
       <ol className="wiz-guide__list">
-        {guide.items.map((item) => (
+        {guide.items.map((item) => [
+          item.group && (
+            <li key={`group-${item.group}`} className="wiz-guide__group" aria-hidden="true">
+              {item.group}
+            </li>
+          ),
           <li key={item.title}>
             <div>
               <b>{item.title}</b>
@@ -22,8 +27,8 @@ function WizardGuide({ guide }: { guide: StepGuide }) {
                 </button>
               )}
             </div>
-          </li>
-        ))}
+          </li>,
+        ])}
       </ol>
       {guide.tip && (
         <div className="wiz-guide__tip">

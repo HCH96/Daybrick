@@ -3,6 +3,7 @@ import { useServer } from "../../../features/server/useServer";
 import { GUIDES } from "./guides";
 import KeysStep from "./KeysStep";
 import PrepareStep from "./PrepareStep";
+import SetupInputStep from "./SetupInputStep";
 import { useWizard, type Wizard, type WizardStepId } from "./useWizard";
 import WizardFooter from "./WizardFooter";
 import WizardGuide from "./WizardGuide";
@@ -12,7 +13,7 @@ import "./WizardFields.css";
 
 /** 아직 만들지 않은 단계에 잠시 보여주는 자리 (해당 화면은 뒤 단계에서 연결) */
 const PENDING_TEXT: Partial<Record<WizardStepId, string>> = {
-  setup: "③ 자동 세팅 화면은 다음 단계에서 연결합니다.",
+  setup: "사전 확인을 통과했습니다. 세팅 실행 화면은 다음 단계에서 연결합니다.",
   login: "로그인 화면은 다음 단계에서 연결합니다.",
   "app-update": "앱 업데이트 안내 화면은 다음 단계에서 연결합니다.",
   done: "완료 화면은 다음 단계에서 연결합니다.",
@@ -36,6 +37,11 @@ function nextButton(wizard: Wizard): { label: string; onClick: () => void; disab
       if (wizard.canGoNext) return { label: "다음", onClick: wizard.next, disabled: false };
       const empty = wizard.inputs.url.trim() === "" || wizard.inputs.anonKey.trim() === "";
       return { label: "확인", onClick: () => void wizard.runKeysCheck(), disabled: empty };
+    }
+    case "setup": {
+      if (wizard.setupPhase === "run") return { label: "다음", onClick: wizard.next, disabled: !wizard.canGoNext };
+      if (wizard.checkingSetup) return { label: "확인 중…", onClick: () => undefined, disabled: true };
+      return { label: "세팅 시작", onClick: () => void wizard.startSetup(), disabled: !wizard.setupFilled };
     }
     default:
       return { label: "다음", onClick: wizard.next, disabled: !wizard.canGoNext };
@@ -66,6 +72,22 @@ function WizardShell() {
             onSubmit={() => {
               if (!button.disabled) button.onClick();
             }}
+          />
+        );
+      case "setup":
+        if (wizard.setupPhase === "run" || wizard.keysCheck?.kind !== "ok") return <PendingStep step="setup" />;
+        return (
+          <SetupInputStep
+            projectRef={wizard.keysCheck.ref}
+            inputs={wizard.inputs}
+            setInputs={wizard.setInputs}
+            precheck={wizard.setupPrecheck}
+            checking={wizard.checkingSetup}
+            onSubmit={() => {
+              if (!button.disabled) button.onClick();
+            }}
+            onConfirmNotEmpty={wizard.confirmNotEmpty}
+            onDismissNotEmpty={wizard.dismissNotEmpty}
           />
         );
       default:

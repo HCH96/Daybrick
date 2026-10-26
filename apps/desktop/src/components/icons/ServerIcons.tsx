@@ -138,3 +138,21 @@ export function EyeOffIcon({ size = 18 }: { size?: number }) {
     </LineIcon>
   );
 }
+
+export function CopyIcon({ size = 18 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <rect x="9" y="9" width="12" height="12" rx="2" />
+      <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" />
+    </LineIcon>
+  );
+}
+
+export function LockIcon({ size = 18 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <rect x="5" y="11" width="14" height="10" rx="2" />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+    </LineIcon>
+  );
+}
