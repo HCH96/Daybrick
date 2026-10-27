@@ -1,7 +1,7 @@
 # 서버 연결 (server-setup)
 사용자마다 자기 Supabase와 Anthropic API 키를 연결하는 기능. 첫 실행 안내·설치 가이드, 빈 서버 자동 세팅, 서버 구조 갱신, 로그인, 접속 확인·일시정지 안내, 설정 화면.
 
-- 상태: 구현 완료, r1 사용자 테스트 대기
+- 상태: 완료 (AI·사용자 테스트 r1 통과, U31 일시정지 재개만 미확인)
 - 작업 노트: [notes.md](notes.md)
 - 이 기능을 먼저 쓰는 기능: notifications, job-search
 
@@ -13,4 +13,4 @@
 | 진행 기록 | [ai/logs/index.md](ai/logs/index.md) | 기록 목차, 항목별 파일 L01~ |
 | 목업 | [human/mockups/index.html](human/mockups/index.html) | 화면별 목업 파일 목차 (2026-10-26 승인) |
 | AI 테스트 | [ai/tests/r1/index.md](ai/tests/r1/index.md) | r1 AI 테스트 보고서 (통과 24 · 실패 0) |
-| 사용자 테스트 | [human/tests/r1-user-test.md](human/tests/r1-user-test.md) | r1 사용자 테스트 체크리스트 (44개, 결과 대기) |
+| 사용자 테스트 | [human/tests/r1-user-test.md](human/tests/r1-user-test.md) | r1 사용자 테스트 체크리스트 (44개, 통과 43 · 확인 못 함 1) |
