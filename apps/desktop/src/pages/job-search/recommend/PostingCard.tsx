@@ -10,7 +10,7 @@ interface PostingCardProps {
   isNew: boolean;
   /** 채점에 쓴 프로필이 지금 버전보다 낮다 (R23) */
   stale: boolean;
-  /** 카드를 눌러 상세 팝업 열기 (11단계에서 붙인다) */
+  /** 카드를 눌러 상세 팝업 열기 (R10) */
   onOpen?: () => void;
 }
 

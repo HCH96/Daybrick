@@ -14,7 +14,7 @@ interface RecommendToolbarProps {
   onRescore: () => void;
   archived: number;
   filtered: number;
-  /** 보관함·걸러진 공고 목록 열기 (11단계에서 붙인다). 없으면 단추를 막아 둔다 */
+  /** 보관함·걸러진 공고 목록 열기 (R9). 없으면 단추를 막아 둔다 */
   onOpenArchived?: () => void;
   onOpenFiltered?: () => void;
 }

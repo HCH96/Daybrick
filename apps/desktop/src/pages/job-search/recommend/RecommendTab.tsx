@@ -12,7 +12,10 @@ import { useJobSearch } from "../../../features/job-search/useJobSearch";
 import type { ApiErrorKind } from "../../../features/server/management";
 import "../../server-setup/wizard/WizardShell.css";
 import type { StatusLine } from "../profile/profileFormat";
+import PostingPopup from "../popup/PostingPopup";
+import ArchivedList from "./ArchivedList";
 import CollectStatusLine from "./CollectStatusLine";
+import FilteredList from "./FilteredList";
 import PostingGrid from "./PostingGrid";
 import RecommendToolbar from "./RecommendToolbar";
 import UsageLine from "./UsageLine";
@@ -22,7 +25,7 @@ import "./RecommendTab.css";
 /** 다시 채점을 이어 부르는 최대 횟수 (한 번에 최대 10개, 시간 한도로 끊기면 이어 부른다) */
 const MAX_RESCORE_CALLS = 20;
 
-/** 추천 공고 탭 (R4–R8, R23, R75): 상태 상자(사용액·수집 상태), 도구 줄, 카드 3열 */
+/** 추천 공고 탭 (R4–R9, R23, R75): 상태 상자(사용액·수집 상태), 도구 줄, 카드 3열. 보관함·걸러진 공고는 카드 자리를 바꾼다 */
 function RecommendTab() {
   const { session, data: shared, refresh } = useJobSearch();
   const openedAt = useOpenedAt();
@@ -31,6 +34,10 @@ function RecommendTab() {
   const [sort, setSort] = useState<RecommendSort>("score");
   const [rescoring, setRescoring] = useState(false);
   const [status, setStatus] = useState<StatusLine>(null);
+  /** 카드 자리에 보일 것: 추천 카드, 보관함, 걸러진 공고 (R9) */
+  const [view, setView] = useState<"cards" | "archived" | "filtered">("cards");
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [listKey, setListKey] = useState(0);
 
   const reload = useCallback(async (): Promise<ApiErrorKind | null> => {
     const result = await loadRecommend(session);
@@ -77,6 +84,27 @@ function RecommendTab() {
     setRescoring(false);
   }
 
+  /** 팝업·목록에서 지원 안 함·되돌리기·그래도 채점을 한 뒤: 추천 목록·개수와 열린 목록을 다시 읽는다 */
+  const onChanged = useCallback(() => {
+    setListKey((k) => k + 1);
+    void reload();
+    void refresh();
+  }, [reload, refresh]);
+
+  const popup = openId && (
+    <PostingPopup postingId={openId} onClose={() => setOpenId(null)} onChanged={onChanged} />
+  );
+
+  if (view !== "cards") {
+    const List = view === "archived" ? ArchivedList : FilteredList;
+    return (
+      <div className="js-recommend">
+        <List refreshKey={listKey} onBack={() => setView("cards")} onOpen={setOpenId} onChanged={onChanged} />
+        {popup}
+      </div>
+    );
+  }
+
   return (
     <div className="js-recommend">
       <div className="js-recommend__status">
@@ -106,6 +134,8 @@ function RecommendTab() {
             onRescore={() => void rescore()}
             archived={data.archived}
             filtered={data.filtered}
+            onOpenArchived={() => setView("archived")}
+            onOpenFiltered={() => setView("filtered")}
           />
           {status && (
             <p className={`js-recommend__msg js-recommend__msg--${status.ok ? "ok" : "bad"}`} role="status">
@@ -115,10 +145,11 @@ function RecommendTab() {
           {items.length === 0 ? (
             <p className="js-recommend__empty">{NO_RECOMMEND}</p>
           ) : (
-            <PostingGrid items={items} newSince={openedAt} profileVersion={profileVersion} />
+            <PostingGrid items={items} newSince={openedAt} profileVersion={profileVersion} onOpen={setOpenId} />
           )}
         </>
       )}
+      {popup}
     </div>
   );
 }

@@ -12,18 +12,16 @@
 - 8단계: 필터 탭 (자동 진행, 최종 테스트 대기)
 - 9단계: 처리 함수 (필터·추출·채점) (자동 진행, 최종 테스트 대기)
 - 10단계: 추천 공고 탭 (자동 진행, 최종 테스트 대기)
+- 11단계: 상세 팝업·걸러진 공고·보관함 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 11단계: 상세 팝업·걸러진 공고·보관함 (카드를 누르면 상세 팝업, 인젝션 경고·그래도 채점, 이미지 크게 보기, 지원 안 함·보관함 되돌리기, 걸러진 공고 목록)
-- 관련 결정: D5, D11, D14, D21, D22, D26, D27, D31, D35, D36, D37, D38 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 팝업 열기는 `PostingGrid`에서 `PostingCard`에 `onOpen`을, 목록 열기는 `RecommendTab`에서 `RecommendToolbar`에 `onOpenArchived`·`onOpenFiltered`를 넘기면 단추가 풀린다(D38). 팝업에 필요한 강점·부족한 점·요약·추출 전체·원문·이미지는 `recommendApi.ts`의 `loadRecommend`가 읽지 않으니 공고 하나를 따로 읽는 함수를 같은 파일에 더한다. 지원 안 함·되돌리기·그래도 채점 뒤에는 `RecommendTab`의 `reload()`로 목록과 개수를 다시 읽는다.
+- 12단계: 지원하기·일정 제안 (지원 관리 수정) (팝업 [지원하기] → 서버 지원 건·로컬 카드·`applied_at`, 일정 제안 창, 카드 상태 → 서버 동기화)
+- 관련 결정: D1, D2, D11, D14, D20, D21, D22, D26, D27, D36, D37, D38, D39 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: [지원하기]는 `PostingPopup`에서 `PopupFoot`에 `onApply`를 넘기면 풀린다(점수 있는 공고만 `mode = scored`). 카드에 쓸 추출 항목·요약은 팝업의 `PostingDetail`(`fields`·`score.summary`·`url`)에 이미 있다. 지원 뒤에는 `onChanged()`로 추천 목록을 다시 읽고 팝업을 닫는다. 일정 날짜 글자는 `postingFormat.ts`의 `dateTime`·`scheduleLine`을 같이 쓸 수 있다.
 
 ## 확인할 문서 (경로는 docs/features/job-search/ 기준, 파일 통째로 읽기)
-- ai/plan/step-11.md
-- ai/spec/req-recommend.md (R9–R16), ai/spec/req-analysis.md (R46, R49)
-- ai/logs/L14.md
-- human/mockups/popup.html의 popup-head·popup-score·popup-reasons·popup-fields·popup-source·popup-foot 구역 (CSS: popup.css·common.css에서 클래스 검색)
-- human/mockups/popup-warn.html의 popup-warn-alert·popup-warn-score·popup-warn-image·popup-warn-foot 구역 (CSS: popup.css·common.css)
-- human/mockups/part-image-zoom.html의 image-zoom 구역 (CSS: popup.css·common.css)
-- human/mockups/filtered.html의 filtered-head·filtered-rows 구역, archived.html의 archived-head·archived-rows 구역 (CSS: recommend.css·common.css)
-- ai/plan/structure.md의 popup/ 줄 (새 파일 위치를 정할 때만)
+- ai/plan/step-12.md
+- ai/spec/req-apply.md (R54–R59)
+- ai/logs/L15.md
+- human/mockups/part-schedule.html의 apply-schedule-done·apply-schedule-list·apply-schedule-vague 구역 (CSS: popup.css·common.css에서 클래스 검색)
+- ai/plan/structure.md의 buildCard.ts·statusSync.ts·popup/ScheduleSuggestDialog.tsx·applications 수정 줄 (새 파일 위치를 정할 때만)

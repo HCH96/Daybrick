@@ -1,6 +1,8 @@
 import type { ApiErrorKind } from "../server/management";
 import type { CollectFailReason, ProfileGenerateFailure } from "./api";
+import type { ForceFailure } from "./postingApi";
 import type { ProcessStop } from "./recommendApi";
+import type { PostingStage } from "./types";
 
 /** 구직 관리 화면의 오류·안내 문구는 모두 여기 둔다. 키·토큰 값은 어떤 문구에도 넣지 않는다. */
 
@@ -303,4 +305,70 @@ export function rescoreStopMessage(stop: ProcessStop, done: number, remaining: n
 
 export function rescoredMessage(done: number): string {
   return `${done}개를 지금 프로필로 다시 채점했어요.`;
+}
+
+// ===== 상세 팝업·걸러진 공고·보관함 (R9–R16, R46, R49) =====
+
+export function postingLoadErrorMessage(kind: ApiErrorKind): string {
+  return `공고를 읽지 못했어요. ${reason(kind)}`;
+}
+
+export const POSTING_GONE = "이 공고를 찾지 못했어요. 지워졌을 수 있어요.";
+
+export function listLoadErrorMessage(kind: ApiErrorKind): string {
+  return `목록을 읽지 못했어요. ${reason(kind)}`;
+}
+
+export function hideErrorMessage(kind: ApiErrorKind): string {
+  return `보관함으로 옮기지 못했어요. ${reason(kind)}`;
+}
+
+export function restoreErrorMessage(kind: ApiErrorKind): string {
+  return `되돌리지 못했어요. ${reason(kind)}`;
+}
+
+export const IMAGE_LOAD_ERROR = "공고 이미지를 읽지 못했어요.";
+export const NO_BODY_YET = "원문을 아직 받지 못했어요. 다음 수집 때 이어 받아요.";
+export const NOT_EXTRACTED = "아직 항목을 추출하지 않았어요. [그래도 채점]을 누르면 추출부터 해요.";
+export const NO_REASON = "해당 내용 없음";
+export const FORCE_SCORING = "채점하는 중… 1분쯤 걸릴 수 있어요.";
+export const NO_FILTERED = "걸러진 공고가 없어요.";
+export const NO_ARCHIVED = "보관한 공고가 없어요.";
+export const FILTERED_DESC = "필터나 인젝션 검사에 걸려 채점하지 않은 공고예요. 줄을 누르면 상세 팝업이 열려요.";
+export const ARCHIVED_DESC = "여기 있는 공고는 다시 수집되어도 추천 목록에 나오지 않아요. 되돌리면 추천 목록으로 돌아가요.";
+export const INJECTION_TITLE = "프롬프트 인젝션 의심 공고예요";
+export const INJECTION_BODY =
+  "공고 안에 AI에게 하는 지시로 보이는 문장이 있어 채점하지 않았어요. 내용을 확인하고 괜찮으면 \"그래도 채점\"을 눌러 주세요.";
+export const INJECTION_SCORED_BODY = "공고 안에 AI에게 하는 지시로 보이는 문장이 있어요. \"그래도 채점\"으로 채점한 공고예요.";
+
+/** 그래도 채점 결과 (D37 force) */
+export function forceDoneMessage(stage: PostingStage): string {
+  return stage === "scored" ? "채점했어요. 추천 목록에 들어갔어요." : "처리했지만 아직 채점이 끝나지 않았어요.";
+}
+
+export function forceFailMessage(failure: ForceFailure): string {
+  switch (failure.reason) {
+    case "limit":
+      return aiLimitMessage(failure.which);
+    case "credit":
+      return AI_CREDIT_MESSAGE;
+    case "no-profile":
+      return "저장된 프로필이 없어요. 프로필 탭에서 프로필을 저장해 주세요.";
+    case "no-body":
+      return "원문을 아직 받지 못해 채점할 수 없어요. 다음 수집 뒤 다시 눌러 주세요.";
+    case "not-found":
+      return POSTING_GONE;
+    case "missing-key":
+      return "서버에 Anthropic 키가 없어요. 설정에서 서버 업데이트를 해 주세요.";
+    case "network":
+    case "upstream":
+      return "AI 서버에 닿지 못했어요. 잠시 뒤 다시 시도해 주세요.";
+    case "database":
+      return "서버에서 결과를 저장하지 못했어요.";
+  }
+}
+
+export function forceCallErrorMessage(kind: ApiErrorKind): string {
+  if (kind === "not-found") return "처리 서버 함수가 없어요. 서버 업데이트를 해 주세요.";
+  return `채점하지 못했어요. ${reason(kind)}`;
 }

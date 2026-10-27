@@ -1,0 +1,91 @@
+/* 이미지 크게 보기 (R11). 목업 popup.css의 .overlay.dark·.viewer-top·.viewer-img 기준 */
+.js-zoom {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 24px;
+  background: rgba(4, 4, 6, 0.88);
+  pointer-events: auto;
+  outline: none;
+  animation: modal-fade 0.12s ease-out;
+}
+
+.js-zoom__top {
+  width: min(640px, 100%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.js-zoom__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.js-zoom__btn {
+  min-width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0 6px;
+  border: 1px solid var(--border-2);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.js-zoom__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.js-zoom__pct {
+  width: 44px;
+  text-align: center;
+}
+
+.js-zoom__x {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.js-zoom__x:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* 확대하면 넘치는 부분은 끌어 내리기(스크롤)로 본다 */
+.js-zoom__stage {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.js-zoom__img {
+  display: block;
+  max-width: none;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 10px;
+}

@@ -34,7 +34,7 @@ export interface RecommendState {
   waiting: number;
   /** 지원 안 함 보관함 공고 수 (R9, D11) */
   archived: number;
-  /** 걸러진 공고 수 (R46) */
+  /** 걸러진 공고 수 (1차·2차 필터·인젝션 의심, R46) */
   filtered: number;
 }
 
@@ -112,7 +112,7 @@ export async function loadRecommend(session: ServerSession): Promise<ApiResult<R
     session.client.from("js_sites").select("last_result").eq("enabled", true),
     count().eq("stage", "waiting").is("hidden_at", null),
     count().not("hidden_at", "is", null).is("applied_at", null),
-    count().in("stage", ["filtered1", "filtered2"]).is("hidden_at", null),
+    count().in("stage", ["filtered1", "filtered2", "suspect"]).is("hidden_at", null).is("applied_at", null),
   ]);
   if (!postings.ok) return postings;
   if (lastRun.error) return { ok: false, error: postgrestError(lastRun.error, lastRun.status) };

@@ -7,10 +7,12 @@ interface PostingGridProps {
   newSince: string | null;
   /** 지금 프로필 버전. 채점 버전이 이보다 낮으면 "이전 프로필 기준" (R23) */
   profileVersion: number;
+  /** 카드를 눌러 상세 팝업 열기 (R10) */
+  onOpen: (id: string) => void;
 }
 
 /** 공고 카드 3열 (R4) */
-function PostingGrid({ items, newSince, profileVersion }: PostingGridProps) {
+function PostingGrid({ items, newSince, profileVersion, onOpen }: PostingGridProps) {
   const since = newSince ? new Date(newSince).getTime() : null;
   return (
     <div className="js-recommend__grid">
@@ -21,6 +23,7 @@ function PostingGrid({ items, newSince, profileVersion }: PostingGridProps) {
           days={days}
           isNew={since !== null && new Date(posting.collectedAt).getTime() > since}
           stale={posting.profileVersion < profileVersion}
+          onOpen={() => onOpen(posting.id)}
         />
       ))}
     </div>
