@@ -116,6 +116,16 @@ export interface Adapter {
   builtin: boolean;
 }
 
+/** 사이트의 마지막 수집 결과 (`js_sites.last_result`, D31) */
+export interface SiteLastResult {
+  ok: boolean;
+  /** 목록에서 읽은 공고 수 */
+  read: number;
+  /** 새로 저장한 공고 수 */
+  added: number;
+  reason: string | null;
+}
+
 /** 수집 사이트 (`js_sites`) */
 export interface Site {
   id: string;
@@ -124,7 +134,8 @@ export interface Site {
   adapterId: string | null;
   vars: Record<string, string>;
   enabled: boolean;
-  lastResult: unknown;
+  /** 아직 수집한 적이 없으면 null */
+  lastResult: SiteLastResult | null;
   lastAt: string | null;
 }
 

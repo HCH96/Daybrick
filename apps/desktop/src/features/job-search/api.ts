@@ -3,6 +3,7 @@ import type { ApiErrorKind, ApiResult } from "../server/management";
 import type { ServerSession } from "../server/session";
 import { parseProfileData } from "./profileDraft";
 import type {
+  Adapter,
   AiCall,
   BalanceRecord,
   JsSettings,
@@ -11,6 +12,8 @@ import type {
   ProfileDraft,
   ProfileSource,
   SavedProfile,
+  Site,
+  SiteLastResult,
 } from "./types";
 
 /**
@@ -386,4 +389,138 @@ export async function generateProfile(session: ServerSession): Promise<ApiResult
   }
   const reason = GENERATE_REASONS.find((r) => r === data.reason) ?? "upstream";
   return { ok: true, value: { ok: false, reason } };
+}
+
+// ===== 수집 사이트·어댑터 (R24, R31, R34) =====
+
+function parseAdapter(row: unknown): Adapter | null {
+  if (!isRecord(row)) return null;
+  const version = toNumber(row.version);
+  if (typeof row.id !== "string" || typeof row.name !== "string" || version === null) return null;
+  return { id: row.id, name: row.name, rule: row.rule, version, builtin: row.builtin === true };
+}
+
+function parseLastResult(value: unknown): SiteLastResult | null {
+  if (!isRecord(value) || typeof value.ok !== "boolean") return null;
+  return {
+    ok: value.ok,
+    read: toNumber(value.read) ?? 0,
+    added: toNumber(value.added) ?? 0,
+    reason: typeof value.reason === "string" ? value.reason : null,
+  };
+}
+
+function parseSite(row: unknown): Site | null {
+  if (!isRecord(row)) return null;
+  if (typeof row.id !== "string" || typeof row.name !== "string" || typeof row.url !== "string") return null;
+  const vars: Record<string, string> = {};
+  if (isRecord(row.vars)) {
+    for (const [key, value] of Object.entries(row.vars)) {
+      if (typeof value === "string" || typeof value === "number") vars[key] = String(value);
+    }
+  }
+  return {
+    id: row.id,
+    name: row.name,
+    url: row.url,
+    adapterId: typeof row.adapter_id === "string" ? row.adapter_id : null,
+    vars,
+    enabled: row.enabled !== false,
+    lastResult: parseLastResult(row.last_result),
+    lastAt: typeof row.last_at === "string" ? row.last_at : null,
+  };
+}
+
+export interface SourcesState {
+  sites: Site[];
+  adapters: Adapter[];
+}
+
+/**
+ * 수집 사이트 탭 데이터: 기본 어댑터·사이트를 먼저 맞춘 뒤(`js_ensure_defaults`, D31) 사이트와 어댑터를 읽는다.
+ * 사이트는 이름순, 어댑터는 기본 것 먼저 이름순.
+ */
+export async function loadSources(session: ServerSession): Promise<ApiResult<SourcesState>> {
+  const ensured = await session.client.rpc("js_ensure_defaults");
+  if (ensured.error) return { ok: false, error: postgrestError(ensured.error, ensured.status) };
+  const [sites, adapters] = await Promise.all([
+    session.client
+      .from("js_sites")
+      .select("id, name, url, adapter_id, vars, enabled, last_result, last_at")
+      .order("name", { ascending: true }),
+    session.client
+      .from("js_adapters")
+      .select("id, name, rule, version, builtin")
+      .order("builtin", { ascending: false })
+      .order("name", { ascending: true }),
+  ]);
+  if (sites.error) return { ok: false, error: postgrestError(sites.error, sites.status) };
+  if (adapters.error) return { ok: false, error: postgrestError(adapters.error, adapters.status) };
+  const parsedSites = (sites.data ?? []).map(parseSite);
+  const parsedAdapters = (adapters.data ?? []).map(parseAdapter);
+  if (!parsedSites.every((s): s is Site => s !== null)) return { ok: false, error: "bad-response" };
+  if (!parsedAdapters.every((a): a is Adapter => a !== null)) return { ok: false, error: "bad-response" };
+  return { ok: true, value: { sites: parsedSites, adapters: parsedAdapters } };
+}
+
+/** 사이트 켜기·끄기 (R31). 꺼진 사이트는 [지금 수집]·예약 수집에서 빠진다 */
+export async function setSiteEnabled(session: ServerSession, siteId: string, enabled: boolean): Promise<ApiResult<null>> {
+  const { error, status } = await session.client.from("js_sites").update({ enabled }).eq("id", siteId);
+  return error ? { ok: false, error: postgrestError(error, status) } : { ok: true, value: null };
+}
+
+/**
+ * 사이트 삭제 (R31): `js_sites` 행만 지운다.
+ * 이미 모은 공고·수집 기록은 남고 `site_id`만 비워진다 (외래 키 on delete set null).
+ */
+export async function deleteSite(session: ServerSession, siteId: string): Promise<ApiResult<null>> {
+  const { error, status } = await session.client.from("js_sites").delete().eq("id", siteId);
+  return error ? { ok: false, error: postgrestError(error, status) } : { ok: true, value: null };
+}
+
+/** `js-collect run`이 돌려준 사이트 하나의 결과 */
+export interface CollectSiteResult {
+  siteId: string;
+  name: string;
+  ok: boolean;
+  read: number;
+  added: number;
+  reason: string | null;
+}
+
+const COLLECT_REASONS = ["no-sites", "database", "unauthorized"] as const;
+export type CollectFailReason = (typeof COLLECT_REASONS)[number];
+
+export type CollectResult =
+  | { ok: true; sites: CollectSiteResult[]; pending: number }
+  | { ok: false; reason: CollectFailReason };
+
+function parseCollectSite(value: unknown): CollectSiteResult | null {
+  if (!isRecord(value) || typeof value.siteId !== "string" || typeof value.ok !== "boolean") return null;
+  return {
+    siteId: value.siteId,
+    name: typeof value.name === "string" ? value.name : "",
+    ok: value.ok,
+    read: toNumber(value.read) ?? 0,
+    added: toNumber(value.added) ?? 0,
+    reason: typeof value.reason === "string" ? value.reason : null,
+  };
+}
+
+/** 지금 수집 (R34): 켜진 사이트 전체를 서버 함수 `js-collect`로 바로 수집한다 (최대 2분쯤 걸린다) */
+export async function runCollect(session: ServerSession): Promise<ApiResult<CollectResult>> {
+  const { data, error } = await session.client.functions.invoke<unknown>("js-collect", { body: { action: "run" } });
+  if (error) {
+    // 401 응답도 본문에 { ok: false, reason: "unauthorized" }가 오지만 연결 원인으로 알린다
+    return { ok: false, error: functionError(error) };
+  }
+  if (!isRecord(data) || typeof data.ok !== "boolean") return { ok: false, error: "bad-response" };
+  if (!data.ok) {
+    const reason = COLLECT_REASONS.find((r) => r === data.reason) ?? "database";
+    return { ok: true, value: { ok: false, reason } };
+  }
+  if (!Array.isArray(data.sites)) return { ok: false, error: "bad-response" };
+  const sites = data.sites.map(parseCollectSite);
+  if (!sites.every((s): s is CollectSiteResult => s !== null)) return { ok: false, error: "bad-response" };
+  return { ok: true, value: { ok: true, sites, pending: toNumber(data.pending) ?? 0 } };
 }

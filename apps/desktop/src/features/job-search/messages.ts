@@ -1,5 +1,5 @@
 import type { ApiErrorKind } from "../server/management";
-import type { ProfileGenerateFailure } from "./api";
+import type { CollectFailReason, ProfileGenerateFailure } from "./api";
 
 /** 구직 관리 화면의 오류·안내 문구는 모두 여기 둔다. 키·토큰 값은 어떤 문구에도 넣지 않는다. */
 
@@ -119,3 +119,50 @@ export function draftDiscardErrorMessage(kind: ApiErrorKind): string {
 
 export const PROFILE_GENERATED = "새 초안을 만들었어요. 고친 뒤 저장해 주세요.";
 export const BLANK_FIELD = "자료에 없음";
+
+// ===== 수집 사이트 (R24, R31, R34) =====
+
+export function sourcesLoadErrorMessage(kind: ApiErrorKind): string {
+  return `수집 사이트를 읽지 못했어요. ${reason(kind)}`;
+}
+
+export function siteToggleErrorMessage(kind: ApiErrorKind): string {
+  return `사이트를 켜거나 끄지 못했어요. ${reason(kind)}`;
+}
+
+export function siteDeleteErrorMessage(kind: ApiErrorKind): string {
+  return `사이트를 지우지 못했어요. ${reason(kind)}`;
+}
+
+export const SITE_DELETE_NOTE = "이미 모은 공고는 남아요";
+export const NO_SITES = "수집할 사이트가 없어요. [사이트 추가]로 사이트를 넣어 주세요.";
+export const NO_ADAPTERS = "등록된 어댑터가 없어요.";
+export const COLLECTING = "수집하는 중… 최대 2분쯤 걸려요.";
+export const NEVER_COLLECTED = "아직 수집 안 함";
+
+/** 서버 함수를 부르지 못했을 때 (함수가 아직 배포되지 않았으면 not-found) */
+export function collectCallErrorMessage(kind: ApiErrorKind): string {
+  if (kind === "not-found") return "수집 서버 함수가 없어요. 서버 업데이트를 해 주세요.";
+  return `수집하지 못했어요. ${reason(kind)}`;
+}
+
+/** 수집 함수가 실패로 돌려준 이유 */
+export function collectFailMessage(failure: CollectFailReason): string {
+  switch (failure) {
+    case "no-sites":
+      return "켜진 사이트가 없어요. 수집할 사이트를 켜 주세요.";
+    case "database":
+      return "서버에서 사이트나 공고를 읽고 쓰지 못했어요. 서버 업데이트가 끝났는지 확인해 주세요.";
+    case "unauthorized":
+      return reason("unauthorized");
+  }
+}
+
+/** 지금 수집이 끝났을 때 한 줄: 새 공고 수, 실패한 사이트 수, 다음에 받을 원문 수 */
+export function collectDoneMessage(added: number, failed: number, pending: number): string {
+  const parts = [`수집을 마쳤어요. 새 공고 ${added}개`];
+  if (failed > 0) parts.push(`실패한 사이트 ${failed}곳`);
+  let text = parts.join(" · ");
+  if (pending > 0) text += ` (원문 ${pending}개는 다음 수집 때 받아요)`;
+  return text;
+}

@@ -8,6 +8,7 @@ import TabPlaceholder from "./TabPlaceholder";
 import ProfileTab from "./profile/ProfileTab";
 import UsageLine from "./recommend/UsageLine";
 import JobSettingsTab from "./settings/JobSettingsTab";
+import SourcesTab from "./sources/SourcesTab";
 import { JOB_SEARCH_TABS, isJobSearchTab, type JobSearchTabId } from "./tabs";
 import "./JobSearchPage.css";
 
@@ -18,6 +19,8 @@ function TabBody({ tab, label }: { tab: JobSearchTabId; label: string }) {
       return <JobSettingsTab />;
     case "profile":
       return <ProfileTab />;
+    case "sources":
+      return <SourcesTab />;
     case "recommend":
       return (
         <>
