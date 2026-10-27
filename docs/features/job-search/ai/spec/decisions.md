@@ -21,3 +21,4 @@
 - D19. 예약 실행은 pg_cron + pg_net이 `x-daybrick-cron` 머리글(`DAYBRICK_CRON_SECRET`, vault에도 저장)로 서버 함수를 부른다. 자동 생성 비밀값은 서버 업데이트·자동 세팅 때 없을 때만 만든다. (적용: 2, 15단계) (기록: L04)
 - D20. 지원 관리 카드에 선택 칸 `jobLink: { serverId } | null`을 더하고 파일 버전은 2를 유지한다. (적용: 12단계 이후) (기록: L04)
 - D21. 로컬 파일 `job-search.json`에 추천 공고 탭을 마지막으로 연 시각과, 서버에 반영하지 못한 상태 변경 대기 목록을 둔다. (적용: 10단계 이후) (기록: L04)
+- D22. 구직 관리 탭 id·이름은 `pages/job-search/tabs.ts` 한 곳에 둔다. 탭을 만드는 단계는 `JobSearchPage`에서 그 탭의 `TabPlaceholder`를 실제 탭 컴포넌트로 바꾼다. (적용: 이후 전체) (기록: L05)

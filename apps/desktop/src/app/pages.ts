@@ -5,6 +5,7 @@ import {
   ApplicationsIcon,
   CalendarIcon,
   HomeIcon,
+  JobSearchIcon,
   SchedulerIcon,
   SettingsIcon,
   TimerIcon,
@@ -12,6 +13,7 @@ import {
 import { makePlaceholderPage } from "../pages/PlaceholderPage";
 import HomePage from "../pages/home/HomePage";
 import ApplicationsPage from "../pages/applications/ApplicationsPage";
+import JobSearchPage from "../pages/job-search/JobSearchPage";
 import SettingsPage from "../pages/settings/SettingsPage";
 
 export interface PageDef {
@@ -55,6 +57,13 @@ export const pages: PageDef[] = [
     navLabel: NAV_LABELS.applications,
     icon: ApplicationsIcon,
     component: ApplicationsPage,
+  },
+  {
+    id: "job-search",
+    label: PAGE_LABELS["job-search"],
+    navLabel: NAV_LABELS["job-search"],
+    icon: JobSearchIcon,
+    component: JobSearchPage,
   },
   {
     id: "timer",

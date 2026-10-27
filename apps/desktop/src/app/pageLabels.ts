@@ -9,6 +9,7 @@ export const PAGE_LABELS: Record<PageId, string> = {
   calendar: "캘린더",
   scheduler: "스케줄러",
   applications: "지원 현황",
+  "job-search": "구직 관리",
   timer: "타이머",
   settings: "설정",
 };
@@ -19,6 +20,7 @@ export const NAV_LABELS: Record<PageId, string> = {
   calendar: "Calendar",
   scheduler: "Scheduler",
   applications: "Applications",
+  "job-search": "Job Search",
   timer: "Timer",
   settings: "Settings",
 };

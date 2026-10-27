@@ -1,0 +1,33 @@
+/* 서버 연결 안 됨 안내. 목업 profile.css의 .connect 기준 */
+.job-search-disconnected {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.job-search-disconnected__icon {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 6px;
+  border-radius: 14px;
+  background: var(--neutral-soft);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+.job-search-disconnected h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.job-search-disconnected p {
+  margin: 0 0 8px;
+  max-width: 420px;
+  color: var(--muted);
+  font-size: 13px;
+}
