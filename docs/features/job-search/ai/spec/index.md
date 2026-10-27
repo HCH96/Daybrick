@@ -33,5 +33,5 @@
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (2026-10-27 승인) — 15단계. 어댑터 규칙 형식 v1을 정하고(D16), Gmail은 앱이 직접 Google 인증을 열어 서버가 토큰을 암호화해 둔다(D18). 예약 실행은 pg_cron + 예약 비밀값(D19)
-- 테스트 문서: (아직 없음)
+- 테스트 문서: AI 테스트 [../tests/r1/](../tests/r1/) · 사용자 테스트 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md)
 - 진행 기록: [../logs/index.md](../logs/index.md)

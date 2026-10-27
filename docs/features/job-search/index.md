@@ -1,7 +1,7 @@
 # 구직 관리 (job-search)
 채용 사이트 공고를 서버가 주 1회 모아 AI로 채점·추천하고, 지원 관리 연결과 Gmail 상태 제안까지 이어 주는 기능.
 
-- 상태: 구현 완료 (테스트 대기)
+- 상태: 구현 완료 (AI 테스트 r1 통과, 사용자 테스트 r1 대기)
 - 작업 노트: [notes.md](notes.md)
 - 선행 기능: server-setup, notifications (별도 명세 필요)
 
@@ -12,5 +12,5 @@
 | 구현 계획 | [ai/plan/index.md](ai/plan/index.md) | 15단계, 단계별 step 파일, 파일 목록·데이터 모양·어댑터 규칙 형식 (2026-10-27 승인) |
 | 진행 기록 | [ai/logs/index.md](ai/logs/index.md) | 기록 목차, 항목별 파일 L01~ |
 | 목업 | [human/mockups/index.html](human/mockups/index.html) | 화면 15개, 화면별 파일 (목차는 index.html 맨 앞 주석) |
-| AI 테스트 | (아직 없음) | |
-| 사용자 테스트 | (아직 없음) | |
+| AI 테스트 | [ai/tests/r1/](ai/tests/r1/) | r1 보고서 (2026-10-28) |
+| 사용자 테스트 | [human/tests/r1-user-test.md](human/tests/r1-user-test.md) | r1 체크리스트, 주요 기능 16개 |
