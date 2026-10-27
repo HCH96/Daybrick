@@ -372,3 +372,16 @@ export function forceCallErrorMessage(kind: ApiErrorKind): string {
   if (kind === "not-found") return "처리 서버 함수가 없어요. 서버 업데이트를 해 주세요.";
   return `채점하지 못했어요. ${reason(kind)}`;
 }
+
+/* ===== 지원하기·일정 제안 (R54–R57) ===== */
+
+export const APPLY_NOT_READY = "지원 관리 데이터를 아직 읽지 못했어요. 잠시 뒤 다시 눌러 주세요.";
+
+export function applyErrorMessage(kind: ApiErrorKind): string {
+  return `지원 건을 만들지 못했어요. ${reason(kind)}`;
+}
+
+/** 카드는 만들었지만 공고에 지원 표시를 못 남겼을 때 (추천 목록에 남는다) */
+export function appliedMarkWarning(kind: ApiErrorKind): string {
+  return `카드는 만들었지만 공고를 추천 목록에서 빼지 못했어요. ${reason(kind)}`;
+}

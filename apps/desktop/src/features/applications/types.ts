@@ -64,6 +64,8 @@ export interface Application {
   body: string; // 마크다운
   createdAt: string; // ISO 날짜·시간
   updatedAt: string;
+  /** 구직 관리가 만든 카드의 서버 지원 건(`js_applications.id`) 연결. 옛 카드·직접 만든 카드는 칸이 없다 (구직 관리 D20) */
+  jobLink?: { serverId: string } | null;
 }
 
 /** 파일 전체 형식 (v2: 마감일·지원일 속성과 "지원 완료" 일정을 없앰, D20) */

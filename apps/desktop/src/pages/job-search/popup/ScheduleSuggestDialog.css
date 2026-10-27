@@ -1,0 +1,141 @@
+/* 일정 제안 창 (목업 part-schedule.html, popup.css .sched·.done-line·.check-list·.vague) */
+.modal:has(> .js-sched) {
+  width: min(600px, 100%);
+  height: auto;
+  max-height: 100%;
+}
+
+.js-sched {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.js-sched__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.js-sched__head h3 {
+  margin: 0;
+  flex: 1;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.js-sched__body {
+  padding: 20px 22px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.js-sched__done {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 13px;
+}
+
+.js-sched__done b {
+  color: var(--text);
+}
+
+.js-sched__warn {
+  margin: -8px 0 18px;
+  font-size: 12px;
+  color: var(--amber);
+}
+
+.js-sched__title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.js-sched__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.js-sched__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.js-sched__box {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 1.5px solid var(--muted);
+  border-radius: 5px;
+}
+
+.js-sched__box--on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.js-sched__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.js-sched__main b {
+  font-size: 14px;
+}
+
+.js-sched__raw {
+  display: block;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.js-sched__date {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.js-sched__vague {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.js-sched__vague b {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.js-sched__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--border);
+}

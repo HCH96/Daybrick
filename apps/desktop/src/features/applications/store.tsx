@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from "react";
 import { loadApplicationsData } from "./storage";
-import { createApplication, reducer, type ApplicationPatch, type DataState } from "./reducer";
+import { createApplication, reducer, type ApplicationPatch, type DataState, type NewOption } from "./reducer";
 import type { PropertyAction } from "./propertyReducer";
 import { createStageEvent } from "./transitions";
-import type { EventKind, PropertyValue, ScheduleEvent, StageId, StatusId } from "./types";
+import type { Application, EventKind, PropertyValue, ScheduleEvent, StageId, StatusId } from "./types";
 import { useAutoSave, type SaveStatus } from "./useAutoSave";
 
 export interface ApplicationsStore {
@@ -11,6 +11,13 @@ export interface ApplicationsStore {
   saveStatus: SaveStatus;
   /** 새 카드를 만들고 그 id를 돌려준다. 데이터가 준비되지 않았으면 null. */
   createApplication: () => string | null;
+  /**
+   * 다른 기능(구직 관리 [지원하기])이 다 만든 카드를 넣는다. 처음 보는 선택 항목도 함께 더한다.
+   * 데이터가 준비되지 않았으면 넣지 않고 false.
+   */
+  createFromJob: (card: Application, options: NewOption[]) => boolean;
+  /** 다 만든 일정 여러 개를 한 카드에 넣는다 (구직 관리 일정 제안, 시간·메모 포함) */
+  addEvents: (id: string, events: ScheduleEvent[]) => void;
   /** 카드 일부를 고친다. 고친 날은 지금 시각으로 바뀐다. 0.5초 뒤 자동 저장 (R15) */
   updateApplication: (id: string, patch: ApplicationPatch) => void;
   /** 카드를 지운다 (R16). 확인 창은 부르는 쪽에서 띄운다. */
@@ -63,6 +70,15 @@ export function ApplicationsProvider({ children }: { children: ReactNode }) {
         const application = createApplication(new Date());
         dispatch({ type: "create-application", application });
         return application.id;
+      },
+      createFromJob: (card, options) => {
+        if (!ready) return false;
+        dispatch({ type: "create-from-job", application: card, options });
+        return true;
+      },
+      addEvents: (id, events) => {
+        const now = new Date().toISOString();
+        for (const event of events) dispatch({ type: "add-event", id, event, now });
       },
       updateApplication: (id, patch) => {
         dispatch({ type: "update-application", id, patch, now: new Date().toISOString() });

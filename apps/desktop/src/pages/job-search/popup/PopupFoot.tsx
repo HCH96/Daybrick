@@ -5,7 +5,7 @@ import { BriefcaseIcon, SparkIcon, UndoIcon } from "./PopupIcons";
 /** scored: [지원 안 함][지원하기], unscored: [지원 안 함][그래도 채점], archived: [되돌리기] */
 export type FootMode = "scored" | "unscored" | "archived";
 
-export type FootBusy = "hide" | "restore" | "force" | null;
+export type FootBusy = "hide" | "restore" | "force" | "apply" | null;
 
 interface PopupFootProps {
   mode: FootMode;
@@ -19,7 +19,7 @@ interface PopupFootProps {
   onHide: () => void;
   onForce: () => void;
   onRestore: () => void;
-  /** 지원하기 (12단계에서 붙인다). 없으면 단추를 막아 둔다 */
+  /** 지원하기 (R54). 없으면 단추를 막아 둔다 */
   onApply?: () => void;
 }
 
@@ -60,7 +60,7 @@ function PopupFoot(props: PopupFootProps) {
               onClick={props.onApply}
             >
               <BriefcaseIcon />
-              지원하기
+              {busy === "apply" ? "지원 카드 만드는 중…" : "지원하기"}
             </button>
           ) : (
             <button type="button" className="setup-btn setup-btn--primary" disabled={disabled} onClick={props.onForce}>

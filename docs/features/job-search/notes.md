@@ -13,15 +13,17 @@
 - 9단계: 처리 함수 (필터·추출·채점) (자동 진행, 최종 테스트 대기)
 - 10단계: 추천 공고 탭 (자동 진행, 최종 테스트 대기)
 - 11단계: 상세 팝업·걸러진 공고·보관함 (자동 진행, 최종 테스트 대기)
+- 12단계: 지원하기·일정 제안 (지원 관리 수정) (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 12단계: 지원하기·일정 제안 (지원 관리 수정) (팝업 [지원하기] → 서버 지원 건·로컬 카드·`applied_at`, 일정 제안 창, 카드 상태 → 서버 동기화)
-- 관련 결정: D1, D2, D11, D14, D20, D21, D22, D26, D27, D36, D37, D38, D39 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: [지원하기]는 `PostingPopup`에서 `PopupFoot`에 `onApply`를 넘기면 풀린다(점수 있는 공고만 `mode = scored`). 카드에 쓸 추출 항목·요약은 팝업의 `PostingDetail`(`fields`·`score.summary`·`url`)에 이미 있다. 지원 뒤에는 `onChanged()`로 추천 목록을 다시 읽고 팝업을 닫는다. 일정 날짜 글자는 `postingFormat.ts`의 `dateTime`·`scheduleLine`을 같이 쓸 수 있다.
+- 13단계: Gmail 연결·해제 (127.0.0.1 수신기로 Google 인증 → `js-gmail connect`가 갱신 토큰 암호화 저장, 연결 해제, 설정 탭 `GmailPanel`)
+- 관련 결정: D3, D13, D14, D15, D18, D22, D24, D26, D27 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: step 파일의 "시작 전에 확인"(OAuth 클라이언트 종류·갱신 토큰·취소 영향)은 실제로 확인한 것과 추측을 나눠 기록에 적는다. 설정 탭은 `settings/JobSettingsTab.tsx`에 패널을 더한다. 안내 문구는 `messages.ts`(길어서 끝에 구역 주석을 달고 덧붙임).
 
 ## 확인할 문서 (경로는 docs/features/job-search/ 기준, 파일 통째로 읽기)
-- ai/plan/step-12.md
-- ai/spec/req-apply.md (R54–R59)
-- ai/logs/L15.md
-- human/mockups/part-schedule.html의 apply-schedule-done·apply-schedule-list·apply-schedule-vague 구역 (CSS: popup.css·common.css에서 클래스 검색)
-- ai/plan/structure.md의 buildCard.ts·statusSync.ts·popup/ScheduleSuggestDialog.tsx·applications 수정 줄 (새 파일 위치를 정할 때만)
+- ai/plan/step-13.md
+- ai/spec/req-gmail.md (R60–R63, R70)
+- ai/logs/L16.md
+- human/mockups/settings.html의 settings-gmail 구역 (CSS: manage.css·common.css에서 클래스 검색)
+- ai/plan/structure.md의 js-gmail·oauth_listener.rs·gmailConnect.ts·GmailPanel 줄과 `js_gmail_tokens` 줄
+- docs/features/server-setup의 D13(127.0.0.1 콜백) 줄만 grep (server-setup ai/spec/decisions.md)

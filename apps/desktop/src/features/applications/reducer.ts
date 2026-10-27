@@ -1,7 +1,21 @@
 import { withValue } from "./propertyOps";
 import { reduceProperties, type PropertyAction } from "./propertyReducer";
 import { changeStatus } from "./transitions";
-import type { Application, ApplicationsData, PropertyValue, ScheduleEvent, StageId, StatusId } from "./types";
+import type {
+  Application,
+  ApplicationsData,
+  PropertyOption,
+  PropertyValue,
+  ScheduleEvent,
+  StageId,
+  StatusId,
+} from "./types";
+
+/** 다른 기능이 카드를 만들 때 같이 더하는 선택 항목 (예: 처음 보는 회사 이름) */
+export interface NewOption {
+  propertyId: string;
+  option: PropertyOption;
+}
 
 /** 데이터 상태: 읽는 중 / 준비됨 / 읽기 실패 */
 export type DataState =
@@ -20,6 +34,7 @@ export type Action =
   | { type: "loaded"; data: ApplicationsData }
   | { type: "load-failed"; message: string }
   | { type: "create-application"; application: Application }
+  | { type: "create-from-job"; application: Application; options: NewOption[] }
   | { type: "update-application"; id: string; patch: ApplicationPatch; now: string }
   | { type: "delete-application"; id: string }
   | { type: "set-value"; id: string; propertyId: string; value: PropertyValue; now: string }
@@ -38,6 +53,15 @@ export function reducer(state: DataState, action: Action): DataState {
     case "create-application":
       if (state.kind !== "ready") return state;
       return withApplications(state.data, [...state.data.applications, action.application]);
+    case "create-from-job": {
+      // 구직 관리 [지원하기] (job-search R54): 새 선택 항목과 카드를 한 번에 더한다 (항목 없이 값만 남지 않게)
+      if (state.kind !== "ready") return state;
+      let data = state.data;
+      for (const { propertyId, option } of action.options) {
+        data = reduceProperties(data, { type: "add-option", propertyId, option });
+      }
+      return withApplications(data, [...data.applications, action.application]);
+    }
     case "update-application": {
       if (state.kind !== "ready") return state;
       let changed = false;

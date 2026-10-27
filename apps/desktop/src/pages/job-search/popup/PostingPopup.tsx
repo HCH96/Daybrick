@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import Modal from "../../../components/common/Modal";
+import { useApplications } from "../../../features/applications/store";
+import { createServerApplication, markPostingApplied } from "../../../features/job-search/applyApi";
+import { buildCard, mailDomain } from "../../../features/job-search/buildCard";
 import { daysLeft } from "../../../features/job-search/dday";
 import {
+  APPLY_NOT_READY,
+  appliedMarkWarning,
+  applyErrorMessage,
   FORCE_SCORING,
   POSTING_GONE,
   forceCallErrorMessage,
@@ -19,6 +25,12 @@ import {
   type PostingDetail,
 } from "../../../features/job-search/postingApi";
 import { shortDay } from "../../../features/job-search/postingFormat";
+import {
+  suggestSchedule,
+  toScheduleEvents,
+  type SuggestedEvent,
+  type VagueEvent,
+} from "../../../features/job-search/scheduleSuggest";
 import { useJobSearch } from "../../../features/job-search/useJobSearch";
 import type { ApiErrorKind } from "../../../features/server/management";
 import "../../server-setup/wizard/WizardShell.css";
@@ -29,6 +41,7 @@ import InjectionAlert from "./InjectionAlert";
 import PopupFoot, { type FootBusy, type FootMode } from "./PopupFoot";
 import PopupHead from "./PopupHead";
 import ReasonList from "./ReasonList";
+import ScheduleSuggestDialog from "./ScheduleSuggestDialog";
 import ScoreBox from "./ScoreBox";
 import SourceView from "./SourceView";
 import "./PostingPopup.css";
@@ -36,8 +49,17 @@ import "./PostingPopup.css";
 interface PostingPopupProps {
   postingId: string;
   onClose: () => void;
-  /** 지원 안 함·되돌리기·그래도 채점 뒤 목록과 개수를 다시 읽게 알린다 */
+  /** 지원 안 함·되돌리기·그래도 채점·지원하기 뒤 목록과 개수를 다시 읽게 알린다 */
   onChanged: () => void;
+}
+
+/** 지원하기를 마친 뒤 일정 제안 창에 넘기는 값 */
+interface AppliedState {
+  cardId: string;
+  cardName: string;
+  events: SuggestedEvent[];
+  vague: VagueEvent[];
+  warning: string | null;
 }
 
 const STAGE_NAMES: Partial<Record<PostingDetail["stage"], string>> = {
@@ -73,6 +95,8 @@ function PostingPopup({ postingId, onClose, onChanged }: PostingPopupProps) {
   const [zoom, setZoom] = useState<number | null>(null);
   const [busy, setBusy] = useState<FootBusy>(null);
   const [status, setStatus] = useState<StatusLine>(null);
+  const [applied, setApplied] = useState<AppliedState | null>(null);
+  const applications = useApplications();
 
   const load = useCallback(async () => {
     const result = await loadPostingDetail(session, postingId);
@@ -127,6 +151,65 @@ function PostingPopup({ postingId, onClose, onChanged }: PostingPopupProps) {
       onChanged();
     }
     setBusy(null);
+  }
+
+  /** 지원하기 (R54–R57): 서버 지원 건 → 로컬 카드(`jobLink`) → 공고 `applied_at` → 일정 제안 */
+  async function apply(posting: PostingDetail) {
+    if (applications.state.kind !== "ready") {
+      setStatus({ ok: false, text: APPLY_NOT_READY });
+      return;
+    }
+    const { properties } = applications.state.data;
+    setBusy("apply");
+    setStatus(null);
+    const cardId = crypto.randomUUID();
+    const created = await createServerApplication(session, {
+      postingId: posting.id,
+      company: posting.company ?? "",
+      domain: mailDomain(posting.url),
+      cardId,
+      status: "preparing",
+    });
+    if (!created.ok) {
+      setBusy(null);
+      setStatus({ ok: false, text: applyErrorMessage(created.error) });
+      return;
+    }
+    const { events, vague } = suggestSchedule(posting.fields);
+    const { card, options } = buildCard(posting, properties, vague, {
+      cardId,
+      serverId: created.value,
+      now: new Date().toISOString(),
+      newId: () => crypto.randomUUID(),
+    });
+    applications.createFromJob(card, options);
+    const marked = await markPostingApplied(session, posting.id);
+    setBusy(null);
+    onChanged();
+    const warning = marked.ok ? null : appliedMarkWarning(marked.error);
+    // 제안할 날짜도 알릴 것도 없으면 창을 띄우지 않는다 (목업 메모)
+    if (events.length === 0 && !warning) {
+      onClose();
+      return;
+    }
+    const cardName = [posting.company, posting.title].filter(Boolean).join(" · ");
+    setApplied({ cardId, cardName, events, vague, warning });
+  }
+
+  if (applied) {
+    return (
+      <ScheduleSuggestDialog
+        cardName={applied.cardName}
+        events={applied.events}
+        vague={applied.vague}
+        warning={applied.warning}
+        onAdd={(picked) => {
+          applications.addEvents(applied.cardId, toScheduleEvents(picked, () => crypto.randomUUID()));
+          onClose();
+        }}
+        onSkip={onClose}
+      />
+    );
   }
 
   if (!detail) {
@@ -184,6 +267,7 @@ function PostingPopup({ postingId, onClose, onChanged }: PostingPopupProps) {
           onHide={() => void setHidden(true)}
           onRestore={() => void setHidden(false)}
           onForce={() => void force()}
+          onApply={detail.appliedAt ? undefined : () => void apply(detail)}
         />
       </div>
       {zoom !== null && imageUrls && (

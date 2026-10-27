@@ -13,6 +13,7 @@ import TitleBar from "./components/layout/TitleBar";
 import ServerBanner from "./components/server/ServerBanner";
 import ServerUpdateScreen from "./components/server/ServerUpdateScreen";
 import { ApplicationsProvider } from "./features/applications/store";
+import { useJobStatusSync } from "./features/job-search/statusSync";
 import { NotificationsProvider } from "./features/notifications/NotificationsProvider";
 import { ServerProvider } from "./features/server/ServerProvider";
 import { useServer } from "./features/server/useServer";
@@ -36,6 +37,12 @@ function FullScreen({ children }: { children?: ReactNode }) {
       </div>
     </OverlayRootContext.Provider>
   );
+}
+
+/** 구직 관리가 만든 지원 카드의 상태를 서버 지원 건에 맞춘다 (구직 관리 R58·R59). 화면은 없다 */
+function JobStatusSync() {
+  useJobStatusSync();
+  return null;
 }
 
 /**
@@ -101,6 +108,7 @@ function AppMain() {
   return (
     <NavigationContext.Provider value={navigation}>
       <ApplicationsProvider>
+        <JobStatusSync />
         <AppScreens
           main={
             // 갈 곳 이동은 평소 화면에서만 한다. 전체 화면(FullScreen)에는 Provider가 없어 이동할 수 없는 상태다 (D10)
