@@ -207,7 +207,7 @@ pub async fn apply_migrations(pat: String, project_ref: String) -> Result<Applie
     Ok(AppliedMigrations { from, to })
 }
 
-/// 앱이 가진 서버 함수를 모두 배포한다 (JWT 확인 켬, R35). 같은 이름이면 새 내용으로 바뀐다 (D16).
+/// 앱이 가진 서버 함수를 모두 배포한다 (JWT 확인 켬, R35. 예약 실행이 부르는 js- 함수는 끄고 함수 안에서 확인, job-search D19). 같은 이름이면 새 내용으로 바뀐다 (D16).
 /// 원본 파일은 멀티파트 `file` 칸에 `supabase/functions/` 기준 경로를 파일 이름으로 붙여 보낸다.
 #[tauri::command]
 pub async fn deploy_functions(pat: String, project_ref: String) -> Result<(), String> {
@@ -216,7 +216,7 @@ pub async fn deploy_functions(pat: String, project_ref: String) -> Result<(), St
         let metadata = serde_json::json!({
             "entrypoint_path": function.entrypoint,
             "name": function.slug,
-            "verify_jwt": true,
+            "verify_jwt": function.verify_jwt,
         });
         let mut form = reqwest::multipart::Form::new().text("metadata", metadata.to_string());
         for (path, content) in function.files {
@@ -332,12 +332,31 @@ async fn vault_put(pat: &str, project_ref: &str, vault_name: &str, value: &str) 
     run_statement(pat, project_ref, &sql).await
 }
 
+/// 예약 작업이 서버 함수를 부를 주소를 vault에 넣는다 (job-search 15단계). 주소는 공개 값이고 ref는 소문자·숫자만이다.
+async fn put_project_url(pat: &str, project_ref: &str) -> Result<(), String> {
+    let name = migrations::PROJECT_URL_VAULT;
+    if !vault_name_ok(name) {
+        return Err(http::ERR_BAD_RESPONSE.to_string());
+    }
+    let url = format!("https://{}.supabase.co", valid_ref(project_ref)?);
+    let sql = format!(
+        "do $$ declare v_id uuid; begin \
+           select id into v_id from vault.secrets where name = '{name}'; \
+           if v_id is null then perform vault.create_secret('{url}', '{name}', 'Daybrick 예약 실행 주소'); \
+           else perform vault.update_secret(v_id, '{url}'); end if; \
+         end $$;"
+    );
+    run_statement(pat, project_ref, &sql).await
+}
+
 /// 자동 생성 비밀값 중 서버에 없는 것만 무작위 값으로 만든다 (job-search D19). 만든 이름 목록을 돌려준다.
+/// 예약 작업용 프로젝트 주소도 vault에 함께 맞춘다 (만든 이름 목록에는 넣지 않는다).
 /// vault 사본이 필요한 비밀값은 vault에 없을 때도 새로 만들어 두 곳을 같은 값으로 맞춘다.
 /// vault를 먼저 쓰고 함수 비밀값을 나중에 등록해, 중간에 실패해도 다시 실행하면 두 곳이 맞춰진다.
 /// 값은 요청 본문에만 싣고 앱에 남기지 않는다 (server-setup R18).
 #[tauri::command]
 pub async fn ensure_generated_secrets(pat: String, project_ref: String) -> Result<Vec<String>, String> {
+    put_project_url(&pat, &project_ref).await?;
     let existing = existing_secret_names(&pat, &project_ref).await?;
     let mut created = Vec::new();
     let mut body = Vec::new();

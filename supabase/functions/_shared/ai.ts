@@ -1,7 +1,9 @@
 // 서버 함수 공용: Claude 호출 (job-search D15). 모든 AI 호출은 이 함수를 거친다.
 // 호출 전 한도 검사(R73, R74), 호출 뒤 모델·작업·토큰·비용 기록(R72, R79), 크레딧 부족 판정(R78).
 // 날짜 경계(오늘·이번 달)는 한국 시간 기준이다 (D25). 키 값과 응답 본문은 기록하지 않는다.
+// 한도 80%·초과·크레딧 부족 알림도 여기서 보낸다 (R74, R78, R80). 같은 기간에 한 번만 보낸다.
 import type { Caller } from "./auth.ts";
+import { noticeKeys, sendNoticeOnce } from "./notify.ts";
 
 export type AiModel = "claude-haiku-5-5" | "claude-opus-5-5";
 
@@ -89,16 +91,25 @@ function costOf(usage: Usage, price: Price): number {
   return sum / 1_000_000;
 }
 
-/** 오늘 호출 수와 이번 달 사용액이 한도 안인지 본다. 넘었으면 어느 한도인지 돌려준다 */
-async function checkLimits(caller: Caller, settings: Record<string, unknown> | null) {
+/** 지금 사용량과 한도 (80% 알림 판단에 다시 쓴다) */
+interface UsageState {
+  dayStart: string;
+  monthStart: string;
+  todayCount: number;
+  dailyLimit: number;
+  monthCost: number;
+  monthlyLimit: number;
+}
+
+/** 오늘 호출 수와 이번 달 사용액을 읽는다. 읽지 못하면 null */
+async function readUsage(caller: Caller, settings: Record<string, unknown> | null): Promise<UsageState | null> {
   const { dayStart, monthStart } = kstBoundaries(new Date());
   const today = await caller.admin
     .from("js_ai_calls")
     .select("id", { count: "exact", head: true })
     .eq("user_id", caller.userId)
     .gte("at", dayStart);
-  if (today.error) return "database" as const;
-  if ((today.count ?? 0) >= num(settings?.daily_limit, DEFAULT_DAILY_LIMIT)) return "daily" as const;
+  if (today.error) return null;
 
   // 이번 달 비용 합: 1000행씩 나눠 읽는다 (Supabase 한 번 응답 상한)
   let monthCost = 0;
@@ -110,12 +121,84 @@ async function checkLimits(caller: Caller, settings: Record<string, unknown> | n
       .gte("at", monthStart)
       .order("at")
       .range(from, from + 999);
-    if (page.error) return "database" as const;
+    if (page.error) return null;
     for (const row of page.data ?? []) monthCost += num(row.cost_usd, 0);
     if ((page.data ?? []).length < 1000) break;
   }
-  if (monthCost >= num(settings?.monthly_limit_usd, DEFAULT_MONTHLY_LIMIT_USD)) return "monthly" as const;
+  return {
+    dayStart,
+    monthStart,
+    todayCount: today.count ?? 0,
+    dailyLimit: num(settings?.daily_limit, DEFAULT_DAILY_LIMIT),
+    monthCost,
+    monthlyLimit: num(settings?.monthly_limit_usd, DEFAULT_MONTHLY_LIMIT_USD),
+  };
+}
+
+/** 넘은 한도 (넘지 않았으면 null) */
+function overLimit(usage: UsageState): "daily" | "monthly" | null {
+  if (usage.todayCount >= usage.dailyLimit) return "daily";
+  if (usage.monthCost >= usage.monthlyLimit) return "monthly";
   return null;
+}
+
+const NEAR_RATIO = 0.8;
+
+function usd(value: number): string {
+  return `$${value.toFixed(2)}`;
+}
+
+/** 한도 초과 알림 (R74): 하루 한도는 오늘, 월 한도는 이번 달에 한 번만 보낸다 */
+async function noticeOver(caller: Caller, which: "daily" | "monthly", usage: UsageState) {
+  const daily = which === "daily";
+  await sendNoticeOnce(caller, {
+    kind: "limit-over",
+    importance: "warning",
+    title: daily ? "AI 하루 한도 초과" : "AI 월 한도 초과",
+    body: daily
+      ? `오늘 AI 호출 ${usage.todayCount}/${usage.dailyLimit}회. AI 작업을 멈췄고, 남은 작업은 내일 이어서 처리해요.`
+      : `이번 달 사용액 ${usd(usage.monthCost)} / ${usd(usage.monthlyLimit)}. AI 작업을 멈췄고, 남은 작업은 다음 달에 이어서 처리해요.`,
+    tab: "settings",
+    mergeKey: noticeKeys.limit(daily ? "day" : "month"),
+  }, daily ? usage.dayStart : usage.monthStart);
+}
+
+/** 한도 80% 알림 (R74): 이번 호출까지 더한 사용량이 80% 이상이면 기간마다 한 번 */
+async function noticeNear(caller: Caller, usage: UsageState, costUsd: number) {
+  const count = usage.todayCount + 1;
+  if (count >= usage.dailyLimit * NEAR_RATIO) {
+    await sendNoticeOnce(caller, {
+      kind: "limit-near",
+      importance: "warning",
+      title: "AI 하루 한도 80% 사용",
+      body: `오늘 AI 호출 ${count}/${usage.dailyLimit}회. 한도를 넘으면 남은 작업은 내일 이어서 처리해요.`,
+      tab: "settings",
+      mergeKey: noticeKeys.limit("day"),
+    }, usage.dayStart);
+  }
+  const cost = usage.monthCost + costUsd;
+  if (cost >= usage.monthlyLimit * NEAR_RATIO) {
+    await sendNoticeOnce(caller, {
+      kind: "limit-near",
+      importance: "warning",
+      title: "AI 월 한도 80% 사용",
+      body: `이번 달 사용액 ${usd(cost)} / ${usd(usage.monthlyLimit)}. 한도를 넘으면 남은 작업은 다음 달에 이어서 처리해요.`,
+      tab: "settings",
+      mergeKey: noticeKeys.limit("month"),
+    }, usage.monthStart);
+  }
+}
+
+/** 크레딧 부족 알림 (R78): 하루에 한 번 */
+async function noticeCredit(caller: Caller, usage: UsageState) {
+  await sendNoticeOnce(caller, {
+    kind: "credit",
+    importance: "warning",
+    title: "Anthropic 크레딧 부족",
+    body: "API가 크레딧 부족 오류를 돌려줘 AI 작업을 멈췄어요. 크레딧을 충전하면 남은 작업을 이어서 처리해요.",
+    tab: "settings",
+    mergeKey: noticeKeys.credit(),
+  }, usage.dayStart);
 }
 
 /** 크레딧 부족 오류인지: Anthropic은 400 invalid_request_error에 "credit balance" 문구를 돌려준다 */
@@ -127,7 +210,7 @@ function isCreditError(status: number, body: unknown): boolean {
 
 /**
  * Claude를 한 번 부른다. 결과는 `schema` 모양의 JSON (강제 도구 호출로 받는다).
- * 한도를 넘었으면 부르지 않고 `limit`, 크레딧 부족이면 `credit`을 돌려준다 (알림은 15단계).
+ * 한도를 넘었으면 부르지 않고 `limit`, 크레딧 부족이면 `credit`을 돌려주고 알림을 보낸다.
  * Anthropic까지 간 호출은 성공·실패 모두 기록하고, 하루 호출 수에 센다.
  */
 export async function callClaude(caller: Caller, input: CallClaudeInput): Promise<CallClaudeResult> {
@@ -142,9 +225,13 @@ export async function callClaude(caller: Caller, input: CallClaudeInput): Promis
   if (settingsRow.error) return { kind: "error", reason: "database" };
   const settings = settingsRow.data as Record<string, unknown> | null;
 
-  const limit = await checkLimits(caller, settings);
-  if (limit === "database") return { kind: "error", reason: "database" };
-  if (limit) return { kind: "limit", which: limit };
+  const usageNow = await readUsage(caller, settings);
+  if (!usageNow) return { kind: "error", reason: "database" };
+  const limit = overLimit(usageNow);
+  if (limit) {
+    await noticeOver(caller, limit, usageNow);
+    return { kind: "limit", which: limit };
+  }
 
   let response: Response;
   try {
@@ -188,9 +275,13 @@ export async function callClaude(caller: Caller, input: CallClaudeInput): Promis
   if (logged.error) console.error("js_ai_calls 기록 실패");
 
   if (!response.ok) {
-    if (isCreditError(response.status, body)) return { kind: "credit" };
+    if (isCreditError(response.status, body)) {
+      await noticeCredit(caller, usageNow);
+      return { kind: "credit" };
+    }
     return { kind: "error", reason: "upstream" };
   }
+  await noticeNear(caller, usageNow, costUsd);
 
   const blocks = (body as { content?: unknown } | null)?.content;
   const toolUse = Array.isArray(blocks)

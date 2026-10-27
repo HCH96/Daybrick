@@ -1,5 +1,6 @@
 // js-gmail: Gmail 연결·해제·메일 확인 (job-search R60–R70, D18). 메일 확인 코드는 check.ts.
-// JWT 확인을 켜고 배포한다. 앱은 Supabase Google 로그인으로 받은 Google 갱신 토큰을 메모리로만 넘기고,
+// 게이트웨이 JWT 확인을 끄고 배포하고, 호출자는 getCaller(사용자 토큰 또는 예약 비밀값)로 확인한다.
+// 메일 확인은 예약 실행이 하루 한 번(07:00 KST) 부르고, 새 제안이 있으면 "메일 제안 N개" 알림을 보낸다. 앱은 Supabase Google 로그인으로 받은 Google 갱신 토큰을 메모리로만 넘기고,
 // 이 함수가 확인·암호화해 `js_gmail_tokens`에 둔다. 토큰은 앱에 돌려주지 않는다.
 // 요청: { action: "connect", refreshToken } | { action: "disconnect" } | { action: "check" }
 // 응답:
@@ -8,6 +9,7 @@
 // - check: { ok: true, scanned, matched, suggested, stopped } 또는 { ok: false, reason } (check.ts의 CheckResult)
 import { getCaller, type Caller } from "../_shared/auth.ts";
 import { handleOptions, json } from "../_shared/cors.ts";
+import { noticeKeys, sendNotice } from "../_shared/notify.ts";
 import { checkMail } from "./check.ts";
 import { accessToken, GMAIL_SCOPE, openToken, revokeToken, sealToken } from "./token.ts";
 
@@ -72,6 +74,25 @@ Deno.serve(async (req) => {
   }
   if (body.action === "connect") return await connect(caller, body.refreshToken);
   if (body.action === "disconnect") return await disconnect(caller);
-  if (body.action === "check") return json(await checkMail(caller));
+  if (body.action === "check") {
+    const result = await checkMail(caller);
+    if (result.ok && result.suggested > 0) await noticeMail(caller);
+    return json(result);
+  }
   return json({ ok: false, reason: "unknown-action" }, 400);
 });
+
+/** 메일 제안 알림 (R80): N은 처리하지 않은 제안 전체 수. 합치기 키로 안 읽은 알림 하나를 갱신한다 */
+async function noticeMail(caller: Caller) {
+  const { count, error } = await caller.admin.from("js_mail_suggestions")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", caller.userId).eq("state", "pending");
+  if (error || !count) return;
+  await sendNotice(caller, {
+    kind: "mail-suggest",
+    importance: "info",
+    title: `메일 제안 ${count}개`,
+    tab: "mail",
+    mergeKey: noticeKeys.mail(),
+  });
+}

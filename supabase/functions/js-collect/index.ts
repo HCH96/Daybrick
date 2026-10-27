@@ -1,8 +1,11 @@
-// js-collect: 사이트 어댑터 규칙으로 공고를 모은다 (job-search R25, R35–R40, D30).
-// JWT 확인을 켜고 배포한다. 서비스 역할로 쓰되 항상 호출자 user_id로 거른다. AI는 부르지 않는다.
+// js-collect: 사이트 어댑터 규칙으로 공고를 모은다 (job-search R25, R33, R35–R40, D30).
+// 게이트웨이 JWT 확인을 끄고 배포하고, 호출자는 getCaller(사용자 토큰 또는 예약 비밀값)로 확인한다.
+// 서비스 역할로 쓰되 항상 호출자 user_id로 거른다. AI는 부르지 않는다.
 // 요청: { action: "run", siteId? } — siteId가 없으면 켜진 사이트 전체, 있으면 그 사이트 하나(꺼져 있어도).
 // 순서: 사이트마다 목록 읽기 → 새 공고만 넣기(stage new, body_text null) → 남은 시간 안에 원문 받기.
+// 실패한 사이트는 "수집 실패" 알림을 보낸다 (R36, 사이트별 합치기 키).
 // 원문을 못 받은 공고(body_text null)는 다음 실행이 이어 받는다 (R39: 받은 원문은 다시 받지 않는다).
+//       { action: "bodies" } — 원문만 이어 받기 (예약 실행이 원문 없는 공고가 있을 때 부른다).
 //       { action: "test", rule, vars } — 시험 수집 (R29, R32, test.ts): 저장하지 않는다.
 // 응답: { ok: true, sites: [{ siteId, name, ok, read, added, reason? }], pending } 또는 { ok: false, reason }
 import {
@@ -20,6 +23,7 @@ import {
 import { type Caller, getCaller } from "../_shared/auth.ts";
 import { handleOptions, json } from "../_shared/cors.ts";
 import { extId, normKey } from "../_shared/dedupe.ts";
+import { noticeKeys, sendNotice } from "../_shared/notify.ts";
 import { testRule } from "./test.ts";
 
 const BUCKET = "job-search";
@@ -174,6 +178,39 @@ async function record(caller: Caller, run: SiteRun) {
   }).eq("id", run.siteId).eq("user_id", caller.userId);
 }
 
+/** 수집 실패 알림 (R36): 사이트마다 합치기 키가 있어 다시 실패하면 같은 알림이 갱신된다 */
+async function noticeFail(caller: Caller, run: SiteRun) {
+  await sendNotice(caller, {
+    kind: "collect-fail",
+    importance: "warning",
+    title: `수집 실패: ${run.name}`,
+    body: run.reason ?? "",
+    tab: "sources",
+    mergeKey: noticeKeys.collectFail(run.siteId),
+  });
+}
+
+/** 원문만 이어 받기 (예약 실행): 목록은 다시 읽지 않고, 켜진 사이트의 원문 없는 공고만 받는다 */
+async function bodiesOnly(caller: Caller): Promise<Response> {
+  const deadline = Date.now() + BUDGET_MS;
+  const sites = await caller.admin.from("js_sites").select("id, name, vars, adapter:js_adapters(rule)")
+    .eq("user_id", caller.userId).eq("enabled", true);
+  if (sites.error) return json({ ok: false, reason: "database" });
+  const targets: Target[] = [];
+  for (const site of (sites.data ?? []) as unknown as SiteRow[]) {
+    const checked = site.adapter ? validateRule(site.adapter.rule) : null;
+    const vars = stringVars(site.vars);
+    if (checked?.ok && missingVars(checked.rule, vars).length === 0) targets.push({ site, rule: checked.rule, vars });
+  }
+  if (targets.length === 0) return json({ ok: false, reason: "no-sites" });
+  try {
+    const pending = await fetchBodies(caller, targets, new Map(), deadline);
+    return json({ ok: true, sites: [], pending });
+  } catch {
+    return json({ ok: false, reason: "database" });
+  }
+}
+
 async function run(caller: Caller, siteId: string | null): Promise<Response> {
   const deadline = Date.now() + BUDGET_MS;
   let query = caller.admin.from("js_sites").select("id, name, vars, adapter:js_adapters(rule)")
@@ -190,12 +227,15 @@ async function run(caller: Caller, siteId: string | null): Promise<Response> {
     const result: SiteRun = { siteId: site.id, name: site.name, ok: false, read: 0, added: 0 };
     const checked = site.adapter ? validateRule(site.adapter.rule) : null;
     const vars = stringVars(site.vars);
+    let skipped = false;
     if (!checked) result.reason = "어댑터 없음";
     else if (!checked.ok) result.reason = `규칙 형식 오류: ${checked.errors[0]}`;
     else if (missingVars(checked.rule, vars).length > 0) {
       result.reason = `사이트 값 없음: ${missingVars(checked.rule, vars).join(", ")}`;
-    } else if (Date.now() > deadline) result.reason = "시간이 모자라 이번에는 건너뜀";
-    else {
+    } else if (Date.now() > deadline) {
+      result.reason = "시간이 모자라 이번에는 건너뜀";
+      skipped = true; // 사이트 문제가 아니므로 실패 알림을 보내지 않는다
+    } else {
       const list = await readList(checked.rule, vars, deadline);
       if (!list.ok) result.reason = list.reason;
       else {
@@ -214,6 +254,7 @@ async function run(caller: Caller, siteId: string | null): Promise<Response> {
       targets.push({ site, rule: checked.rule, vars });
     }
     await record(caller, result);
+    if (!result.ok && !skipped) await noticeFail(caller, result);
     runs.push(result);
   }
 
@@ -242,6 +283,7 @@ Deno.serve(async (req) => {
   const action = body.action ?? "run";
   const siteId = typeof body.siteId === "string" ? body.siteId : null;
   if (action === "run") return await run(caller, siteId);
+  if (action === "bodies") return await bodiesOnly(caller);
   if (action === "test") return await testRule(body.rule, body.vars);
   return json({ ok: false, reason: "unknown-action" }, 400);
 });

@@ -1,15 +1,18 @@
 // js-process: 수집한 공고를 "1차 필터 → 추출(+인젝션 검사) → 2차 필터 → 채점" 순서로 처리한다 (job-search R41, R48–R53).
-// JWT 확인을 켜고 배포한다. 서비스 역할로 쓰되 항상 호출자 user_id로 거른다. AI 호출은 `_shared/ai.ts`만 거친다 (D15).
+// 게이트웨이 JWT 확인을 끄고 배포하고, 호출자는 getCaller(사용자 토큰 또는 예약 비밀값)로 확인한다.
+// 서비스 역할로 쓰되 항상 호출자 user_id로 거른다. AI 호출은 `_shared/ai.ts`만 거친다 (D15).
 // 요청: { mode: "queue", limit? }  — 기본. 대기 공고를 기본 5개(최대 10) 꺼내 처리한다 (D17).
+//         예약 실행이 15분마다 부른다(R74). 대기열을 다 비운 실행이 "새 추천 공고 N개" 알림을 보낸다.
 //         순서: waiting(한도로 미룬 것, R74) → extracted(채점 전에 멈춘 것) → new. 원문이 없거나 숨긴 공고는 건너뛴다 (D31, D11).
 //       { mode: "force", postingId } — 그래도 채점 (R46, R49): 필터·의심을 건너뛰고 채점한다.
 //       { mode: "rescore", limit? } — 이전 프로필 버전으로 채점한 공고를 지금 프로필로 다시 채점한다 (R23).
-// 한도에 걸리면 그 공고를 waiting으로 두고 멈춘다 (queue). 크레딧 부족도 같다 (R78, 알림은 15단계).
+// 한도에 걸리면 그 공고를 waiting으로 두고 멈춘다 (queue). 크레딧 부족도 같다 (R78, 알림은 _shared/ai.ts).
 // 응답: { ok: true, done: [{ postingId, stage }], stopped: { reason, which? } | null, remaining }
 //       force는 { ok: true, stage } 또는 { ok: false, reason, which? }. 실패 { ok: false, reason: unauthorized|database|… }
 import { getCaller } from "../_shared/auth.ts";
 import { handleOptions, json } from "../_shared/cors.ts";
 import type { FilterRow } from "../_shared/filters.ts";
+import { lastNoticeAt, sendNotice } from "../_shared/notify.ts";
 import {
   type Context,
   extract,
@@ -136,7 +139,29 @@ async function runQueue(ctx: Context, limit: number) {
     break;
   }
   if (!stopped && noProfile) stopped = { reason: "no-profile" };
-  return json({ ok: true, done, stopped, remaining: await countQueue(ctx) });
+  const remaining = await countQueue(ctx);
+  if (remaining === 0 && done.some((d) => d.stage === "scored")) await noticeRecommend(ctx);
+  return json({ ok: true, done, stopped, remaining });
+}
+
+/**
+ * 새 추천 공고 알림 (R80): 대기열을 다 처리한 실행에서 한 번 보낸다 (합치기 키 없음).
+ * N = 지난 "새 추천 공고" 알림 뒤에 수집된 추천 공고(채점됨, 숨기지·지원하지 않음) 수.
+ */
+async function noticeRecommend(ctx: Context) {
+  const since = await lastNoticeAt(ctx.caller, "new-recommend");
+  if (since === undefined) return;
+  let query = ctx.caller.admin.from("js_postings").select("id", { count: "exact", head: true })
+    .eq("user_id", ctx.caller.userId).eq("stage", "scored").is("hidden_at", null).is("applied_at", null);
+  if (since) query = query.gt("collected_at", since);
+  const { count, error } = await query;
+  if (error || !count) return;
+  await sendNotice(ctx.caller, {
+    kind: "new-recommend",
+    importance: "info",
+    title: `새 추천 공고 ${count}개`,
+    tab: "recommend",
+  });
 }
 
 async function loadExtractionFields(ctx: Context, postingId: string): Promise<unknown> {

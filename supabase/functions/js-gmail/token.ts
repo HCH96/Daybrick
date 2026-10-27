@@ -3,6 +3,7 @@
 // 토큰 값은 응답·로그 어디에도 남기지 않는다.
 import { decodeBase64, encodeBase64 } from "jsr:@std/encoding/base64";
 import type { Caller } from "../_shared/auth.ts";
+import { noticeKeys, sendNotice } from "../_shared/notify.ts";
 
 export const GMAIL_SCOPE = "https://www.googleapis.com/auth/gmail.readonly";
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
@@ -107,13 +108,23 @@ export async function revokeToken(token: string): Promise<boolean> {
   }
 }
 
-/** 갱신 토큰이 거절됐을 때 끊김을 기록한다 (R70). 알림은 15단계 */
+/** 갱신 토큰이 거절됐을 때 끊김을 기록하고, 처음 끊긴 때에만 알림을 보낸다 (R70, R80) */
 export async function markBroken(caller: Caller): Promise<void> {
-  await caller.admin
+  const { data } = await caller.admin
     .from("js_gmail_tokens")
     .update({ broken_at: new Date().toISOString() })
     .eq("user_id", caller.userId)
-    .is("broken_at", null);
+    .is("broken_at", null)
+    .select("user_id");
+  if (!data || data.length === 0) return;
+  await sendNotice(caller, {
+    kind: "gmail-broken",
+    importance: "warning",
+    title: "Gmail 연결 끊김",
+    body: "Google이 Gmail 읽기 권한을 거절해 메일 확인을 멈췄어요. 설정 탭에서 다시 연결해 주세요.",
+    tab: "settings",
+    mergeKey: noticeKeys.gmailBroken(),
+  });
 }
 
 /**

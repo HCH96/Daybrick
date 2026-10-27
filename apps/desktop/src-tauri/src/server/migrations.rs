@@ -25,6 +25,10 @@ pub const MIGRATIONS: &[(u32, &str)] = &[
         3,
         include_str!("../../../../../supabase/migrations/0003_job_search.sql"),
     ),
+    (
+        4,
+        include_str!("../../../../../supabase/migrations/0004_job_search_cron.sql"),
+    ),
 ];
 
 /// 앱이 무작위 값으로 만들어 두는 서버 함수 비밀값 (job-search D19).
@@ -32,11 +36,18 @@ pub const MIGRATIONS: &[(u32, &str)] = &[
 pub const GENERATED_SECRETS: &[&str] = &["DAYBRICK_CRON_SECRET", "GMAIL_TOKEN_KEY"];
 
 /// vault에도 같은 값을 넣는 비밀값과 vault 이름 (예약 작업이 SQL에서 읽음, job-search 15단계)
+/// 프로젝트 주소도 vault `PROJECT_URL_VAULT`에 넣는다 (management.rs `ensure_generated_secrets`).
 pub const VAULT_COPIES: &[(&str, &str)] = &[("DAYBRICK_CRON_SECRET", "daybrick_cron_secret")];
 
+/// 예약 작업이 서버 함수 주소를 만들 때 읽는 vault 이름 (값: `https://<ref>.supabase.co`, 0004 SQL)
+pub const PROJECT_URL_VAULT: &str = "daybrick_project_url";
+
 /// 서버 함수 하나: 배포 이름(slug), 진입 파일, 함께 올릴 원본 파일들 (경로는 `supabase/functions/` 기준)
+/// `verify_jwt`가 false면 게이트웨이 JWT 확인을 끄고 함수 안에서 호출자를 확인한다
+/// (예약 실행이 JWT 없이 `x-daybrick-cron` 머리글로 부르는 함수, job-search D19).
 pub struct EdgeFunction {
     pub slug: &'static str,
+    pub verify_jwt: bool,
     pub entrypoint: &'static str,
     pub files: &'static [(&'static str, &'static str)],
 }
@@ -82,8 +93,7 @@ const FILTERS: (&str, &str) = (
     include_str!("../../../../../supabase/functions/_shared/filters.ts"),
 );
 
-/// 구직 관리 공용: 알림 보내기 (15단계에서 js- 함수 묶음에 넣는다)
-#[allow(dead_code)]
+/// 구직 관리 공용: 알림 보내기 (`_shared/ai.ts`가 쓰므로 js- 함수 묶음 모두에 넣는다)
 const NOTIFY: (&str, &str) = (
     "_shared/notify.ts",
     include_str!("../../../../../supabase/functions/_shared/notify.ts"),
@@ -93,6 +103,7 @@ const NOTIFY: (&str, &str) = (
 pub const FUNCTIONS: &[EdgeFunction] = &[
     EdgeFunction {
         slug: "health",
+        verify_jwt: true,
         entrypoint: "health/index.ts",
         files: &[
             (
@@ -104,6 +115,7 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
     },
     EdgeFunction {
         slug: "ai-key-check",
+        verify_jwt: true,
         entrypoint: "ai-key-check/index.ts",
         files: &[
             (
@@ -115,6 +127,7 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
     },
     EdgeFunction {
         slug: "js-profile",
+        verify_jwt: true,
         entrypoint: "js-profile/index.ts",
         files: &[
             (
@@ -125,10 +138,12 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
             AUTH,
             AI,
             PROMPTS,
+            NOTIFY,
         ],
     },
     EdgeFunction {
         slug: "js-collect",
+        verify_jwt: false,
         entrypoint: "js-collect/index.ts",
         files: &[
             (
@@ -143,10 +158,12 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
             AUTH,
             ADAPTER,
             DEDUPE,
+            NOTIFY,
         ],
     },
     EdgeFunction {
         slug: "js-process",
+        verify_jwt: false,
         entrypoint: "js-process/index.ts",
         files: &[
             (
@@ -166,10 +183,12 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
             AI,
             PROMPTS,
             FILTERS,
+            NOTIFY,
         ],
     },
     EdgeFunction {
         slug: "js-gmail",
+        verify_jwt: false,
         entrypoint: "js-gmail/index.ts",
         files: &[
             (
@@ -192,6 +211,7 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
             AUTH,
             AI,
             PROMPTS,
+            NOTIFY,
         ],
     },
 ];
