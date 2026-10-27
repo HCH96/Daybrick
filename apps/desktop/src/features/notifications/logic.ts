@@ -13,9 +13,35 @@ export function newLocalId(): string {
 }
 
 /**
+ * 저장할 시각: max(now, 목록의 가장 늦은 updatedAt + 1ms) (D17).
+ * 시각을 읽을 수 없는 알림은 건너뛴다.
+ */
+function nextStamp(list: readonly AppNotification[], now: Date): string {
+  let latest = Number.NEGATIVE_INFINITY;
+  for (const n of list) {
+    const time = Date.parse(n.updatedAt);
+    if (!Number.isNaN(time) && time > latest) latest = time;
+  }
+  return new Date(Math.max(now.getTime(), latest + 1)).toISOString();
+}
+
+/** 시각 비교용 숫자. 읽을 수 없으면 가장 오래된 것으로 친다. */
+function timeOf(iso: string): number {
+  const time = Date.parse(iso);
+  return Number.isNaN(time) ? Number.NEGATIVE_INFINITY : time;
+}
+
+/** 내림차순 비교 (b가 크면 양수, 같으면 0) */
+function desc<T extends number | string>(a: T, b: T): number {
+  if (a === b) return 0;
+  return b > a ? 1 : -1;
+}
+
+/**
  * 알림 하나를 목록에 넣는다 (R24, D6).
  * 같은 source·mergeKey의 안 읽은 알림이 있으면 그 알림의 제목·내용·updatedAt만 바꾼다.
  * 없으면(키가 없거나 같은 키가 모두 확인됨) 새 알림을 만든다.
+ * 저장 시각은 목록의 가장 늦은 updatedAt보다 늦게 잡아 겹치지 않게 한다 (R10, D17).
  */
 export function mergeNotification(
   list: readonly AppNotification[],
@@ -23,7 +49,7 @@ export function mergeNotification(
   now: Date,
   makeId: () => string = newLocalId,
 ): AppNotification[] {
-  const at = now.toISOString();
+  const at = nextStamp(list, now);
   if (input.mergeKey !== undefined) {
     const index = list.findIndex(
       (n) => n.readAt === null && n.source === input.source && n.mergeKey === input.mergeKey,
@@ -83,7 +109,17 @@ export function markAllRead(list: readonly AppNotification[], now: Date): AppNot
   return list.map((n) => (n.readAt === null ? { ...n, readAt: at } : n));
 }
 
-/** 목록에 보여줄 순서: updatedAt 최신순, 최대 50개 */
+/**
+ * 목록에 보여줄 순서 (R10, D17): updatedAt 최신순 → createdAt 최신순 → id 내림차순.
+ * 정렬한 뒤 최대 50개를 자른다.
+ */
 export function sortForList(list: readonly AppNotification[], limit: number = LIST_LIMIT): AppNotification[] {
-  return [...list].sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt)).slice(0, limit);
+  return [...list]
+    .sort(
+      (a, b) =>
+        desc(timeOf(a.updatedAt), timeOf(b.updatedAt)) ||
+        desc(timeOf(a.createdAt), timeOf(b.createdAt)) ||
+        desc(a.id, b.id),
+    )
+    .slice(0, limit);
 }
