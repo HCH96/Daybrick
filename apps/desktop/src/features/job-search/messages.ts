@@ -1,5 +1,6 @@
 import type { ApiErrorKind } from "../server/management";
 import type { CollectFailReason, ProfileGenerateFailure } from "./api";
+import type { ProcessStop } from "./recommendApi";
 
 /** 구직 관리 화면의 오류·안내 문구는 모두 여기 둔다. 키·토큰 값은 어떤 문구에도 넣지 않는다. */
 
@@ -256,3 +257,50 @@ export function flowLoadErrorMessage(kind: ApiErrorKind): string {
 
 export const FILTER_FOOT_NOTE =
   "켜진 조건을 모두 만족해야 통과해요. 조건을 바꾸면 아직 채점하지 않은 공고에만 다시 적용하고, 이미 채점한 결과는 그대로 둬요.";
+
+// ===== 추천 공고 (R4–R8, R23) =====
+
+export function recommendLoadErrorMessage(kind: ApiErrorKind): string {
+  return `추천 공고를 읽지 못했어요. ${reason(kind)}`;
+}
+
+export const NO_RECOMMEND = "아직 채점된 공고가 없어요. 수집 사이트 탭에서 [지금 수집]을 누르면 수집·채점이 시작돼요.";
+export const NOT_COLLECTED_YET = "아직 수집 안 함";
+export const WAITING_NOTE = "한도에 걸려 내일 이어서 채점";
+export const RESCORING = "다시 채점하는 중…";
+
+export function staleNote(count: number): string {
+  return `프로필이 바뀌어 ${count}개가 이전 프로필 기준이에요`;
+}
+
+/** 다시 채점 함수를 부르지 못했을 때 */
+export function rescoreCallErrorMessage(kind: ApiErrorKind): string {
+  if (kind === "not-found") return "처리 서버 함수가 없어요. 서버 업데이트를 해 주세요.";
+  return `다시 채점하지 못했어요. ${reason(kind)}`;
+}
+
+/** 다시 채점이 중간에 멈췄을 때 (D37 stopped) */
+export function rescoreStopMessage(stop: ProcessStop, done: number, remaining: number): string {
+  const head = `${done}개를 다시 채점했고 ${remaining}개가 남았어요.`;
+  switch (stop.reason) {
+    case "limit":
+      return `${head} ${aiLimitMessage(stop.which)}`;
+    case "credit":
+      return `${head} ${AI_CREDIT_MESSAGE}`;
+    case "no-profile":
+      return "저장된 프로필이 없어요. 프로필 탭에서 프로필을 저장해 주세요.";
+    case "time":
+      return `${head} [다시 채점]을 한 번 더 눌러 이어 주세요.`;
+    case "missing-key":
+      return `${head} 서버에 Anthropic 키가 없어요. 설정에서 서버 업데이트를 해 주세요.`;
+    case "network":
+    case "upstream":
+      return `${head} AI 서버에 닿지 못했어요. 잠시 뒤 다시 시도해 주세요.`;
+    case "database":
+      return `${head} 서버에서 점수를 저장하지 못했어요.`;
+  }
+}
+
+export function rescoredMessage(done: number): string {
+  return `${done}개를 지금 프로필로 다시 채점했어요.`;
+}

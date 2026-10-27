@@ -25,7 +25,7 @@ import type {
  * 실패는 서버 연결과 같은 원인 종류(`ApiErrorKind`)로 돌려준다. 단계마다 함수를 더한다.
  */
 
-function postgrestError(error: PostgrestError, status: number): ApiErrorKind {
+export function postgrestError(error: PostgrestError, status: number): ApiErrorKind {
   // status 0 = 요청 자체가 실패 (인터넷 끊김)
   if (status === 0) return "network";
   if (error.code === "42501" || status === 403) return "forbidden";
@@ -35,12 +35,12 @@ function postgrestError(error: PostgrestError, status: number): ApiErrorKind {
   return "server";
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /** numeric 열은 글자로 올 수 있어 숫자로 바꾼다 */
-function toNumber(value: unknown): number | null {
+export function toNumber(value: unknown): number | null {
   const n = typeof value === "string" ? Number(value) : value;
   return typeof n === "number" && Number.isFinite(n) ? n : null;
 }
@@ -151,7 +151,7 @@ function parseAiCall(row: unknown): AiCall | null {
   };
 }
 
-const PAGE_SIZE = 1000;
+export const PAGE_SIZE = 1000;
 
 /** `sinceIso` 이후의 AI 호출 기록 (읽기만, R72). 서버 응답 상한(1000행)을 넘으면 나눠 읽는다 */
 export async function loadAiCallsSince(session: ServerSession, sinceIso: string): Promise<ApiResult<AiCall[]>> {
@@ -367,7 +367,7 @@ export type ProfileGenerateFailure =
 
 export type ProfileGenerateResult = { ok: true } | ({ ok: false } & ProfileGenerateFailure);
 
-function functionError(error: unknown): ApiErrorKind {
+export function functionError(error: unknown): ApiErrorKind {
   if (error instanceof FunctionsHttpError) {
     const response: unknown = error.context;
     if (response instanceof Response) {

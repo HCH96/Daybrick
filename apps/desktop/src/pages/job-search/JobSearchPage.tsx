@@ -7,7 +7,7 @@ import JobSearchDisconnected from "./JobSearchDisconnected";
 import TabPlaceholder from "./TabPlaceholder";
 import FiltersTab from "./filters/FiltersTab";
 import ProfileTab from "./profile/ProfileTab";
-import UsageLine from "./recommend/UsageLine";
+import RecommendTab from "./recommend/RecommendTab";
 import JobSettingsTab from "./settings/JobSettingsTab";
 import SourcesTab from "./sources/SourcesTab";
 import { JOB_SEARCH_TABS, isJobSearchTab, type JobSearchTabId } from "./tabs";
@@ -25,12 +25,7 @@ function TabBody({ tab, label }: { tab: JobSearchTabId; label: string }) {
     case "filters":
       return <FiltersTab />;
     case "recommend":
-      return (
-        <>
-          <UsageLine />
-          <TabPlaceholder label={label} />
-        </>
-      );
+      return <RecommendTab />;
     default:
       return <TabPlaceholder label={label} />;
   }

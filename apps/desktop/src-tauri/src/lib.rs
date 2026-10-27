@@ -1,3 +1,4 @@
+mod job_search;
 mod notifications;
 mod server;
 mod storage;
@@ -11,6 +12,8 @@ pub fn run() {
             storage::load_applications,
             storage::save_applications,
             storage::save_image,
+            job_search::load_job_search_local,
+            job_search::save_job_search_local,
             notifications::load_notifications,
             notifications::save_notifications,
             server::config::load_server_config,

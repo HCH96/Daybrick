@@ -1,0 +1,184 @@
+/* 추천 공고 탭. 목업 recommend.css의 .status·.status-row·.status-item·.dot-sep·.toolbar·.sort·.count·.stale-note·.jobs, common.css의 .chip·.btn 기준 */
+.js-recommend {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.js-recommend .setup-btn,
+.js-recommend__state .setup-btn {
+  height: 34px;
+  border-radius: 8px;
+}
+
+.js-recommend .setup-btn--sm {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.js-recommend .setup-btn--primary {
+  margin-top: 0;
+}
+
+/* ===== 상태 상자: 1줄 사용액(UsageLine), 2줄 수집 상태 ===== */
+.js-recommend__status {
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.js-recommend__status-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.js-recommend__status-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.js-recommend__status-item b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.js-recommend__dot-sep {
+  color: var(--faint);
+}
+
+.js-recommend__faint {
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.js-recommend__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.js-recommend__chip--red {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.js-recommend__chip--amber {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+/* ===== 도구 줄 ===== */
+.js-recommend__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.js-recommend__sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.js-recommend__sort select {
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  appearance: none;
+  cursor: pointer;
+}
+
+.js-recommend__sort select option {
+  background: var(--surface);
+}
+
+.js-recommend__k {
+  color: var(--muted);
+}
+
+.js-recommend__count {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.js-recommend__count b {
+  color: var(--text);
+}
+
+.js-recommend__stale-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 6px 0 12px;
+  border-radius: 8px;
+  background: var(--amber-soft);
+  color: var(--amber);
+  font-size: 13px;
+}
+
+.js-recommend__right {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.js-recommend__n {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+/* ===== 결과 줄·빈 목록·읽는 중 ===== */
+.js-recommend__msg {
+  margin: -6px 0 14px;
+  font-size: 13px;
+}
+
+.js-recommend__msg--ok {
+  color: var(--green);
+}
+
+.js-recommend__msg--bad {
+  color: var(--red);
+}
+
+.js-recommend__empty,
+.js-recommend__state {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ===== 카드 3열 ===== */
+.js-recommend__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}

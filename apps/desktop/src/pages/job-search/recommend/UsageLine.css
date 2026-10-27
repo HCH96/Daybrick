@@ -1,11 +1,4 @@
-/* 추천 공고 탭 사용액 줄. 목업 recommend.css의 .status·.meter·.bar·.balance·.calc-note 기준 */
-.usage-line {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 18px;
-  margin-bottom: 16px;
-}
+/* 추천 공고 탭 상태 상자 1줄(사용액). 목업 recommend.css의 .status-row·.meter·.bar·.balance·.calc-note 기준. 상자 틀은 RecommendTab.css */
 
 .usage-line__row {
   display: flex;

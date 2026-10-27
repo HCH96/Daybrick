@@ -1,0 +1,142 @@
+/* 추천 공고 카드. 목업 recommend.css의 .job·.job-top·.job-title·.job-meta·.job-foot·.dday·.stale·.score·.g-*, common.css의 .chip.new 기준 */
+.posting-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 150px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+
+.posting-card:not(:disabled) {
+  cursor: pointer;
+}
+
+.posting-card:not(:disabled):hover {
+  border-color: var(--border-2);
+}
+
+.posting-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.posting-card--new {
+  border-color: #4a3f73;
+}
+
+.posting-card__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.posting-card__co {
+  font-weight: 700;
+}
+
+.posting-card__new {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 99px;
+  background: var(--badge);
+  color: var(--on-badge);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.posting-card__site {
+  margin-left: auto;
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.posting-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.posting-card__meta {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.posting-card__foot {
+  margin-top: auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.posting-card__dday {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--neutral-soft);
+  color: var(--neutral);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.posting-card__dday--soon {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.posting-card__dday--always {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.posting-card__stale {
+  color: var(--amber);
+  font-size: 11px;
+}
+
+.posting-card__score {
+  margin-left: auto;
+  text-align: right;
+  line-height: 1.1;
+}
+
+.posting-card__score b {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.posting-card__score b small {
+  margin-left: 1px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.posting-card__score span {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.posting-card__score--green {
+  color: var(--green);
+}
+
+.posting-card__score--accent {
+  color: var(--accent);
+}
+
+.posting-card__score--amber {
+  color: var(--amber);
+}
+
+.posting-card__score--muted {
+  color: var(--muted);
+}

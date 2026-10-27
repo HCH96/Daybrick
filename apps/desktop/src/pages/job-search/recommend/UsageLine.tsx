@@ -28,29 +28,26 @@ function Meter({ label, value, of, percent }: { label: string; value: string; of
   );
 }
 
-/** 추천 공고 탭 위쪽 사용액 줄 (R75, R77): 오늘 호출·이번 달 사용액 막대, 기준 잔액 → 예상 잔액 */
+/** 추천 공고 탭 상태 상자의 1줄 (R75, R77): 오늘 호출·이번 달 사용액 막대, 기준 잔액 → 예상 잔액. 상자 틀은 RecommendTab */
 function UsageLine() {
   const { data, error, refresh } = useJobSearch();
 
   if (!data) {
     return (
-      <div className="usage-line">
-        <div className="usage-line__row">
-          <span className="usage-line__msg">{error ? loadErrorMessage(error) : "사용량을 읽는 중…"}</span>
-          {error && (
-            <button type="button" className="usage-line__retry" onClick={() => void refresh()}>
-              다시 시도
-            </button>
-          )}
-        </div>
+      <div className="usage-line__row">
+        <span className="usage-line__msg">{error ? loadErrorMessage(error) : "사용량을 읽는 중…"}</span>
+        {error && (
+          <button type="button" className="usage-line__retry" onClick={() => void refresh()}>
+            다시 시도
+          </button>
+        )}
       </div>
     );
   }
 
   const usage = summarizeUsage(data.settings, data.balanceRecords, data.aiCalls, new Date());
   return (
-    <div className="usage-line">
-      <div className="usage-line__row">
+    <div className="usage-line__row">
         <Meter
           label="오늘 호출"
           value={String(usage.todayCalls)}
@@ -84,7 +81,6 @@ function UsageLine() {
           <AlertIcon />
           {CALC_NOTE}
         </span>
-      </div>
     </div>
   );
 }

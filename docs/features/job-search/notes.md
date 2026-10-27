@@ -11,16 +11,19 @@
 - 7단계: 사이트 추가·시험 수집·어댑터 가이드 (자동 진행, 최종 테스트 대기)
 - 8단계: 필터 탭 (자동 진행, 최종 테스트 대기)
 - 9단계: 처리 함수 (필터·추출·채점) (자동 진행, 최종 테스트 대기)
+- 10단계: 추천 공고 탭 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 10단계: 추천 공고 탭 (채점된 공고 카드 3열·정렬·"새" 표시·이전 프로필 기준 다시 채점·수집 상태 줄)
-- 관련 결정: D7, D11, D21, D22, D23, D25, D26, D27, D31, D32, D36, D37 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 카드의 경력·고용 형태·근무지·마감은 `js_extractions.fields`(D36의 `experience.text`·`employment`·`location`·`deadline.date/text`)에서, 점수·등급은 `js_scores`(`grade` id `strong|good|fair|low`)에서 읽는다. [다시 채점]은 `js-process` `{ mode: "rescore" }`(D37, 응답 `remaining`이 0이 될 때까지 다시 부를지 정한다). "채점 대기 N개"는 `stage = 'waiting'` 공고 수.
+- 11단계: 상세 팝업·걸러진 공고·보관함 (카드를 누르면 상세 팝업, 인젝션 경고·그래도 채점, 이미지 크게 보기, 지원 안 함·보관함 되돌리기, 걸러진 공고 목록)
+- 관련 결정: D5, D11, D14, D21, D22, D26, D27, D31, D35, D36, D37, D38 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: 팝업 열기는 `PostingGrid`에서 `PostingCard`에 `onOpen`을, 목록 열기는 `RecommendTab`에서 `RecommendToolbar`에 `onOpenArchived`·`onOpenFiltered`를 넘기면 단추가 풀린다(D38). 팝업에 필요한 강점·부족한 점·요약·추출 전체·원문·이미지는 `recommendApi.ts`의 `loadRecommend`가 읽지 않으니 공고 하나를 따로 읽는 함수를 같은 파일에 더한다. 지원 안 함·되돌리기·그래도 채점 뒤에는 `RecommendTab`의 `reload()`로 목록과 개수를 다시 읽는다.
 
 ## 확인할 문서 (경로는 docs/features/job-search/ 기준, 파일 통째로 읽기)
-- ai/plan/step-10.md
-- ai/spec/req-recommend.md (R4–R8), ai/spec/req-profile.md (R23), ai/spec/req-usage.md (R75)
-- ai/spec/mockup.md의 "점수 색"·"마감 표시" 줄 (grep으로 그 줄만)
-- ai/logs/L13.md
-- human/mockups/recommend.html의 recommend-status·recommend-toolbar·recommend-cards 구역 (CSS: recommend.css·common.css에서 클래스 검색)
-- ai/plan/structure.md의 recommend/ 줄과 "2. 데이터 모양" 절의 job-search.json 부분 (새 파일 위치를 정할 때만)
+- ai/plan/step-11.md
+- ai/spec/req-recommend.md (R9–R16), ai/spec/req-analysis.md (R46, R49)
+- ai/logs/L14.md
+- human/mockups/popup.html의 popup-head·popup-score·popup-reasons·popup-fields·popup-source·popup-foot 구역 (CSS: popup.css·common.css에서 클래스 검색)
+- human/mockups/popup-warn.html의 popup-warn-alert·popup-warn-score·popup-warn-image·popup-warn-foot 구역 (CSS: popup.css·common.css)
+- human/mockups/part-image-zoom.html의 image-zoom 구역 (CSS: popup.css·common.css)
+- human/mockups/filtered.html의 filtered-head·filtered-rows 구역, archived.html의 archived-head·archived-rows 구역 (CSS: recommend.css·common.css)
+- ai/plan/structure.md의 popup/ 줄 (새 파일 위치를 정할 때만)
