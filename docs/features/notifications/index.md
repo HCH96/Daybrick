@@ -13,10 +13,11 @@
 | 구현 계획 | [ai/plan/index.md](ai/plan/index.md) | 수정1: 2단계 (같은 시각 정렬, 안 읽음 탭 바로 빼기) (2026-10-27 승인) |
 | 진행 기록 | [ai/logs/index.md](ai/logs/index.md) | 기록 목차, 항목별 파일 L01~ |
 | 목업 | [human/mockups/index.html](human/mockups/index.html) | 화면별 목업 (목차 주석에 화면 파일·부분 ID) |
-| AI 테스트 | [ai/tests/r1/](ai/tests/r1/) | r1 AI 테스트 보고서 (A1–A19) |
-| 사용자 테스트 | [human/tests/r1-user-test.md](human/tests/r1-user-test.md) | r1 사용자 체크리스트 (34항목) · 빠른 판 [r1-user-test-quick.md](human/tests/r1-user-test-quick.md) (주요 12항목) |
+| AI 테스트 | [ai/tests/r2/](ai/tests/r2/) | r2(수정1) AI 테스트 보고서 (A1–A8) |
+| 사용자 테스트 | [human/tests/r2-user-test.md](human/tests/r2-user-test.md) | r2(수정1) 사용자 체크리스트 (9항목, R10·R19와 영향 R) |
 
 ## 보관 문서 (평소 읽지 않음)
 | 문서 | 내용 |
 |---|---|
 | [archive/plan-initial/](archive/plan-initial/index.md) | 처음 구현 계획 8단계 (2026-10-26 승인, 구현·r1 테스트 완료) |
+| [archive/tests/](archive/tests/) | r1 테스트 문서: AI 보고서 `r1/`, 사용자 체크리스트 `r1-user-test.md`(34항목)·`r1-user-test-quick.md`(빠른 판 12항목, 결과 기록됨) |

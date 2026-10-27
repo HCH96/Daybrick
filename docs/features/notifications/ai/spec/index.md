@@ -22,9 +22,9 @@
 | [data.md](data.md) | 다룰 데이터와 저장 위치 |
 | [scope.md](scope.md) | 제외, 나중에 고려할 것, 계획 단계에서 확인할 것 |
 | [mockup.md](mockup.md) | 목업 경로(2026-10-26 승인)와 목업에서 정한 것 |
-| [decisions.md](decisions.md) | 결정 사항 D1–D7 |
+| [decisions.md](decisions.md) | 결정 사항 D1–D18 |
 
 ## 다른 문서
-- 구현 계획: [../plan/index.md](../plan/index.md) (2026-10-26 승인) — 8단계. 로컬은 `notifications.json` + `notify()` 하나, 갈 곳은 열기 요청 Context(`openTarget`/`usePageIntent`), 서버는 `0002_notifications.sql`·`daybrick_notify`·실시간 구독 (D8–D12)
-- 테스트 문서: (아직 없음)
+- 구현 계획: [../plan/index.md](../plan/index.md) (수정1, 2026-10-27 승인) — 2단계. 로컬 알림 시각을 겹치지 않게 저장하고 정렬 보조 기준을 둔다(D17), 안 읽음 필터는 확인 즉시 뺀다(D18). 처음 계획(8단계, 2026-10-26 승인)은 [../../archive/plan-initial/index.md](../../archive/plan-initial/index.md)
+- 테스트 문서: r2(수정1) AI 테스트 [../tests/r2/](../tests/r2/), 사용자 테스트 [../../human/tests/r2-user-test.md](../../human/tests/r2-user-test.md) · r1 문서는 [../../archive/tests/](../../archive/tests/)
 - 진행 기록: [../logs/index.md](../logs/index.md)
