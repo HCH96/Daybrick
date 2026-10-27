@@ -35,3 +35,12 @@ export function FileIcon() {
     </LineIcon>
   );
 }
+
+export function UploadIcon() {
+  return (
+    <LineIcon size={14}>
+      <path d="M12 16V4M7 9l5-5 5 5" />
+      <path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" />
+    </LineIcon>
+  );
+}

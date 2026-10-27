@@ -1,0 +1,79 @@
+/* 수집 사이트 탭의 큰 창 틀. 목업 common.css의 .modal·.modal-head·.modal-foot·.x-btn 기준 */
+.js-dlg-layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(8, 8, 10, 0.62);
+  pointer-events: auto;
+}
+
+.js-dlg {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--popup);
+  border: 1px solid var(--border-2);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  outline: none;
+}
+
+.js-dlg__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.js-dlg__head h3 {
+  margin: 0;
+  flex: 1;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.js-dlg__icon {
+  display: grid;
+  color: var(--accent);
+}
+
+.js-dlg__x {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.js-dlg__x:hover:not(:disabled) {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.js-dlg__x:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.js-dlg__foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 22px;
+  border-top: 1px solid var(--border);
+}
+
+.js-dlg__note {
+  flex: 1;
+  font-size: 13px;
+  color: var(--muted);
+}

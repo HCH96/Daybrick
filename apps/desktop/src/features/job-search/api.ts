@@ -524,3 +524,144 @@ export async function runCollect(session: ServerSession): Promise<ApiResult<Coll
   if (!sites.every((s): s is CollectSiteResult => s !== null)) return { ok: false, error: "bad-response" };
   return { ok: true, value: { ok: true, sites, pending: toNumber(data.pending) ?? 0 } };
 }
+
+// ===== 사이트 추가·시험 수집·어댑터 교체 (R28, R29, R32) =====
+
+/** 시험 수집에서 처음 5개 중 하나 */
+export interface TestSample {
+  title: string | null;
+  company: string | null;
+  link: string | null;
+  /** 본문 글자 수·이미지 수. 상세 규칙이 없으면 null */
+  bodyChars: number | null;
+  images: number | null;
+  /** 상세를 받지 못한 이유 */
+  bodyError: string | null;
+}
+
+/** `js-collect test` 결과 (서버 `js-collect/test.ts`) */
+export type CollectTestResult =
+  | {
+      ok: true;
+      /** 실패 판정(R36)을 통과했으면 true. 이때만 저장할 수 있다 */
+      passed: boolean;
+      problem: string | null;
+      read: number;
+      /** 칸 이름 → 값이 읽힌 공고 수 */
+      fields: Record<string, number>;
+      sample: TestSample[];
+      ms: number;
+    }
+  | { ok: false; reason: "invalid-rule"; errors: string[] }
+  | { ok: false; reason: "missing-vars"; missing: string[] };
+
+function stringList(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
+}
+
+function parseSample(value: unknown): TestSample | null {
+  if (!isRecord(value)) return null;
+  const text = (v: unknown) => (typeof v === "string" ? v : null);
+  return {
+    title: text(value.title),
+    company: text(value.company),
+    link: text(value.link),
+    bodyChars: toNumber(value.bodyChars),
+    images: toNumber(value.images),
+    bodyError: text(value.bodyError),
+  };
+}
+
+function parseTestResult(data: unknown): CollectTestResult | null {
+  if (!isRecord(data) || typeof data.ok !== "boolean") return null;
+  if (!data.ok) {
+    if (data.reason === "invalid-rule") return { ok: false, reason: "invalid-rule", errors: stringList(data.errors) };
+    if (data.reason === "missing-vars") return { ok: false, reason: "missing-vars", missing: stringList(data.missing) };
+    return null;
+  }
+  const fields: Record<string, number> = {};
+  if (isRecord(data.fields)) {
+    for (const [key, value] of Object.entries(data.fields)) {
+      const n = toNumber(value);
+      if (n !== null) fields[key] = n;
+    }
+  }
+  const sample = Array.isArray(data.sample) ? data.sample.map(parseSample) : [];
+  if (!sample.every((s): s is TestSample => s !== null)) return null;
+  return {
+    ok: true,
+    passed: data.passed === true,
+    problem: typeof data.problem === "string" ? data.problem : null,
+    read: toNumber(data.read) ?? 0,
+    fields,
+    sample,
+    ms: toNumber(data.ms) ?? 0,
+  };
+}
+
+/** 시험 수집 (R29): 규칙과 사이트별 값으로 목록을 읽어 본다. 서버는 아무것도 저장하지 않는다 */
+export async function testCollect(
+  session: ServerSession,
+  rule: unknown,
+  vars: Record<string, string>,
+): Promise<ApiResult<CollectTestResult>> {
+  const { data, error } = await session.client.functions.invoke<unknown>("js-collect", {
+    body: { action: "test", rule, vars },
+  });
+  if (error) return { ok: false, error: functionError(error) };
+  const result = parseTestResult(data);
+  return result ? { ok: true, value: result } : { ok: false, error: "bad-response" };
+}
+
+/** 새 사이트의 어댑터: 기존 어댑터 id 또는 올린 규칙(새 어댑터 v1로 넣는다) */
+export type NewSiteAdapter = { kind: "existing"; adapterId: string } | { kind: "rule"; name: string; rule: unknown };
+
+/**
+ * 사이트 추가 (R28). 규칙 파일을 올렸으면 어댑터를 먼저 넣고 사이트를 넣는다.
+ * 사이트를 넣지 못하면 방금 넣은 어댑터를 지워 쓰는 곳 없는 어댑터가 남지 않게 한다.
+ */
+export async function addSite(
+  session: ServerSession,
+  site: { name: string; url: string; vars: Record<string, string> },
+  adapter: NewSiteAdapter,
+): Promise<ApiResult<null>> {
+  let adapterId: string;
+  let createdId: string | null = null;
+  if (adapter.kind === "existing") {
+    adapterId = adapter.adapterId;
+  } else {
+    const inserted = await session.client
+      .from("js_adapters")
+      .insert({ name: adapter.name, rule: adapter.rule, version: 1, builtin: false })
+      .select("id")
+      .single();
+    if (inserted.error) return { ok: false, error: postgrestError(inserted.error, inserted.status) };
+    const id: unknown = inserted.data?.id;
+    if (typeof id !== "string") return { ok: false, error: "bad-response" };
+    adapterId = id;
+    createdId = id;
+  }
+  const { error, status } = await session.client
+    .from("js_sites")
+    .insert({ name: site.name, url: site.url, adapter_id: adapterId, vars: site.vars });
+  if (error) {
+    if (createdId) await session.client.from("js_adapters").delete().eq("id", createdId);
+    return { ok: false, error: postgrestError(error, status) };
+  }
+  return { ok: true, value: null };
+}
+
+/**
+ * 어댑터 새 버전 올리기 (R32): 규칙을 바꾸고 버전을 1 올린다.
+ * 읽어 온 버전일 때만 바꿔(다른 곳에서 먼저 바꿨으면 0줄) 버전이 겹치지 않게 한다.
+ */
+export async function replaceAdapterRule(session: ServerSession, adapter: Adapter, rule: unknown): Promise<ApiResult<null>> {
+  const { data, error, status } = await session.client
+    .from("js_adapters")
+    .update({ rule, version: adapter.version + 1 })
+    .eq("id", adapter.id)
+    .eq("version", adapter.version)
+    .select("id");
+  if (error) return { ok: false, error: postgrestError(error, status) };
+  return (data ?? []).length === 1 ? { ok: true, value: null } : { ok: false, error: "bad-response" };
+}

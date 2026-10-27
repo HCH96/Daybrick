@@ -3,11 +3,24 @@
 // 요청: { action: "run", siteId? } — siteId가 없으면 켜진 사이트 전체, 있으면 그 사이트 하나(꺼져 있어도).
 // 순서: 사이트마다 목록 읽기 → 새 공고만 넣기(stage new, body_text null) → 남은 시간 안에 원문 받기.
 // 원문을 못 받은 공고(body_text null)는 다음 실행이 이어 받는다 (R39: 받은 원문은 다시 받지 않는다).
+//       { action: "test", rule, vars } — 시험 수집 (R29, R32, test.ts): 저장하지 않는다.
 // 응답: { ok: true, sites: [{ siteId, name, ok, read, added, reason? }], pending } 또는 { ok: false, reason }
-import { type AdapterRule, type ListItem, missingVars, readBodyHtml, readDetail, readList, sleep, validateRule } from "../_shared/adapter.ts";
+import {
+  type AdapterRule,
+  judgeList,
+  type ListItem,
+  missingVars,
+  readBodyHtml,
+  readDetail,
+  readList,
+  sleep,
+  stringVars,
+  validateRule,
+} from "../_shared/adapter.ts";
 import { type Caller, getCaller } from "../_shared/auth.ts";
 import { handleOptions, json } from "../_shared/cors.ts";
 import { extId, normKey } from "../_shared/dedupe.ts";
+import { testRule } from "./test.ts";
 
 const BUCKET = "job-search";
 /** 함수 시간 한도(무료 150초)보다 넉넉히 일찍 멈춘다 */
@@ -40,24 +53,10 @@ interface Target {
   vars: Record<string, string>;
 }
 
-function stringVars(raw: Record<string, unknown> | null): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const [k, v] of Object.entries(raw ?? {})) if (typeof v === "string" || typeof v === "number") out[k] = String(v);
-  return out;
-}
-
 function chunks<T>(items: T[]): T[][] {
   const out: T[][] = [];
   for (let i = 0; i < items.length; i += QUERY_CHUNK) out.push(items.slice(i, i + QUERY_CHUNK));
   return out;
-}
-
-/** 실패 판정 (R36): 0개이거나 제목·링크가 빠진 공고가 절반을 넘으면 실패 */
-function judge(items: ListItem[]): string | null {
-  if (items.length === 0) return "읽은 공고 0개";
-  const broken = items.filter((item) => !item.title || !item.link).length;
-  if (broken * 2 > items.length) return `제목·링크가 빠진 공고가 절반을 넘음 (${broken}/${items.length})`;
-  return null;
 }
 
 /** 새 공고만 넣는다 (R35). 넣은 공고 수. 목록이 준 본문은 listBodies(사이트|ext_id → HTML)에 모은다 */
@@ -201,7 +200,7 @@ async function run(caller: Caller, siteId: string | null): Promise<Response> {
       if (!list.ok) result.reason = list.reason;
       else {
         result.read = list.items.length;
-        const failed = judge(list.items);
+        const failed = judgeList(list.items);
         if (failed) result.reason = failed;
         else {
           try {
@@ -243,5 +242,6 @@ Deno.serve(async (req) => {
   const action = body.action ?? "run";
   const siteId = typeof body.siteId === "string" ? body.siteId : null;
   if (action === "run") return await run(caller, siteId);
+  if (action === "test") return await testRule(body.rule, body.vars);
   return json({ ok: false, reason: "unknown-action" }, 400);
 });

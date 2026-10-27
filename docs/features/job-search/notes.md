@@ -8,17 +8,17 @@
 - 4단계: 프로필 (자동 진행, 최종 테스트 대기)
 - 5단계: 규칙 실행기와 수집 함수 (기본 어댑터) (자동 진행, 최종 테스트 대기)
 - 6단계: 수집 사이트 탭 (자동 진행, 최종 테스트 대기)
+- 7단계: 사이트 추가·시험 수집·어댑터 가이드 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 7단계: 사이트 추가·시험 수집·어댑터 가이드 (`js-collect test`, 앱 형식 검사, 사이트 추가 창, 어댑터 새 버전 교체, 가이드 창)
-- 관련 결정: D1–D16, D22–D32 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: `SourcesTab`의 [어댑터 가이드]·[사이트 추가]는 지금 `disabled` 단추라 열 창을 연결하면서 `disabled`를 지운다. 저장 뒤에는 `reload()`로 표·카드를 다시 읽는다. 어댑터 카드에는 아직 교체 단추가 없다 (목업은 카드 안 [새 버전 올리기] 단추, step 파일은 ⋯ 메뉴 — 둘 중 하나로 넣는다). 서버 함수 `js-collect` 응답 실패 이유는 `api.ts`의 `COLLECT_REASONS`에 있다.
+- 8단계: 필터 탭 (`_shared/filters.ts` 순수 함수, `js_refilter()` RPC, 처리 순서 줄과 1차·2차 필터 판)
+- 관련 결정: D1–D16, D22–D34 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: 필터 탭은 `pages/job-search/tabs.ts`의 탭 id로 `JobSearchPage`의 `TabPlaceholder`를 바꾼다 (D22). 칩·표·스위치 모양은 `sources/SourcesTab.css`의 `js-sources__chip`·`js-sources__switch` 클래스를 참고하되, 새 탭 css에 같은 값으로 따로 둬도 된다. 순수 함수 확인 스크립트는 저장소 밖 임시 폴더에서 node로 돌린다.
 
 ## 확인할 문서 (경로는 docs/features/job-search/ 기준, 파일 통째로 읽기)
-- ai/plan/step-07.md
-- ai/spec/req-sources.md
-- ai/logs/L10.md
-- human/mockups/part-add-site.html의 add-site-form·add-site-test·add-site-foot 구역 (CSS: common.css·manage.css에서 클래스 검색)
-- human/mockups/part-adapter-guide.html의 adapter-guide-toc·adapter-guide-body 구역 (CSS: common.css·manage.css에서 클래스 검색)
-- ai/plan/structure.md의 "3. 어댑터 규칙 형식 v1" 절
-- supabase/functions/_shared/adapter.ts (`validateRule`과 필수 칸 — 앱 `adapterRule.ts`를 같게 만들 때), supabase/adapters/gamejob.json·nexon.json (가이드 예시)
+- ai/plan/step-08.md
+- ai/spec/req-analysis.md
+- ai/logs/L11.md
+- human/mockups/filters.html의 filters-flow·filters-first·filters-second 구역 (CSS: common.css·manage.css에서 클래스 검색)
+- ai/plan/structure.md의 "2. 데이터 모양" 절 (`js_postings.stage`·`js_filters` 줄)
+- supabase/migrations/0003_job_search.sql의 `js_filters` 테이블 정의 줄 (grep으로만)

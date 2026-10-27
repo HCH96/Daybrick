@@ -283,3 +283,12 @@
   font-size: 13px;
   margin: 0;
 }
+
+/* 어댑터 카드의 [새 버전 올리기] (목업 .ad .btn-row) */
+.js-sources__ad-btn {
+  align-self: flex-start;
+  height: 28px;
+  margin-top: 4px;
+  padding: 0 10px;
+  font-size: 12px;
+}

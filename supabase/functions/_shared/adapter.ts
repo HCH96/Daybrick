@@ -144,6 +144,22 @@ export function missingVars(rule: AdapterRule, vars: Record<string, string>): st
   return rule.vars.filter((name) => !vars[name]);
 }
 
+/** 사이트 값(jsonb)을 글자 값만 남긴 표로 바꾼다. 숫자는 글자로 */
+export function stringVars(raw: unknown): Record<string, string> {
+  const out: Record<string, string> = {};
+  if (!isRecord(raw)) return out;
+  for (const [k, v] of Object.entries(raw)) if (typeof v === "string" || typeof v === "number") out[k] = String(v);
+  return out;
+}
+
+/** 실패 판정 (R36): 0개이거나 제목·링크가 빠진 공고가 절반을 넘으면 실패 이유, 아니면 null */
+export function judgeList(items: ListItem[]): string | null {
+  if (items.length === 0) return "읽은 공고 0개";
+  const broken = items.filter((item) => !item.title || !item.link).length;
+  if (broken * 2 > items.length) return `제목·링크가 빠진 공고가 절반을 넘음 (${broken}/${items.length})`;
+  return null;
+}
+
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

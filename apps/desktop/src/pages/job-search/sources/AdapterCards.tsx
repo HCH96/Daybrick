@@ -1,12 +1,16 @@
 import { NO_ADAPTERS } from "../../../features/job-search/messages";
 import type { Adapter, Site } from "../../../features/job-search/types";
-import { FileIcon } from "./SourcesIcons";
+import { FileIcon, UploadIcon } from "./SourcesIcons";
 
 interface AdapterCardsProps {
   adapters: Adapter[];
   sites: Site[];
   /** 어댑터 id → 그 어댑터를 쓰는 사이트 수 */
   usage: Map<string, number>;
+  /** [새 버전 올리기] (R32) */
+  onReplace: (adapter: Adapter) => void;
+  /** 수집 중 등으로 단추를 끈다 */
+  disabled: boolean;
 }
 
 function usageText(count: number): string {
@@ -20,8 +24,8 @@ function lastFailed(adapter: Adapter, sites: Site[]): boolean {
   return sites.some((s) => s.enabled && s.adapterId === adapter.id && s.lastResult !== null && !s.lastResult.ok);
 }
 
-/** 어댑터 카드 4열 (R25–R27): 이름·버전·기본 여부, 함께 쓰는 사이트 수, 마지막 수집 실패 칩 */
-function AdapterCards({ adapters, sites, usage }: AdapterCardsProps) {
+/** 어댑터 카드 4열 (R25–R27, R32): 이름·버전·기본 여부, 함께 쓰는 사이트 수, 마지막 수집 실패 칩, 새 버전 올리기 */
+function AdapterCards({ adapters, sites, usage, onReplace, disabled }: AdapterCardsProps) {
   return (
     <section className="js-sources__adapters">
       <h3 className="js-sources__title">
@@ -44,6 +48,15 @@ function AdapterCards({ adapters, sites, usage }: AdapterCardsProps) {
                 )}
               </div>
               <span className="js-sources__sub">{usageText(usage.get(adapter.id) ?? 0)}</span>
+              <button
+                type="button"
+                className="setup-btn js-sources__ad-btn"
+                disabled={disabled}
+                onClick={() => onReplace(adapter)}
+              >
+                <UploadIcon />
+                새 버전 올리기
+              </button>
             </div>
           ))}
         </div>

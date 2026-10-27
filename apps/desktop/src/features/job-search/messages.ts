@@ -166,3 +166,65 @@ export function collectDoneMessage(added: number, failed: number, pending: numbe
   if (pending > 0) text += ` (원문 ${pending}개는 다음 수집 때 받아요)`;
   return text;
 }
+
+// ===== 사이트 추가·시험 수집·어댑터 교체 (R28, R29, R32) =====
+
+export const TESTING = "시험 수집 중… 목록과 처음 5개 공고를 읽고 있어요.";
+export const TEST_IDLE = "왼쪽을 채우고 [시험 수집]을 누르면 읽힌 공고 수와 처음 5개가 여기 나와요.";
+export const TEST_NEEDED = "시험 수집이 성공해야 저장할 수 있어요.";
+export const ADD_SITE_NOTE = "저장하면 다음 수집부터 포함돼요";
+export const INVALID_SITE_URL = "주소는 http:// 또는 https://로 시작해야 해요.";
+export const NO_RULE_FILE = "규칙 파일(.json)을 골라 주세요.";
+
+export function replaceNote(nextVersion: number): string {
+  return `저장하면 v${nextVersion}이 되고, 이 어댑터를 쓰는 사이트는 다음 수집부터 새 규칙을 써요`;
+}
+
+/** 시험 수집 함수를 부르지 못했을 때 (예전 함수면 test를 몰라 server 오류) */
+export function testCallErrorMessage(kind: ApiErrorKind): string {
+  if (kind === "not-found" || kind === "server") {
+    return "시험 수집을 하지 못했어요. 서버 업데이트로 수집 함수를 새로 올렸는지 확인해 주세요.";
+  }
+  return `시험 수집을 하지 못했어요. ${reason(kind)}`;
+}
+
+export function missingVarsMessage(missing: string[]): string {
+  return `사이트별 값이 비어 있어요: ${missing.join(", ")}`;
+}
+
+export function testPassedMessage(read: number, ms: number): string {
+  return `시험 수집 성공 · 공고 ${read}개를 읽었어요 (${(ms / 1000).toFixed(1)}초)`;
+}
+
+export function testFailedMessage(problem: string | null): string {
+  return `저장할 수 없어요: ${problem ?? "알 수 없는 이유"}`;
+}
+
+export function siteAddErrorMessage(kind: ApiErrorKind): string {
+  return `사이트를 저장하지 못했어요. ${reason(kind)}`;
+}
+
+/** 버전이 겹치면(다른 곳에서 먼저 바꿈) bad-response로 온다 */
+export function adapterReplaceErrorMessage(kind: ApiErrorKind): string {
+  if (kind === "bad-response") return "어댑터가 그사이 바뀌었어요. 창을 닫고 다시 열어 주세요.";
+  return `어댑터를 바꾸지 못했어요. ${reason(kind)}`;
+}
+
+export const COPIED = "복사했어요";
+export const COPY_FAILED = "복사하지 못했어요";
+export const NAME_NEEDED = "사이트 이름을 넣어 주세요.";
+export const PICK_ADAPTER = "어댑터를 골라 주세요.";
+export const RULE_HAS_ERRORS = "규칙 파일의 형식 오류를 고친 뒤 다시 올려 주세요.";
+
+/** 새 버전이 요구하는 사이트별 값이 시험 사이트에 없을 때 (사이트 값은 이 창에서 바꾸지 않는다) */
+export function testSiteMissingVarsMessage(siteName: string, missing: string[]): string {
+  return `새 규칙이 요구하는 값(${missing.join(", ")})이 ${siteName} 사이트에 없어요. 같은 값 이름을 쓰는 규칙으로 올려 주세요.`;
+}
+
+export function siteAddedMessage(name: string): string {
+  return `${name} 사이트를 추가했어요. 다음 수집부터 포함돼요.`;
+}
+
+export function adapterReplacedMessage(name: string, version: number): string {
+  return `${name} 어댑터를 v${version}로 바꿨어요.`;
+}

@@ -129,6 +129,10 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
                 "js-collect/index.ts",
                 include_str!("../../../../../supabase/functions/js-collect/index.ts"),
             ),
+            (
+                "js-collect/test.ts",
+                include_str!("../../../../../supabase/functions/js-collect/test.ts"),
+            ),
             CORS,
             AUTH,
             ADAPTER,

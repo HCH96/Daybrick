@@ -23,11 +23,13 @@ import type { ApiErrorKind } from "../../../features/server/management";
 import "../../server-setup/wizard/WizardShell.css";
 import type { StatusLine } from "../profile/profileFormat";
 import AdapterCards from "./AdapterCards";
+import AdapterGuideDialog from "./AdapterGuideDialog";
+import AddSiteDialog, { type AddSiteMode } from "./AddSiteDialog";
 import SiteTable from "./SiteTable";
 import { BookIcon, PlayIcon } from "./SourcesIcons";
 import "./SourcesTab.css";
 
-/** 수집 사이트 탭 (R24, R31, R34): 위쪽 단추 줄, 사이트 표, 어댑터 카드 */
+/** 수집 사이트 탭 (R24, R28–R32, R34): 위쪽 단추 줄, 사이트 표, 어댑터 카드, 사이트 추가·가이드 창 */
 function SourcesTab() {
   const { session } = useJobSearch();
   const [data, setData] = useState<SourcesState | null>(null);
@@ -35,6 +37,7 @@ function SourcesTab() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [collecting, setCollecting] = useState(false);
   const [status, setStatus] = useState<StatusLine>(null);
+  const [dialog, setDialog] = useState<AddSiteMode | { kind: "guide" } | null>(null);
 
   /** 기본 사이트를 맞추고 표를 다시 읽는다. 실패하면 원인을 돌려준다 */
   const reload = useCallback(async (): Promise<ApiErrorKind | null> => {
@@ -83,6 +86,13 @@ function SourcesTab() {
     const failed = await reload();
     if (result.ok && failed) setStatus({ ok: false, text: sourcesLoadErrorMessage(failed) });
     setBusyId(null);
+  }
+
+  /** 사이트 추가·어댑터 교체를 저장했다: 창을 닫고 표·카드를 다시 읽는다 (R28, R32) */
+  async function saved(message: string) {
+    setDialog(null);
+    const failed = await reload();
+    setStatus(failed ? { ok: false, text: sourcesLoadErrorMessage(failed) } : { ok: true, text: message });
   }
 
   async function collect() {
@@ -135,8 +145,7 @@ function SourcesTab() {
           </span>
         )}
         <div className="js-sources__actions">
-          {/* 가이드·사이트 추가 창은 7단계에서 연결한다 */}
-          <button type="button" className="setup-btn" disabled>
+          <button type="button" className="setup-btn" onClick={() => setDialog({ kind: "guide" })}>
             <BookIcon />
             어댑터 가이드
           </button>
@@ -150,7 +159,12 @@ function SourcesTab() {
             {collecting ? <span className="js-sources__spinner" aria-hidden="true" /> : <PlayIcon />}
             {collecting ? "수집 중…" : "지금 수집"}
           </button>
-          <button type="button" className="setup-btn setup-btn--primary" disabled>
+          <button
+            type="button"
+            className="setup-btn setup-btn--primary"
+            disabled={collecting || busyId !== null}
+            onClick={() => setDialog({ kind: "add" })}
+          >
             <PlusIcon size={14} />
             사이트 추가
           </button>
@@ -171,7 +185,24 @@ function SourcesTab() {
         />
       )}
 
-      <AdapterCards adapters={data.adapters} sites={data.sites} usage={usage} />
+      <AdapterCards
+        adapters={data.adapters}
+        sites={data.sites}
+        usage={usage}
+        disabled={collecting || busyId !== null}
+        onReplace={(adapter) => setDialog({ kind: "replace", adapter })}
+      />
+
+      {dialog?.kind === "guide" && <AdapterGuideDialog onClose={() => setDialog(null)} />}
+      {dialog && dialog.kind !== "guide" && (
+        <AddSiteDialog
+          mode={dialog}
+          adapters={data.adapters}
+          sites={data.sites}
+          onClose={() => setDialog(null)}
+          onSaved={(message) => void saved(message)}
+        />
+      )}
     </div>
   );
 }
