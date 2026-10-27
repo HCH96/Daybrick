@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { applyMigrations, deployFunctions, getAppSchemaVersion } from "./management";
+import {
+  applyMigrations,
+  deployFunctions,
+  ensureGeneratedSecrets,
+  generatedSecretsDetail,
+  getAppSchemaVersion,
+} from "./management";
 import { probeServer } from "./probe";
 import { RERUN_STEPS } from "./rerunSetup";
 import { fetchHealth } from "./serverFunctions";
@@ -17,6 +23,7 @@ import {
 /**
  * 서버 업데이트 (R23, R25, R26).
  * 서버의 지금 번호 다음부터 앱의 최신 번호까지 SQL 단계를 적용하고(D28), 서버 함수 묶음을 다시 배포한다(D16).
+ * 그다음 앱이 만드는 비밀값 중 서버에 없는 것만 만든다 (job-search D19).
  * 진행 표시·실패·다시 시도는 자동 세팅과 같은 고리(`runSteps`)를 쓴다.
  */
 
@@ -24,6 +31,7 @@ import {
 export const UPDATE_STEPS: readonly RunStepDef[] = [
   { id: "schema", name: "서버 구조 적용", desc: "빠진 번호의 테이블·접근 규칙" },
   { id: "functions", name: "서버 함수 배포", desc: "앱이 가진 서버 함수 묶음" },
+  { id: "secrets", name: "비밀값 만들기", desc: "서버에 없는 자동 생성 비밀값만" },
   { id: "verify", name: "마무리 확인", desc: "접속·서버 구조 번호 확인" },
 ];
 
@@ -63,6 +71,11 @@ async function runUpdateStep(index: number, ctx: UpdateContext): Promise<StepRes
     case "functions": {
       const result = await deployFunctions(ctx.pat, ctx.projectRef);
       return result.ok ? { ok: true, value: null } : result;
+    }
+    case "secrets": {
+      // 앱이 만드는 비밀값은 없을 때만 만든다 (job-search D19)
+      const result = await ensureGeneratedSecrets(ctx.pat, ctx.projectRef);
+      return result.ok ? { ok: true, value: generatedSecretsDetail(result.value) } : result;
     }
     default:
       return verifyUpdate(ctx);

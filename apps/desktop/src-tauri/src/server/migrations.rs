@@ -21,7 +21,18 @@ pub const MIGRATIONS: &[(u32, &str)] = &[
         2,
         include_str!("../../../../../supabase/migrations/0002_notifications.sql"),
     ),
+    (
+        3,
+        include_str!("../../../../../supabase/migrations/0003_job_search.sql"),
+    ),
 ];
+
+/// 앱이 무작위 값으로 만들어 두는 서버 함수 비밀값 (job-search D19).
+/// 서버 업데이트·자동 세팅 때 서버에 없는 것만 만들고, 이미 있으면 값을 바꾸지 않는다.
+pub const GENERATED_SECRETS: &[&str] = &["DAYBRICK_CRON_SECRET", "GMAIL_TOKEN_KEY"];
+
+/// vault에도 같은 값을 넣는 비밀값과 vault 이름 (예약 작업이 SQL에서 읽음, job-search 15단계)
+pub const VAULT_COPIES: &[(&str, &str)] = &[("DAYBRICK_CRON_SECRET", "daybrick_cron_secret")];
 
 /// 서버 함수 하나: 배포 이름(slug), 진입 파일, 함께 올릴 원본 파일들 (경로는 `supabase/functions/` 기준)
 pub struct EdgeFunction {

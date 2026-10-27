@@ -23,6 +23,7 @@ pub fn run() {
             server::management::apply_migrations,
             server::management::deploy_functions,
             server::management::set_secrets,
+            server::management::ensure_generated_secrets,
             server::management::disable_signup,
             server::management::project_status,
             server::management::restore_project,

@@ -98,6 +98,19 @@ export function setSecrets(
   return call<null>("set_secrets", { pat, projectRef, anthropicKey, googleClientId, googleClientSecret });
 }
 
+/**
+ * 자동 생성 비밀값(DAYBRICK_CRON_SECRET, GMAIL_TOKEN_KEY) 중 서버에 없는 것만 만든다 (job-search D19).
+ * 값은 Rust가 만들어 서버로만 보내고, 이쪽에는 새로 만든 이름 목록만 온다.
+ */
+export function ensureGeneratedSecrets(pat: string, projectRef: string): Promise<ApiResult<string[]>> {
+  return call<string[]>("ensure_generated_secrets", { pat, projectRef });
+}
+
+/** 비밀값 단계 작은 글씨: 새로 만든 자동 생성 비밀값 수 */
+export function generatedSecretsDetail(created: readonly string[]): string {
+  return created.length > 0 ? `자동 생성 비밀값 ${created.length}개 만듦` : "자동 생성 비밀값 그대로 둠";
+}
+
 /** 새 가입 막기 켜기: 처음 로그인한 계정 하나만 남긴다 (R29, D12) */
 export function disableSignup(pat: string, projectRef: string): Promise<ApiResult<null>> {
   return call<null>("disable_signup", { pat, projectRef });
@@ -137,7 +150,7 @@ export async function requestResume(pat: string, projectRef: string): Promise<Re
 }
 
 /** Tauri 밖(브라우저 미리보기)에서 쓰는 최신 서버 구조 번호. 기준은 Rust `migrations.rs` (D15). */
-const PREVIEW_SCHEMA_VERSION = 1;
+const PREVIEW_SCHEMA_VERSION = 3;
 let appSchemaVersion: Promise<number> | null = null;
 
 /** 앱의 최신 서버 구조 번호를 Rust에서 한 번 받아 와 기억한다 (D24) */

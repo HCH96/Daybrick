@@ -4,6 +4,7 @@
 //! 5단계: 인증 설정, 서버 구조 적용, 서버 함수 배포, 비밀값 등록 (R15, R16, R26).
 //! 6단계: 첫 로그인 뒤 새 가입 막기 (R29, D12).
 //! 7단계: 프로젝트 상태 읽기, 일시정지 재개 (R42, R43).
+//! job-search 2단계: 자동 생성 비밀값 (없는 것만 만들기, D19).
 
 use serde::Serialize;
 use serde_json::Value;
@@ -268,6 +269,109 @@ pub async fn set_secrets(
         .await
         .map_err(http::network_error)?;
     http::check_status(response).map(|_| ())
+}
+
+/// 서버에 이미 있는 함수 비밀값 이름 (`GET /v1/projects/{ref}/secrets`, 값은 요약값만 오므로 이름만 쓴다)
+async fn existing_secret_names(pat: &str, project_ref: &str) -> Result<Vec<String>, String> {
+    let body: Value = http::check_status(
+        http::client()?
+            .get(project_url(project_ref, "/secrets")?)
+            .bearer_auth(pat.trim())
+            .send()
+            .await
+            .map_err(http::network_error)?,
+    )?
+    .json()
+    .await
+    .map_err(|_| http::ERR_BAD_RESPONSE.to_string())?;
+    let rows = body.as_array().ok_or_else(|| http::ERR_BAD_RESPONSE.to_string())?;
+    Ok(rows
+        .iter()
+        .filter_map(|row| row.get("name").and_then(Value::as_str))
+        .map(str::to_string)
+        .collect())
+}
+
+/// 32바이트 무작위 값을 16진수 64글자로
+fn random_secret() -> Result<String, String> {
+    let mut bytes = [0u8; 32];
+    getrandom::fill(&mut bytes).map_err(|_| http::ERR_BAD_RESPONSE.to_string())?;
+    Ok(bytes.iter().map(|b| format!("{b:02x}")).collect())
+}
+
+/// vault 이름은 상수에서만 오지만, SQL 글자로 넣으므로 소문자·숫자·밑줄만 허용한다
+fn vault_name_ok(name: &str) -> bool {
+    !name.is_empty() && name.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_')
+}
+
+/// vault에 이 이름의 값이 있는지
+async fn vault_has(pat: &str, project_ref: &str, vault_name: &str) -> Result<bool, String> {
+    if !vault_name_ok(vault_name) {
+        return Err(http::ERR_BAD_RESPONSE.to_string());
+    }
+    let sql = format!("select exists(select 1 from vault.secrets where name = '{vault_name}') as has");
+    let rows = run_query(pat, project_ref, &sql).await?;
+    rows.first()
+        .and_then(|row| row.get("has"))
+        .and_then(Value::as_bool)
+        .ok_or_else(|| http::ERR_BAD_RESPONSE.to_string())
+}
+
+/// vault에 값을 넣는다 (있으면 바꾼다). 값은 16진수 글자만이라 SQL 글자로 그대로 넣어도 안전하다.
+async fn vault_put(pat: &str, project_ref: &str, vault_name: &str, value: &str) -> Result<(), String> {
+    if !vault_name_ok(vault_name) || !value.chars().all(|c| c.is_ascii_hexdigit()) {
+        return Err(http::ERR_BAD_RESPONSE.to_string());
+    }
+    let sql = format!(
+        "do $$ declare v_id uuid; begin \
+           select id into v_id from vault.secrets where name = '{vault_name}'; \
+           if v_id is null then perform vault.create_secret('{value}', '{vault_name}', 'Daybrick 자동 생성'); \
+           else perform vault.update_secret(v_id, '{value}'); end if; \
+         end $$;"
+    );
+    run_statement(pat, project_ref, &sql).await
+}
+
+/// 자동 생성 비밀값 중 서버에 없는 것만 무작위 값으로 만든다 (job-search D19). 만든 이름 목록을 돌려준다.
+/// vault 사본이 필요한 비밀값은 vault에 없을 때도 새로 만들어 두 곳을 같은 값으로 맞춘다.
+/// vault를 먼저 쓰고 함수 비밀값을 나중에 등록해, 중간에 실패해도 다시 실행하면 두 곳이 맞춰진다.
+/// 값은 요청 본문에만 싣고 앱에 남기지 않는다 (server-setup R18).
+#[tauri::command]
+pub async fn ensure_generated_secrets(pat: String, project_ref: String) -> Result<Vec<String>, String> {
+    let existing = existing_secret_names(&pat, &project_ref).await?;
+    let mut created = Vec::new();
+    let mut body = Vec::new();
+    for name in migrations::GENERATED_SECRETS {
+        let vault_name = migrations::VAULT_COPIES
+            .iter()
+            .find(|(secret, _)| secret == name)
+            .map(|(_, vault)| *vault);
+        let mut missing = !existing.iter().any(|n| n == name);
+        if let Some(vault_name) = vault_name {
+            missing = missing || !vault_has(&pat, &project_ref, vault_name).await?;
+        }
+        if !missing {
+            continue;
+        }
+        let value = random_secret()?;
+        if let Some(vault_name) = vault_name {
+            vault_put(&pat, &project_ref, vault_name, &value).await?;
+        }
+        body.push(serde_json::json!({ "name": name, "value": value }));
+        created.push((*name).to_string());
+    }
+    if body.is_empty() {
+        return Ok(created);
+    }
+    let response = http::client()?
+        .post(project_url(&project_ref, "/secrets")?)
+        .bearer_auth(pat.trim())
+        .json(&body)
+        .send()
+        .await
+        .map_err(http::network_error)?;
+    http::check_status(response)?;
+    Ok(created)
 }
 
 /// 새 가입 막기(`disable_signup`)를 켠다: 자동 세팅에서 처음 로그인한 계정 하나만 남긴다 (R29, D12).

@@ -4,6 +4,8 @@ import {
   configureAuth,
   deployFunctions,
   disableSignup,
+  ensureGeneratedSecrets,
+  generatedSecretsDetail,
   setSecrets,
   type ApiErrorKind,
   type ApiResult,
@@ -34,7 +36,7 @@ export const RUN_STEPS: readonly RunStepDef[] = [
   { id: "auth", name: "인증 설정", desc: "Google 로그인 켜기, 이메일 로그인 끄기" },
   { id: "schema", name: "서버 구조 적용", desc: "테이블·접근 규칙" },
   { id: "functions", name: "서버 함수 배포", desc: "health, ai-key-check" },
-  { id: "secrets", name: "비밀값 등록", desc: "Anthropic 키, Google 클라이언트 값" },
+  { id: "secrets", name: "비밀값 등록", desc: "Anthropic 키, Google 클라이언트 값, 자동 생성 값" },
   {
     id: "account",
     name: "계정 등록",
@@ -140,10 +142,13 @@ const ACTIONS: Record<RunStepId, StepAction> = {
     return { ok: true, value: `테이블·접근 규칙 ${result.value.from} → ${result.value.to}` };
   },
   functions: async ({ secrets: s }) => withoutDetail(await deployFunctions(s.pat, s.projectRef)),
-  secrets: async ({ secrets: s }) =>
-    withoutDetail(
-      await setSecrets(s.pat, s.projectRef, s.anthropicKey, s.googleClientId, s.googleClientSecret),
-    ),
+  secrets: async ({ secrets: s }) => {
+    const set = await setSecrets(s.pat, s.projectRef, s.anthropicKey, s.googleClientId, s.googleClientSecret);
+    if (!set.ok) return set;
+    // 앱이 만드는 비밀값은 없을 때만 만든다 (job-search D19)
+    const generated = await ensureGeneratedSecrets(s.pat, s.projectRef);
+    return generated.ok ? { ok: true, value: generatedSecretsDetail(generated.value) } : generated;
+  },
   account: registerAccount,
   verify: async (ctx) => {
     // 계정 등록에서 로그인했으므로 브라우저를 다시 열지 않고 그 세션을 받는다

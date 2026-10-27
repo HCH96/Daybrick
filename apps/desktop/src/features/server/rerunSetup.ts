@@ -4,6 +4,8 @@ import {
   configureAuth,
   deployFunctions,
   disableSignup,
+  ensureGeneratedSecrets,
+  generatedSecretsDetail,
   setSecrets,
   type ApiResult,
 } from "./management";
@@ -23,12 +25,13 @@ import {
 /**
  * 자동 세팅 다시 실행 (R49): ③의 1~4단계와 6단계(계정 등록 제외).
  * 복구용이라 데이터·로그인 계정은 건드리지 않고, 새 가입 막기는 켠 상태로 둔다 (D12).
- * Anthropic 키는 다시 받지 않으므로 비밀값 단계는 Google 값을 바꿀 때만 등록한다.
+ * Anthropic 키는 다시 받지 않으므로 비밀값 단계는 Google 값을 바꿀 때만 등록하고,
+ * 자동 생성 비밀값은 서버에 없는 것만 만든다 (job-search D19).
  */
 
 /** 다시 실행 단계: 자동 세팅과 같은 정의에서 계정 등록만 뺀다 */
 export const RERUN_STEPS: readonly RunStepDef[] = RUN_STEPS.filter((step) => step.id !== "account").map(
-  (step) => (step.id === "secrets" ? { ...step, desc: "Google 클라이언트 값 (바꿀 때만)" } : step),
+  (step) => (step.id === "secrets" ? { ...step, desc: "Google 클라이언트 값 (바꿀 때만), 자동 생성 값" } : step),
 );
 
 /** 다시 실행에 넘기는 것. PAT·Google 값은 메모리에만 두고, 끝나면 버린다. */
@@ -67,8 +70,15 @@ async function runRerunStep(index: number, ctx: RerunContext): Promise<StepResul
     case "functions":
       return done(await deployFunctions(pat, projectRef));
     case "secrets": {
-      if (!changeGoogle) return { ok: true, value: "바꿀 값 없음 (그대로 둠)" };
-      return done(await setSecrets(pat, projectRef, "", googleClientId, googleClientSecret));
+      if (changeGoogle) {
+        const set = await setSecrets(pat, projectRef, "", googleClientId, googleClientSecret);
+        if (!set.ok) return set;
+      }
+      // 앱이 만드는 비밀값은 없을 때만 만든다 (job-search D19)
+      const generated = await ensureGeneratedSecrets(pat, projectRef);
+      if (!generated.ok) return generated;
+      const google = changeGoogle ? "Google 클라이언트 값 바꿈" : "Google 값 그대로";
+      return { ok: true, value: `${google}, ${generatedSecretsDetail(generated.value)}` };
     }
     default: {
       const verified = await verifyServer(ctx.session, ctx.appSchema);
