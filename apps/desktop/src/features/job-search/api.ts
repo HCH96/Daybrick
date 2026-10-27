@@ -1,13 +1,17 @@
 import { FunctionsFetchError, FunctionsHttpError, type PostgrestError } from "@supabase/supabase-js";
 import type { ApiErrorKind, ApiResult } from "../server/management";
 import type { ServerSession } from "../server/session";
+import type { FlowPosting } from "./filterRules";
 import { parseProfileData } from "./profileDraft";
 import type {
   Adapter,
   AiCall,
   BalanceRecord,
+  FilterKind,
+  FilterRule,
   JsSettings,
   ModelPrice,
+  PostingStage,
   ProfileData,
   ProfileDraft,
   ProfileSource,
@@ -664,4 +668,106 @@ export async function replaceAdapterRule(session: ServerSession, adapter: Adapte
     .select("id");
   if (error) return { ok: false, error: postgrestError(error, status) };
   return (data ?? []).length === 1 ? { ok: true, value: null } : { ok: false, error: "bad-response" };
+}
+
+// ===== 필터 (R42–R45, R47) =====
+
+const FILTER_KINDS: readonly FilterKind[] = [
+  "title-include",
+  "title-exclude",
+  "company-exclude",
+  "skill-include",
+  "skill-exclude",
+  "max-years",
+  "employment",
+  "skill-overlap",
+];
+
+function parseFilter(row: unknown): FilterRule | null {
+  if (!isRecord(row) || typeof row.id !== "string") return null;
+  const stage = toNumber(row.stage);
+  const kind = FILTER_KINDS.find((k) => k === row.kind);
+  if ((stage !== 1 && stage !== 2) || !kind) return null;
+  return { id: row.id, stage, kind, value: row.value, enabled: row.enabled !== false };
+}
+
+async function selectFilters(session: ServerSession): Promise<ApiResult<FilterRule[]>> {
+  const { data, error, status } = await session.client
+    .from("js_filters")
+    .select("id, stage, kind, value, enabled")
+    .order("stage", { ascending: true })
+    .order("id", { ascending: true });
+  if (error) return { ok: false, error: postgrestError(error, status) };
+  const rules = (data ?? []).map(parseFilter);
+  return rules.every((r): r is FilterRule => r !== null) ? { ok: true, value: rules } : { ok: false, error: "bad-response" };
+}
+
+/**
+ * 필터 조건 목록. 2차의 기술스택 자동 추림 줄(R44)이 없으면 켜진 상태로 하나 넣고 다시 읽는다 (D35).
+ * 줄 순서는 넣은 순서가 아니라 id 순서라, 화면은 종류별로 묶지 않고 받은 순서대로 보여 준다.
+ */
+export async function loadFilters(session: ServerSession): Promise<ApiResult<FilterRule[]>> {
+  const first = await selectFilters(session);
+  if (!first.ok || first.value.some((r) => r.kind === "skill-overlap")) return first;
+  const { error, status } = await session.client
+    .from("js_filters")
+    .insert({ stage: 2, kind: "skill-overlap", value: {}, enabled: true });
+  if (error) return { ok: false, error: postgrestError(error, status) };
+  return selectFilters(session);
+}
+
+/** 조건 추가 (R45) */
+export async function addFilter(
+  session: ServerSession,
+  rule: { stage: 1 | 2; kind: FilterKind; value: unknown },
+): Promise<ApiResult<null>> {
+  const { error, status } = await session.client.from("js_filters").insert({ ...rule, enabled: true });
+  return error ? { ok: false, error: postgrestError(error, status) } : { ok: true, value: null };
+}
+
+/** 조건 켜기·끄기 (R45) */
+export async function setFilterEnabled(session: ServerSession, id: string, enabled: boolean): Promise<ApiResult<null>> {
+  const { error, status } = await session.client.from("js_filters").update({ enabled }).eq("id", id);
+  return error ? { ok: false, error: postgrestError(error, status) } : { ok: true, value: null };
+}
+
+/** 조건 삭제 (R45) */
+export async function deleteFilter(session: ServerSession, id: string): Promise<ApiResult<null>> {
+  const { error, status } = await session.client.from("js_filters").delete().eq("id", id);
+  return error ? { ok: false, error: postgrestError(error, status) } : { ok: true, value: null };
+}
+
+/** 필터를 바꾼 뒤 아직 채점하지 않은 공고를 다시 거르게 되돌린다 (R47, `js_refilter`). 되돌린 공고 수 */
+export async function refilter(session: ServerSession): Promise<ApiResult<number>> {
+  const { data, error, status } = await session.client.rpc("js_refilter");
+  if (error) return { ok: false, error: postgrestError(error, status) };
+  const count = toNumber(data);
+  return count === null ? { ok: false, error: "bad-response" } : { ok: true, value: count };
+}
+
+const POSTING_STAGES: readonly PostingStage[] = ["new", "filtered1", "extracted", "filtered2", "suspect", "scored", "waiting"];
+
+/** 처리 순서 줄(R41)에 쓸 `sinceIso` 이후 수집 공고의 단계와 추출 결과 유무 */
+export async function loadFlowPostings(session: ServerSession, sinceIso: string): Promise<ApiResult<FlowPosting[]>> {
+  const postings: FlowPosting[] = [];
+  for (let from = 0; ; from += PAGE_SIZE) {
+    const { data, error, status } = await session.client
+      .from("js_postings")
+      .select("id, stage, js_extractions(posting_id)")
+      .gte("collected_at", sinceIso)
+      .order("collected_at", { ascending: true })
+      .range(from, from + PAGE_SIZE - 1);
+    if (error) return { ok: false, error: postgrestError(error, status) };
+    const rows: unknown[] = data ?? [];
+    for (const row of rows) {
+      if (!isRecord(row)) return { ok: false, error: "bad-response" };
+      const stage = POSTING_STAGES.find((s) => s === row.stage);
+      if (!stage) return { ok: false, error: "bad-response" };
+      // 1:1 관계라 객체 하나(또는 null)로 오지만, 배열로 와도 받는다
+      const ex: unknown = row.js_extractions;
+      const extracted = Array.isArray(ex) ? ex.length > 0 : ex !== null && ex !== undefined;
+      postings.push({ stage, extracted });
+    }
+    if (rows.length < PAGE_SIZE) return { ok: true, value: postings };
+  }
 }

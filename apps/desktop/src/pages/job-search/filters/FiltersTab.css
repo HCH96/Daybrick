@@ -1,0 +1,324 @@
+/* 구직 관리 필터 탭. 목업 manage.css의 .flow·.flt-grid·.rule·.vals·.add-rule·.auto-row·.foot-note,
+   common.css의 .panel·.chip·.sw·.x-btn 기준 (스위치·칩 값은 수집 사이트 탭과 같다) */
+.js-filters {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.js-filters__state {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.js-filters .setup-btn,
+.js-filters__state .setup-btn {
+  height: 34px;
+  border-radius: 8px;
+}
+
+.js-filters__sub {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.js-filters__sub--block {
+  display: block;
+}
+
+/* ===== 처리 순서 줄 ===== */
+.js-filters__flow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.js-filters__flow-step {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.js-filters__flow-step b {
+  display: block;
+  font-size: 13px;
+}
+
+.js-filters__flow-step--ai {
+  border-color: #4a3f73;
+}
+
+.js-filters__n {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.js-filters__flow-arrow {
+  display: grid;
+  place-items: center;
+  color: var(--faint);
+}
+
+.js-filters__msg {
+  margin: -6px 0 12px;
+  font-size: 13px;
+}
+
+.js-filters__msg--ok {
+  color: var(--green);
+}
+
+.js-filters__msg--bad {
+  color: var(--red);
+}
+
+/* ===== 1차·2차 판 ===== */
+.js-filters__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.js-filters__panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  min-width: 0;
+}
+
+.js-filters__panel-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.js-filters__panel-desc {
+  color: var(--muted);
+  font-size: 13px;
+  margin: -6px 0 14px;
+}
+
+.js-filters__empty {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 8px 0;
+}
+
+/* ===== 조건 줄 ===== */
+.js-filters__rule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.js-filters__rule:last-of-type {
+  border-bottom: 0;
+}
+
+.js-filters__rule--off .js-filters__rule-main,
+.js-filters__rule-main--off {
+  opacity: 0.45;
+}
+
+.js-filters__rule-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.js-filters__rule-kind {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.js-filters__vals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* 기술스택 자동 추림 고정 줄 */
+.js-filters__auto {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 4px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.js-filters__auto b {
+  font-size: 13px;
+}
+
+/* ===== 스위치 (목업 .sw) ===== */
+.js-filters__switch {
+  flex-shrink: 0;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+  border: none;
+  border-radius: 99px;
+  background: var(--track);
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+}
+
+.js-filters__switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: left 0.15s;
+}
+
+.js-filters__switch--on {
+  background: var(--accent);
+}
+
+.js-filters__switch--on::after {
+  left: 17px;
+  background: var(--on-accent);
+}
+
+.js-filters__switch:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.js-filters__switch:focus-visible,
+.js-filters__x:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 휴지통 (목업 .x-btn) */
+.js-filters__x {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.js-filters__x:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--red);
+}
+
+.js-filters__x:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* ===== 칩 (목업 .chip) ===== */
+.js-filters__chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--neutral-soft);
+  color: var(--neutral);
+}
+
+.js-filters__chip--accent {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.js-filters__chip--red {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.js-filters__chip--blue {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+/* ===== 추가 줄 (목업 .add-rule) ===== */
+.js-filters__add {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+
+.js-filters__add-row {
+  display: flex;
+  gap: 8px;
+}
+
+.js-filters__input {
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--border-2) inset;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.js-filters__input:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--accent) inset;
+}
+
+.js-filters__select {
+  flex: 0 0 170px;
+}
+
+.js-filters__hint {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.js-filters__hint--bad {
+  color: var(--red);
+}
+
+/* ===== 바닥 안내 (목업 .foot-note) ===== */
+.js-filters__foot {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--faint);
+  font-size: 12px;
+}

@@ -9,16 +9,18 @@
 - 5단계: 규칙 실행기와 수집 함수 (기본 어댑터) (자동 진행, 최종 테스트 대기)
 - 6단계: 수집 사이트 탭 (자동 진행, 최종 테스트 대기)
 - 7단계: 사이트 추가·시험 수집·어댑터 가이드 (자동 진행, 최종 테스트 대기)
+- 8단계: 필터 탭 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 8단계: 필터 탭 (`_shared/filters.ts` 순수 함수, `js_refilter()` RPC, 처리 순서 줄과 1차·2차 필터 판)
-- 관련 결정: D1–D16, D22–D34 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 필터 탭은 `pages/job-search/tabs.ts`의 탭 id로 `JobSearchPage`의 `TabPlaceholder`를 바꾼다 (D22). 칩·표·스위치 모양은 `sources/SourcesTab.css`의 `js-sources__chip`·`js-sources__switch` 클래스를 참고하되, 새 탭 css에 같은 값으로 따로 둬도 된다. 순수 함수 확인 스크립트는 저장소 밖 임시 폴더에서 node로 돌린다.
+- 9단계: 처리 함수 (필터·추출·채점) (`js-process`가 공고를 몇 개씩 1차 필터 → Haiku 추출·인젝션 검사 → 2차 필터 → Opus 채점으로 넘김)
+- 관련 결정: D1–D17, D22–D35 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: 필터는 `_shared/filters.ts`의 `applyFirst`·`applySecond`를 그대로 쓰고, 추출 결과를 `ExtractionForFilter`(`skills`·`minYears`·`employment[]`)로, 저장된 프로필 기술스택을 `{ skills: 이름[] }`로 바꿔 넘긴다. 걸리면 `hits`를 `filtered_by`에 넣는다. `filters.ts`를 `migrations.rs`의 `js-process` `files`에 넣는다. 추출 스키마에 경력 연수(숫자로 쓸 최소 연수)와 고용 형태 목록을 꼭 둔다.
 
 ## 확인할 문서 (경로는 docs/features/job-search/ 기준, 파일 통째로 읽기)
-- ai/plan/step-08.md
+- ai/plan/step-09.md
 - ai/spec/req-analysis.md
-- ai/logs/L11.md
-- human/mockups/filters.html의 filters-flow·filters-first·filters-second 구역 (CSS: common.css·manage.css에서 클래스 검색)
-- ai/plan/structure.md의 "2. 데이터 모양" 절 (`js_postings.stage`·`js_filters` 줄)
-- supabase/migrations/0003_job_search.sql의 `js_filters` 테이블 정의 줄 (grep으로만)
+- ai/spec/req-usage.md (R74, R78)
+- ai/spec/ai-rules.md
+- ai/logs/L12.md
+- ai/logs/L09.md (`js-collect` 구조·`migrations.rs` 함수 묶음 방식 참고)
+- ai/plan/structure.md의 "2. 데이터 모양" 절 (`js_postings`·`js_extractions`·`js_scores` 줄)

@@ -5,6 +5,7 @@ import { useServer } from "../../features/server/useServer";
 import JobSearchTabs from "./JobSearchTabs";
 import JobSearchDisconnected from "./JobSearchDisconnected";
 import TabPlaceholder from "./TabPlaceholder";
+import FiltersTab from "./filters/FiltersTab";
 import ProfileTab from "./profile/ProfileTab";
 import UsageLine from "./recommend/UsageLine";
 import JobSettingsTab from "./settings/JobSettingsTab";
@@ -21,6 +22,8 @@ function TabBody({ tab, label }: { tab: JobSearchTabId; label: string }) {
       return <ProfileTab />;
     case "sources":
       return <SourcesTab />;
+    case "filters":
+      return <FiltersTab />;
     case "recommend":
       return (
         <>

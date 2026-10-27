@@ -228,3 +228,31 @@ export function siteAddedMessage(name: string): string {
 export function adapterReplacedMessage(name: string, version: number): string {
   return `${name} 어댑터를 v${version}로 바꿨어요.`;
 }
+
+// ===== 필터 (R41–R47) =====
+
+export function filtersLoadErrorMessage(kind: ApiErrorKind): string {
+  return `필터를 읽지 못했어요. ${reason(kind)}`;
+}
+
+export function filterChangeErrorMessage(kind: ApiErrorKind): string {
+  return `필터를 바꾸지 못했어요. ${reason(kind)}`;
+}
+
+/** 필터는 바뀌었지만 공고를 되돌리지 못했을 때 (R47) */
+export function refilterErrorMessage(kind: ApiErrorKind): string {
+  return `필터는 바꿨지만 공고에 다시 적용하지 못했어요. 조건을 한 번 더 바꾸면 다시 시도해요. ${reason(kind)}`;
+}
+
+export function refilteredMessage(count: number): string {
+  return count > 0
+    ? `바꿨어요. 아직 채점하지 않은 공고 ${count}개를 다음 처리 때 다시 걸러요.`
+    : "바꿨어요. 다음 처리부터 적용돼요.";
+}
+
+export function flowLoadErrorMessage(kind: ApiErrorKind): string {
+  return `이번 주 공고 수를 읽지 못했어요. ${reason(kind)}`;
+}
+
+export const FILTER_FOOT_NOTE =
+  "켜진 조건을 모두 만족해야 통과해요. 조건을 바꾸면 아직 채점하지 않은 공고에만 다시 적용하고, 이미 채점한 결과는 그대로 둬요.";

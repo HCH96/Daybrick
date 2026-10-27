@@ -326,6 +326,33 @@ $$;
 revoke all on function public.js_ensure_defaults() from public, anon;
 grant execute on function public.js_ensure_defaults() to authenticated;
 
+-- 필터를 바꾼 뒤 다시 적용 (R47): 아직 채점하지 않은 공고(new·filtered1·extracted·filtered2)를 new로 되돌리고
+-- 걸린 조건을 비운다. 다음 처리 때 1차 필터부터 다시 거치며, 추출 결과는 js_extractions에 남아 다시 부르지 않는다 (R53).
+-- 채점한 공고(scored)·의심(suspect)·한도 대기(waiting)는 그대로 둔다. 되돌린 공고 수를 돌려준다.
+create or replace function public.js_refilter()
+returns int
+language plpgsql
+security invoker
+set search_path = ''
+as $$
+declare
+  v_count int;
+begin
+  if auth.uid() is null then
+    raise exception 'js_refilter: 로그인이 필요합니다';
+  end if;
+  update public.js_postings
+    set stage = 'new', filtered_by = null
+    where user_id = auth.uid() and stage in ('new', 'filtered1', 'extracted', 'filtered2')
+      and (stage <> 'new' or filtered_by is not null);
+  get diagnostics v_count = row_count;
+  return v_count;
+end;
+$$;
+
+revoke all on function public.js_refilter() from public, anon;
+grant execute on function public.js_refilter() to authenticated;
+
 -- 비공개 버킷: 프로필 자료·공고 이미지 (D14)
 insert into storage.buckets (id, name, public)
 values ('job-search', 'job-search', false)
