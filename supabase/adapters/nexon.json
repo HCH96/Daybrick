@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "name": "nexon",
+  "vars": [],
+  "delayMs": 1500,
+  "list": {
+    "url": "https://career-gateway.nexon.com/career/v1/open/job-posts",
+    "method": "POST",
+    "body": {
+      "corpCodes": [], "jobCategories": [], "careerTypes": [], "employmentTypes": [], "workingAreas": [],
+      "query": null, "page": "{page}", "size": 15
+    },
+    "pages": 10,
+    "type": "json",
+    "item": "$.list[*]",
+    "fields": {
+      "id": { "sel": "jobPostNo" },
+      "title": { "sel": "title" },
+      "company": { "sel": "corpName" },
+      "link": { "sel": "jobPostNo", "base": "https://careers.nexon.com/recruit/" },
+      "body": { "sel": "contents", "optional": true }
+    }
+  },
+  "detail": {
+    "url": "https://career-gateway.nexon.com/career/v1/open/job-posts/{id}",
+    "type": "json",
+    "body": "$.contents",
+    "images": "img"
+  }
+}

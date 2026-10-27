@@ -1,0 +1,28 @@
+{
+  "format": 1,
+  "name": "gamejob",
+  "vars": ["dutyCode"],
+  "delayMs": 1500,
+  "list": {
+    "url": "https://www.gamejob.co.kr/Recruit/_GI_Job_List/",
+    "method": "POST",
+    "headers": { "X-Requested-With": "XMLHttpRequest" },
+    "body": "condition%5Bduty%5D={dutyCode}&condition%5Bmenucode%5D=duty&page={page}&direct=0&order=1&pagesize=40&tabcode=1",
+    "pages": 2,
+    "type": "html",
+    "item": ".tblList tbody tr",
+    "fields": {
+      "id": { "sel": ".tit a", "attr": "href", "regex": "GI_No=(\\d+)" },
+      "title": { "sel": ".tit a" },
+      "company": { "sel": ".company strong" },
+      "link": { "sel": ".tit a", "attr": "href", "base": "https://www.gamejob.co.kr" },
+      "duty": { "sel": ".tit a", "attr": "onclick", "regex": "IsNullOrWhiteSpace\\('([^']*)'\\)", "optional": true }
+    }
+  },
+  "detail": {
+    "url": "https://www.gamejob.co.kr/Recruit/GI_Read_Comt_Ifrm?gno={id}",
+    "type": "html",
+    "body": "body",
+    "images": "img"
+  }
+}

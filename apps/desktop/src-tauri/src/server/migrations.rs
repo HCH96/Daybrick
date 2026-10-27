@@ -64,6 +64,25 @@ const PROMPTS: (&str, &str) = (
     include_str!("../../../../../supabase/functions/_shared/prompts.ts"),
 );
 
+/// 구직 관리 공용: 어댑터 규칙 검사·실행 (수집 함수 묶음에 함께 올린다)
+const ADAPTER: (&str, &str) = (
+    "_shared/adapter.ts",
+    include_str!("../../../../../supabase/functions/_shared/adapter.ts"),
+);
+
+/// 구직 관리 공용: 같은 공고 판정 키
+const DEDUPE: (&str, &str) = (
+    "_shared/dedupe.ts",
+    include_str!("../../../../../supabase/functions/_shared/dedupe.ts"),
+);
+
+/// 구직 관리 공용: 알림 보내기 (15단계에서 js- 함수 묶음에 넣는다)
+#[allow(dead_code)]
+const NOTIFY: (&str, &str) = (
+    "_shared/notify.ts",
+    include_str!("../../../../../supabase/functions/_shared/notify.ts"),
+);
+
 /// 앱이 배포하는 서버 함수 전체. 단계별로 나누지 않고 매번 이 묶음을 다시 배포한다 (D16).
 pub const FUNCTIONS: &[EdgeFunction] = &[
     EdgeFunction {
@@ -100,6 +119,20 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
             AUTH,
             AI,
             PROMPTS,
+        ],
+    },
+    EdgeFunction {
+        slug: "js-collect",
+        entrypoint: "js-collect/index.ts",
+        files: &[
+            (
+                "js-collect/index.ts",
+                include_str!("../../../../../supabase/functions/js-collect/index.ts"),
+            ),
+            CORS,
+            AUTH,
+            ADAPTER,
+            DEDUPE,
         ],
     },
 ];

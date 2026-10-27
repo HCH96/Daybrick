@@ -271,6 +271,61 @@ $$;
 revoke all on function public.js_ensure_settings() from public, anon;
 grant execute on function public.js_ensure_settings() to authenticated;
 
+-- 기본 어댑터(게임잡·넥슨)와 사이트를 본인 행으로 넣는다 (R26–R27, D30).
+-- 규칙 원본은 저장소 supabase/adapters/*.json이고, 여기 내용과 같게 유지한다.
+-- 기본 어댑터가 하나도 없을 때만 어댑터와 사이트를 함께 넣는다 (지운 사이트를 다시 만들지 않는다, R31).
+-- 이미 있으면 저장된 버전이 더 낮은 기본 어댑터의 규칙만 새 버전으로 바꾼다. 넣거나 바꾼 어댑터 수를 돌려준다.
+create or replace function public.js_ensure_defaults()
+returns int
+language plpgsql
+security invoker
+set search_path = ''
+as $$
+declare
+  v_defaults constant jsonb := jsonb_build_array(
+    jsonb_build_object('version', 1, 'site', '게임잡', 'url', 'https://www.gamejob.co.kr',
+      'vars', '{"dutyCode": "1"}'::jsonb,
+      'rule', $rule${"format":1,"name":"gamejob","vars":["dutyCode"],"delayMs":1500,"list":{"url":"https://www.gamejob.co.kr/Recruit/_GI_Job_List/","method":"POST","headers":{"X-Requested-With":"XMLHttpRequest"},"body":"condition%5Bduty%5D={dutyCode}&condition%5Bmenucode%5D=duty&page={page}&direct=0&order=1&pagesize=40&tabcode=1","pages":2,"type":"html","item":".tblList tbody tr","fields":{"id":{"sel":".tit a","attr":"href","regex":"GI_No=(\\d+)"},"title":{"sel":".tit a"},"company":{"sel":".company strong"},"link":{"sel":".tit a","attr":"href","base":"https://www.gamejob.co.kr"},"duty":{"sel":".tit a","attr":"onclick","regex":"IsNullOrWhiteSpace\\('([^']*)'\\)","optional":true}}},"detail":{"url":"https://www.gamejob.co.kr/Recruit/GI_Read_Comt_Ifrm?gno={id}","type":"html","body":"body","images":"img"}}$rule$::jsonb),
+    jsonb_build_object('version', 1, 'site', '넥슨', 'url', 'https://careers.nexon.com/recruit',
+      'vars', '{}'::jsonb,
+      'rule', $rule${"format":1,"name":"nexon","vars":[],"delayMs":1500,"list":{"url":"https://career-gateway.nexon.com/career/v1/open/job-posts","method":"POST","body":{"corpCodes":[],"jobCategories":[],"careerTypes":[],"employmentTypes":[],"workingAreas":[],"query":null,"page":"{page}","size":15},"pages":10,"type":"json","item":"$.list[*]","fields":{"id":{"sel":"jobPostNo"},"title":{"sel":"title"},"company":{"sel":"corpName"},"link":{"sel":"jobPostNo","base":"https://careers.nexon.com/recruit/"},"body":{"sel":"contents","optional":true}}},"detail":{"url":"https://career-gateway.nexon.com/career/v1/open/job-posts/{id}","type":"json","body":"$.contents","images":"img"}}$rule$::jsonb)
+  );
+  v_item jsonb;
+  v_adapter_id uuid;
+  v_count int := 0;
+  v_changed int;
+begin
+  if auth.uid() is null then
+    raise exception 'js_ensure_defaults: 로그인이 필요합니다';
+  end if;
+
+  if not exists (select 1 from public.js_adapters where user_id = auth.uid() and builtin) then
+    for v_item in select * from jsonb_array_elements(v_defaults) loop
+      insert into public.js_adapters (user_id, name, rule, version, builtin)
+      values (auth.uid(), v_item->'rule'->>'name', v_item->'rule', (v_item->>'version')::int, true)
+      returning id into v_adapter_id;
+      insert into public.js_sites (user_id, name, url, adapter_id, vars)
+      values (auth.uid(), v_item->>'site', v_item->>'url', v_adapter_id, v_item->'vars');
+      v_count := v_count + 1;
+    end loop;
+    return v_count;
+  end if;
+
+  for v_item in select * from jsonb_array_elements(v_defaults) loop
+    update public.js_adapters
+      set rule = v_item->'rule', version = (v_item->>'version')::int
+      where user_id = auth.uid() and builtin and name = v_item->'rule'->>'name'
+        and version < (v_item->>'version')::int;
+    get diagnostics v_changed = row_count;
+    v_count := v_count + v_changed;
+  end loop;
+  return v_count;
+end;
+$$;
+
+revoke all on function public.js_ensure_defaults() from public, anon;
+grant execute on function public.js_ensure_defaults() to authenticated;
+
 -- 비공개 버킷: 프로필 자료·공고 이미지 (D14)
 insert into storage.buckets (id, name, public)
 values ('job-search', 'job-search', false)
