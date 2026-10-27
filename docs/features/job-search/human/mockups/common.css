@@ -1,0 +1,149 @@
+/* 공통: 색 토큰, 문서 부분, 앱 창 틀, 페이지 머리·탭, 버튼·칩·스위치·표·입력·팝업 틀
+   색과 창 틀은 main-page 목업 common.css 값을 그대로 이어 쓴다.
+   --red·--red-soft·--badge는 notifications 목업과 같은 값. */
+:root {
+  --bg: #17171a; --sidebar: #1c1c20; --surface: #222227;
+  --border: #33333b; --track: #33333b;
+  --text: #ededf2; --muted: #9b9ba8; --faint: #6b6b78;
+  --accent: #a68cff; --accent-soft: #2d2745; --on-accent: #17171a;
+  --neutral: #cdcdd6; --neutral-soft: #2b2b31;
+  --blue: #7aa8ff; --blue-soft: #1e2740;
+  --amber: #f0b860; --amber-soft: #3a2f1c;
+  --green: #66cf95; --green-soft: #1a3428;
+  --red: #ff8a8a; --red-soft: #3a1f22;
+  --badge: #f0524f; --on-badge: #ffffff;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 40px 32px 80px; background: #0d0d0f; color: var(--text);
+  font-family: "Malgun Gothic", "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5;
+}
+
+/* ===== 문서 부분 ===== */
+.doc { max-width: 1160px; margin: 0 auto; }
+.doc > h1 { margin: 0 0 8px; font-size: 24px; }
+.lead { margin: 0 0 12px; color: var(--muted); }
+.back-link { display: inline-block; margin-bottom: 16px; color: var(--accent); text-decoration: none; font-size: 13px; }
+.screen { margin-bottom: 72px; }
+.screen-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+.screen-head h2 { margin: 0; font-size: 20px; }
+.tag { font-size: 12px; color: var(--muted); border: 1px solid var(--border); border-radius: 99px; padding: 1px 10px; }
+.screen-desc { margin: 0 0 16px; color: var(--muted); }
+.scale-note { font-size: 12px; color: var(--faint); margin-bottom: 8px; }
+.notes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+.note { background: var(--sidebar); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 13px; }
+.note b { display: block; margin-bottom: 6px; font-size: 13px; }
+.note ul { margin: 0; padding-left: 18px; color: var(--muted); }
+.note li + li { margin-top: 3px; }
+.screen-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.screen-list a { display: flex; gap: 16px; align-items: baseline; padding: 12px 16px; border: 1px solid var(--border);
+  border-radius: 10px; background: var(--sidebar); color: var(--text); text-decoration: none; }
+.screen-list a:hover { border-color: var(--accent); }
+.screen-list .num { width: 40px; color: var(--accent); font-weight: 700; }
+.screen-list .name { width: 220px; font-weight: 700; }
+.screen-list .desc { flex: 1; color: var(--muted); font-size: 13px; }
+.screen-list .req { color: var(--faint); font-size: 12px; }
+.list-group { margin: 28px 0 10px; font-size: 13px; font-weight: 700; color: var(--muted); }
+
+/* ===== 앱 창 (1440 x 900, 75%로 축소해서 보여줌) ===== */
+.frame {
+  zoom: 0.75; width: 1440px; min-height: 900px; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 12px; position: relative;
+}
+.ico { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.ico.sm { width: 15px; height: 15px; }
+.ico.lg { width: 22px; height: 22px; }
+
+/* 제목 표시줄 (40px) */
+.titlebar { height: 40px; flex-shrink: 0; display: flex; align-items: center; background: var(--sidebar); border-bottom: 1px solid var(--border); }
+.tb-nav { display: flex; align-items: center; gap: 2px; padding-left: 8px; }
+.tb-btn { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 6px; color: var(--muted); position: relative; }
+.tb-btn.off { opacity: .35; }
+.tb-drag { flex: 1; align-self: stretch; }
+.tb-badge { position: absolute; top: 2px; right: 0; min-width: 15px; height: 15px; padding: 0 4px; border-radius: 99px;
+  background: var(--badge); color: var(--on-badge); font-size: 10px; font-weight: 700; line-height: 15px; text-align: center; }
+.win { display: flex; height: 100%; }
+.win span { width: 46px; display: grid; place-items: center; color: var(--text); }
+.win svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1; }
+
+/* 제목 표시줄 아래: 사이드바 + 본문 */
+.body { flex: 1; min-height: 0; display: flex; }
+.sidebar { width: 200px; flex-shrink: 0; background: var(--sidebar); border-right: 1px solid var(--border);
+  padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+.logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 800; padding: 0 8px 20px; }
+.brick { width: 26px; height: 26px; border-radius: 6px; background: var(--accent); display: grid;
+  grid-template-columns: 1fr 1fr; gap: 2px; padding: 4px; }
+.brick i { background: rgba(255,255,255,.85); border-radius: 1px; }
+.nav { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: var(--muted); font-size: 14px; }
+.nav.on { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.spacer { flex: 1; }
+.version { font-size: 11px; color: var(--muted); padding: 0 12px; }
+.main { flex: 1; min-width: 0; padding: 28px 32px; overflow: hidden; display: flex; flex-direction: column; }
+
+/* ===== 페이지 머리 + 탭 (R1) ===== */
+.page-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.page-head h1 { margin: 0; font-size: 22px; font-weight: 800; }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.tab { padding: 10px 16px; color: var(--muted); font-size: 14px; border-bottom: 2px solid transparent; margin-bottom: -1px; display: flex; align-items: center; gap: 6px; }
+.tab.on { color: var(--text); font-weight: 700; border-bottom-color: var(--accent); }
+.tab .cnt { font-size: 11px; font-weight: 700; padding: 0 6px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+
+/* ===== 버튼 ===== */
+.btn { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text); white-space: nowrap; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.ghost { background: transparent; border-color: transparent; color: var(--muted); }
+.btn.danger { color: var(--red); }
+.btn.sm { height: 28px; padding: 0 10px; font-size: 12px; }
+.btn.off { opacity: .4; }
+.btn-row { display: flex; gap: 8px; align-items: center; }
+
+/* ===== 칩 (작은 상태 표시) ===== */
+.chip { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 99px; font-size: 12px; font-weight: 600;
+  background: var(--neutral-soft); color: var(--neutral); white-space: nowrap; }
+.chip.accent { background: var(--accent-soft); color: var(--accent); }
+.chip.blue { background: var(--blue-soft); color: var(--blue); }
+.chip.amber { background: var(--amber-soft); color: var(--amber); }
+.chip.green { background: var(--green-soft); color: var(--green); }
+.chip.red { background: var(--red-soft); color: var(--red); }
+.chip.new { background: var(--badge); color: var(--on-badge); height: 18px; font-size: 11px; padding: 0 6px; }
+
+/* ===== 스위치 ===== */
+.sw { display: inline-block; vertical-align: middle; width: 34px; height: 20px; border-radius: 99px; background: var(--track); position: relative; flex-shrink: 0; }
+.sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--muted); }
+.sw.on { background: var(--accent); }
+.sw.on::after { left: 17px; background: var(--on-accent); }
+
+/* ===== 판 (흰 테두리 상자), 표, 입력 ===== */
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+.panel-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; margin: 0 0 12px; }
+.panel-desc { color: var(--muted); font-size: 13px; margin: -6px 0 14px; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tbl th { text-align: left; color: var(--muted); font-weight: 600; font-size: 12px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.tbl td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.tbl tr:last-child td { border-bottom: 0; }
+.sub { color: var(--muted); font-size: 12px; }
+.faint { color: var(--faint); }
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.field label { font-size: 12px; color: var(--muted); font-weight: 600; }
+.input { height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); font-size: 13px; }
+.input.ph { color: var(--faint); }
+.input.area { height: auto; min-height: 72px; align-items: flex-start; padding: 10px 12px; line-height: 1.6; }
+.select::after { content: "▾"; margin-left: auto; color: var(--muted); }
+
+/* ===== 팝업 틀 (창 위에 어둡게 깔고 가운데 띄움) ===== */
+.overlay { position: absolute; inset: 40px 0 0 0; background: rgba(8,8,10,.62); display: flex; align-items: center; justify-content: center; padding: 32px; }
+.modal { background: var(--sidebar); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.5);
+  display: flex; flex-direction: column; max-height: 100%; overflow: hidden; }
+.modal-head { display: flex; align-items: center; gap: 10px; padding: 18px 22px; border-bottom: 1px solid var(--border); }
+.modal-head h3 { margin: 0; font-size: 17px; font-weight: 800; flex: 1; }
+.modal-body { padding: 20px 22px; overflow: hidden; flex: 1; min-height: 0; }
+.modal-foot { display: flex; align-items: center; gap: 8px; padding: 14px 22px; border-top: 1px solid var(--border); }
+.x-btn { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 6px; color: var(--muted); }
+
+/* 팝업 아래 깔리는 화면 흉내 (회색 덩어리) */
+.ghost-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.ghost-card { height: 150px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.ghost-bar { height: 60px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; }

@@ -1,0 +1,113 @@
+<!doctype html>
+<!-- 목업: 구직 관리 / 10. 수집 사이트 탭
+  목차와 다른 화면: index.html
+  CSS: common.css, manage.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  sources             10. 수집 사이트 탭            R24–R27, R31, R32, R34
+    sources-bar         10-1. 지금 수집·사이트 추가·가이드 R30, R34
+    sources-table       10-2. 사이트 표              R24, R26, R31
+    sources-adapters    10-3. 어댑터 목록·새 버전     R25–R27, R32
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구직 관리 목업 · 수집 사이트</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="manage.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+<a class="back-link" href="index.html">← 목업 목차</a>
+
+<section class="screen" id="sources">
+  <div class="screen-head"><h2>10. 수집 사이트 탭</h2><span class="tag">R24–R27, R31, R32, R34</span></div>
+  <p class="screen-desc">트래킹할 사이트 표와 등록된 어댑터 목록. 위쪽에서 바로 수집하거나 사이트를 추가하고, 어댑터 작성 가이드를 연다.</p>
+  <div class="scale-note">1440 × 900 창을 75%로 줄여 보여줌</div>
+
+  <div class="frame">
+    <div class="titlebar">
+      <div class="tb-nav">
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-left"/></svg></span>
+        <span class="tb-btn off"><svg class="ico sm"><use href="#i-right"/></svg></span>
+      </div>
+      <div class="tb-drag"></div>
+      <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg><span class="tb-badge">2</span></span>
+      <div class="win">
+        <span><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10"/></svg></span>
+      </div>
+    </div>
+    <div class="body">
+      <aside class="sidebar">
+        <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+        <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+        <div class="nav"><svg class="ico"><use href="#i-calendar"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico"><use href="#i-list"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico"><use href="#i-briefcase"/></svg>Applications</div>
+        <div class="nav on"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+        <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+        <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+        <div class="spacer"></div>
+        <div class="version">v0.5.0</div>
+      </aside>
+      <main class="main">
+        <div class="page-head"><h1>구직 관리</h1></div>
+        <nav class="tabs"><span class="tab">추천 공고</span><span class="tab">프로필</span><span class="tab">필터</span><span class="tab on">수집 사이트</span><span class="tab">메일 제안 <span class="cnt">2</span></span><span class="tab">설정</span></nav>
+        <div class="src-bar" id="sources-bar">
+          <span class="info">다음 자동 수집 <b>11/02 (월) 06:00</b> · 매주 월요일</span>
+          <div class="right">
+            <span class="btn"><svg class="ico sm"><use href="#i-book"/></svg>어댑터 가이드</span>
+            <span class="btn"><svg class="ico sm"><use href="#i-play"/></svg>지금 수집</span>
+            <span class="btn primary"><svg class="ico sm"><use href="#i-plus"/></svg>사이트 추가</span>
+          </div>
+        </div>
+        <div class="panel" id="sources-table">
+          <table class="tbl">
+            <thead><tr><th>켜짐</th><th>사이트</th><th>어댑터</th><th>사이트별 값</th><th>마지막 결과</th><th>마지막 수집</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><span class="sw on"></span></td><td class="site-name"><b>게임잡</b><span class="sub">gamejob.co.kr/Recruit/joblist</span></td><td><span class="chip">게임잡 v1</span></td><td class="kv">직무=프로그래밍</td>
+                <td><div class="result"><span class="chip green"><svg class="ico sm"><use href="#i-check"/></svg>성공 · 공고 38개</span></div></td><td class="sub">10/26 06:00</td><td><span class="x-btn"><svg class="ico sm"><use href="#i-dots"/></svg></span></td></tr>
+              <tr><td><span class="sw on"></span></td><td class="site-name"><b>넥슨 커리어</b><span class="sub">careers.nexon.com</span></td><td><span class="chip">넥슨 v1</span></td><td class="kv">-</td>
+                <td><div class="result"><span class="chip green"><svg class="ico sm"><use href="#i-check"/></svg>성공 · 공고 11개</span></div></td><td class="sub">10/26 06:01</td><td><span class="x-btn"><svg class="ico sm"><use href="#i-dots"/></svg></span></td></tr>
+              <tr><td><span class="sw on"></span></td><td class="site-name"><b>크래프톤</b><span class="sub">krafton.career.greetinghr.com</span></td><td><span class="chip accent">그리팅 v2</span></td><td class="kv">회사코드=krafton</td>
+                <td><div class="result"><span class="chip green"><svg class="ico sm"><use href="#i-check"/></svg>성공 · 공고 7개</span></div></td><td class="sub">10/26 06:02</td><td><span class="x-btn"><svg class="ico sm"><use href="#i-dots"/></svg></span></td></tr>
+              <tr><td><span class="sw on"></span></td><td class="site-name"><b>스마일게이트</b><span class="sub">smilegate.career.greetinghr.com</span></td><td><span class="chip accent">그리팅 v2</span></td><td class="kv">회사코드=smilegate</td>
+                <td><div class="result"><span class="chip green"><svg class="ico sm"><use href="#i-check"/></svg>성공 · 공고 5개</span></div></td><td class="sub">10/26 06:02</td><td><span class="x-btn"><svg class="ico sm"><use href="#i-dots"/></svg></span></td></tr>
+              <tr><td><span class="sw on"></span></td><td class="site-name"><b>엔씨소프트</b><span class="sub">careers.ncsoft.com</span></td><td><span class="chip">엔씨 v1</span></td><td class="kv">-</td>
+                <td><div class="result"><span class="chip red"><svg class="ico sm"><use href="#i-alert"/></svg>실패</span><span class="sub">목록 선택자 ".job-list li"를 찾지 못함 (사이트 구조 변경 의심)</span></div></td><td class="sub">10/26 06:03</td><td><span class="x-btn"><svg class="ico sm"><use href="#i-dots"/></svg></span></td></tr>
+              <tr class="off"><td><span class="sw"></span></td><td class="site-name"><b>펄어비스 (자사)</b><span class="sub">recruit.pearlabyss.com</span></td><td><span class="chip accent">그리팅 v2</span></td><td class="kv">회사코드=pearlabyss</td>
+                <td><div class="result"><span class="sub">꺼짐 · 게임잡과 겹쳐서 끔</span></div></td><td class="sub">10/12 06:02</td><td><span class="x-btn"><svg class="ico sm"><use href="#i-dots"/></svg></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="adapters" id="sources-adapters">
+          <div class="panel-title"><svg class="ico"><use href="#i-file"/></svg>어댑터 <span class="sub">규칙 파일(JSON) · 서버 공용 수집 함수가 읽어서 실행</span></div>
+          <div class="ad-list">
+            <div class="ad"><div class="ad-top"><b>게임잡</b><span class="chip">v1</span><span class="chip blue">기본</span></div><span class="sub">사이트 1곳 · 10/01 등록</span><div class="btn-row"><span class="btn sm"><svg class="ico sm"><use href="#i-upload"/></svg>새 버전 올리기</span></div></div>
+            <div class="ad"><div class="ad-top"><b>넥슨</b><span class="chip">v1</span><span class="chip blue">기본</span></div><span class="sub">사이트 1곳 · 10/01 등록</span><div class="btn-row"><span class="btn sm"><svg class="ico sm"><use href="#i-upload"/></svg>새 버전 올리기</span></div></div>
+            <div class="ad"><div class="ad-top"><b>그리팅</b><span class="chip">v2</span></div><span class="sub">사이트 3곳이 함께 씀 · 10/18 교체</span><div class="btn-row"><span class="btn sm"><svg class="ico sm"><use href="#i-upload"/></svg>새 버전 올리기</span></div></div>
+            <div class="ad"><div class="ad-top"><b>엔씨</b><span class="chip">v1</span><span class="chip red">마지막 수집 실패</span></div><span class="sub">사이트 1곳 · 10/05 등록</span><div class="btn-row"><span class="btn sm"><svg class="ico sm"><use href="#i-upload"/></svg>새 버전 올리기</span></div></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>⋯ 메뉴</b><ul>
+      <li>수정, 이 사이트만 시험 수집, 삭제</li>
+      <li>삭제해도 이미 모은 공고는 남음 (R31)</li></ul></div>
+    <div class="note"><b>어댑터 공유</b><ul>
+      <li>같은 솔루션(그리팅)은 어댑터 하나, 회사코드만 사이트별 값</li>
+      <li>수집이 실패한 어댑터에는 빨간 칩</li></ul></div>
+    <div class="note"><b>새 버전 올리기</b><ul>
+      <li>사이트 추가 창과 같은 시험 수집을 거친 뒤 교체 (R32)</li>
+      <li>"지금 수집"은 켜진 사이트 전체를 바로 수집</li></ul></div>
+
+  </div>
+</section>
+</div>
+</body>
+</html>

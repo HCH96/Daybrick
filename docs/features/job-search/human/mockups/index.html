@@ -1,0 +1,59 @@
+<!doctype html>
+<!-- 목업 목차: 구직 관리 (job-search)
+  읽는 법: 이 목차에서 필요한 화면 파일만 골라 읽는다. CSS는 그 화면 파일 머리에 적힌 파일에서 필요한 클래스만 검색한다.
+  파일                     화면                          요구사항               부분 ID
+  recommend.html           1. 추천 공고 탭                R1, R4–R9, R23, R75, R77  recommend-status, -toolbar, -cards
+  popup.html               2. 상세 팝업 (텍스트 공고)     R10, R12, R14, R48, R51   popup-head, -score, -reasons, -fields, -source, -foot
+  popup-warn.html          3. 상세 팝업 (이미지·인젝션)   R11, R13, R46, R49        popup-warn-alert, -score, -image, -foot
+  part-schedule.html       4. 일정 제안 창                R54–R56                   apply-schedule-done, -list, -vague
+  part-image-zoom.html     5. 이미지 크게 보기            R11                       image-zoom
+  filtered.html            6. 걸러진 공고                 R9, R46, R49              filtered-head, -rows
+  archived.html            7. 지원 안 함 보관함           R9, R15, R16              archived-head, -rows
+  profile.html             8. 프로필 탭                   R17–R23                   profile-sources, -editor, -foot
+  filters.html             9. 필터 탭                     R41–R47                   filters-flow, -first, -second
+  sources.html             10. 수집 사이트 탭             R24–R27, R31, R32, R34    sources-bar, -table, -adapters
+  part-add-site.html       11. 사이트 추가 창             R28, R29, R32             add-site-form, -test, -foot
+  part-adapter-guide.html  12. 어댑터 작성 가이드         R30                       adapter-guide-toc, -body
+  mail.html                13. 메일 제안 탭               R64, R67–R69              mail-bar, -list, -done
+  settings.html            14. 설정 탭                    R60–R63, R70, R73, R76, R79  settings-gmail, -limits, -balance, -prices
+  disconnected.html        15. 서버 연결 안 됨            R2                        disconnected
+  CSS: common.css(색 토큰·앱 틀·탭·버튼·칩·스위치·표·입력·팝업 틀), recommend.css(1, 6, 7),
+       popup.css(2–5), profile.css(8, 15), manage.css(9–14)
+  아이콘: icons.js (SVG 심볼, <use href="#i-이름">)
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구직 관리 목업</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<div class="doc">
+  <h1>구직 관리 (job-search) 목업</h1>
+  <p class="lead">디자인 확인용 정적 화면입니다. 동작은 없고, 데이터는 모두 예시 값입니다. 색과 앱 틀은 메인 페이지 목업(그라파이트 바이올렛)을 이어 씁니다.</p>
+
+  <div class="list-group">추천 공고 탭과 그 안에서 여는 창</div>
+  <ul class="screen-list">
+    <li><a href="recommend.html"><span class="num">1</span><span class="name">추천 공고 탭</span><span class="desc">AI 사용액·수집 상태 줄, 정렬, 공고 카드 3열</span><span class="req">R1, R4–R9</span></a></li>
+    <li><a href="popup.html"><span class="num">2</span><span class="name">상세 팝업 (텍스트 공고)</span><span class="desc">점수·등급·요약, 강점·부족한 점과 근거, 추출 항목, 원문</span><span class="req">R10–R14</span></a></li>
+    <li><a href="popup-warn.html"><span class="num">3</span><span class="name">상세 팝업 (이미지·인젝션 의심)</span><span class="desc">빨간 경고줄과 의심 문장, 이미지 원문, 그래도 채점</span><span class="req">R11, R13, R49</span></a></li>
+    <li><a href="part-schedule.html"><span class="num">4</span><span class="name">일정 제안 창</span><span class="desc">지원하기 후 공고 날짜를 체크해서 전형 일정에 추가</span><span class="req">R54–R56</span></a></li>
+    <li><a href="part-image-zoom.html"><span class="num">5</span><span class="name">이미지 크게 보기</span><span class="desc">이미지 공고를 창 전체에 크게</span><span class="req">R11</span></a></li>
+    <li><a href="filtered.html"><span class="num">6</span><span class="name">걸러진 공고</span><span class="desc">걸린 조건 칩, 하나씩 그래도 채점</span><span class="req">R46, R49</span></a></li>
+    <li><a href="archived.html"><span class="num">7</span><span class="name">지원 안 함 보관함</span><span class="desc">보관한 공고와 되돌리기</span><span class="req">R15, R16</span></a></li>
+  </ul>
+
+  <div class="list-group">다른 탭</div>
+  <ul class="screen-list">
+    <li><a href="profile.html"><span class="num">8</span><span class="name">프로필 탭</span><span class="desc">자료 넣기, AI 초안, 항목별 편집(출처 표시)</span><span class="req">R17–R23</span></a></li>
+    <li><a href="filters.html"><span class="num">9</span><span class="name">필터 탭</span><span class="desc">처리 순서와 단계별 개수, 1차·2차 필터 조건</span><span class="req">R41–R47</span></a></li>
+    <li><a href="sources.html"><span class="num">10</span><span class="name">수집 사이트 탭</span><span class="desc">사이트 표, 지금 수집, 어댑터 목록</span><span class="req">R24–R34</span></a></li>
+    <li><a href="part-add-site.html"><span class="num">11</span><span class="name">사이트 추가 창</span><span class="desc">입력 → 시험 수집 결과 → 저장</span><span class="req">R28, R29, R32</span></a></li>
+    <li><a href="part-adapter-guide.html"><span class="num">12</span><span class="name">어댑터 작성 가이드</span><span class="desc">규칙 파일 형식, 예시, AI 프롬프트 틀</span><span class="req">R30</span></a></li>
+    <li><a href="mail.html"><span class="num">13</span><span class="name">메일 제안 탭</span><span class="desc">상태 변경 제안 승인·거절, 처리한 제안</span><span class="req">R67–R69</span></a></li>
+    <li><a href="settings.html"><span class="num">14</span><span class="name">설정 탭</span><span class="desc">Gmail 연결, AI 한도, 기준 잔액, 모델 단가</span><span class="req">R60–R79</span></a></li>
+    <li><a href="disconnected.html"><span class="num">15</span><span class="name">서버 연결 안 됨</span><span class="desc">탭 대신 연결 안내</span><span class="req">R2</span></a></li>
+  </ul>
+</div>
+</body>
+</html>

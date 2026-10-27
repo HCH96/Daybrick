@@ -1,0 +1,177 @@
+<!doctype html>
+<!-- 목업: 구직 관리 / 1. 추천 공고 탭
+  목차와 다른 화면: index.html
+  CSS: common.css, recommend.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  recommend           1. 추천 공고 탭               R1, R4–R9, R23, R75, R77
+    recommend-status    1-1. 사용액·수집 상태 줄     R6, R7, R75, R77
+    recommend-toolbar   1-2. 정렬·보관함·걸러진 공고  R5, R9, R23
+    recommend-cards     1-3. 공고 카드 목록          R4, R8, R23
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구직 관리 목업 · 추천 공고</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="recommend.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+<a class="back-link" href="index.html">← 목업 목차</a>
+
+<section class="screen" id="recommend">
+  <div class="screen-head"><h2>1. 추천 공고 탭</h2><span class="tag">R1, R4–R9, R23, R75, R77</span></div>
+  <p class="screen-desc">구직 관리 페이지를 열면 처음 보이는 탭. 위에서부터 사용액·수집 상태 줄, 도구 줄, 공고 카드 3열.</p>
+  <div class="scale-note">1440 × 900 창을 75%로 줄여 보여줌</div>
+
+  <div class="frame">
+    <div class="titlebar">
+      <div class="tb-nav">
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-left"/></svg></span>
+        <span class="tb-btn off"><svg class="ico sm"><use href="#i-right"/></svg></span>
+      </div>
+      <div class="tb-drag"></div>
+      <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg><span class="tb-badge">2</span></span>
+      <div class="win">
+        <span><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10"/></svg></span>
+      </div>
+    </div>
+    <div class="body">
+      <aside class="sidebar">
+        <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+        <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+        <div class="nav"><svg class="ico"><use href="#i-calendar"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico"><use href="#i-list"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico"><use href="#i-briefcase"/></svg>Applications</div>
+        <div class="nav on"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+        <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+        <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+        <div class="spacer"></div>
+        <div class="version">v0.5.0</div>
+      </aside>
+      <main class="main">
+        <div class="page-head"><h1>구직 관리</h1></div>
+        <nav class="tabs">
+          <span class="tab on">추천 공고</span><span class="tab">프로필</span><span class="tab">필터</span>
+          <span class="tab">수집 사이트</span><span class="tab">메일 제안 <span class="cnt">2</span></span><span class="tab">설정</span>
+        </nav>
+
+        <div class="status" id="recommend-status">
+          <div class="status-row">
+            <div class="meter">
+              <div class="meter-top"><span class="k">오늘 호출</span><b>32</b><span class="of">/ 100회</span></div>
+              <div class="bar"><i class="p32"></i></div>
+            </div>
+            <div class="meter">
+              <div class="meter-top"><span class="k">이번 달 사용액</span><b>$4.10</b><span class="of">/ $10.00</span></div>
+              <div class="bar"><i class="p41"></i></div>
+            </div>
+            <div class="balance">
+              <span class="k">기준 잔액</span><b>$13.00</b>
+              <span class="arrow">−</span>
+              <span class="k">기준 이후</span><b>$4.10</b>
+              <span class="arrow">=</span>
+              <span class="est"><span class="k">예상 잔액</span> <b>$8.90</b></span>
+            </div>
+            <span class="calc-note"><svg class="ico sm"><use href="#i-alert"/></svg>이 앱의 호출만 계산한 값</span>
+          </div>
+          <div class="status-row">
+            <span class="status-item"><svg class="ico sm"><use href="#i-clock"/></svg>마지막 수집 <b>10/26 (월) 06:00</b></span>
+            <span class="dot-sep">·</span>
+            <span class="chip red"><svg class="ico sm"><use href="#i-alert"/></svg>수집 실패 1곳</span>
+            <span class="chip amber"><svg class="ico sm"><use href="#i-clock"/></svg>채점 대기 3개</span>
+            <span class="sub faint">한도에 걸려 내일 이어서 채점</span>
+          </div>
+        </div>
+
+        <div class="toolbar" id="recommend-toolbar">
+          <span class="sort"><svg class="ico sm"><use href="#i-sort"/></svg><span class="k">정렬</span>적합도 높은 순<svg class="ico sm"><use href="#i-down"/></svg></span>
+          <span class="count">추천 <b>18</b>개</span>
+          <span class="stale-note">프로필이 바뀌어 6개가 이전 프로필 기준이에요<span class="btn sm">다시 채점</span></span>
+          <div class="right">
+            <span class="btn"><svg class="ico sm"><use href="#i-archive"/></svg>지원 안 함 보관함 <span class="n">4</span></span>
+            <span class="btn"><svg class="ico sm"><use href="#i-filter"/></svg>걸러진 공고 <span class="n">27</span></span>
+          </div>
+        </div>
+
+        <div class="jobs" id="recommend-cards">
+          <div class="job is-new">
+            <div class="job-top"><span class="co">넥슨</span><span class="chip new">새</span><span class="site">넥슨 커리어</span></div>
+            <div class="job-title">[메이플스토리] 게임 서버 프로그래머</div>
+            <div class="job-meta">경력 3년 이상 · 정규직 · 판교</div>
+            <div class="job-foot"><span class="dday">D-12</span><div class="score g-top"><b>87<small>점</small></b><span>강력 추천</span></div></div>
+          </div>
+          <div class="job">
+            <div class="job-top"><span class="co">크래프톤</span><span class="site">그리팅</span></div>
+            <div class="job-title">[PUBG] 게임 서버 엔지니어 (라이브 서비스)</div>
+            <div class="job-meta">경력 2년 이상 · 정규직 · 서울 역삼</div>
+            <div class="job-foot"><span class="dday">D-20</span><div class="score g-top"><b>84<small>점</small></b><span>강력 추천</span></div></div>
+          </div>
+          <div class="job">
+            <div class="job-top"><span class="co">펄어비스</span><span class="site">게임잡</span></div>
+            <div class="job-title">플랫폼 백엔드 개발자 (Go / Kubernetes)</div>
+            <div class="job-meta">경력 무관 · 정규직 · 과천</div>
+            <div class="job-foot"><span class="dday soon">D-5</span><div class="score g-top"><b>81<small>점</small></b><span>강력 추천</span></div></div>
+          </div>
+          <div class="job is-new">
+            <div class="job-top"><span class="co">스마일게이트</span><span class="chip new">새</span><span class="site">그리팅</span></div>
+            <div class="job-title">[로스트아크] 서버 개발자</div>
+            <div class="job-meta">경력 1년 이상 · 정규직 · 판교</div>
+            <div class="job-foot"><span class="dday soon">D-3</span><div class="score g-good"><b>78<small>점</small></b><span>추천</span></div></div>
+          </div>
+          <div class="job">
+            <div class="job-top"><span class="co">넷마블</span><span class="site">게임잡</span></div>
+            <div class="job-title">신작 MMORPG 클라이언트 프로그래머 (Unity)</div>
+            <div class="job-meta">경력 3년 이상 · 정규직 · 구로</div>
+            <div class="job-foot"><span class="dday">D-9</span><span class="stale">이전 프로필 기준</span><div class="score g-good"><b>72<small>점</small></b><span>추천</span></div></div>
+          </div>
+          <div class="job">
+            <div class="job-top"><span class="co">데브시스터즈</span><span class="site">게임잡</span></div>
+            <div class="job-title">쿠키런 라이브 서비스 백엔드 엔지니어</div>
+            <div class="job-meta">경력 2년 이상 · 정규직 · 성수</div>
+            <div class="job-foot"><span class="dday">D-14</span><span class="stale">이전 프로필 기준</span><div class="score g-good"><b>70<small>점</small></b><span>추천</span></div></div>
+          </div>
+          <div class="job">
+            <div class="job-top"><span class="co">네오위즈</span><span class="site">게임잡</span></div>
+            <div class="job-title">게임 툴 프로그래머 (C# / WPF)</div>
+            <div class="job-meta">경력 1년 이상 · 계약직 · 판교</div>
+            <div class="job-foot"><span class="dday soon">D-1</span><div class="score g-good"><b>66<small>점</small></b><span>추천</span></div></div>
+          </div>
+          <div class="job">
+            <div class="job-top"><span class="co">시프트업</span><span class="site">게임잡</span></div>
+            <div class="job-title">[니케] 서버 개발자 (상시 채용)</div>
+            <div class="job-meta">경력 5년 이상 · 정규직 · 서초</div>
+            <div class="job-foot"><span class="dday always">상시</span><div class="score g-mid"><b>58<small>점</small></b><span>보통</span></div></div>
+          </div>
+          <div class="job">
+            <div class="job-top"><span class="co">컴투스</span><span class="site">게임잡</span></div>
+            <div class="job-title">게임 데이터 엔지니어 (Spark / Airflow)</div>
+            <div class="job-meta">경력 3년 이상 · 정규직 · 가산</div>
+            <div class="job-foot"><span class="dday">D-6</span><div class="score g-mid"><b>52<small>점</small></b><span>보통</span></div></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>상태 줄</b><ul>
+      <li>한도의 80%를 넘으면 막대가 주황색으로 바뀜</li>
+      <li>"수집 실패 1곳"을 누르면 수집 사이트 탭으로 이동</li>
+      <li>채점 대기는 개수만 보여주고 목록은 열지 않음 (R7)</li></ul></div>
+    <div class="note"><b>카드</b><ul>
+      <li>점수 색: 80↑ 초록 · 60–79 보라 · 40–59 주황 · 40↓ 회색 (ai-rules 등급)</li>
+      <li>D-5 이하는 빨간 칩, 마감일이 없는 공고는 "상시"</li>
+      <li>"새"는 마지막으로 탭을 연 뒤 들어온 공고 (R8)</li></ul></div>
+    <div class="note"><b>도구 줄</b><ul>
+      <li>정렬: 적합도 높은 순(기본) / 마감 임박 순</li>
+      <li>프로필을 바꾼 뒤에만 주황 안내가 보임 (R23)</li>
+      <li>두 목록 버튼은 같은 탭 안에서 목록 화면으로 바뀜</li></ul></div>
+  </div>
+</section>
+</div>
+</body>
+</html>

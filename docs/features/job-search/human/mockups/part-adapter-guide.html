@@ -1,0 +1,108 @@
+<!doctype html>
+<!-- 목업: 구직 관리 / 12. 어댑터 작성 가이드
+  목차와 다른 화면: index.html
+  CSS: common.css, manage.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  adapter-guide       12. 어댑터 작성 가이드        R30
+    adapter-guide-toc   12-1. 목차                  R30
+    adapter-guide-body  12-2. 본문(형식·예시·프롬프트) R30
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구직 관리 목업 · 어댑터 가이드</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="manage.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+<a class="back-link" href="index.html">← 목업 목차</a>
+
+<section class="screen" id="adapter-guide">
+  <div class="screen-head"><h2>12. 어댑터 작성 가이드</h2><span class="tag">R30</span></div>
+  <p class="screen-desc">수집 사이트 탭의 "어댑터 가이드" 창. 왼쪽 목차로 규칙 파일 형식, 게임잡·넥슨 예시, AI에게 맡길 때 쓸 프롬프트 틀을 오간다. 그림은 "규칙 파일 형식".</p>
+  <div class="scale-note">1440 × 900 창을 75%로 줄여 보여줌</div>
+
+  <div class="frame">
+    <div class="titlebar">
+      <div class="tb-nav">
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-left"/></svg></span>
+        <span class="tb-btn off"><svg class="ico sm"><use href="#i-right"/></svg></span>
+      </div>
+      <div class="tb-drag"></div>
+      <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg><span class="tb-badge">2</span></span>
+      <div class="win">
+        <span><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10"/></svg></span>
+      </div>
+    </div>
+    <div class="body">
+      <aside class="sidebar">
+        <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+        <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+        <div class="nav"><svg class="ico"><use href="#i-calendar"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico"><use href="#i-list"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico"><use href="#i-briefcase"/></svg>Applications</div>
+        <div class="nav on"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+        <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+        <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+        <div class="spacer"></div>
+        <div class="version">v0.5.0</div>
+      </aside>
+      <main class="main">
+        <div class="page-head"><h1>구직 관리</h1></div>
+        <nav class="tabs"><span class="tab">추천 공고</span><span class="tab">프로필</span><span class="tab">필터</span><span class="tab on">수집 사이트</span><span class="tab">메일 제안 <span class="cnt">2</span></span><span class="tab">설정</span></nav>
+        <div class="ghost-bar"></div>
+        <div class="ghost-card"></div>
+      </main>
+    </div>
+    <div class="overlay">
+      <div class="modal guide">
+        <div class="modal-head"><svg class="ico"><use href="#i-book"/></svg><h3>어댑터 작성 가이드</h3><span class="x-btn"><svg class="ico"><use href="#i-x"/></svg></span></div>
+        <div class="g-body">
+          <div class="g-toc" id="adapter-guide-toc"><span class="on">규칙 파일 형식</span><span>예시: 게임잡</span><span>예시: 넥슨</span><span>AI에게 맡기기 (프롬프트 틀)</span><span>시험 수집과 자주 나는 오류</span></div>
+          <div class="g-main" id="adapter-guide-body">
+            <h4>규칙 파일 형식</h4>
+            <p>어댑터는 JSON 파일 하나예요. 서버의 공용 수집 함수가 이 규칙대로 목록 페이지를 읽고 공고 상세를 가져와요. <b>{{회사코드}}</b>처럼 중괄호로 쓴 값은 사이트별 값으로 채워져요.</p>
+            <div class="code"><span class="btn sm copy">복사</span>{
+  <span class="k">"name"</span>: <span class="s">"greeting"</span>,
+  <span class="k">"version"</span>: 2,
+  <span class="k">"siteValues"</span>: [<span class="s">"회사코드"</span>],          <span class="c">// 사이트마다 다른 값</span>
+  <span class="k">"list"</span>: {
+    <span class="k">"url"</span>: <span class="s">"https://{{회사코드}}.career.greetinghr.com"</span>,
+    <span class="k">"item"</span>: <span class="s">"a[href*='/o/']"</span>,
+    <span class="k">"title"</span>: <span class="s">".opening-title"</span>,
+    <span class="k">"deadline"</span>: <span class="s">".opening-date"</span>,
+    <span class="k">"nextPage"</span>: <span class="s">"button.next"</span>
+  },
+  <span class="k">"detail"</span>: {
+    <span class="k">"body"</span>: <span class="s">"article.opening-content"</span>,
+    <span class="k">"images"</span>: <span class="s">"article img"</span>              <span class="c">// 이미지 공고면 저장</span>
+  }
+}</div>
+            <table class="tbl g-table">
+              <thead><tr><th>키</th><th>뜻</th><th>필수</th></tr></thead>
+              <tbody>
+                <tr><td class="kv">list.item</td><td>목록에서 공고 하나를 가리키는 선택자</td><td>필수</td></tr>
+                <tr><td class="kv">list.deadline</td><td>마감일 글자 위치 (없으면 상세에서 추출)</td><td class="faint">선택</td></tr>
+                <tr><td class="kv">detail.images</td><td>본문 대신 이미지로 된 공고의 이미지 선택자</td><td class="faint">선택</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>프롬프트 틀</b><ul><li>사이트 주소와 HTML 일부를 붙이면 규칙 파일을 만들어 달라는 글, 복사 단추 있음</li></ul></div>
+    <div class="note"><b>예시</b><ul><li>게임잡·넥슨 기본 어댑터 전체를 보여주고 복사 가능</li></ul></div>
+    <div class="note"><b>규칙 키</b><ul><li>그림의 키 이름은 예시, 실제 형식은 계획 단계에서 정함</li></ul></div>
+
+  </div>
+</section>
+</div>
+</body>
+</html>

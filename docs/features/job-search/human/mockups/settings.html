@@ -1,0 +1,114 @@
+<!doctype html>
+<!-- 목업: 구직 관리 / 14. 설정 탭
+  목차와 다른 화면: index.html
+  CSS: common.css, manage.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  settings            14. 설정 탭                   R60–R63, R70, R73, R76, R79
+    settings-gmail      14-1. Gmail 연결·해제         R60–R63, R70
+    settings-limits     14-2. AI 한도                 R73, R74
+    settings-balance    14-3. 기준 잔액·입력 기록     R76, R77
+    settings-prices     14-4. 모델 단가표             R71, R79
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구직 관리 목업 · 설정</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="manage.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+<a class="back-link" href="index.html">← 목업 목차</a>
+
+<section class="screen" id="settings">
+  <div class="screen-head"><h2>14. 설정 탭</h2><span class="tag">R60–R63, R70, R73, R76, R79</span></div>
+  <p class="screen-desc">2열 판 네 개: Gmail 연결, AI 한도, 기준 잔액, 모델 단가.</p>
+  <div class="scale-note">1440 × 900 창을 75%로 줄여 보여줌</div>
+
+  <div class="frame">
+    <div class="titlebar">
+      <div class="tb-nav">
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-left"/></svg></span>
+        <span class="tb-btn off"><svg class="ico sm"><use href="#i-right"/></svg></span>
+      </div>
+      <div class="tb-drag"></div>
+      <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg><span class="tb-badge">2</span></span>
+      <div class="win">
+        <span><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10"/></svg></span>
+      </div>
+    </div>
+    <div class="body">
+      <aside class="sidebar">
+        <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+        <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+        <div class="nav"><svg class="ico"><use href="#i-calendar"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico"><use href="#i-list"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico"><use href="#i-briefcase"/></svg>Applications</div>
+        <div class="nav on"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+        <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+        <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+        <div class="spacer"></div>
+        <div class="version">v0.5.0</div>
+      </aside>
+      <main class="main">
+        <div class="page-head"><h1>구직 관리</h1></div>
+        <nav class="tabs"><span class="tab">추천 공고</span><span class="tab">프로필</span><span class="tab">필터</span><span class="tab">수집 사이트</span><span class="tab">메일 제안 <span class="cnt">2</span></span><span class="tab on">설정</span></nav>
+        <div class="set-grid">
+          <div class="panel" id="settings-gmail">
+            <div class="panel-title"><svg class="ico"><use href="#i-mail"/></svg>Gmail 연결</div>
+            <p class="panel-desc">지원 건과 관련된 메일을 하루 한 번 확인해 상태 변경을 제안해요. 읽기 전용 권한만 요청해요.</p>
+            <div class="acct"><span class="avatar">D</span><div class="acct-main"><b>daybrick.user@gmail.com</b><span class="sub">앱 로그인 계정과 같음 · gmail.readonly</span></div><span class="chip green">연결됨</span></div>
+            <dl class="kv-rows"><dt>마지막 확인</dt><dd>10/27 (화) 07:00 · 메일 3통 중 2통 제안</dd><dt>토큰 저장</dt><dd>서버에 암호화해 저장 (이 PC에는 없음)</dd></dl>
+            <div class="btn-row"><span class="btn danger"><svg class="ico sm"><use href="#i-x"/></svg>연결 해제</span><span class="sub">서버 토큰을 지우고 Google 권한도 취소해요</span></div>
+          </div>
+          <div class="panel" id="settings-limits">
+            <div class="panel-title"><svg class="ico"><use href="#i-spark"/></svg>AI 한도</div>
+            <p class="panel-desc">80%에 이르면 알림을 보내고, 넘으면 AI 호출을 멈춰요. 미룬 작업은 다음 날(월 한도는 다음 달) 이어서 처리해요.</p>
+            <div class="inline-fields">
+              <div class="field"><label>하루 호출 수</label><div class="input money">100<span class="unit">회</span></div></div>
+              <div class="field"><label>월 사용액</label><div class="input money">10.00<span class="unit">USD</span></div></div>
+            </div>
+            <div class="hint">오늘 32/100회 · 이번 달 $4.10/$10.00</div>
+            <span class="btn">저장</span>
+          </div>
+          <div class="panel" id="settings-balance">
+            <div class="panel-title"><svg class="ico"><use href="#i-clock"/></svg>기준 잔액</div>
+            <p class="panel-desc">Anthropic 콘솔에서 본 남은 크레딧을 넣으면, 그때부터 사용액을 $0부터 다시 세서 예상 잔액을 보여줘요.</p>
+            <div class="bal-now">예상 잔액 <b>$8.90</b> = 기준 $13.00 − 기준 이후 $4.10</div>
+            <div class="bal-input"><span class="input ph">현재 잔액 (USD)</span><span class="btn primary">기준 잔액 입력</span></div>
+            <table class="tbl"><thead><tr><th>입력한 날</th><th>금액</th><th>그때까지 기준 이후 사용액</th></tr></thead>
+              <tbody><tr><td>10/01 (목)</td><td>$13.00</td><td class="sub">현재 기준</td></tr><tr><td>09/14 (월)</td><td>$5.00</td><td class="sub">$4.62</td></tr></tbody></table>
+            <div class="hint">사용액은 이 앱의 호출만 계산한 값이라 실제 잔액과 다를 수 있어요.</div>
+          </div>
+          <div class="panel" id="settings-prices">
+            <div class="panel-title"><svg class="ico"><use href="#i-list"/></svg>모델 단가 <span class="sub">100만 토큰당 USD · 서버 설정</span></div>
+            <table class="tbl"><thead><tr><th>모델</th><th>쓰는 곳</th><th>입력</th><th>출력</th></tr></thead>
+              <tbody>
+                <tr><td><b>Opus 5.5</b></td><td class="sub">적합도 채점, 프로필 생성</td><td><span class="input">4.00</span></td><td><span class="input">20.00</span></td></tr>
+                <tr><td><b>Haiku 5.5</b></td><td class="sub">항목 추출, 인젝션 검사, 메일 분류</td><td><span class="input">0.10</span></td><td><span class="input">0.50</span></td></tr>
+              </tbody></table>
+            <div class="foot-note">단가를 바꾸면 그 뒤 호출부터 새 단가로 계산해요.</div>
+            <span class="btn">단가 저장</span>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>Gmail 연결 전</b><ul>
+      <li>계정 상자 대신 [Gmail 연결] 단추</li>
+      <li>"확인되지 않은 앱" 경고가 뜨면 고급 → 계속 방법 안내 (R61)</li></ul></div>
+    <div class="note"><b>토큰 만료·권한 취소</b><ul>
+      <li>칩이 빨간 "다시 연결 필요"로 바뀌고 알림을 보냄 (R70)</li>
+      <li>단추는 [다시 연결]</li></ul></div>
+    <div class="note"><b>캐시 토큰</b><ul><li>캐시 단가 칸은 계획 단계에서 필요하면 추가</li></ul></div>
+
+  </div>
+</section>
+</div>
+</body>
+</html>

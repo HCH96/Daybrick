@@ -1,0 +1,120 @@
+<!doctype html>
+<!-- 목업: 구직 관리 / 8. 프로필 탭
+  목차와 다른 화면: index.html
+  CSS: common.css, profile.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  profile             8. 프로필 탭                  R17–R23
+    profile-sources     8-1. 자료 목록·프로필 만들기 R17, R18
+    profile-editor      8-2. 항목별 편집(출처 표시)   R19–R22
+    profile-foot        8-3. 초안 버리기·저장         R21–R23
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구직 관리 목업 · 프로필</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="profile.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+<a class="back-link" href="index.html">← 목업 목차</a>
+
+<section class="screen" id="profile">
+  <div class="screen-head"><h2>8. 프로필 탭</h2><span class="tag">R17–R23</span></div>
+  <p class="screen-desc">왼쪽에 자료(PDF·MD·붙여 넣은 텍스트)를 넣고 "프로필 만들기"를 누르면, 오른쪽에 AI가 만든 초안이 항목별 편집 칸으로 나온다. 항목마다 출처를 보여주고, 저장해야 채점에 쓰인다.</p>
+  <div class="scale-note">1440 × 900 창을 75%로 줄여 보여줌</div>
+
+  <div class="frame">
+    <div class="titlebar">
+      <div class="tb-nav">
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-left"/></svg></span>
+        <span class="tb-btn off"><svg class="ico sm"><use href="#i-right"/></svg></span>
+      </div>
+      <div class="tb-drag"></div>
+      <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg><span class="tb-badge">2</span></span>
+      <div class="win">
+        <span><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10"/></svg></span>
+      </div>
+    </div>
+    <div class="body">
+      <aside class="sidebar">
+        <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+        <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+        <div class="nav"><svg class="ico"><use href="#i-calendar"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico"><use href="#i-list"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico"><use href="#i-briefcase"/></svg>Applications</div>
+        <div class="nav on"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+        <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+        <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+        <div class="spacer"></div>
+        <div class="version">v0.5.0</div>
+      </aside>
+      <main class="main">
+        <div class="page-head"><h1>구직 관리</h1></div>
+        <nav class="tabs"><span class="tab">추천 공고</span><span class="tab on">프로필</span><span class="tab">필터</span><span class="tab">수집 사이트</span><span class="tab">메일 제안 <span class="cnt">2</span></span><span class="tab">설정</span></nav>
+        <div class="profile">
+          <div class="panel" id="profile-sources">
+            <div class="panel-title"><svg class="ico"><use href="#i-file"/></svg>자료</div>
+            <p class="panel-desc">PDF, 마크다운 파일, 붙여 넣은 텍스트를 여러 개 넣을 수 있어요.</p>
+            <div class="src-list">
+              <div class="src"><span class="src-ico pdf">PDF</span><div class="src-main"><b>이력서_2026_10.pdf</b><span class="sub">312KB · 10/20 추가</span></div><span class="x-btn"><svg class="ico sm"><use href="#i-trash"/></svg></span></div>
+              <div class="src"><span class="src-ico md">MD</span><div class="src-main"><b>portfolio.md</b><span class="sub">14KB · 10/20 추가</span></div><span class="x-btn"><svg class="ico sm"><use href="#i-trash"/></svg></span></div>
+              <div class="src"><span class="src-ico txt">TXT</span><div class="src-main"><b>붙여 넣은 텍스트 · 자기소개서 초안</b><span class="sub">1,840자 · 10/25 추가</span></div><span class="x-btn"><svg class="ico sm"><use href="#i-trash"/></svg></span></div>
+            </div>
+            <div class="drop"><svg class="ico lg"><use href="#i-upload"/></svg><br>파일을 여기로 끌어 놓기
+              <div class="btn-row"><span class="btn sm"><svg class="ico sm"><use href="#i-plus"/></svg>파일 추가</span><span class="btn sm"><svg class="ico sm"><use href="#i-text"/></svg>텍스트 붙여 넣기</span></div></div>
+            <span class="btn primary make"><svg class="ico sm"><use href="#i-spark"/></svg>프로필 다시 만들기</span>
+            <div class="make-note">서버에서 Opus 5.5가 자료 3개를 분석해요</div>
+            <div class="saved-box"><b>저장된 프로필 v3</b><span class="sub">10/20 저장 · 지금 채점에 쓰이는 프로필</span></div>
+          </div>
+
+          <div class="panel editor" id="profile-editor">
+            <div class="editor-head"><h3>프로필 초안</h3><span class="chip accent">새 초안 · 10/27 14:02</span></div>
+            <div class="draft-note"><svg class="ico sm"><use href="#i-alert"/></svg>저장하기 전까지는 기존 프로필(v3)로 채점해요.</div>
+            <div class="editor-body">
+              <div class="field"><div class="f-label">희망 직무<span class="from"><svg class="ico"><use href="#i-file"/></svg>이력서</span></div><div class="input">게임 서버 프로그래머, 백엔드 개발자</div></div>
+              <div class="field"><div class="f-label">경력 연수<span class="from"><svg class="ico"><use href="#i-file"/></svg>이력서</span></div><div class="input">4년 (2021.03–2025.02)</div></div>
+              <div class="field wide"><div class="f-label">기술스택 (숙련도)<span class="from"><svg class="ico"><use href="#i-file"/></svg>이력서, portfolio.md</span></div>
+                <div class="skills"><span class="skill">C++<i class="lv-h">상</i></span><span class="skill">Redis<i class="lv-h">상</i></span><span class="skill">C#<i class="lv-m">중</i></span><span class="skill">MySQL<i class="lv-m">중</i></span><span class="skill">Docker<i class="lv-m">중</i></span><span class="skill">TypeScript<i class="lv-m">중</i></span><span class="skill">Go<i class="lv-l">하</i></span><span class="btn sm ghost"><svg class="ico sm"><use href="#i-plus"/></svg>추가</span></div></div>
+              <div class="field wide"><div class="f-label">경력·프로젝트</div>
+                <div class="exp"><div class="exp-top"><b>루나소프트 · 서버팀 서버 프로그래머</b><span class="sub">2021.03–2025.02</span><span class="from"><svg class="ico"><use href="#i-file"/></svg>이력서</span></div>
+                  <dl><dt>한 일</dt><dd>MMORPG 「아르카디아」 게임 서버 콘텐츠 개발, 정기 점검·핫픽스 담당</dd>
+                    <dt>성과</dt><dd>매칭 서버 응답 시간 40% 단축, 점검 시간 3시간 → 1시간</dd>
+                    <dt>기술</dt><dd>C++, Redis, MySQL, Linux</dd></dl></div>
+                <div class="exp"><div class="exp-top"><b>개인 프로젝트 · 디스코드 레이드 봇</b><span class="sub">2025.05–2025.08</span><span class="from"><svg class="ico"><use href="#i-file"/></svg>portfolio.md</span></div>
+                  <dl><dt>한 일</dt><dd>길드 레이드 일정 관리 봇 설계·배포</dd>
+                    <dt>성과</dt><dd>서버 120곳 사용</dd>
+                    <dt>기술</dt><dd>TypeScript, Docker</dd></dl></div></div>
+              <div class="field"><div class="f-label">학력<span class="from"><svg class="ico"><use href="#i-file"/></svg>이력서</span></div><div class="input">한빛대학교 컴퓨터공학과 학사 (2021 졸업)</div></div>
+              <div class="field"><div class="f-label">수상·자격<span class="from"><svg class="ico"><use href="#i-text"/></svg>자기소개서 초안</span></div><div class="input">정보처리기사 (2020)</div></div>
+              <div class="field wide"><div class="f-label">강점 요약<span class="from"><svg class="ico"><use href="#i-file"/></svg>이력서, 자기소개서 초안</span></div><div class="input area">C++ 게임 서버 4년 경력으로 라이브 서비스 운영과 성능 개선 경험이 있음. 장애 대응과 점검 자동화에 강함.</div></div>
+            </div>
+            <div class="editor-foot" id="profile-foot">
+              <span class="left">저장하면 기존 점수에 "이전 프로필 기준" 표시가 붙어요. 다시 채점은 추천 공고 탭에서.</span>
+              <span class="btn ghost">초안 버리기</span><span class="btn primary"><svg class="ico sm"><use href="#i-check"/></svg>저장 (v4)</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>출처</b><ul>
+      <li>항목 오른쪽 위에 어느 자료에서 왔는지 표시</li>
+      <li>자료에 없는 값은 빈칸 + "자료에 없음" 흐린 글씨</li></ul></div>
+    <div class="note"><b>초안</b><ul>
+      <li>처음 만들 때는 "프로필 만들기", 저장된 프로필이 있으면 "다시 만들기"</li>
+      <li>초안이 없으면 오른쪽은 저장된 프로필을 바로 고치는 칸</li></ul></div>
+    <div class="note"><b>편집</b><ul>
+      <li>경력·프로젝트는 줄을 눌러 고치고, 맨 아래 "추가"</li>
+      <li>숙련도는 상·중·하 세 단계</li></ul></div>
+
+  </div>
+</section>
+</div>
+</body>
+</html>

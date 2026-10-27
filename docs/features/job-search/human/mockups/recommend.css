@@ -1,0 +1,80 @@
+/* 추천 공고 탭: 사용액·수집 상태 줄, 도구 줄, 공고 카드, 보관함·걸러진 공고 목록 */
+
+/* ===== 상태 줄 (R6, R7, R75, R77) ===== */
+.status { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 16px; }
+.status-row { display: flex; align-items: center; gap: 28px; font-size: 13px; }
+.status-row + .status-row { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); gap: 16px; }
+.meter { display: flex; flex-direction: column; gap: 6px; min-width: 170px; }
+.meter-top { display: flex; align-items: baseline; gap: 6px; }
+.meter-top .k { color: var(--muted); font-size: 12px; }
+.meter-top b { font-size: 15px; }
+.meter-top .of { color: var(--muted); font-size: 12px; }
+.bar { height: 5px; border-radius: 99px; background: var(--track); overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 99px; background: var(--accent); }
+.bar i.warn { background: var(--amber); }
+.balance { display: flex; align-items: center; gap: 10px; padding-left: 28px; border-left: 1px solid var(--border); }
+.balance .k { color: var(--muted); font-size: 12px; }
+.balance b { font-size: 15px; }
+.balance .arrow { color: var(--faint); }
+.balance .est b { color: var(--green); }
+.calc-note { margin-left: auto; color: var(--faint); font-size: 12px; display: flex; align-items: center; gap: 6px; }
+.status-item { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+.status-item b { color: var(--text); font-weight: 600; }
+.dot-sep { color: var(--faint); }
+
+/* ===== 도구 줄 (R5, R9, R23) ===== */
+.toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.sort { height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); font-size: 13px; }
+.sort .k { color: var(--muted); }
+.count { color: var(--muted); font-size: 13px; }
+.count b { color: var(--text); }
+.stale-note { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 6px 0 12px; border-radius: 8px;
+  background: var(--amber-soft); color: var(--amber); font-size: 13px; }
+.toolbar .right { margin-left: auto; display: flex; gap: 8px; }
+.btn .n { color: var(--muted); font-weight: 400; }
+
+/* ===== 공고 카드 (R4, R8, R23) ===== */
+.jobs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.job { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px;
+  display: flex; flex-direction: column; gap: 8px; min-height: 150px; }
+.job.is-new { border-color: #4a3f73; }
+.job-top { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.job-top .co { font-weight: 700; }
+.job-top .site { margin-left: auto; color: var(--faint); font-size: 12px; }
+.job-title { font-size: 15px; font-weight: 700; line-height: 1.4; }
+.job-meta { color: var(--muted); font-size: 12px; }
+.job-foot { margin-top: auto; display: flex; align-items: flex-end; gap: 8px; }
+.dday { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: var(--neutral-soft); color: var(--neutral); }
+.dday.soon { background: var(--red-soft); color: var(--red); }
+.dday.always { color: var(--muted); font-weight: 600; }
+.stale { font-size: 11px; color: var(--amber); }
+.score { margin-left: auto; text-align: right; line-height: 1.1; }
+.score b { font-size: 26px; font-weight: 800; }
+.score b small { font-size: 13px; font-weight: 600; margin-left: 1px; }
+.score span { display: block; font-size: 11px; font-weight: 700; margin-top: 3px; }
+.g-top { color: var(--green); }
+.g-good { color: var(--accent); }
+.g-mid { color: var(--amber); }
+.g-low { color: var(--muted); }
+
+/* ===== 목록 화면 머리 (보관함·걸러진 공고) ===== */
+.list-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.list-head h2 { margin: 0; font-size: 18px; font-weight: 800; }
+.list-desc { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+.seg { display: flex; gap: 4px; padding: 3px; border-radius: 9px; background: var(--surface); border: 1px solid var(--border); width: fit-content; margin-bottom: 14px; }
+.seg span { padding: 5px 12px; border-radius: 6px; font-size: 13px; color: var(--muted); }
+.seg span.on { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+
+/* 목록 줄 */
+.rows { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.row { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.row:last-child { border-bottom: 0; }
+.row-main { flex: 1; min-width: 0; }
+.row-title { font-size: 14px; font-weight: 700; }
+.row-title .co { color: var(--muted); font-weight: 600; margin-right: 8px; }
+.row-sub { color: var(--muted); font-size: 12px; margin-top: 3px; }
+.why { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.quote { margin-top: 6px; font-size: 12px; color: var(--red); background: var(--red-soft); border-radius: 6px; padding: 6px 10px; }
+.row .when { color: var(--faint); font-size: 12px; width: 110px; text-align: right; }
+.bar i.p32 { width: 32%; } .bar i.p41 { width: 41%; } .bar i.p84 { width: 84%; }

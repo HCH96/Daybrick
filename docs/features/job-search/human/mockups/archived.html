@@ -1,0 +1,96 @@
+<!doctype html>
+<!-- 목업: 구직 관리 / 7. 지원 안 함 보관함
+  목차와 다른 화면: index.html
+  CSS: common.css, recommend.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  archived            7. 지원 안 함 보관함          R9, R15, R16
+    archived-head       7-1. 목록 머리               R9
+    archived-rows       7-2. 보관한 공고 줄·되돌리기  R15
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구직 관리 목업 · 보관함</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="recommend.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+<a class="back-link" href="index.html">← 목업 목차</a>
+
+<section class="screen" id="archived">
+  <div class="screen-head"><h2>7. 지원 안 함 보관함</h2><span class="tag">R9, R15, R16</span></div>
+  <p class="screen-desc">상세 팝업에서 "지원 안 함"을 누른 공고가 모이는 목록. 되돌리면 다시 추천 목록에 나온다.</p>
+  <div class="scale-note">1440 × 900 창을 75%로 줄여 보여줌</div>
+
+  <div class="frame">
+    <div class="titlebar">
+      <div class="tb-nav">
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-left"/></svg></span>
+        <span class="tb-btn off"><svg class="ico sm"><use href="#i-right"/></svg></span>
+      </div>
+      <div class="tb-drag"></div>
+      <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg><span class="tb-badge">2</span></span>
+      <div class="win">
+        <span><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10"/></svg></span>
+      </div>
+    </div>
+    <div class="body">
+      <aside class="sidebar">
+        <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+        <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+        <div class="nav"><svg class="ico"><use href="#i-calendar"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico"><use href="#i-list"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico"><use href="#i-briefcase"/></svg>Applications</div>
+        <div class="nav on"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+        <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+        <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+        <div class="spacer"></div>
+        <div class="version">v0.5.0</div>
+      </aside>
+      <main class="main">
+        <div class="page-head"><h1>구직 관리</h1></div>
+        <nav class="tabs"><span class="tab on">추천 공고</span><span class="tab">프로필</span><span class="tab">필터</span><span class="tab">수집 사이트</span><span class="tab">메일 제안 <span class="cnt">2</span></span><span class="tab">설정</span></nav>
+        <div id="archived-head">
+          <div class="list-head"><span class="btn ghost sm"><svg class="ico sm"><use href="#i-left"/></svg>추천 공고</span><h2>지원 안 함 보관함</h2><span class="chip">4개</span></div>
+          <p class="list-desc">여기 있는 공고는 다시 수집되어도 추천 목록에 나오지 않아요. 되돌리면 추천 목록으로 돌아가요.</p>
+        </div>
+        <div class="rows" id="archived-rows">
+          <div class="row">
+            <div class="row-main"><div class="row-title"><span class="co">넷마블</span>[세븐나이츠] 게임 서버 프로그래머</div>
+              <div class="row-sub">게임잡 · 경력 4년 이상 · 정규직 · 구로 · <span class="g-good">74점 추천</span></div></div>
+            <span class="when">10/24 보관 · D-7</span><span class="btn sm"><svg class="ico sm"><use href="#i-undo"/></svg>되돌리기</span>
+          </div>
+          <div class="row">
+            <div class="row-main"><div class="row-title"><span class="co">NHN</span>한게임 웹보드 백엔드 개발자</div>
+              <div class="row-sub">게임잡 · 경력 2년 이상 · 정규직 · 판교 · <span class="g-mid">55점 보통</span></div></div>
+            <span class="when">10/21 보관 · D-13</span><span class="btn sm"><svg class="ico sm"><use href="#i-undo"/></svg>되돌리기</span>
+          </div>
+          <div class="row">
+            <div class="row-main"><div class="row-title"><span class="co">111퍼센트</span>캐주얼 게임 서버 개발자</div>
+              <div class="row-sub">게임잡 · 경력 무관 · 정규직 · 강남 · <span class="g-mid">49점 보통</span></div></div>
+            <span class="when">10/20 보관 · D-2</span><span class="btn sm"><svg class="ico sm"><use href="#i-undo"/></svg>되돌리기</span>
+          </div>
+          <div class="row">
+            <div class="row-main"><div class="row-title"><span class="co">크래프톤</span>[inZOI] 시뮬레이션 클라이언트 엔지니어</div>
+              <div class="row-sub">그리팅 · 경력 3년 이상 · 정규직 · 역삼 · <span class="g-good">68점 추천</span> · <span class="faint">마감 지남</span></div></div>
+            <span class="when">10/12 보관 · 마감</span><span class="btn sm off"><svg class="ico sm"><use href="#i-undo"/></svg>되돌리기</span>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>되돌리기</b><ul><li>추천 목록으로 돌아가고, 점수는 다시 매기지 않음</li></ul></div>
+    <div class="note"><b>마감 지난 공고</b><ul><li>보관함에는 남아 있지만 되돌리기는 꺼짐</li></ul></div>
+    <div class="note"><b>줄 누르기</b><ul><li>상세 팝업이 열리고, 아래 단추는 "되돌리기" 하나</li></ul></div>
+
+  </div>
+</section>
+</div>
+</body>
+</html>

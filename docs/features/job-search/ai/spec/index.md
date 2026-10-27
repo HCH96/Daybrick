@@ -28,7 +28,7 @@
 | [ai-rules.md](ai-rules.md) | AI 프롬프트 규칙: 원문 취급, 인젝션 검사, 채점 기준, 자료에 없는 내용 금지 |
 | [data.md](data.md) | 다룰 데이터와 저장 위치 |
 | [scope.md](scope.md) | 제외, 다른 기능으로 넘긴 것, 나중에 고려할 것, 계획 단계에서 확인할 것 |
-| mockup.md | (아직 없음) |
+| [mockup.md](mockup.md) | 목업 경로(2026-10-27 승인)와 목업에서 정한 것 |
 | [decisions.md](decisions.md) | 결정 사항 D1–D13 |
 
 ## 다른 문서

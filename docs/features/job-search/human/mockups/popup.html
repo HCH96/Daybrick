@@ -1,0 +1,156 @@
+<!doctype html>
+<!-- 목업: 구직 관리 / 2. 상세 팝업 (텍스트 공고)
+  목차와 다른 화면: index.html
+  CSS: common.css, popup.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  popup               2. 상세 팝업 (텍스트 공고)    R10, R12, R14, R48, R51
+    popup-head          2-1. 팝업 머리(회사·제목·링크) R10
+    popup-score         2-2. 점수·등급·요약          R10, R51
+    popup-reasons       2-3. 강점·부족한 점(근거)     R12
+    popup-fields        2-4. 추출 항목               R48, R50
+    popup-source        2-5. 원문 텍스트             R10
+    popup-foot          2-6. 지원 안 함·지원하기     R14
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구직 관리 목업 · 상세 팝업</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+<a class="back-link" href="index.html">← 목업 목차</a>
+
+<section class="screen" id="popup">
+  <div class="screen-head"><h2>2. 상세 팝업 (텍스트 공고)</h2><span class="tag">R10, R12, R14, R48, R51</span></div>
+  <p class="screen-desc">추천 카드를 누르면 뜨는 팝업. 왼쪽은 적합도(점수·등급·요약, 강점·부족한 점과 근거), 오른쪽은 추출 항목과 공고 원문.</p>
+  <div class="scale-note">1440 × 900 창을 75%로 줄여 보여줌</div>
+
+  <div class="frame">
+    <div class="titlebar">
+      <div class="tb-nav">
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-left"/></svg></span>
+        <span class="tb-btn off"><svg class="ico sm"><use href="#i-right"/></svg></span>
+      </div>
+      <div class="tb-drag"></div>
+      <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg><span class="tb-badge">2</span></span>
+      <div class="win">
+        <span><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10"/></svg></span>
+      </div>
+    </div>
+    <div class="body">
+      <aside class="sidebar">
+        <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+        <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+        <div class="nav"><svg class="ico"><use href="#i-calendar"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico"><use href="#i-list"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico"><use href="#i-briefcase"/></svg>Applications</div>
+        <div class="nav on"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+        <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+        <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+        <div class="spacer"></div>
+        <div class="version">v0.5.0</div>
+      </aside>
+      <main class="main">
+        <div class="page-head"><h1>구직 관리</h1></div>
+        <nav class="tabs"><span class="tab on">추천 공고</span><span class="tab">프로필</span><span class="tab">필터</span><span class="tab">수집 사이트</span><span class="tab">메일 제안 <span class="cnt">2</span></span><span class="tab">설정</span></nav>
+        <div class="ghost-bar"></div>
+        <div class="ghost-grid"><div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div></div>
+      </main>
+    </div>
+    <div class="overlay">
+      <div class="modal detail">
+        <div class="d-head" id="popup-head">
+          <div class="d-head-main">
+            <div class="d-co"><b>넥슨</b>· 넥슨 커리어 · 10/26 수집 <span class="chip new">새</span></div>
+            <div class="d-title">[메이플스토리] 게임 서버 프로그래머</div>
+            <div class="d-chips"><span class="chip">경력 3년 이상</span><span class="chip">정규직</span><span class="chip">판교</span><span class="chip blue">D-12 · 11/08 마감</span></div>
+          </div>
+          <div class="d-head-side">
+            <span class="btn"><svg class="ico sm"><use href="#i-ext"/></svg>원문 보기</span>
+            <span class="x-btn"><svg class="ico"><use href="#i-x"/></svg></span>
+          </div>
+        </div>
+        <div class="d-body">
+          <div class="d-col">
+            <div class="d-score" id="popup-score">
+              <div class="num">87<small>점</small></div>
+              <div class="sum"><span class="chip green">강력 추천</span><br>C++ 서버 경력과 라이브 운영 경험이 필수 요건에 거의 다 맞고, 대규모 동시 접속 경험만 약해요.</div>
+            </div>
+            <div id="popup-reasons">
+              <div class="d-sec-title"><svg class="ico sm"><use href="#i-check"/></svg>강점</div>
+              <div class="reasons">
+                <div class="reason"><div class="reason-t">C++ 게임 서버 개발 경력 4년</div>
+                  <div class="ev"><span class="src">공고</span>자격 요건 “C++ 기반 서버 개발 경력 3년 이상”</div>
+                  <div class="ev"><span class="src">프로필</span>경력 · 루나소프트 서버팀 (2021.03–2025.02)</div></div>
+                <div class="reason"><div class="reason-t">라이브 서비스 장애 대응 경험</div>
+                  <div class="ev"><span class="src">공고</span>우대사항 “라이브 서비스 운영 및 장애 대응 경험”</div>
+                  <div class="ev"><span class="src">프로필</span>프로젝트 · 「아르카디아」 정기 점검·핫픽스 담당</div></div>
+                <div class="reason"><div class="reason-t">Redis·MySQL 사용 경험</div>
+                  <div class="ev"><span class="src">공고</span>기술스택 Redis, MySQL</div>
+                  <div class="ev"><span class="src">프로필</span>기술스택 · Redis(상), MySQL(중)</div></div>
+              </div>
+              <div class="d-sec-title gap"><svg class="ico sm"><use href="#i-alert"/></svg>부족한 점</div>
+              <div class="reasons">
+                <div class="reason minus"><div class="reason-t">동시 접속 10만 이상 서비스 경험은 확인 불가</div>
+                  <div class="ev"><span class="src">공고</span>우대사항 “대규모 트래픽(동접 10만+) 처리 경험”</div>
+                  <div class="ev"><span class="src">프로필</span>해당 내용 없음</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="d-col">
+            <div id="popup-fields">
+              <div class="d-sec-title"><svg class="ico sm"><use href="#i-spark"/></svg>추출 항목</div>
+              <dl class="fields">
+                <dt>직무</dt><dd>게임 서버 프로그래머</dd>
+                <dt>경력</dt><dd>3년 이상</dd>
+                <dt>고용 형태</dt><dd>정규직 (수습 3개월)</dd>
+                <dt>근무지</dt><dd>경기 성남시 판교</dd>
+                <dt>기술스택</dt><dd><span class="stack"><span class="chip">C++</span><span class="chip">Redis</span><span class="chip">MySQL</span><span class="chip">Linux</span><span class="chip">gRPC</span></span></dd>
+                <dt>자격 요건</dt><dd><ul><li>C++ 기반 서버 개발 경력 3년 이상</li><li>멀티스레드·네트워크 프로그래밍 이해</li></ul></dd>
+                <dt>우대사항</dt><dd><ul><li>라이브 서비스 운영 및 장애 대응 경험</li><li>대규모 트래픽(동접 10만+) 처리 경험</li></ul></dd>
+                <dt>지원 마감</dt><dd>2026-11-08 (일) 23:59<span class="raw">원문: 11월 8일(일) 자정까지</span></dd>
+                <dt>전형 일정</dt><dd>코딩테스트 2026-11-15 (일)<span class="raw">원문: 11/15(일) 온라인 코딩테스트 · 면접 “11월 말 예정”은 날짜 불명확</span></dd>
+              </dl>
+            </div>
+            <div id="popup-source">
+              <div class="d-sec-title"><svg class="ico sm"><use href="#i-text"/></svg>공고 원문</div>
+              <div class="source-text">
+                <p>[메이플스토리] 게임 서버 프로그래머를 모집합니다.</p>
+                <p>■ 담당 업무<br>- 메이플스토리 게임 서버 신규 콘텐츠 개발<br>- 서버 성능 개선 및 라이브 이슈 대응</p>
+                <p>■ 자격 요건<br>- C++ 기반 서버 개발 경력 3년 이상<br>- 멀티스레드·네트워크 프로그래밍에 대한 이해</p>
+                <p>■ 우대 사항<br>- 라이브 서비스 운영 및 장애 대응 경험</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-foot d-foot" id="popup-foot">
+          <span class="left">채점 10/26 06:12 · 현재 프로필 기준</span>
+          <span class="btn"><svg class="ico sm"><use href="#i-archive"/></svg>지원 안 함</span>
+          <span class="btn primary"><svg class="ico sm"><use href="#i-briefcase"/></svg>지원하기</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>근거 표시</b><ul>
+      <li>강점·부족한 점마다 "공고"와 "프로필" 근거를 한 줄씩</li>
+      <li>프로필에서 찾을 수 없으면 "해당 내용 없음" / "확인 불가"</li></ul></div>
+    <div class="note"><b>추출 항목</b><ul>
+      <li>날짜는 정리한 값 + 원문 표기를 함께 (R50)</li>
+      <li>원문에 없는 항목은 "—"로 비워 둠</li></ul></div>
+    <div class="note"><b>단추</b><ul>
+      <li>지원하기 → 지원 관리 카드 생성 후 일정 제안 창(4번)</li>
+      <li>지원 안 함 → 팝업 닫고 보관함으로 이동 (R15)</li>
+      <li>원문 텍스트는 아래로 스크롤해서 읽음</li></ul></div>
+
+  </div>
+</section>
+</div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!doctype html>
+<!-- 목업: 구직 관리 / 15. 서버 연결 안 됨
+  목차와 다른 화면: index.html
+  CSS: common.css, profile.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  disconnected        15. 서버 연결 안 됨           R2
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구직 관리 목업 · 연결 안 됨</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="profile.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+<a class="back-link" href="index.html">← 목업 목차</a>
+
+<section class="screen" id="disconnected">
+  <div class="screen-head"><h2>15. 서버 연결 안 됨</h2><span class="tag">R2</span></div>
+  <p class="screen-desc">서버 연결이나 로그인이 안 되어 있으면 탭 대신 안내만 보여준다. 단추를 누르면 server-setup의 연결 화면으로 간다.</p>
+  <div class="scale-note">1440 × 900 창을 75%로 줄여 보여줌</div>
+
+  <div class="frame">
+    <div class="titlebar">
+      <div class="tb-nav">
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-left"/></svg></span>
+        <span class="tb-btn off"><svg class="ico sm"><use href="#i-right"/></svg></span>
+      </div>
+      <div class="tb-drag"></div>
+      <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg><span class="tb-badge">2</span></span>
+      <div class="win">
+        <span><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10"/></svg></span>
+      </div>
+    </div>
+    <div class="body">
+      <aside class="sidebar">
+        <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+        <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+        <div class="nav"><svg class="ico"><use href="#i-calendar"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico"><use href="#i-list"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico"><use href="#i-briefcase"/></svg>Applications</div>
+        <div class="nav on"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+        <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+        <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+        <div class="spacer"></div>
+        <div class="version">v0.5.0</div>
+      </aside>
+      <main class="main">
+        <div class="page-head"><h1>구직 관리</h1></div>
+        <div class="connect">
+          <span class="icon-box"><svg class="ico lg"><use href="#i-cloud"/></svg></span>
+          <h2>서버에 연결해야 쓸 수 있어요</h2>
+          <p>구직 관리는 공고 수집과 AI 채점을 서버에서 해요. 서버를 연결하고 로그인하면 추천 공고가 여기에 나와요.</p>
+          <span class="btn primary"><svg class="ico sm"><use href="#i-link"/></svg>서버 연결하기</span>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>언제 보이나</b><ul><li>서버 미설정, 로그아웃, 연결 실패일 때</li></ul></div>
+    <div class="note"><b>단추</b><ul><li>server-setup 기능의 연결·로그인 화면으로 이동</li></ul></div>
+    <div class="note"><b>일시정지</b><ul><li>Supabase 일시정지는 server-setup 배너가 따로 안내</li></ul></div>
+
+  </div>
+</section>
+</div>
+</body>
+</html>

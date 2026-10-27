@@ -1,0 +1,111 @@
+<!doctype html>
+<!-- 목업: 구직 관리 / 11. 사이트 추가 창
+  목차와 다른 화면: index.html
+  CSS: common.css, manage.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  add-site            11. 사이트 추가 창            R28, R29, R32
+    add-site-form       11-1. 입력(이름·주소·어댑터·값) R28
+    add-site-test       11-2. 시험 수집 결과          R29
+    add-site-foot       11-3. 다시 시험·저장          R29
+  어댑터 새 버전 올리기(R32)도 같은 창을 쓰고, 왼쪽은 규칙 파일 칸만 보인다.
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구직 관리 목업 · 사이트 추가</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="manage.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+<a class="back-link" href="index.html">← 목업 목차</a>
+
+<section class="screen" id="add-site">
+  <div class="screen-head"><h2>11. 사이트 추가 창</h2><span class="tag">R28, R29, R32</span></div>
+  <p class="screen-desc">수집 사이트 탭의 "사이트 추가" 창. 왼쪽에 이름·주소·어댑터·사이트별 값을 넣고 "시험 수집"을 누르면 오른쪽에 읽힌 공고 수와 처음 5개가 나온다. 시험 수집이 성공해야 저장이 켜진다. 그림은 시험 수집이 성공한 상태.</p>
+  <div class="scale-note">1440 × 900 창을 75%로 줄여 보여줌</div>
+
+  <div class="frame">
+    <div class="titlebar">
+      <div class="tb-nav">
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-left"/></svg></span>
+        <span class="tb-btn off"><svg class="ico sm"><use href="#i-right"/></svg></span>
+      </div>
+      <div class="tb-drag"></div>
+      <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg><span class="tb-badge">2</span></span>
+      <div class="win">
+        <span><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10"/></svg></span>
+      </div>
+    </div>
+    <div class="body">
+      <aside class="sidebar">
+        <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+        <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+        <div class="nav"><svg class="ico"><use href="#i-calendar"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico"><use href="#i-list"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico"><use href="#i-briefcase"/></svg>Applications</div>
+        <div class="nav on"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+        <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+        <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+        <div class="spacer"></div>
+        <div class="version">v0.5.0</div>
+      </aside>
+      <main class="main">
+        <div class="page-head"><h1>구직 관리</h1></div>
+        <nav class="tabs"><span class="tab">추천 공고</span><span class="tab">프로필</span><span class="tab">필터</span><span class="tab on">수집 사이트</span><span class="tab">메일 제안 <span class="cnt">2</span></span><span class="tab">설정</span></nav>
+        <div class="ghost-bar"></div>
+        <div class="ghost-card"></div>
+      </main>
+    </div>
+    <div class="overlay">
+      <div class="modal add-site">
+        <div class="modal-head"><svg class="ico"><use href="#i-plus"/></svg><h3>사이트 추가</h3>
+          <div class="steps"><span class="st done"><i>✓</i>입력</span><span class="faint">—</span><span class="st done"><i>✓</i>시험 수집</span><span class="faint">—</span><span class="st on"><i>3</i>저장</span></div>
+          <span class="x-btn"><svg class="ico"><use href="#i-x"/></svg></span></div>
+        <div class="as-body">
+          <div class="as-col" id="add-site-form">
+            <div class="field"><label>이름</label><div class="input">스마일게이트 RPG</div></div>
+            <div class="field"><label>목록 주소</label><div class="input">https://smilegaterpg.career.greetinghr.com</div></div>
+            <div class="field"><label>어댑터</label>
+              <div class="radio-row on"><span class="radio"></span>기존 어댑터 고르기<span class="input select">그리팅 v2</span></div>
+              <div class="radio-row"><span class="radio"></span>규칙 파일 올리기 (.json)<span class="btn sm"><svg class="ico sm"><use href="#i-upload"/></svg>파일 선택</span></div></div>
+            <div class="field"><label>사이트별 값 (그리팅 어댑터가 요구하는 값)</label>
+              <div class="inline-fields"><div class="input">회사코드</div><div class="input">smilegaterpg</div></div></div>
+            <span class="btn"><svg class="ico sm"><use href="#i-play"/></svg>시험 수집</span>
+          </div>
+          <div class="as-col" id="add-site-test">
+            <div class="ok-line"><svg class="ico"><use href="#i-check"/></svg><span>시험 수집 성공 · 공고 <b>9개</b>를 읽었어요 (3.2초)</span></div>
+            <div class="check-tags"><span class="chip green">형식 검사 통과</span><span class="chip green">제목 9/9</span><span class="chip green">링크 9/9</span><span class="chip amber">마감일 7/9</span></div>
+            <div class="d-sec-title sub">처음 5개</div>
+            <table class="tbl">
+              <thead><tr><th>제목</th><th>마감일</th><th>링크</th></tr></thead>
+              <tbody>
+                <tr><td>[로스트아크] 서버 개발자</td><td>2026-10-30</td><td class="sub">/o/112043</td></tr>
+                <tr><td>[로스트아크] 클라이언트 UI 프로그래머</td><td>2026-11-05</td><td class="sub">/o/112051</td></tr>
+                <tr><td>[신규 IP] 게임 서버 리드</td><td class="faint">없음 (상시)</td><td class="sub">/o/111987</td></tr>
+                <tr><td>엔진 프로그래머 (Unreal)</td><td>2026-11-14</td><td class="sub">/o/112060</td></tr>
+                <tr><td>라이브 서비스 DevOps 엔지니어</td><td class="faint">없음 (상시)</td><td class="sub">/o/111902</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-foot" id="add-site-foot"><span class="sub">저장하면 다음 수집부터 포함돼요</span><span class="spacer"></span><span class="btn ghost">취소</span><span class="btn"><svg class="ico sm"><use href="#i-refresh"/></svg>다시 시험</span><span class="btn primary"><svg class="ico sm"><use href="#i-check"/></svg>저장</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>실패하면</b><ul>
+      <li>오른쪽에 빨간 줄 + 이유 (형식 오류 위치, 선택자 못 찾음 등)</li>
+      <li>저장 단추는 꺼진 채로 남음</li></ul></div>
+    <div class="note"><b>입력을 바꾸면</b><ul><li>시험 결과가 지워지고 다시 시험해야 저장 가능</li></ul></div>
+    <div class="note"><b>사이트별 값</b><ul><li>고른 어댑터가 요구하는 칸만 나타남</li></ul></div>
+
+  </div>
+</section>
+</div>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<!-- 목업: 구직 관리 / 5. 이미지 크게 보기
+  목차와 다른 화면: index.html
+  CSS: common.css, popup.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  image-zoom          5. 이미지 크게 보기           R11
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구직 관리 목업 · 이미지 크게 보기</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+<a class="back-link" href="index.html">← 목업 목차</a>
+
+<section class="screen" id="image-zoom">
+  <div class="screen-head"><h2>5. 이미지 크게 보기</h2><span class="tag">R11</span></div>
+  <p class="screen-desc">상세 팝업의 공고 이미지를 누르면 창 전체를 어둡게 하고 이미지를 크게 보여준다. 휠로 확대·축소, Esc나 X로 닫는다.</p>
+  <div class="scale-note">1440 × 900 창을 75%로 줄여 보여줌</div>
+
+  <div class="frame">
+    <div class="titlebar">
+      <div class="tb-nav">
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-left"/></svg></span>
+        <span class="tb-btn off"><svg class="ico sm"><use href="#i-right"/></svg></span>
+      </div>
+      <div class="tb-drag"></div>
+      <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg><span class="tb-badge">2</span></span>
+      <div class="win">
+        <span><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10"/></svg></span>
+      </div>
+    </div>
+    <div class="body">
+      <aside class="sidebar">
+        <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+        <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+        <div class="nav"><svg class="ico"><use href="#i-calendar"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico"><use href="#i-list"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico"><use href="#i-briefcase"/></svg>Applications</div>
+        <div class="nav on"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+        <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+        <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+        <div class="spacer"></div>
+        <div class="version">v0.5.0</div>
+      </aside>
+      <main class="main">
+        <div class="page-head"><h1>구직 관리</h1></div>
+        <nav class="tabs"><span class="tab on">추천 공고</span><span class="tab">프로필</span><span class="tab">필터</span><span class="tab">수집 사이트</span><span class="tab">메일 제안 <span class="cnt">2</span></span><span class="tab">설정</span></nav>
+        <div class="ghost-bar"></div>
+        <div class="ghost-grid"><div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div></div>
+      </main>
+    </div>
+    <div class="overlay dark">
+      <div class="viewer-top">
+        <span class="name">블루포션게임즈 · 모바일 RPG 서버 개발자 (Node.js) · 이미지 1/1</span>
+        <span class="btn sm">−</span><span class="sub">100%</span><span class="btn sm">+</span>
+        <span class="x-btn"><svg class="ico"><use href="#i-x"/></svg></span>
+      </div>
+      <div class="viewer-img poster-wrap">
+        <div class="poster">
+          <div class="p-logo"></div>
+          <div class="p-h">모바일 RPG<br>서버 개발자 모집</div>
+          <div class="p-line w85"></div><div class="p-line w70"></div><div class="p-line"></div><div class="p-line w50"></div>
+          <div class="p-line w85"></div><div class="p-line w70"></div><div class="p-line"></div><div class="p-line w50"></div>
+          <div class="p-box"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>닫기</b><ul><li>X, Esc, 이미지 바깥을 누르면 상세 팝업으로 돌아감</li></ul></div>
+    <div class="note"><b>확대</b><ul><li>휠 또는 −/+ 단추, 확대하면 끌어서 이동</li></ul></div>
+    <div class="note"><b>여러 장</b><ul><li>이미지가 여러 장이면 "1/3"과 좌우 화살표</li></ul></div>
+
+  </div>
+</section>
+</div>
+</body>
+</html>

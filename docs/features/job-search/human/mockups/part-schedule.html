@@ -1,0 +1,96 @@
+<!doctype html>
+<!-- 목업: 구직 관리 / 4. 일정 제안 창
+  목차와 다른 화면: index.html
+  CSS: common.css, popup.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  apply-schedule      4. 일정 제안 창               R54–R56
+    apply-schedule-done   4-1. 카드 생성 완료 줄    R54
+    apply-schedule-list   4-2. 제안 일정 체크 목록  R55
+    apply-schedule-vague  4-3. 날짜 불명확 일정 안내 R56
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>구직 관리 목업 · 일정 제안</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+<a class="back-link" href="index.html">← 목업 목차</a>
+
+<section class="screen" id="apply-schedule">
+  <div class="screen-head"><h2>4. 일정 제안 창</h2><span class="tag">R54–R56</span></div>
+  <p class="screen-desc">상세 팝업에서 "지원하기"를 누르면 지원 관리에 카드를 만든 뒤 뜨는 창. 공고에서 찾은 날짜를 체크 목록으로 보여주고, 체크한 것만 카드의 전형 일정에 넣는다.</p>
+  <div class="scale-note">1440 × 900 창을 75%로 줄여 보여줌</div>
+
+  <div class="frame">
+    <div class="titlebar">
+      <div class="tb-nav">
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-left"/></svg></span>
+        <span class="tb-btn off"><svg class="ico sm"><use href="#i-right"/></svg></span>
+      </div>
+      <div class="tb-drag"></div>
+      <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg><span class="tb-badge">2</span></span>
+      <div class="win">
+        <span><svg viewBox="0 0 10 10"><path d="M0 5h10"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9"/></svg></span>
+        <span><svg viewBox="0 0 10 10"><path d="M0 0l10 10M10 0L0 10"/></svg></span>
+      </div>
+    </div>
+    <div class="body">
+      <aside class="sidebar">
+        <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+        <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+        <div class="nav"><svg class="ico"><use href="#i-calendar"/></svg>Calendar</div>
+        <div class="nav"><svg class="ico"><use href="#i-list"/></svg>Scheduler</div>
+        <div class="nav"><svg class="ico"><use href="#i-briefcase"/></svg>Applications</div>
+        <div class="nav on"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+        <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+        <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+        <div class="spacer"></div>
+        <div class="version">v0.5.0</div>
+      </aside>
+      <main class="main">
+        <div class="page-head"><h1>구직 관리</h1></div>
+        <nav class="tabs"><span class="tab on">추천 공고</span><span class="tab">프로필</span><span class="tab">필터</span><span class="tab">수집 사이트</span><span class="tab">메일 제안 <span class="cnt">2</span></span><span class="tab">설정</span></nav>
+        <div class="ghost-bar"></div>
+        <div class="ghost-grid"><div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div></div>
+      </main>
+    </div>
+    <div class="overlay">
+      <div class="modal sched">
+        <div class="modal-head"><svg class="ico"><use href="#i-calendar"/></svg><h3>일정 제안</h3><span class="x-btn"><svg class="ico"><use href="#i-x"/></svg></span></div>
+        <div class="modal-body">
+          <div class="done-line" id="apply-schedule-done"><svg class="ico"><use href="#i-check"/></svg><span>지원 관리에 <b>넥슨 · [메이플스토리] 게임 서버 프로그래머</b> 카드를 만들었어요 (지원 준비)</span></div>
+          <div class="d-sec-title">공고에서 찾은 일정 · 체크한 항목만 전형 일정에 추가</div>
+          <div class="check-list" id="apply-schedule-list">
+            <div class="check-row"><span class="box on"><svg class="ico"><use href="#i-check"/></svg></span>
+              <div class="check-main"><b>지원 마감</b><span class="raw">원문: 11월 8일(일) 자정까지</span></div><span class="check-date">11/08 (일) 23:59</span></div>
+            <div class="check-row"><span class="box on"><svg class="ico"><use href="#i-check"/></svg></span>
+              <div class="check-main"><b>코딩테스트</b><span class="raw">원문: 11/15(일) 온라인 코딩테스트</span></div><span class="check-date">11/15 (일)</span></div>
+            <div class="check-row"><span class="box"></span>
+              <div class="check-main"><b>과제 마감</b><span class="raw">원문: 코딩테스트 합격자 대상 과제, 11/22까지 제출</span></div><span class="check-date">11/22 (일)</span></div>
+          </div>
+          <div class="vague" id="apply-schedule-vague"><b>날짜가 정확하지 않아 제안하지 않은 일정</b>면접 — “11월 말 예정” · 카드 본문에만 적었어요</div>
+        </div>
+        <div class="modal-foot"><span class="spacer"></span><span class="btn ghost">건너뛰기</span><span class="btn primary">선택한 2개 추가</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note"><b>카드에 채우는 값</b><ul>
+      <li>상태 "지원 준비", 제목·회사·직무·링크·경력 구분·고용 형태</li>
+      <li>본문: 자격, 우대, 적합도 요약</li></ul></div>
+    <div class="note"><b>체크 목록</b><ul>
+      <li>기본은 모두 체크된 상태로 열고, 그림은 하나를 끈 예시</li>
+      <li>공고에 날짜가 하나도 없으면 이 창은 뜨지 않음</li></ul></div>
+    <div class="note"><b>건너뛰기</b><ul><li>카드는 그대로 두고 일정만 넣지 않음</li></ul></div>
+
+  </div>
+</section>
+</div>
+</body>
+</html>
