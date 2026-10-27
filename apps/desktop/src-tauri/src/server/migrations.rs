@@ -33,6 +33,10 @@ pub const MIGRATIONS: &[(u32, &str)] = &[
         5,
         include_str!("../../../../../supabase/migrations/0005_job_search_defaults_fix.sql"),
     ),
+    (
+        6,
+        include_str!("../../../../../supabase/migrations/0006_job_search_failed_stage.sql"),
+    ),
 ];
 
 /// 앱이 무작위 값으로 만들어 두는 서버 함수 비밀값 (job-search D19).
@@ -181,6 +185,14 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
             (
                 "js-process/guard.ts",
                 include_str!("../../../../../supabase/functions/js-process/guard.ts"),
+            ),
+            (
+                "js-process/attach.ts",
+                include_str!("../../../../../supabase/functions/js-process/attach.ts"),
+            ),
+            (
+                "js-process/imagePdf.ts",
+                include_str!("../../../../../supabase/functions/js-process/imagePdf.ts"),
             ),
             CORS,
             AUTH,

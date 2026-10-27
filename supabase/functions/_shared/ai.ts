@@ -25,7 +25,12 @@ export type CallClaudeResult =
   | { kind: "ok"; data: unknown; costUsd: number }
   | { kind: "limit"; which: "daily" | "monthly" }
   | { kind: "credit" }
-  | { kind: "error"; reason: "missing-key" | "network" | "upstream" | "bad-response" | "database" };
+  | {
+    kind: "error";
+    reason: "missing-key" | "network" | "upstream" | "bad-response" | "database";
+    /** upstream 중 이 요청의 내용(messages…)만 거절된 경우의 오류 메시지. 같은 내용으로 다시 불러도 또 거절된다 */
+    rejected?: string;
+  };
 
 interface Price {
   input: number;
@@ -249,6 +254,16 @@ function isCreditError(status: number, body: unknown): boolean {
 }
 
 /**
+ * 400 오류가 보낸 내용(messages.N.content…) 탓인지. 그렇다면 메시지(200자)를 돌려준다.
+ * 이런 오류는 그 요청만의 문제라(예: 이미지가 8,000픽셀을 넘음) 다른 요청은 계속할 수 있다.
+ */
+function contentRejection(status: number, body: unknown): string | undefined {
+  if (status !== 400) return undefined;
+  const message = (body as { error?: { message?: unknown } } | null)?.error?.message;
+  return typeof message === "string" && /^messages\.\d+\.content/.test(message) ? message.slice(0, 200) : undefined;
+}
+
+/**
  * Anthropic 오류 응답을 함수 로그에 남긴다: 상태 코드, 오류 종류·메시지, 요청 ID.
  * 키 값과 요청 본문은 남기지 않는다. 메시지는 길면 300자로 자른다.
  */
@@ -335,7 +350,7 @@ export async function callClaude(caller: Caller, input: CallClaudeInput): Promis
       return { kind: "credit" };
     }
     logUpstream(input, response.status, body);
-    return { kind: "error", reason: "upstream" };
+    return { kind: "error", reason: "upstream", rejected: contentRejection(response.status, body) };
   }
   await noticeNear(caller, usageNow, costUsd);
 

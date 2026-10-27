@@ -6,6 +6,7 @@ import {
   processCancelMessage,
   processDoneMessage,
   processLeftMessage,
+  processNoProgressMessage,
   processStateErrorMessage,
   processStopMessage,
 } from "./processMessages";
@@ -94,9 +95,9 @@ export async function runProcessNow(h: RunHooks): Promise<RunResult> {
     if (result.value.done > 0) h.onProgress();
     if (remaining === 0) return { ok: true, text: processDoneMessage(done) };
     if (stopped && stopped.reason !== "time") return { ok: false, text: processStopMessage(stopped, done, remaining) };
-    // 응답이 깨진 공고만 남아 아무것도 끝내지 못하면 두 번까지만 다시 부른다
+    // AI 응답을 읽지 못한 공고(서버가 건너뜀)만 남아 아무것도 끝내지 못하면 두 번까지만 다시 부른다
     idleCalls = result.value.done === 0 ? idleCalls + 1 : 0;
-    if (idleCalls >= 2) return { ok: false, text: processStopMessage({ reason: "upstream" }, done, remaining) };
+    if (idleCalls >= 2) return { ok: false, text: processNoProgressMessage(done, remaining) };
   }
   return { ok: true, text: processLeftMessage(done, remaining) };
 }

@@ -71,7 +71,14 @@ export function hitLabel(hit: FilterHit): string {
 }
 
 /** 걸러진 공고 단계 고르기 (R46) */
-export type FilteredStage = "all" | "filtered1" | "filtered2" | "suspect";
+export type FilteredStage = "all" | "filtered1" | "filtered2" | "suspect" | "failed";
+
+/** 처리 실패 이유를 읽기 쉬운 말로 (원문은 Anthropic 오류 메시지) */
+export function failLabel(reason: string): string {
+  if (/image dimensions exceed/i.test(reason)) return "이미지가 너무 커서 AI가 받지 않음";
+  if (/image/i.test(reason)) return "이미지를 AI가 받지 않음";
+  return "AI가 이 공고 요청을 거절함";
+}
 
 export function matchesStage(stage: PostingStage, pick: FilteredStage): boolean {
   return pick === "all" || stage === pick;

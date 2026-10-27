@@ -7,6 +7,7 @@
 //       { mode: "force", postingId } — 그래도 채점 (R46, R49): 필터·의심을 건너뛰고 채점한다.
 //       { mode: "rescore", limit? } — 이전 프로필 버전으로 채점한 공고를 지금 프로필로 다시 채점한다 (R23).
 // 한도에 걸리면 그 공고를 waiting으로 두고 멈춘다 (queue). 크레딧 부족도 같다 (R78, 알림은 _shared/ai.ts).
+// Anthropic이 공고 하나의 요청만 거절하면(rejected) 그 공고를 failed로 두고 다음 공고로 간다 (L28).
 // 응답: { ok: true, done: [{ postingId, stage }], stopped: { reason, which? } | null, remaining }
 //       force는 { ok: true, stage } 또는 { ok: false, reason, which? }. 실패 { ok: false, reason: unauthorized|database|… }
 import { getCaller } from "../_shared/auth.ts";
@@ -18,6 +19,7 @@ import {
   extract,
   firstFilter,
   POSTING_COLUMNS,
+  type ProcessFailHit,
   type PostingRow,
   score,
   secondFilter,
@@ -69,6 +71,15 @@ async function stopWith(ctx: Context, p: PostingRow, stop: Stop): Promise<StepRe
   return { kind: "stop", stop };
 }
 
+/**
+ * Anthropic이 이 공고의 요청만 거절했다 (예: 이미지 크기). 다시 불러도 또 거절되므로 failed로 두어
+ * 대기열에서 빼고, 걸러진 공고 목록에서 이유와 [그래도 채점]으로 다시 시도할 수 있게 한다.
+ */
+async function markFailed(ctx: Context, p: PostingRow, message: string): Promise<StepResult> {
+  const hit: ProcessFailHit = { id: "process", kind: "process-failed", matched: [message] };
+  return (await setStage(ctx, p.id, "failed", [hit])) ? { kind: "done", stage: "failed" } : { kind: "stop", stop: { reason: "database" } };
+}
+
 /** 대기 공고 하나를 처리한다 */
 async function processOne(ctx: Context, p: PostingRow, startedAt: number): Promise<StepResult> {
   const filtered1 = await firstFilter(ctx, p);
@@ -77,7 +88,7 @@ async function processOne(ctx: Context, p: PostingRow, startedAt: number): Promi
 
   if (Date.now() - startedAt > EXTRACT_BEFORE_MS) return { kind: "stop", stop: { reason: "time" } };
   const ex = await extract(ctx, p);
-  if ("stop" in ex) return await stopWith(ctx, p, ex.stop);
+  if ("stop" in ex) return ex.stop.reason === "rejected" ? await markFailed(ctx, p, ex.stop.message) : await stopWith(ctx, p, ex.stop);
   if (ex.suspect) {
     return (await setStage(ctx, p.id, "suspect")) ? { kind: "done", stage: "suspect" } : { kind: "stop", stop: { reason: "database" } };
   }

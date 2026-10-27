@@ -1,6 +1,5 @@
 // js-process: 공고 하나의 단계별 처리 (job-search R41, R44, R48–R53).
 // 1차 필터 → 추출(+인젝션 검사) → 2차 필터 → 채점. 결과 저장은 모두 호출자 user_id로 거른다.
-import { encodeBase64 } from "jsr:@std/encoding/base64";
 import { callClaude } from "../_shared/ai.ts";
 import type { Caller } from "../_shared/auth.ts";
 import {
@@ -20,18 +19,8 @@ import {
   SCORE_SYSTEM,
   scoreContent,
 } from "../_shared/prompts.ts";
+import { postingAttachments } from "./attach.ts";
 import { guardText } from "./guard.ts";
-
-const BUCKET = "job-search";
-/** 추출에 붙이는 이미지 합계 상한 (base64로 늘어나도 요청 크기 32MB 안) */
-const MAX_IMAGE_TOTAL = 15 * 1024 * 1024;
-const IMAGE_TYPES: Record<string, string> = {
-  jpg: "image/jpeg",
-  jpeg: "image/jpeg",
-  png: "image/png",
-  gif: "image/gif",
-  webp: "image/webp",
-};
 
 export interface PostingRow {
   id: string;
@@ -59,7 +48,9 @@ export type Stop =
   | { reason: "credit" }
   | { reason: "no-profile" }
   | { reason: "time" }
-  | { reason: "missing-key" | "network" | "upstream" | "bad-response" | "database" };
+  | { reason: "missing-key" | "network" | "upstream" | "bad-response" | "database" }
+  /** Anthropic이 이 공고의 요청만 거절함 (예: 이미지 크기). 공고를 failed로 두고 다음 공고로 간다 */
+  | { reason: "rejected"; message: string };
 
 export type StepResult = { kind: "done"; stage: string } | { kind: "stop"; stop: Stop };
 
@@ -71,7 +62,14 @@ function meta(p: PostingRow): PostingMeta {
   return { title: p.title, company: p.company, duty: p.duty, collectedAt: p.collected_at };
 }
 
-export async function setStage(ctx: Context, id: string, stage: string, hits: FilterHit[] | null = null) {
+/** 처리 실패(failed) 공고의 filtered_by 한 줄: 거절 이유 (L28) */
+export interface ProcessFailHit {
+  id: "process";
+  kind: "process-failed";
+  matched: [string];
+}
+
+export async function setStage(ctx: Context, id: string, stage: string, hits: FilterHit[] | ProcessFailHit[] | null = null) {
   const res = await ctx.caller.admin.from("js_postings").update({ stage, filtered_by: hits })
     .eq("id", id).eq("user_id", ctx.caller.userId);
   return !res.error;
@@ -90,23 +88,6 @@ export interface Extraction {
   suspect: boolean;
 }
 
-/** 공고 이미지를 이미지 블록으로 읽는다 (본문이 이미지인 공고, R38) */
-async function imageBlocks(ctx: Context, paths: string[]): Promise<Record<string, unknown>[]> {
-  const blocks: Record<string, unknown>[] = [];
-  let total = 0;
-  for (const path of paths) {
-    const type = IMAGE_TYPES[path.split(".").pop()?.toLowerCase() ?? ""];
-    if (!type) continue;
-    const file = await ctx.caller.admin.storage.from(BUCKET).download(path);
-    if (file.error || !file.data) continue;
-    const bytes = new Uint8Array(await file.data.arrayBuffer());
-    if (total + bytes.byteLength > MAX_IMAGE_TOTAL) break;
-    total += bytes.byteLength;
-    blocks.push({ type: "image", source: { type: "base64", media_type: type, data: encodeBase64(bytes) } });
-  }
-  return blocks;
-}
-
 function strings(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
   return value.filter((v): v is string => typeof v === "string" && v.trim() !== "").map((v) => v.trim());
@@ -120,18 +101,23 @@ export async function extract(ctx: Context, p: PostingRow): Promise<Extraction |
   if (saved.data) return { fields: saved.data.fields, suspect: saved.data.suspect === true };
 
   const guard = guardText(p.body_text ?? "");
-  const images = await imageBlocks(ctx, p.image_paths ?? []);
+  const attached = await postingAttachments(ctx.caller, p.image_paths ?? []);
   const result = await callClaude(ctx.caller, {
     task: "extract",
     model: "claude-haiku-5-5",
     system: EXTRACT_SYSTEM,
-    content: [...images, { type: "text", text: postingBlock(meta(p), guard.text, images.length) }],
+    content: [
+      ...attached.blocks,
+      { type: "text", text: postingBlock(meta(p), guard.text, attached.images, attached.pdfPages) },
+    ],
     schema: EXTRACT_SCHEMA,
     maxTokens: 8192,
   });
   if (result.kind === "limit") return { stop: { reason: "limit", which: result.which } };
   if (result.kind === "credit") return { stop: { reason: "credit" } };
-  if (result.kind === "error") return { stop: { reason: result.reason } };
+  if (result.kind === "error") {
+    return { stop: result.rejected ? { reason: "rejected", message: result.rejected } : { reason: result.reason } };
+  }
 
   const data = isRecord(result.data) ? result.data : {};
   const fields = isRecord(data.fields) ? data.fields : {};

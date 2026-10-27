@@ -2,13 +2,13 @@ import type { ApiResult } from "../server/management";
 import type { ServerSession } from "../server/session";
 import { PAGE_SIZE, functionError, isRecord, postgrestError, toNumber } from "./api";
 import { toGrade, type GradeId } from "./grade";
-import { parseFields, parseHits, parseReasons, type FilterHit, type PostingFields, type Reason } from "./postingParse";
+import { parseFailReason, parseFields, parseHits, parseReasons, type FilterHit, type PostingFields, type Reason } from "./postingParse";
 import type { PostingStage } from "./types";
 
 /** 공고 하나 읽기·지원 안 함·되돌리기·그래도 채점, 걸러진 공고·보관함 목록 (R9–R16, R46, R49, D11, D37) */
 
 const BUCKET = "job-search";
-const STAGES: readonly PostingStage[] = ["new", "filtered1", "extracted", "filtered2", "suspect", "scored", "waiting"];
+const STAGES: readonly PostingStage[] = ["new", "filtered1", "extracted", "filtered2", "suspect", "scored", "waiting", "failed"];
 
 export interface PostingScore {
   score: number;
@@ -135,6 +135,7 @@ export async function setPostingHidden(session: ServerSession, id: string, hidde
 /** 그래도 채점 실패 이유 (D37 force) */
 export type ForceFailure =
   | { reason: "limit"; which: "daily" | "monthly" }
+  | { reason: "rejected"; message: string }
   | { reason: "credit" | "no-profile" | "no-body" | "not-found" | "missing-key" | "network" | "upstream" | "database" };
 
 const FORCE_REASONS = ["credit", "no-profile", "no-body", "not-found", "missing-key", "network", "upstream", "database"] as const;
@@ -153,6 +154,9 @@ export async function forceScore(session: ServerSession, postingId: string): Pro
   if (data.reason === "limit") {
     return { ok: true, value: { ok: false, reason: "limit", which: data.which === "monthly" ? "monthly" : "daily" } };
   }
+  if (data.reason === "rejected") {
+    return { ok: true, value: { ok: false, reason: "rejected", message: typeof data.message === "string" ? data.message : "" } };
+  }
   return { ok: true, value: { ok: false, reason: FORCE_REASONS.find((r) => r === data.reason) ?? "upstream" } };
 }
 
@@ -165,6 +169,8 @@ export interface ListPosting {
   collectedAt: string;
   stage: PostingStage;
   hits: FilterHit[];
+  /** 처리 실패(failed) 공고의 거절 이유 (L28). 아니면 null */
+  failReason: string | null;
   suspectQuotes: string[];
   hiddenAt: string | null;
   experience: string | null;
@@ -189,6 +195,7 @@ function parseListRow(row: Record<string, unknown>): ListPosting | null {
     collectedAt: row.collected_at,
     stage: toStage(row.stage),
     hits: parseHits(row.filtered_by),
+    failReason: parseFailReason(row.filtered_by),
     suspectQuotes: strings(extraction?.suspect_quotes),
     hiddenAt: text(row.hidden_at),
     experience: fields?.experience.text ?? null,
@@ -213,7 +220,7 @@ export async function loadPostingList(session: ServerSession, kind: ListKind): P
     const base = session.client.from("js_postings").select(LIST_COLUMNS).is("applied_at", null);
     const query =
       kind === "filtered"
-        ? base.in("stage", ["filtered1", "filtered2", "suspect"]).is("hidden_at", null).order("collected_at", { ascending: false })
+        ? base.in("stage", ["filtered1", "filtered2", "suspect", "failed"]).is("hidden_at", null).order("collected_at", { ascending: false })
         : base.not("hidden_at", "is", null).order("hidden_at", { ascending: false });
     const { data, error, status } = await query.range(from, from + PAGE_SIZE - 1);
     if (error) return { ok: false, error: postgrestError(error, status) };

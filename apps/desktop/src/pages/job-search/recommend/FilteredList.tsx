@@ -11,7 +11,7 @@ import {
   listLoadErrorMessage,
 } from "../../../features/job-search/messages";
 import { forceScore, loadPostingList, type ListPosting } from "../../../features/job-search/postingApi";
-import { hitLabel, hitStage, matchesStage, shortDay, type FilteredStage } from "../../../features/job-search/postingFormat";
+import { failLabel, hitLabel, hitStage, matchesStage, shortDay, type FilteredStage } from "../../../features/job-search/postingFormat";
 import { useJobSearch } from "../../../features/job-search/useJobSearch";
 import type { ApiErrorKind } from "../../../features/server/management";
 import type { StatusLine } from "../profile/profileFormat";
@@ -39,6 +39,12 @@ function Hits({ posting }: { posting: ListPosting }) {
         <span className="js-list__chip js-list__chip--red">
           <AlertIcon />
           인젝션 의심
+        </span>
+      )}
+      {posting.stage === "failed" && (
+        <span className="js-list__chip js-list__chip--red" title={posting.failReason ?? undefined}>
+          <AlertIcon />
+          처리 실패 · {failLabel(posting.failReason ?? "")}
         </span>
       )}
       {posting.hits.map((h, i) => (
@@ -87,6 +93,7 @@ function FilteredList({ refreshKey, onOpen, onChanged }: FilteredListProps) {
     { value: "filtered1", label: "1차 필터", count: count("filtered1") },
     { value: "filtered2", label: "2차 필터", count: count("filtered2") },
     { value: "suspect", label: "인젝션 의심", count: count("suspect") },
+    { value: "failed", label: "처리 실패", count: count("failed") },
   ];
 
   async function force(id: string) {

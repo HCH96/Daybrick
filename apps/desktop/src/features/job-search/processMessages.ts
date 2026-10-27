@@ -51,6 +51,11 @@ export function processStopMessage(stop: ProcessStop, done: number, remaining: n
   }
 }
 
+/** 서버가 멈추지 않았는데 한 개도 끝내지 못함: AI가 답은 했지만 결과를 읽지 못한 경우 (js-process bad-response는 건너뛴다) */
+export function processNoProgressMessage(done: number, remaining: number): string {
+  return `${done}개를 평가했고 ${remaining}개가 남았어요. AI가 답은 했지만 결과를 읽지 못해 더 진행하지 못했어요. Supabase 함수 로그(js-process)에 원인이 남아 있어요.`;
+}
+
 export function pauseText(until: Date): string {
   return `예약 처리와 겹치지 않게 ${hhmm(until)}까지 쉬는 중`;
 }

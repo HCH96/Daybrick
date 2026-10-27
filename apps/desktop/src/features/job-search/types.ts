@@ -150,7 +150,7 @@ export interface CollectRun {
 }
 
 /** 공고 처리 단계 */
-export type PostingStage = "new" | "filtered1" | "extracted" | "filtered2" | "suspect" | "scored" | "waiting";
+export type PostingStage = "new" | "filtered1" | "extracted" | "filtered2" | "suspect" | "scored" | "waiting" | "failed";
 
 /** 공고 (`js_postings`) */
 export interface Posting {

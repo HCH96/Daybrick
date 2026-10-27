@@ -105,6 +105,14 @@ export function parseFields(value: unknown): PostingFields {
   };
 }
 
+/** 처리 실패 공고의 filtered_by([{ kind: "process-failed", matched: [이유] }])에서 이유를 꺼낸다 (L28) */
+export function parseFailReason(value: unknown): string | null {
+  if (!Array.isArray(value)) return null;
+  const item: unknown = value.find((v) => isRecord(v) && v.kind === "process-failed");
+  if (!isRecord(item)) return null;
+  return strings(item.matched)[0] ?? "";
+}
+
 export function parseHits(value: unknown): FilterHit[] {
   if (!Array.isArray(value)) return [];
   const hits: FilterHit[] = [];

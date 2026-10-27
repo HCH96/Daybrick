@@ -112,7 +112,7 @@ export async function loadRecommend(session: ServerSession): Promise<ApiResult<R
     session.client.from("js_sites").select("last_result").eq("enabled", true),
     count().eq("stage", "waiting").is("hidden_at", null),
     count().not("hidden_at", "is", null).is("applied_at", null),
-    count().in("stage", ["filtered1", "filtered2", "suspect"]).is("hidden_at", null).is("applied_at", null),
+    count().in("stage", ["filtered1", "filtered2", "suspect", "failed"]).is("hidden_at", null).is("applied_at", null),
   ]);
   if (!postings.ok) return postings;
   if (lastRun.error) return { ok: false, error: postgrestError(lastRun.error, lastRun.status) };

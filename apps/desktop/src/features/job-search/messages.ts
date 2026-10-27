@@ -366,6 +366,8 @@ export function forceFailMessage(failure: ForceFailure): string {
     case "network":
     case "upstream":
       return "AI 서버에 닿지 못했어요. 잠시 뒤 다시 시도해 주세요.";
+    case "rejected":
+      return `AI가 이 공고 요청을 받지 않았어요. 서버 업데이트를 했는지 확인해 주세요. (${failure.message.slice(0, 80)})`;
     case "database":
       return "서버에서 결과를 저장하지 못했어요.";
   }
