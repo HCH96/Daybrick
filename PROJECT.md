@@ -28,7 +28,7 @@
 | 일정 관리 | 시작 전 | - |
 | 지원 관리 | 수정1 완료 (테스트 r2 통과) | docs/features/applications/index.md |
 | 서버 연결 | AI 테스트 r1 통과, 사용자 테스트 진행 중 (U8·U13·U16·U17·U28 수정, 디자인 의견 반영, 다시 확인 대기) (notifications·job-search의 선행) | docs/features/server-setup/index.md |
-| 알림 | 수정 구현 중 (1/2단계 완료) (선행: server-setup, job-search의 선행) | docs/features/notifications/index.md |
+| 알림 | 수정 구현 중 (2/2단계 완료) (선행: server-setup, job-search의 선행) | docs/features/notifications/index.md |
 | 구직 관리 | 명세 완료 (선행: server-setup, notifications) | docs/features/job-search/index.md |
 | 집중 타이머 | 시작 전 | - |
 | 집중 모드 | 시작 전 | - |

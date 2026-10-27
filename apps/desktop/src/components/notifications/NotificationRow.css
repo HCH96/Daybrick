@@ -111,8 +111,3 @@
 .notification-row--read .notification-row__body {
   opacity: 0.45;
 }
-
-/* 안 읽음 필터에서 방금 확인해 패널을 닫기 전까지 남겨 둔 행 (R19) */
-.notification-row--just-read {
-  background: rgba(255, 255, 255, 0.02);
-}

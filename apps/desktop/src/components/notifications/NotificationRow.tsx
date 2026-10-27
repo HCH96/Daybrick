@@ -9,8 +9,6 @@ interface NotificationRowProps {
   notification: AppNotification;
   /** 상대 시각 기준 (패널이 1분마다 바꾼다) */
   now: Date;
-  /** 안 읽음 필터에서 방금 확인해 흐리게 남겨 둔 행 (R19) */
-  justRead?: boolean;
   /** ✓ 버튼: 확인 처리 (R14) */
   onMarkRead: (id: string) => void;
   /** ↺ 버튼: 안 읽음으로 되돌리기 (R15) */
@@ -19,10 +17,8 @@ interface NotificationRowProps {
   onOpen: (notification: AppNotification) => void;
 }
 
-function rowClassName(unread: boolean, justRead: boolean): string {
-  const names = ["notification-row", unread ? "notification-row--unread" : "notification-row--read"];
-  if (justRead) names.push("notification-row--just-read");
-  return names.join(" ");
+function rowClassName(unread: boolean): string {
+  return `notification-row ${unread ? "notification-row--unread" : "notification-row--read"}`;
 }
 
 /**
@@ -30,7 +26,7 @@ function rowClassName(unread: boolean, justRead: boolean): string {
  * 왼쪽: 주의는 주황 경고, 정보는 회색 점 / 가운데: 보낸 기능 · 시각, 제목, 내용 / 오른쪽: ✓ 또는 ↺.
  * 행 본문을 누르면 onOpen(확인 + 갈 곳 이동)을 부른다.
  */
-function NotificationRow({ notification, now, justRead = false, onMarkRead, onMarkUnread, onOpen }: NotificationRowProps) {
+function NotificationRow({ notification, now, onMarkRead, onMarkUnread, onOpen }: NotificationRowProps) {
   const unread = notification.readAt === null;
   const time = formatRelativeTime(notification.updatedAt, now);
   const actLabel = unread ? "확인" : "안 읽음으로 되돌리기";
@@ -43,7 +39,7 @@ function NotificationRow({ notification, now, justRead = false, onMarkRead, onMa
   };
 
   return (
-    <div className={rowClassName(unread, justRead)} onClick={() => onOpen(notification)}>
+    <div className={rowClassName(unread)} onClick={() => onOpen(notification)}>
       <div className="notification-row__lead">
         {notification.importance === "warning" ? (
           <span className="notification-row__warn" role="img" aria-label="주의">
