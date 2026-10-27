@@ -53,15 +53,58 @@ export interface ProfileSource {
   storagePath: string | null;
   text: string | null;
   createdAt: string;
+  /** Storage 파일 크기(바이트). 붙여 넣은 텍스트나 읽지 못했으면 null */
+  sizeBytes: number | null;
 }
 
-/** 저장한 프로필 한 버전 (`js_profiles`). data 모양은 4단계에서 정한다 */
+/** 프로필 항목 하나: 값과 출처 자료 이름들. 자료에 없으면 value는 null (R20) */
+export interface ProfileTextField {
+  value: string | null;
+  sources: string[];
+}
+
+export type SkillLevel = "high" | "mid" | "low";
+
+export interface ProfileSkill {
+  name: string;
+  level: SkillLevel;
+}
+
+/** 경력·프로젝트 한 줄 (R19) */
+export interface ProfileExperience {
+  /** 회사·팀·역할 또는 프로젝트 이름 */
+  title: string;
+  period: string | null;
+  did: string | null;
+  results: string | null;
+  tech: string[];
+  sources: string[];
+}
+
+/** 프로필 내용 (`js_profiles.data`, `js_profile_drafts.data`). 서버 `_shared/prompts.ts`의 PROFILE_SCHEMA와 같은 모양 */
+export interface ProfileData {
+  desiredRoles: ProfileTextField;
+  years: ProfileTextField;
+  skills: { items: ProfileSkill[]; sources: string[] };
+  experiences: ProfileExperience[];
+  education: ProfileTextField;
+  awards: ProfileTextField;
+  strengths: ProfileTextField;
+}
+
+/** 저장한 프로필 한 버전 (`js_profiles`). sources는 저장할 때 있던 자료 이름 목록 */
 export interface SavedProfile {
   id: string;
   version: number;
-  data: unknown;
-  sources: unknown;
+  data: ProfileData;
+  sources: string[];
   savedAt: string;
+}
+
+/** 저장 안 된 프로필 초안 (`js_profile_drafts`, 사용자당 하나) */
+export interface ProfileDraft {
+  data: ProfileData;
+  createdAt: string;
 }
 
 /** 어댑터 (`js_adapters`). rule 모양은 D16 */

@@ -46,18 +46,22 @@ const CORS: (&str, &str) = (
     include_str!("../../../../../supabase/functions/_shared/cors.ts"),
 );
 
-/// 구직 관리 공용: 호출자 확인·서비스 클라이언트 (js- 함수 묶음에 함께 올린다, 4단계부터)
-#[allow(dead_code)]
+/// 구직 관리 공용: 호출자 확인·서비스 클라이언트 (js- 함수 묶음에 함께 올린다)
 const AUTH: (&str, &str) = (
     "_shared/auth.ts",
     include_str!("../../../../../supabase/functions/_shared/auth.ts"),
 );
 
-/// 구직 관리 공용: Claude 호출·한도 검사·호출 기록 (js- 함수 묶음에 함께 올린다, 4단계부터)
-#[allow(dead_code)]
+/// 구직 관리 공용: Claude 호출·한도 검사·호출 기록 (js- 함수 묶음에 함께 올린다)
 const AI: (&str, &str) = (
     "_shared/ai.ts",
     include_str!("../../../../../supabase/functions/_shared/ai.ts"),
+);
+
+/// 구직 관리 공용: AI 프롬프트와 출력 형식 (AI를 부르는 js- 함수 묶음에 함께 올린다)
+const PROMPTS: (&str, &str) = (
+    "_shared/prompts.ts",
+    include_str!("../../../../../supabase/functions/_shared/prompts.ts"),
 );
 
 /// 앱이 배포하는 서버 함수 전체. 단계별로 나누지 않고 매번 이 묶음을 다시 배포한다 (D16).
@@ -82,6 +86,20 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
                 include_str!("../../../../../supabase/functions/ai-key-check/index.ts"),
             ),
             CORS,
+        ],
+    },
+    EdgeFunction {
+        slug: "js-profile",
+        entrypoint: "js-profile/index.ts",
+        files: &[
+            (
+                "js-profile/index.ts",
+                include_str!("../../../../../supabase/functions/js-profile/index.ts"),
+            ),
+            CORS,
+            AUTH,
+            AI,
+            PROMPTS,
         ],
     },
 ];

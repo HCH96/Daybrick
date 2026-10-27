@@ -1,7 +1,17 @@
-import type { PostgrestError } from "@supabase/supabase-js";
+import { FunctionsFetchError, FunctionsHttpError, type PostgrestError } from "@supabase/supabase-js";
 import type { ApiErrorKind, ApiResult } from "../server/management";
 import type { ServerSession } from "../server/session";
-import type { AiCall, BalanceRecord, JsSettings, ModelPrice } from "./types";
+import { parseProfileData } from "./profileDraft";
+import type {
+  AiCall,
+  BalanceRecord,
+  JsSettings,
+  ModelPrice,
+  ProfileData,
+  ProfileDraft,
+  ProfileSource,
+  SavedProfile,
+} from "./types";
 
 /**
  * 구직 관리 서버 읽기·쓰기 (로그인 세션의 Supabase 클라이언트 사용).
@@ -155,4 +165,225 @@ export async function loadAiCallsSince(session: ServerSession, sinceIso: string)
     }
     if (rows.length < PAGE_SIZE) return { ok: true, value: calls };
   }
+}
+
+// ===== 프로필 (R17–R22) =====
+
+const BUCKET = "job-search";
+
+function parseSource(row: unknown, sizes: Map<string, number>): ProfileSource | null {
+  if (!isRecord(row)) return null;
+  const kind = row.kind;
+  if (typeof row.id !== "string" || typeof row.name !== "string" || typeof row.created_at !== "string") return null;
+  if (kind !== "pdf" && kind !== "md" && kind !== "text") return null;
+  const storagePath = typeof row.storage_path === "string" ? row.storage_path : null;
+  return {
+    id: row.id,
+    name: row.name,
+    kind,
+    storagePath,
+    text: typeof row.text === "string" ? row.text : null,
+    createdAt: row.created_at,
+    sizeBytes: storagePath ? (sizes.get(storagePath) ?? null) : null,
+  };
+}
+
+/** Storage `<user_id>/sources/` 파일 크기 (경로 → 바이트). 읽지 못하면 빈 표 (크기만 안 보인다) */
+async function loadSourceSizes(session: ServerSession): Promise<Map<string, number>> {
+  const folder = `${session.userId}/sources`;
+  const sizes = new Map<string, number>();
+  const { data, error } = await session.client.storage.from(BUCKET).list(folder, { limit: 1000 });
+  if (error || !data) return sizes;
+  for (const file of data) {
+    const size: unknown = isRecord(file.metadata) ? file.metadata.size : undefined;
+    if (typeof size === "number") sizes.set(`${folder}/${file.name}`, size);
+  }
+  return sizes;
+}
+
+/** 프로필 자료 목록 (넣은 순서) */
+export async function loadProfileSources(session: ServerSession): Promise<ApiResult<ProfileSource[]>> {
+  const [rows, sizes] = await Promise.all([
+    session.client
+      .from("js_profile_sources")
+      .select("id, name, kind, storage_path, text, created_at")
+      .order("created_at", { ascending: true }),
+    loadSourceSizes(session),
+  ]);
+  if (rows.error) return { ok: false, error: postgrestError(rows.error, rows.status) };
+  const sources = (rows.data ?? []).map((row) => parseSource(row, sizes));
+  return sources.every((s): s is ProfileSource => s !== null)
+    ? { ok: true, value: sources }
+    : { ok: false, error: "bad-response" };
+}
+
+/** 파일 자료(PDF·MD) 넣기: Storage에 올리고 목록에 한 줄. MD는 글도 `text` 칸에 넣는다 (R17) */
+export async function addFileSource(
+  session: ServerSession,
+  file: File,
+  kind: "pdf" | "md",
+): Promise<ApiResult<null>> {
+  // 파일 이름에 한글·공백이 있어도 되도록 저장 경로는 무작위 이름을 쓴다 (원래 이름은 name 칸)
+  const path = `${session.userId}/sources/${crypto.randomUUID()}.${kind}`;
+  const text = kind === "md" ? await file.text() : null;
+  const contentType = kind === "pdf" ? "application/pdf" : "text/markdown";
+  const uploaded = await session.client.storage.from(BUCKET).upload(path, file, { contentType });
+  if (uploaded.error) return { ok: false, error: "server" };
+  const { error, status } = await session.client
+    .from("js_profile_sources")
+    .insert({ name: file.name, kind, storage_path: path, text });
+  if (error) {
+    await session.client.storage.from(BUCKET).remove([path]);
+    return { ok: false, error: postgrestError(error, status) };
+  }
+  return { ok: true, value: null };
+}
+
+/** 붙여 넣은 텍스트 자료 넣기 (R17) */
+export async function addTextSource(session: ServerSession, name: string, text: string): Promise<ApiResult<null>> {
+  const { error, status } = await session.client.from("js_profile_sources").insert({ name, kind: "text", text });
+  return error ? { ok: false, error: postgrestError(error, status) } : { ok: true, value: null };
+}
+
+/** 자료 삭제: Storage 파일과 목록 줄 */
+export async function deleteProfileSource(session: ServerSession, source: ProfileSource): Promise<ApiResult<null>> {
+  if (source.storagePath) {
+    const removed = await session.client.storage.from(BUCKET).remove([source.storagePath]);
+    if (removed.error) return { ok: false, error: "server" };
+  }
+  const { error, status } = await session.client.from("js_profile_sources").delete().eq("id", source.id);
+  return error ? { ok: false, error: postgrestError(error, status) } : { ok: true, value: null };
+}
+
+/** 저장된 버전 목록의 한 줄 */
+export interface ProfileVersionInfo {
+  version: number;
+  savedAt: string;
+}
+
+export interface ProfileState {
+  /** 가장 큰 버전 (지금 채점에 쓰이는 프로필). 없으면 null */
+  latest: SavedProfile | null;
+  /** 최근 버전부터 */
+  versions: ProfileVersionInfo[];
+  draft: ProfileDraft | null;
+}
+
+/** 저장된 버전 목록에 보여 줄 수 */
+const VERSION_LIST_SIZE = 20;
+
+function parseSavedProfile(row: unknown): SavedProfile | null {
+  if (!isRecord(row)) return null;
+  const version = toNumber(row.version);
+  if (typeof row.id !== "string" || typeof row.saved_at !== "string" || version === null) return null;
+  const sources = Array.isArray(row.sources) ? row.sources.filter((s): s is string => typeof s === "string") : [];
+  return { id: row.id, version, data: parseProfileData(row.data), sources, savedAt: row.saved_at };
+}
+
+/** 저장된 최신 프로필·버전 목록·초안을 함께 읽는다 (R21, R22) */
+export async function loadProfileState(session: ServerSession): Promise<ApiResult<ProfileState>> {
+  const [latest, versions, draft] = await Promise.all([
+    session.client
+      .from("js_profiles")
+      .select("id, version, data, sources, saved_at")
+      .order("version", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    session.client
+      .from("js_profiles")
+      .select("version, saved_at")
+      .order("version", { ascending: false })
+      .limit(VERSION_LIST_SIZE),
+    session.client.from("js_profile_drafts").select("data, created_at").maybeSingle(),
+  ]);
+  if (latest.error) return { ok: false, error: postgrestError(latest.error, latest.status) };
+  if (versions.error) return { ok: false, error: postgrestError(versions.error, versions.status) };
+  if (draft.error) return { ok: false, error: postgrestError(draft.error, draft.status) };
+
+  const saved = latest.data ? parseSavedProfile(latest.data) : null;
+  if (latest.data && !saved) return { ok: false, error: "bad-response" };
+  const list: ProfileVersionInfo[] = [];
+  for (const row of versions.data ?? []) {
+    const version = toNumber(row.version);
+    if (version === null || typeof row.saved_at !== "string") return { ok: false, error: "bad-response" };
+    list.push({ version, savedAt: row.saved_at });
+  }
+  const draftRow: unknown = draft.data;
+  const parsedDraft: ProfileDraft | null =
+    isRecord(draftRow) && typeof draftRow.created_at === "string"
+      ? { data: parseProfileData(draftRow.data), createdAt: draftRow.created_at }
+      : null;
+  return { ok: true, value: { latest: saved, versions: list, draft: parsedDraft } };
+}
+
+/**
+ * 프로필 저장 (R21): 새 버전 행 → 설정의 지금 버전 → 초안 삭제 순서.
+ * 버전 행이 먼저 들어가야 설정이 없는 버전을 가리키지 않는다.
+ */
+export async function saveProfile(
+  session: ServerSession,
+  version: number,
+  data: ProfileData,
+  sourceNames: string[],
+): Promise<ApiResult<null>> {
+  const inserted = await session.client.from("js_profiles").insert({ version, data, sources: sourceNames });
+  if (inserted.error) return { ok: false, error: postgrestError(inserted.error, inserted.status) };
+  const updated = await session.client
+    .from("js_settings")
+    .update({ profile_version: version })
+    .eq("user_id", session.userId);
+  if (updated.error) return { ok: false, error: postgrestError(updated.error, updated.status) };
+  return discardProfileDraft(session);
+}
+
+/** 초안 버리기: 저장된 프로필은 그대로 (R22) */
+export async function discardProfileDraft(session: ServerSession): Promise<ApiResult<null>> {
+  const { error, status } = await session.client.from("js_profile_drafts").delete().eq("user_id", session.userId);
+  return error ? { ok: false, error: postgrestError(error, status) } : { ok: true, value: null };
+}
+
+/** `js-profile` 실패 이유 (서버 함수가 돌려주는 글자, limit은 어느 한도인지 함께) */
+const GENERATE_REASONS = [
+  "no-sources",
+  "too-large",
+  "credit",
+  "missing-key",
+  "network",
+  "upstream",
+  "bad-response",
+  "database",
+] as const;
+
+export type ProfileGenerateFailure =
+  | { reason: "limit"; which: "daily" | "monthly" }
+  | { reason: (typeof GENERATE_REASONS)[number] };
+
+export type ProfileGenerateResult = { ok: true } | ({ ok: false } & ProfileGenerateFailure);
+
+function functionError(error: unknown): ApiErrorKind {
+  if (error instanceof FunctionsHttpError) {
+    const response: unknown = error.context;
+    if (response instanceof Response) {
+      if (response.status === 401) return "unauthorized";
+      if (response.status === 403) return "forbidden";
+      if (response.status === 404) return "not-found";
+      if (response.status === 429) return "rate-limited";
+    }
+    return "server";
+  }
+  if (error instanceof FunctionsFetchError) return "network";
+  return "server";
+}
+
+/** 프로필 만들기 (R18): 서버 함수 `js-profile`이 자료를 모아 Opus 5.5로 초안을 만들어 초안 칸에 넣는다 */
+export async function generateProfile(session: ServerSession): Promise<ApiResult<ProfileGenerateResult>> {
+  const { data, error } = await session.client.functions.invoke<unknown>("js-profile", { body: {} });
+  if (error) return { ok: false, error: functionError(error) };
+  if (!isRecord(data) || typeof data.ok !== "boolean") return { ok: false, error: "bad-response" };
+  if (data.ok) return { ok: true, value: { ok: true } };
+  if (data.reason === "limit") {
+    return { ok: true, value: { ok: false, reason: "limit", which: data.which === "monthly" ? "monthly" : "daily" } };
+  }
+  const reason = GENERATE_REASONS.find((r) => r === data.reason) ?? "upstream";
+  return { ok: true, value: { ok: false, reason } };
 }

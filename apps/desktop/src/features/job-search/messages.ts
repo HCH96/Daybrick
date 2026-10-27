@@ -1,4 +1,5 @@
 import type { ApiErrorKind } from "../server/management";
+import type { ProfileGenerateFailure } from "./api";
 
 /** 구직 관리 화면의 오류·안내 문구는 모두 여기 둔다. 키·토큰 값은 어떤 문구에도 넣지 않는다. */
 
@@ -39,3 +40,82 @@ export const INVALID_BALANCE = "잔액은 0 이상의 숫자로 넣어 주세요
 export const INVALID_PRICE = "단가는 0 이상의 숫자로 넣어 주세요.";
 export const CALC_NOTE = "이 앱의 호출만 계산한 값";
 export const CALC_HINT = "사용액은 이 앱의 호출만 계산한 값이라 실제 잔액과 다를 수 있어요.";
+
+// ===== 프로필 (R17–R22) =====
+
+/** 자료·프로필을 읽지 못했을 때 */
+export function profileLoadErrorMessage(kind: ApiErrorKind): string {
+  return `프로필을 읽지 못했어요. ${reason(kind)}`;
+}
+
+export function sourceAddErrorMessage(name: string, kind: ApiErrorKind): string {
+  return `"${name}"을(를) 넣지 못했어요. ${reason(kind)}`;
+}
+
+export function sourceDeleteErrorMessage(kind: ApiErrorKind): string {
+  return `자료를 지우지 못했어요. ${reason(kind)}`;
+}
+
+export function unsupportedFileMessage(name: string): string {
+  return `"${name}"은(는) 넣을 수 없어요. PDF나 마크다운(.md) 파일만 넣을 수 있어요.`;
+}
+
+export function fileTooLargeMessage(name: string, limitMb: number): string {
+  return `"${name}"이(가) 너무 커요. 파일 하나는 ${limitMb}MB까지 넣을 수 있어요.`;
+}
+
+export const EMPTY_PASTE = "붙여 넣을 내용을 넣어 주세요.";
+export const NO_SOURCES_HINT = "자료를 하나 이상 넣으면 프로필을 만들 수 있어요.";
+
+/** AI 사용을 멈추게 한 한도·크레딧 안내 (프로필 만들기·채점 등에서 같이 쓴다, R74, R78) */
+export function aiLimitMessage(which: "daily" | "monthly"): string {
+  return which === "daily"
+    ? "오늘 AI 호출 한도에 이르렀어요. 내일 다시 시도하거나 설정 탭에서 한도를 늘려 주세요."
+    : "이번 달 AI 사용액 한도에 이르렀어요. 설정 탭에서 한도를 늘리거나 다음 달에 다시 시도해 주세요.";
+}
+
+export const AI_CREDIT_MESSAGE =
+  "Anthropic 크레딧이 부족해요. Anthropic 콘솔에서 크레딧을 충전한 뒤 다시 시도해 주세요.";
+
+/** 프로필 만들기 실패 (서버 함수가 돌려준 이유) */
+export function profileGenerateFailMessage(
+  failure: ProfileGenerateFailure,
+): string {
+  switch (failure.reason) {
+    case "limit":
+      return aiLimitMessage(failure.which);
+    case "credit":
+      return AI_CREDIT_MESSAGE;
+    case "no-sources":
+      return NO_SOURCES_HINT;
+    case "too-large":
+      return "PDF 자료가 너무 커요. 합계 20MB 아래로 줄여 주세요.";
+    case "missing-key":
+      return "서버에 Anthropic 키가 없어요. 설정에서 자동 세팅 다시 실행으로 키를 등록해 주세요.";
+    case "network":
+      return "서버에서 Anthropic에 연결하지 못했어요. 잠시 뒤 다시 시도해 주세요.";
+    case "upstream":
+      return "AI 응답에 문제가 있었어요. 잠시 뒤 다시 시도해 주세요.";
+    case "bad-response":
+      return "AI 결과를 읽지 못했어요. 다시 시도해 주세요.";
+    case "database":
+      return "서버에서 자료나 초안을 읽고 쓰지 못했어요. 서버 업데이트가 끝났는지 확인해 주세요.";
+  }
+}
+
+/** 서버 함수를 부르지 못했을 때 (함수가 아직 배포되지 않았으면 not-found) */
+export function profileCallErrorMessage(kind: ApiErrorKind): string {
+  if (kind === "not-found") return "프로필 서버 함수가 없어요. 서버 업데이트를 해 주세요.";
+  return `프로필을 만들지 못했어요. ${reason(kind)}`;
+}
+
+export function profileSaveErrorMessage(kind: ApiErrorKind): string {
+  return `프로필을 저장하지 못했어요. ${reason(kind)}`;
+}
+
+export function draftDiscardErrorMessage(kind: ApiErrorKind): string {
+  return `초안을 버리지 못했어요. ${reason(kind)}`;
+}
+
+export const PROFILE_GENERATED = "새 초안을 만들었어요. 고친 뒤 저장해 주세요.";
+export const BLANK_FIELD = "자료에 없음";
