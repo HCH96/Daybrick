@@ -1,11 +1,31 @@
 import { useState } from "react";
 import { usePageIntent } from "../../app/pageIntent";
+import { JobSearchProvider } from "../../features/job-search/JobSearchProvider";
 import { useServer } from "../../features/server/useServer";
 import JobSearchTabs from "./JobSearchTabs";
 import JobSearchDisconnected from "./JobSearchDisconnected";
 import TabPlaceholder from "./TabPlaceholder";
+import UsageLine from "./recommend/UsageLine";
+import JobSettingsTab from "./settings/JobSettingsTab";
 import { JOB_SEARCH_TABS, isJobSearchTab, type JobSearchTabId } from "./tabs";
 import "./JobSearchPage.css";
+
+/** 탭 내용. 만든 탭은 실제 컴포넌트, 아직 안 만든 탭은 자리 표시 (D22) */
+function TabBody({ tab, label }: { tab: JobSearchTabId; label: string }) {
+  switch (tab) {
+    case "settings":
+      return <JobSettingsTab />;
+    case "recommend":
+      return (
+        <>
+          <UsageLine />
+          <TabPlaceholder label={label} />
+        </>
+      );
+    default:
+      return <TabPlaceholder label={label} />;
+  }
+}
 
 /** 구직 관리 화면: 제목 + 탭 6개 (R1). 서버 연결·로그인이 안 됐으면 탭 대신 연결 안내 (R2). */
 function JobSearchPage() {
@@ -26,13 +46,13 @@ function JobSearchPage() {
     <div className="job-search-page">
       <h1 className="job-search-page__title">구직 관리</h1>
       {!loading && !connected && <JobSearchDisconnected />}
-      {!loading && connected && (
-        <>
+      {!loading && connected && serverSession && (
+        <JobSearchProvider key={serverSession.userId} session={serverSession}>
           <JobSearchTabs tab={tab} onChange={setTab} />
           <div className="job-search-page__body" role="tabpanel">
-            <TabPlaceholder key={tab} label={label} />
+            <TabBody key={tab} tab={tab} label={label} />
           </div>
-        </>
+        </JobSearchProvider>
       )}
     </div>
   );

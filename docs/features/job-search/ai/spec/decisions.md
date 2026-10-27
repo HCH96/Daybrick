@@ -22,5 +22,7 @@
 - D20. 지원 관리 카드에 선택 칸 `jobLink: { serverId } | null`을 더하고 파일 버전은 2를 유지한다. (적용: 12단계 이후) (기록: L04)
 - D21. 로컬 파일 `job-search.json`에 추천 공고 탭을 마지막으로 연 시각과, 서버에 반영하지 못한 상태 변경 대기 목록을 둔다. (적용: 10단계 이후) (기록: L04)
 - D22. 구직 관리 탭 id·이름은 `pages/job-search/tabs.ts` 한 곳에 둔다. 탭을 만드는 단계는 `JobSearchPage`에서 그 탭의 `TabPlaceholder`를 실제 탭 컴포넌트로 바꾼다. (적용: 이후 전체) (기록: L05)
-- D23. `js_settings.prices`는 모델 id → `{ input, output, cacheRead, cacheWrite }`(100만 토큰당 달러). 캐시 단가 기본값은 입력의 0.1배(읽기)·1.25배(쓰기)로 넣었다 (추측, 3단계에서 공식 단가 확인). `js_ai_calls`는 앱이 읽기만 하고 서버 함수(서비스 역할)만 넣는다. (적용: 이후 전체) (기록: L06)
+- D23. `js_settings.prices`는 모델 id → `{ input, output, cacheRead, cacheWrite }`(100만 토큰당 달러). 캐시 단가 기본값은 입력의 0.1배(읽기)·1.25배(쓰기)로 넣었다 (Anthropic 캐시 가격 배율과 같음). `js_ai_calls`는 앱이 읽기만 하고 서버 함수(서비스 역할)만 넣는다. (적용: 이후 전체) (기록: L06) (L07에서 변경)
 - D24. 자동 생성 비밀값은 32바이트 무작위 값의 16진수 64글자다 (`GMAIL_TOKEN_KEY`도 이 글자를 풀어 AES 키로 쓴다). vault 사본이 있는 비밀값은 함수 비밀값·vault 중 하나라도 없으면 둘 다 새 값으로 맞춘다. 서버 업데이트 단계 목록에 "비밀값 만들기"가 있다. (적용: 이후 전체) (기록: L06)
+- D25. AI 사용량의 "오늘"·"이번 달" 경계는 한국 시간(UTC+9)이다 (서버 `_shared/ai.ts`와 앱 `usage.ts`가 같은 계산). Anthropic까지 간 호출은 성공·실패 모두 `js_ai_calls`에 기록하고 하루 호출 수에 센다. 실패한 호출의 비용은 0. (적용: 이후 전체) (기록: L07)
+- D26. 서버 함수는 `getCaller(req)`(`_shared/auth.ts`)로 받은 `Caller`를 `callClaude(caller, { task, model, system, content, schema })`에 넘긴다. 결과 JSON은 강제 도구 호출(도구 이름 `result`)로 받고, 결과 종류는 `ok`·`limit`(daily/monthly)·`credit`·`error`. `_shared` 파일은 `migrations.rs`의 `AUTH`·`AI` 상수로 각 js- 함수 `files`에 넣는다 (처음 쓰는 단계에서 `allow(dead_code)`를 지운다). 앱 화면은 `JobSearchProvider`의 `useJobSearch()`로 설정·기록을 읽고, 저장 뒤 `refresh()`를 부른다. (적용: 4단계 이후) (기록: L07)

@@ -1,0 +1,95 @@
+/* 추천 공고 탭 사용액 줄. 목업 recommend.css의 .status·.meter·.bar·.balance·.calc-note 기준 */
+.usage-line {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+}
+
+.usage-line__row {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-size: 13px;
+}
+
+.usage-line__meter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 170px;
+}
+
+.usage-line__meter-top {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.usage-line__k,
+.usage-line__of {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.usage-line__meter-top b,
+.usage-line__balance b {
+  font-size: 15px;
+}
+
+.usage-line__bar {
+  height: 5px;
+  border-radius: 99px;
+  background: var(--track);
+  overflow: hidden;
+}
+
+.usage-line__bar i {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: var(--accent);
+}
+
+.usage-line__bar i.usage-line__fill--warn {
+  background: var(--amber);
+}
+
+.usage-line__balance {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 28px;
+  border-left: 1px solid var(--border);
+}
+
+.usage-line__arrow {
+  color: var(--faint);
+}
+
+.usage-line__est b {
+  color: var(--green);
+}
+
+.usage-line__note {
+  margin-left: auto;
+  color: var(--faint);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.usage-line__msg {
+  color: var(--muted);
+}
+
+.usage-line__retry {
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}

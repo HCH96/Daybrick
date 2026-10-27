@@ -1,0 +1,197 @@
+/* 구직 관리 설정 탭. 목업 manage.css의 .set-grid·.inline-fields·.hint·.bal-now·.bal-input, common.css의 .panel·.tbl·.field·.input 기준 */
+.js-settings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-content: start;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.js-settings__state {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.js-settings__panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  min-width: 0;
+}
+
+.js-settings__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.js-settings__desc {
+  color: var(--muted);
+  font-size: 13px;
+  margin: -6px 0 14px;
+}
+
+.js-settings__sub {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.js-settings__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.js-settings__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.js-settings__field > span:first-child {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.js-settings__input {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.js-settings__input:focus-within {
+  border-color: var(--accent);
+}
+
+.js-settings__input input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.js-settings__input input::placeholder {
+  color: var(--faint);
+}
+
+.js-settings__input--price {
+  height: 32px;
+  padding: 0 8px;
+  width: 72px;
+}
+
+.js-settings__unit {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.js-settings__hint {
+  font-size: 12px;
+  color: var(--faint);
+  margin-top: -6px;
+  margin-bottom: 12px;
+}
+
+.js-settings__hint--end {
+  margin: 12px 0 0;
+}
+
+.js-settings__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.js-settings__actions .setup-btn,
+.js-settings__bal-input .setup-btn {
+  height: 34px;
+  border-radius: 8px;
+}
+
+.js-settings__result {
+  font-size: 12px;
+}
+
+.js-settings__result--ok {
+  color: var(--green);
+}
+
+.js-settings__result--bad {
+  color: var(--red);
+}
+
+.js-settings__bal-now {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.js-settings__bal-now b {
+  font-size: 20px;
+  color: var(--text);
+}
+
+.js-settings__bal-input {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.js-settings__bal-input .js-settings__input {
+  flex: 1;
+}
+
+.js-settings__tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.js-settings__tbl th {
+  text-align: left;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.js-settings__tbl td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.js-settings__tbl tr:last-child td {
+  border-bottom: 0;
+}
+
+.js-settings__foot-note {
+  margin: 16px 0 12px;
+  color: var(--faint);
+  font-size: 12px;
+}
