@@ -1,0 +1,251 @@
+/* 메일 제안 탭. 목업 manage.css의 .mail-bar·.sugs·.sug·.sug-app·.mail-meta·.excerpt·.change·.change-k·.state-move·.sched-line·.done-list·.done-row, common.css의 .chip·.btn·.panel 기준 */
+.js-mail {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.js-mail .setup-btn {
+  height: 30px;
+  border-radius: 8px;
+  margin-top: 0;
+}
+
+.js-mail .setup-btn--sm {
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+/* ===== 위쪽 줄 ===== */
+.js-mail__bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.js-mail__bar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.js-mail__bar-right b {
+  color: var(--text);
+}
+
+.js-mail__msg {
+  margin: -4px 0 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.js-mail__msg--ok {
+  color: var(--green);
+}
+
+.js-mail__msg--bad {
+  color: var(--red);
+}
+
+/* ===== 칩 (목업 common.css .chip) ===== */
+.js-mail__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 99px;
+  background: var(--neutral-soft);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.js-mail__chip--green {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.js-mail__chip--red {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.js-mail__chip--accent {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ===== 대기 중 제안 카드 ===== */
+.js-mail__sugs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.js-mail__sug {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 20px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.js-mail__sug-main {
+  min-width: 0;
+}
+
+.js-mail__sug-app {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.js-mail__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.js-mail__meta b {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.js-mail__excerpt {
+  padding: 8px 12px;
+  border-left: 3px solid var(--accent);
+  background: var(--bg);
+  border-radius: 0 8px 8px 0;
+  font-size: 13px;
+  color: var(--neutral);
+}
+
+.js-mail__change {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-left: 20px;
+  border-left: 1px solid var(--border);
+}
+
+.js-mail__change-k {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.js-mail__change-k b {
+  color: var(--text);
+}
+
+.js-mail__move {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.js-mail__arrow {
+  color: var(--faint);
+}
+
+.js-mail__sched {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.js-mail__sched--none {
+  color: var(--faint);
+}
+
+.js-mail__btns {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.js-mail__empty {
+  padding: 28px 18px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ===== 처리한 제안 (목업 .panel.done-list) ===== */
+.js-mail__panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+
+.js-mail__done {
+  margin-top: 18px;
+}
+
+.js-mail__panel-title {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.js-mail__sub {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.js-mail__done-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.js-mail__done-row:last-child {
+  border-bottom: 0;
+}
+
+.js-mail__done-row b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.js-mail__done-mail {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.js-mail__when {
+  margin-left: auto;
+  color: var(--faint);
+  font-size: 12px;
+  white-space: nowrap;
+}

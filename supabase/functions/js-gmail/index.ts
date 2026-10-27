@@ -1,12 +1,14 @@
-// js-gmail: Gmail 연결·해제 (job-search R60–R63, R70, D18). 메일 확인(check)은 14단계에서 더한다.
+// js-gmail: Gmail 연결·해제·메일 확인 (job-search R60–R70, D18). 메일 확인 코드는 check.ts.
 // JWT 확인을 켜고 배포한다. 앱은 Supabase Google 로그인으로 받은 Google 갱신 토큰을 메모리로만 넘기고,
 // 이 함수가 확인·암호화해 `js_gmail_tokens`에 둔다. 토큰은 앱에 돌려주지 않는다.
-// 요청: { action: "connect", refreshToken } | { action: "disconnect" }
+// 요청: { action: "connect", refreshToken } | { action: "disconnect" } | { action: "check" }
 // 응답:
 // - connect: { ok: true, email } 또는 { ok: false, reason } (no-token·no-scope·rejected·missing-key·network·upstream·database)
 // - disconnect: { ok: true, revoked } 또는 { ok: false, reason: "database" }. revoked=false면 Google 권한 취소를 못 한 것
+// - check: { ok: true, scanned, matched, suggested, stopped } 또는 { ok: false, reason } (check.ts의 CheckResult)
 import { getCaller, type Caller } from "../_shared/auth.ts";
 import { handleOptions, json } from "../_shared/cors.ts";
+import { checkMail } from "./check.ts";
 import { accessToken, GMAIL_SCOPE, openToken, revokeToken, sealToken } from "./token.ts";
 
 async function callerEmail(caller: Caller): Promise<string | null> {
@@ -70,5 +72,6 @@ Deno.serve(async (req) => {
   }
   if (body.action === "connect") return await connect(caller, body.refreshToken);
   if (body.action === "disconnect") return await disconnect(caller);
+  if (body.action === "check") return json(await checkMail(caller));
   return json({ ok: false, reason: "unknown-action" }, 400);
 });

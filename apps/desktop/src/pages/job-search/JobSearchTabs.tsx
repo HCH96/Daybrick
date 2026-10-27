@@ -4,7 +4,7 @@ import "./JobSearchTabs.css";
 interface JobSearchTabsProps {
   tab: JobSearchTabId;
   onChange: (tab: JobSearchTabId) => void;
-  /** 메일 제안 탭 옆 개수 칩. 0이거나 없으면 숨긴다 (값은 14단계에서 채움) */
+  /** 메일 제안 탭 옆 대기 중 제안 개수 칩. 0이거나 없으면 숨긴다 (JobSearchPage의 useMailCount) */
   mailCount?: number;
 }
 

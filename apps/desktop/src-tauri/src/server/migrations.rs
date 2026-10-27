@@ -180,8 +180,18 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
                 "js-gmail/token.ts",
                 include_str!("../../../../../supabase/functions/js-gmail/token.ts"),
             ),
+            (
+                "js-gmail/gmail.ts",
+                include_str!("../../../../../supabase/functions/js-gmail/gmail.ts"),
+            ),
+            (
+                "js-gmail/check.ts",
+                include_str!("../../../../../supabase/functions/js-gmail/check.ts"),
+            ),
             CORS,
             AUTH,
+            AI,
+            PROMPTS,
         ],
     },
 ];

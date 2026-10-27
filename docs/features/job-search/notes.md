@@ -15,16 +15,16 @@
 - 11단계: 상세 팝업·걸러진 공고·보관함 (자동 진행, 최종 테스트 대기)
 - 12단계: 지원하기·일정 제안 (지원 관리 수정) (자동 진행, 최종 테스트 대기)
 - 13단계: Gmail 연결·해제 (인증 방식 B는 사용자 결정, 최종 테스트 대기)
+- 14단계: 메일 확인·메일 제안 탭 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 14단계: 메일 확인·메일 제안 탭 (`js-gmail check`로 지원 건과 맞는 메일만 Haiku 분류 → 제안 저장, `MailTab`·`SuggestionCard`·`DoneList`, 승인 시 로컬 카드 반영)
-- 관련 결정: D1–D18, D20–D41 (ai/spec/decisions.md에서 이 줄만 읽기. 특히 D2, D5, D14, D15, D18, D25, D26, D40, D41)
-- 주의: 접근 토큰은 `js-gmail/token.ts`의 `storedAccessToken(caller)`로 받는다(거절이면 `broken_at` 기록됨). `check`는 `js-gmail/index.ts`의 action 분기에 더하고, AI를 쓰므로 `migrations.rs`의 js-gmail `files`에 `AI`·`PROMPTS`를 더한다. 앱 서버 호출은 `api.ts` 대신 새 파일(예: `mailApi.ts`)에 둬도 된다(api.ts가 750줄 넘음). 문구는 `messages.ts` 끝에 구역 주석을 달고 덧붙인다.
+- 15단계: 예약 실행과 알림 (`0004_job_search_cron.sql` 예약 작업 3개, `auth.ts` 예약 비밀값 경로, `notify.ts`로 알림 6종, 알림의 `tab` 열기)
+- 관련 결정: D1–D18, D19, D20–D42 (ai/spec/decisions.md에서 이 줄만 읽기. 특히 D14, D15, D19, D24, D25, D26, D37, D41, D42)
+- 주의: 메일 확인은 `js-gmail/index.ts`의 `check` 분기가 `checkMail(caller)`를 부른다(예약 경로도 같은 함수에 caller만 바꿔 넘기면 됨). "메일 제안 N개" 알림은 `checkMail` 결과의 `suggested`, "Gmail 연결 끊김"은 `markBroken`(`js-gmail/token.ts`)이 부르는 자리에서 보낸다. 탭 열기는 이미 `JobSearchPage`의 `usePageIntent("job-search", …)`가 `intent.tab`을 처리한다(step 파일의 JobSearchTabs가 아님) — 확인만 하면 된다. `notify.ts`는 아직 `migrations.rs`에서 `allow(dead_code)`다.
 
 ## 확인할 문서 (경로는 docs/features/job-search/ 기준, 파일 통째로 읽기)
-- ai/plan/step-14.md
-- ai/spec/req-gmail.md (R64–R69)
-- ai/spec/ai-rules.md의 "원문 취급" 구역만 grep
-- ai/logs/L17.md
-- human/mockups/mail.html의 mail-bar·mail-list·mail-done 구역 (CSS: manage.css·common.css에서 클래스 검색)
-- ai/plan/structure.md의 js-gmail·mail/·`js_mail_suggestions`·`js_applications` 줄
+- ai/plan/step-15.md
+- ai/spec/req-collect.md (R33, R36), ai/spec/req-usage.md (R74, R78), ai/spec/req-alerts.md (R80–R81)
+- ai/logs/L18.md
+- ../notifications/ai/spec/extension.md (알림 보내는 법)
+- ai/plan/structure.md의 `0004`·`auth.ts`·`notify.ts` 줄 (새 파일 위치를 정할 때만)

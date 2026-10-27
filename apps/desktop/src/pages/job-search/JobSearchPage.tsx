@@ -6,6 +6,8 @@ import JobSearchTabs from "./JobSearchTabs";
 import JobSearchDisconnected from "./JobSearchDisconnected";
 import TabPlaceholder from "./TabPlaceholder";
 import FiltersTab from "./filters/FiltersTab";
+import MailTab from "./mail/MailTab";
+import { useMailCount } from "./mail/useMailCount";
 import ProfileTab from "./profile/ProfileTab";
 import RecommendTab from "./recommend/RecommendTab";
 import JobSettingsTab from "./settings/JobSettingsTab";
@@ -14,8 +16,18 @@ import { JOB_SEARCH_TABS, isJobSearchTab, type JobSearchTabId } from "./tabs";
 import "./JobSearchPage.css";
 
 /** 탭 내용. 만든 탭은 실제 컴포넌트, 아직 안 만든 탭은 자리 표시 (D22) */
-function TabBody({ tab, label }: { tab: JobSearchTabId; label: string }) {
+function TabBody({
+  tab,
+  label,
+  onMailCount,
+}: {
+  tab: JobSearchTabId;
+  label: string;
+  onMailCount: (count: number) => void;
+}) {
   switch (tab) {
+    case "mail":
+      return <MailTab onPendingChange={onMailCount} />;
     case "settings":
       return <JobSettingsTab />;
     case "profile":
@@ -45,6 +57,7 @@ function JobSearchPage() {
   const loading = config === null || !sessionReady;
   const connected = serverSession !== null && status === "connected";
   const label = JOB_SEARCH_TABS.find((t) => t.id === tab)?.label ?? "";
+  const [mailCount, setMailCount] = useMailCount(connected ? serverSession : null);
 
   return (
     <div className="job-search-page">
@@ -52,9 +65,9 @@ function JobSearchPage() {
       {!loading && !connected && <JobSearchDisconnected />}
       {!loading && connected && serverSession && (
         <JobSearchProvider key={serverSession.userId} session={serverSession}>
-          <JobSearchTabs tab={tab} onChange={setTab} />
+          <JobSearchTabs tab={tab} onChange={setTab} mailCount={mailCount} />
           <div className="job-search-page__body" role="tabpanel">
-            <TabBody key={tab} tab={tab} label={label} />
+            <TabBody key={tab} tab={tab} label={label} onMailCount={setMailCount} />
           </div>
         </JobSearchProvider>
       )}

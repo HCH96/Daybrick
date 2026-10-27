@@ -1,6 +1,7 @@
 import type { ApiErrorKind } from "../server/management";
 import type { CollectFailReason, ProfileGenerateFailure } from "./api";
 import type { GmailConnectFailure } from "./gmailConnect";
+import type { MailCheckFail, MailCheckStop } from "./mailApi";
 import type { ForceFailure } from "./postingApi";
 import type { ProcessStop } from "./recommendApi";
 import type { PostingStage } from "./types";
@@ -441,4 +442,69 @@ export function gmailConnectErrorMessage(failure: GmailConnectFailure): string {
 export function gmailDisconnectErrorMessage(kind: ApiErrorKind): string {
   if (kind === "not-found") return "Gmail 서버 함수가 없어요. 서버 업데이트를 해 주세요.";
   return `연결을 해제하지 못했어요. ${reason(kind)}`;
+}
+
+// ===== 메일 제안 탭 (R64–R69) =====
+
+export const NO_SUGGESTIONS = "새 제안이 없어요";
+export const NO_DONE_SUGGESTIONS = "최근 30일 동안 처리한 제안이 없어요";
+export const MAIL_CHECKING = "메일을 확인하는 중… 최대 2분쯤 걸려요.";
+export const MAIL_NOT_CONNECTED = "Gmail이 연결되지 않았어요. 설정 탭에서 연결하면 메일 제안을 받을 수 있어요.";
+export const MAIL_BROKEN = "Gmail 연결이 끊겨 메일 확인을 멈췄어요. 설정 탭에서 다시 연결해 주세요.";
+export const CARD_NOT_FOUND = "지원 관리 카드를 찾을 수 없어요. 카드가 지워져 이 제안은 거절로 처리했어요.";
+export const APPLICATIONS_NOT_READY = "지원 관리 데이터를 아직 읽는 중이에요. 잠시 뒤 다시 눌러 주세요.";
+
+export function mailLoadErrorMessage(kind: ApiErrorKind): string {
+  return `메일 제안을 읽지 못했어요. ${reason(kind)}`;
+}
+
+export function suggestionSaveErrorMessage(kind: ApiErrorKind): string {
+  return `제안을 처리하지 못했어요. ${reason(kind)}`;
+}
+
+export function mailCheckCallErrorMessage(kind: ApiErrorKind): string {
+  if (kind === "not-found") return "Gmail 서버 함수가 없어요. 서버 업데이트를 해 주세요.";
+  return `메일을 확인하지 못했어요. ${reason(kind)}`;
+}
+
+export function mailCheckFailMessage(failure: MailCheckFail): string {
+  switch (failure) {
+    case "not-connected":
+      return MAIL_NOT_CONNECTED;
+    case "rejected":
+      return MAIL_BROKEN;
+    case "missing-key":
+      return "서버 비밀값(Google 클라이언트 또는 GMAIL_TOKEN_KEY)이 없어요. 서버 업데이트를 해 주세요.";
+    case "network":
+      return "서버가 Google에 접속하지 못했어요. 잠시 뒤 다시 시도해 주세요.";
+    case "upstream":
+      return "Gmail에서 오류가 났어요. 잠시 뒤 다시 시도해 주세요.";
+    case "database":
+      return "확인 결과를 저장하지 못했어요. 서버 업데이트가 끝났는지 확인해 주세요.";
+  }
+}
+
+function mailStopMessage(stop: MailCheckStop): string {
+  switch (stop.reason) {
+    case "limit":
+      return aiLimitMessage(stop.which);
+    case "credit":
+      return AI_CREDIT_MESSAGE;
+    case "time":
+      return "확인할 메일이 많아 일부만 확인했어요. [지금 확인]을 다시 누르면 이어서 확인해요.";
+    case "rejected":
+      return MAIL_BROKEN;
+    case "gmail":
+      return "Gmail에서 메일을 읽다가 오류가 나 멈췄어요. 잠시 뒤 다시 확인해 주세요.";
+    case "ai-error":
+      return "AI 분류 중 오류가 나 멈췄어요. 잠시 뒤 다시 확인해 주세요.";
+    case "database":
+      return "제안을 저장하다가 오류가 나 멈췄어요. 서버 업데이트가 끝났는지 확인해 주세요.";
+  }
+}
+
+/** [지금 확인] 결과 한 줄 */
+export function mailCheckDoneMessage(scanned: number, matched: number, suggested: number, stop: MailCheckStop | null): string {
+  const done = `메일 ${scanned}통 중 지원 건과 맞는 메일 ${matched}통을 확인해 제안 ${suggested}개를 만들었어요.`;
+  return stop ? `${done} ${mailStopMessage(stop)}` : done;
 }
