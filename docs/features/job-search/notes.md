@@ -10,17 +10,17 @@
 - 6단계: 수집 사이트 탭 (자동 진행, 최종 테스트 대기)
 - 7단계: 사이트 추가·시험 수집·어댑터 가이드 (자동 진행, 최종 테스트 대기)
 - 8단계: 필터 탭 (자동 진행, 최종 테스트 대기)
+- 9단계: 처리 함수 (필터·추출·채점) (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 9단계: 처리 함수 (필터·추출·채점) (`js-process`가 공고를 몇 개씩 1차 필터 → Haiku 추출·인젝션 검사 → 2차 필터 → Opus 채점으로 넘김)
-- 관련 결정: D1–D17, D22–D35 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 필터는 `_shared/filters.ts`의 `applyFirst`·`applySecond`를 그대로 쓰고, 추출 결과를 `ExtractionForFilter`(`skills`·`minYears`·`employment[]`)로, 저장된 프로필 기술스택을 `{ skills: 이름[] }`로 바꿔 넘긴다. 걸리면 `hits`를 `filtered_by`에 넣는다. `filters.ts`를 `migrations.rs`의 `js-process` `files`에 넣는다. 추출 스키마에 경력 연수(숫자로 쓸 최소 연수)와 고용 형태 목록을 꼭 둔다.
+- 10단계: 추천 공고 탭 (채점된 공고 카드 3열·정렬·"새" 표시·이전 프로필 기준 다시 채점·수집 상태 줄)
+- 관련 결정: D7, D11, D21, D22, D23, D25, D26, D27, D31, D32, D36, D37 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: 카드의 경력·고용 형태·근무지·마감은 `js_extractions.fields`(D36의 `experience.text`·`employment`·`location`·`deadline.date/text`)에서, 점수·등급은 `js_scores`(`grade` id `strong|good|fair|low`)에서 읽는다. [다시 채점]은 `js-process` `{ mode: "rescore" }`(D37, 응답 `remaining`이 0이 될 때까지 다시 부를지 정한다). "채점 대기 N개"는 `stage = 'waiting'` 공고 수.
 
 ## 확인할 문서 (경로는 docs/features/job-search/ 기준, 파일 통째로 읽기)
-- ai/plan/step-09.md
-- ai/spec/req-analysis.md
-- ai/spec/req-usage.md (R74, R78)
-- ai/spec/ai-rules.md
-- ai/logs/L12.md
-- ai/logs/L09.md (`js-collect` 구조·`migrations.rs` 함수 묶음 방식 참고)
-- ai/plan/structure.md의 "2. 데이터 모양" 절 (`js_postings`·`js_extractions`·`js_scores` 줄)
+- ai/plan/step-10.md
+- ai/spec/req-recommend.md (R4–R8), ai/spec/req-profile.md (R23), ai/spec/req-usage.md (R75)
+- ai/spec/mockup.md의 "점수 색"·"마감 표시" 줄 (grep으로 그 줄만)
+- ai/logs/L13.md
+- human/mockups/recommend.html의 recommend-status·recommend-toolbar·recommend-cards 구역 (CSS: recommend.css·common.css에서 클래스 검색)
+- ai/plan/structure.md의 recommend/ 줄과 "2. 데이터 모양" 절의 job-search.json 부분 (새 파일 위치를 정할 때만)

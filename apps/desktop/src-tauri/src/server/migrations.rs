@@ -76,6 +76,12 @@ const DEDUPE: (&str, &str) = (
     include_str!("../../../../../supabase/functions/_shared/dedupe.ts"),
 );
 
+/// 구직 관리 공용: 필터 판정 (처리 함수 묶음에 함께 올린다, D35)
+const FILTERS: (&str, &str) = (
+    "_shared/filters.ts",
+    include_str!("../../../../../supabase/functions/_shared/filters.ts"),
+);
+
 /// 구직 관리 공용: 알림 보내기 (15단계에서 js- 함수 묶음에 넣는다)
 #[allow(dead_code)]
 const NOTIFY: (&str, &str) = (
@@ -137,6 +143,29 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
             AUTH,
             ADAPTER,
             DEDUPE,
+        ],
+    },
+    EdgeFunction {
+        slug: "js-process",
+        entrypoint: "js-process/index.ts",
+        files: &[
+            (
+                "js-process/index.ts",
+                include_str!("../../../../../supabase/functions/js-process/index.ts"),
+            ),
+            (
+                "js-process/steps.ts",
+                include_str!("../../../../../supabase/functions/js-process/steps.ts"),
+            ),
+            (
+                "js-process/guard.ts",
+                include_str!("../../../../../supabase/functions/js-process/guard.ts"),
+            ),
+            CORS,
+            AUTH,
+            AI,
+            PROMPTS,
+            FILTERS,
         ],
     },
 ];
