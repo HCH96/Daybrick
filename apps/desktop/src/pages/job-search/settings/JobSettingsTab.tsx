@@ -2,12 +2,12 @@ import { loadErrorMessage } from "../../../features/job-search/messages";
 import { useJobSearch } from "../../../features/job-search/useJobSearch";
 import "../../server-setup/wizard/WizardShell.css";
 import BalancePanel from "./BalancePanel";
+import GmailPanel from "./GmailPanel";
 import LimitsPanel from "./LimitsPanel";
 import PricesPanel from "./PricesPanel";
-import { MailIcon } from "./SettingsIcons";
 import "./JobSettingsTab.css";
 
-/** 설정 탭: 2열 판 네 개 (Gmail 연결은 13단계에서 채운다) */
+/** 설정 탭: 2열 판 네 개 (Gmail 연결, AI 한도, 기준 잔액, 모델 단가) */
 function JobSettingsTab() {
   const { data, error, refresh } = useJobSearch();
 
@@ -26,16 +26,7 @@ function JobSettingsTab() {
 
   return (
     <div className="js-settings">
-      <section className="js-settings__panel">
-        <h3 className="js-settings__title">
-          <MailIcon />
-          Gmail 연결
-        </h3>
-        <p className="js-settings__desc">
-          지원 건과 관련된 메일을 하루 한 번 확인해 상태 변경을 제안해요. 읽기 전용 권한만 요청해요.
-        </p>
-        <div className="js-settings__sub">Gmail 연결은 준비 중이에요.</div>
-      </section>
+      <GmailPanel />
       <LimitsPanel data={data} />
       <BalancePanel data={data} />
       <PricesPanel data={data} />

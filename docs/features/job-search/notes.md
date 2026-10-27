@@ -14,16 +14,17 @@
 - 10단계: 추천 공고 탭 (자동 진행, 최종 테스트 대기)
 - 11단계: 상세 팝업·걸러진 공고·보관함 (자동 진행, 최종 테스트 대기)
 - 12단계: 지원하기·일정 제안 (지원 관리 수정) (자동 진행, 최종 테스트 대기)
+- 13단계: Gmail 연결·해제 (인증 방식 B는 사용자 결정, 최종 테스트 대기)
 
 ## 다음 진행
-- 13단계: Gmail 연결·해제 (127.0.0.1 수신기로 Google 인증 → `js-gmail connect`가 갱신 토큰 암호화 저장, 연결 해제, 설정 탭 `GmailPanel`)
-- 관련 결정: D3, D13, D14, D15, D18, D22, D24, D26, D27 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: step 파일의 "시작 전에 확인"(OAuth 클라이언트 종류·갱신 토큰·취소 영향)은 실제로 확인한 것과 추측을 나눠 기록에 적는다. 설정 탭은 `settings/JobSettingsTab.tsx`에 패널을 더한다. 안내 문구는 `messages.ts`(길어서 끝에 구역 주석을 달고 덧붙임).
+- 14단계: 메일 확인·메일 제안 탭 (`js-gmail check`로 지원 건과 맞는 메일만 Haiku 분류 → 제안 저장, `MailTab`·`SuggestionCard`·`DoneList`, 승인 시 로컬 카드 반영)
+- 관련 결정: D1–D18, D20–D41 (ai/spec/decisions.md에서 이 줄만 읽기. 특히 D2, D5, D14, D15, D18, D25, D26, D40, D41)
+- 주의: 접근 토큰은 `js-gmail/token.ts`의 `storedAccessToken(caller)`로 받는다(거절이면 `broken_at` 기록됨). `check`는 `js-gmail/index.ts`의 action 분기에 더하고, AI를 쓰므로 `migrations.rs`의 js-gmail `files`에 `AI`·`PROMPTS`를 더한다. 앱 서버 호출은 `api.ts` 대신 새 파일(예: `mailApi.ts`)에 둬도 된다(api.ts가 750줄 넘음). 문구는 `messages.ts` 끝에 구역 주석을 달고 덧붙인다.
 
 ## 확인할 문서 (경로는 docs/features/job-search/ 기준, 파일 통째로 읽기)
-- ai/plan/step-13.md
-- ai/spec/req-gmail.md (R60–R63, R70)
-- ai/logs/L16.md
-- human/mockups/settings.html의 settings-gmail 구역 (CSS: manage.css·common.css에서 클래스 검색)
-- ai/plan/structure.md의 js-gmail·oauth_listener.rs·gmailConnect.ts·GmailPanel 줄과 `js_gmail_tokens` 줄
-- docs/features/server-setup의 D13(127.0.0.1 콜백) 줄만 grep (server-setup ai/spec/decisions.md)
+- ai/plan/step-14.md
+- ai/spec/req-gmail.md (R64–R69)
+- ai/spec/ai-rules.md의 "원문 취급" 구역만 grep
+- ai/logs/L17.md
+- human/mockups/mail.html의 mail-bar·mail-list·mail-done 구역 (CSS: manage.css·common.css에서 클래스 검색)
+- ai/plan/structure.md의 js-gmail·mail/·`js_mail_suggestions`·`js_applications` 줄

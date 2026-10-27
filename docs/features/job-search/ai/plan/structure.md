@@ -17,7 +17,7 @@
 | `functions/js-profile/index.ts` | 자료 읽기(PDF는 문서 블록) → Opus 초안 | 4 |
 | `functions/js-collect/index.ts` | `run`(켜진 사이트 전체 또는 하나)·`test`(규칙+값, 저장 안 함) | 5, 7 |
 | `functions/js-process/index.ts` | 처리 순서 R41, 미룬 작업 이어 하기, `force`(그래도 채점), `rescore` | 9 |
-| `functions/js-gmail/index.ts` | `connect`(코드 교환)·`disconnect`·`check` | 13, 14 |
+| `functions/js-gmail/index.ts` | `connect`(갱신 토큰 확인·암호화, `token.ts`)·`disconnect`·`check` | 13, 14 |
 | `adapters/gamejob.json`, `adapters/nexon.json` | 기본 어댑터 원본 (SQL에 넣을 내용, 가이드 예시) | 5 |
 
 ### Rust (`apps/desktop/src-tauri/src/`)
@@ -45,7 +45,7 @@
 | `localState.ts` | `job-search.json` 감싸기 (Tauri 밖이면 메모리) | 10 |
 | `buildCard.ts`, `scheduleSuggest.ts` | 공고 → 지원 카드, 일정 제안 목록(정확한 날짜만) | 12 |
 | `statusSync.ts` | 카드 상태 → 서버 지원 건, 대기 목록 반영 | 12 |
-| `gmailConnect.ts` | 수신기 시작 → 브라우저 → 코드 → `js-gmail connect` | 13 |
+| `gmailConnect.ts` | Supabase Google 로그인(Gmail 권한) → `provider_refresh_token` → `js-gmail connect` (D18, 서버 호출은 `gmailApi.ts`) | 13 |
 | `applySuggestion.ts` | 승인한 제안 → 카드 상태·세부 단계·결과·일정 | 14 |
 
 ### 화면 (`pages/job-search/`, css는 같은 이름)

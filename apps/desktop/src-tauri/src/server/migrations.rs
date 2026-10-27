@@ -168,6 +168,22 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
             FILTERS,
         ],
     },
+    EdgeFunction {
+        slug: "js-gmail",
+        entrypoint: "js-gmail/index.ts",
+        files: &[
+            (
+                "js-gmail/index.ts",
+                include_str!("../../../../../supabase/functions/js-gmail/index.ts"),
+            ),
+            (
+                "js-gmail/token.ts",
+                include_str!("../../../../../supabase/functions/js-gmail/token.ts"),
+            ),
+            CORS,
+            AUTH,
+        ],
+    },
 ];
 
 /// 앱의 최신 서버 구조 번호

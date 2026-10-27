@@ -1,5 +1,6 @@
 import type { ApiErrorKind } from "../server/management";
 import type { CollectFailReason, ProfileGenerateFailure } from "./api";
+import type { GmailConnectFailure } from "./gmailConnect";
 import type { ForceFailure } from "./postingApi";
 import type { ProcessStop } from "./recommendApi";
 import type { PostingStage } from "./types";
@@ -384,4 +385,60 @@ export function applyErrorMessage(kind: ApiErrorKind): string {
 /** 카드는 만들었지만 공고에 지원 표시를 못 남겼을 때 (추천 목록에 남는다) */
 export function appliedMarkWarning(kind: ApiErrorKind): string {
   return `카드는 만들었지만 공고를 추천 목록에서 빼지 못했어요. ${reason(kind)}`;
+}
+
+/* ===== Gmail 연결·해제 (R60–R63, R70) ===== */
+
+export const GMAIL_DESC = "지원 건과 관련된 메일을 하루 한 번 확인해 상태 변경을 제안해요. 읽기 전용 권한만 요청해요.";
+export const GMAIL_ACCOUNT_NOTE = "앱에 로그인한 Google 계정의 Gmail이 연결돼요.";
+export const GMAIL_TOKEN_NOTE = "서버에 암호화해 저장 (이 PC에는 없음)";
+export const GMAIL_DISCONNECT_NOTE = "서버 토큰을 지우고 Google 권한도 취소해요";
+export const GMAIL_BROKEN = "Google 권한이 만료되거나 취소돼 메일 확인을 멈췄어요. 다시 연결이 필요해요.";
+export const GMAIL_WAITING = "브라우저에서 Google 동의를 마쳐 주세요. 5분이 지나면 취소돼요.";
+export const GMAIL_UNVERIFIED_TITLE = "\"확인되지 않은 앱\" 경고가 뜨면";
+export const GMAIL_UNVERIFIED_STEPS = [
+  "직접 만든 Google 클라이언트라 Google이 검사하지 않은 앱으로 보여요.",
+  "경고 화면 왼쪽 아래 [고급]을 누르고 [Daybrick(으)로 이동(안전하지 않음)]을 눌러요.",
+  "\"Gmail 메일 읽기\" 권한 체크를 켠 채로 [계속]을 눌러요.",
+];
+export const GMAIL_CONNECTED = "Gmail을 연결했어요.";
+export const GMAIL_DISCONNECTED = "연결을 해제했어요.";
+export const GMAIL_REVOKE_FAILED =
+  "서버 토큰은 지웠지만 Google 권한은 취소하지 못했어요. Google 계정의 \"타사 연결\"에서 Daybrick을 직접 삭제해 주세요.";
+
+export function gmailStatusErrorMessage(kind: ApiErrorKind): string {
+  return `Gmail 연결 상태를 읽지 못했어요. ${reason(kind)}`;
+}
+
+export function gmailConnectErrorMessage(failure: GmailConnectFailure): string {
+  if (failure.kind === "login") {
+    if (failure.reason === "timeout") return "5분 안에 동의를 마치지 않아 연결을 멈췄어요. 다시 눌러 주세요.";
+    if (failure.reason === "cancelled") return "연결을 취소했어요.";
+    return "Google 동의 화면을 열지 못했어요. 잠시 뒤 다시 시도해 주세요.";
+  }
+  if (failure.kind === "api") {
+    if (failure.error === "not-found") return "Gmail 서버 함수가 없어요. 서버 업데이트를 해 주세요.";
+    return `Gmail을 연결하지 못했어요. ${reason(failure.error)}`;
+  }
+  switch (failure.reason) {
+    case "no-token":
+      return "Google이 연결 토큰을 주지 않았어요. 다시 연결해 주세요.";
+    case "no-scope":
+      return "Gmail 읽기 권한이 허락되지 않았어요. 동의 화면에서 Gmail 체크를 켠 채로 계속해 주세요.";
+    case "rejected":
+      return "Google이 연결을 거절했어요. 다시 연결해 주세요.";
+    case "missing-key":
+      return "서버 비밀값(Google 클라이언트 또는 GMAIL_TOKEN_KEY)이 없어요. 서버 업데이트를 해 주세요.";
+    case "network":
+      return "서버가 Google에 접속하지 못했어요. 잠시 뒤 다시 시도해 주세요.";
+    case "database":
+      return "토큰을 저장하지 못했어요. 서버 업데이트가 끝났는지 확인해 주세요.";
+    case "upstream":
+      return "Google에서 오류가 났어요. 잠시 뒤 다시 시도해 주세요.";
+  }
+}
+
+export function gmailDisconnectErrorMessage(kind: ApiErrorKind): string {
+  if (kind === "not-found") return "Gmail 서버 함수가 없어요. 서버 업데이트를 해 주세요.";
+  return `연결을 해제하지 못했어요. ${reason(kind)}`;
 }

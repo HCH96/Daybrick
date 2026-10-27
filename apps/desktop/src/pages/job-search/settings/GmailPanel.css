@@ -1,0 +1,102 @@
+/* 설정 탭 Gmail 연결 판. 목업 manage.css의 .acct·.avatar·.acct-main·.kv-rows, common.css의 .chip·.btn.danger 기준 */
+.js-gmail__acct {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.js-gmail__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--blue-soft);
+  color: var(--blue);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.js-gmail__acct-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.js-gmail__acct-main b {
+  display: block;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.js-gmail__chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.js-gmail__chip--green {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.js-gmail__chip--red {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.js-gmail__warn {
+  color: var(--red);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.js-gmail__kv {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 8px 12px;
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+
+.js-gmail__kv dt {
+  color: var(--muted);
+}
+
+.js-gmail__kv dd {
+  margin: 0;
+}
+
+.js-gmail__danger {
+  color: var(--red);
+}
+
+.js-gmail__guide {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.js-gmail__guide b {
+  color: var(--text);
+}
+
+.js-gmail__guide ol {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
