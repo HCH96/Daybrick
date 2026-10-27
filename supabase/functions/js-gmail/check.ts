@@ -220,7 +220,7 @@ export async function checkMail(caller: Caller): Promise<CheckResult> {
       system: MAIL_SYSTEM,
       content: mailContent(list, { subject: head.subject, sender, receivedAt: head.receivedAt }, body),
       schema: MAIL_SCHEMA,
-      maxTokens: 1024,
+      maxTokens: 4096,
     });
     if (result.kind !== "ok") {
       stopped = result.kind === "limit"

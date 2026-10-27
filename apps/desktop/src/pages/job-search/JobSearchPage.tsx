@@ -47,6 +47,13 @@ function TabBody({
 function JobSearchPage() {
   const { config, sessionReady, serverSession, status } = useServer();
   const [tab, setTab] = useState<JobSearchTabId>("recommend");
+  // 추천 공고 탭에서 보관함·걸러진 공고를 보다가 [추천 공고] 탭을 다시 누르면 카드 목록으로 돌아간다
+  const [recommendReset, setRecommendReset] = useState(0);
+
+  function selectTab(next: JobSearchTabId) {
+    if (next === tab && next === "recommend") setRecommendReset((n) => n + 1);
+    setTab(next);
+  }
 
   // 알림 등에서 탭을 지정해 열면 그 탭으로 바꾼다
   usePageIntent("job-search", (intent) => {
@@ -65,9 +72,9 @@ function JobSearchPage() {
       {!loading && !connected && <JobSearchDisconnected />}
       {!loading && connected && serverSession && (
         <JobSearchProvider key={serverSession.userId} session={serverSession}>
-          <JobSearchTabs tab={tab} onChange={setTab} mailCount={mailCount} />
+          <JobSearchTabs tab={tab} onChange={selectTab} mailCount={mailCount} />
           <div className="job-search-page__body" role="tabpanel">
-            <TabBody key={tab} tab={tab} label={label} onMailCount={setMailCount} />
+            <TabBody key={tab === "recommend" ? `recommend-${recommendReset}` : tab} tab={tab} label={label} onMailCount={setMailCount} />
           </div>
         </JobSearchProvider>
       )}

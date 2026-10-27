@@ -11,6 +11,26 @@ body,
   margin: 0;
 }
 
+/* 앱 전체가 안쪽에서 스크롤하므로 창 자체에는 스크롤 바를 두지 않는다 */
+html,
+body {
+  overflow: hidden;
+}
+
+/*
+ * 스크롤 바: 기본(흰색) 대신 어두운 테마에 맞춘 얇은 회색.
+ * 스크롤 칸은 모두 overflow: auto라 내용이 다 들어오면 막대가 나오지 않고, 넘칠 때만 보인다.
+ * 스크롤 바를 숨긴 칸(scrollbar-width: none)은 그쪽 규칙이 이긴다.
+ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-2) transparent;
+}
+
+*:hover {
+  scrollbar-color: var(--faint) transparent;
+}
+
 body {
   background: var(--bg);
   color: var(--text);

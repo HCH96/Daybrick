@@ -98,6 +98,8 @@ export interface FlowPosting {
 
 export interface FlowCounts {
   collected: number;
+  /** 아직 처리(1차 필터부터)를 시작하지 않은 공고 (stage new) */
+  unprocessed: number;
   firstPassed: number;
   extractedOk: number;
   secondPassed: number;
@@ -110,9 +112,10 @@ export interface FlowCounts {
  * 필터를 바꿔 new로 되돌린 공고는 다시 처리하기 전까지 수집 개수에만 든다.
  */
 export function summarizeFlow(postings: readonly FlowPosting[]): FlowCounts {
-  const counts: FlowCounts = { collected: 0, firstPassed: 0, extractedOk: 0, secondPassed: 0, scored: 0, waiting: 0 };
+  const counts: FlowCounts = { collected: 0, unprocessed: 0, firstPassed: 0, extractedOk: 0, secondPassed: 0, scored: 0, waiting: 0 };
   for (const p of postings) {
     counts.collected += 1;
+    if (p.stage === "new") counts.unprocessed += 1;
     const waitingScore = p.stage === "waiting" && p.extracted;
     if (p.stage === "waiting") counts.waiting += 1;
     if (["extracted", "filtered2", "suspect", "scored"].includes(p.stage) || waitingScore) counts.firstPassed += 1;

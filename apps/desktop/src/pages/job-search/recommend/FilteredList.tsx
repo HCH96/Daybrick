@@ -23,7 +23,6 @@ import "./ArchivedList.css";
 interface FilteredListProps {
   /** 바뀌면 목록을 다시 읽는다 (팝업에서 바꾼 뒤) */
   refreshKey: number;
-  onBack: () => void;
   onOpen: (id: string) => void;
   onChanged: () => void;
 }
@@ -52,7 +51,7 @@ function Hits({ posting }: { posting: ListPosting }) {
 }
 
 /** 걸러진 공고 목록 (R46, R49): 단계 고르기, 걸린 조건 칩, 줄마다 [그래도 채점], 줄을 누르면 팝업 */
-function FilteredList({ refreshKey, onBack, onOpen, onChanged }: FilteredListProps) {
+function FilteredList({ refreshKey, onOpen, onChanged }: FilteredListProps) {
   const { session } = useJobSearch();
   const [list, setList] = useState<ListPosting[] | null>(null);
   const [loadError, setLoadError] = useState<ApiErrorKind | null>(null);
@@ -105,7 +104,7 @@ function FilteredList({ refreshKey, onBack, onOpen, onChanged }: FilteredListPro
 
   return (
     <div className="js-list">
-      <ListHead title="걸러진 공고" count={rows.length} desc={FILTERED_DESC} onBack={onBack} />
+      <ListHead title="걸러진 공고" count={rows.length} desc={FILTERED_DESC} />
       <div className="js-list__seg">
         <SegmentedControl options={options} value={stage} onChange={setStage} ariaLabel="걸린 단계" />
       </div>

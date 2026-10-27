@@ -43,7 +43,47 @@ const DEFAULT_PRICES: Record<AiModel, Price> = {
 };
 
 const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
-const RESULT_TOOL = "result";
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/**
+ * prompts.ts의 출력 형식을 structured outputs가 받는 모양으로 바꾼다 (원본은 건드리지 않는다).
+ * - 모든 object에 `additionalProperties: false` (필수)
+ * - `type: ["string", "null"]` 같은 여러 타입은 `anyOf`로 나눈다. enum은 타입에 맞는 값만 각 갈래에 남긴다
+ */
+export function toOutputSchema(node: unknown): unknown {
+  if (Array.isArray(node)) return node.map(toOutputSchema);
+  if (!isPlainObject(node)) return node;
+
+  if (Array.isArray(node.type)) {
+    const { type, description, enum: values, ...rest } = node;
+    const branches = (type as unknown[]).map((t) => {
+      if (t === "null") return { type: "null" };
+      const branch: Record<string, unknown> = { ...rest, type: t };
+      if (Array.isArray(values)) {
+        const kept = values.filter((v) => v !== null && (t !== "string" || typeof v === "string"));
+        if (kept.length) branch.enum = kept;
+      }
+      return toOutputSchema(branch);
+    });
+    return description === undefined ? { anyOf: branches } : { description, anyOf: branches };
+  }
+
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(node)) {
+    if (k === "properties" && isPlainObject(v)) {
+      out.properties = Object.fromEntries(Object.entries(v).map(([name, s]) => [name, toOutputSchema(s)]));
+    } else if (k === "items" || k === "anyOf" || k === "allOf") {
+      out[k] = toOutputSchema(v);
+    } else {
+      out[k] = v;
+    }
+  }
+  if (node.type === "object") out.additionalProperties = false;
+  return out;
+}
 
 /** 한국 시간 오늘 0시·이번 달 1일 0시 (UTC ISO 글자) */
 export function kstBoundaries(now: Date): { dayStart: string; monthStart: string } {
@@ -209,7 +249,23 @@ function isCreditError(status: number, body: unknown): boolean {
 }
 
 /**
- * Claude를 한 번 부른다. 결과는 `schema` 모양의 JSON (강제 도구 호출로 받는다).
+ * Anthropic 오류 응답을 함수 로그에 남긴다: 상태 코드, 오류 종류·메시지, 요청 ID.
+ * 키 값과 요청 본문은 남기지 않는다. 메시지는 길면 300자로 자른다.
+ */
+function logUpstream(input: CallClaudeInput, status: number, body: unknown) {
+  const error = (body as { error?: { type?: unknown; message?: unknown } } | null)?.error;
+  const type = typeof error?.type === "string" ? error.type : "(없음)";
+  const message = typeof error?.message === "string" ? error.message.slice(0, 300) : "(없음)";
+  const requestId = (body as { request_id?: unknown } | null)?.request_id;
+  console.error(
+    `Anthropic 오류: status=${status} type=${type} task=${input.task} model=${input.model}` +
+      ` request_id=${typeof requestId === "string" ? requestId : "(없음)"} message=${message}`,
+  );
+}
+
+/**
+ * Claude를 한 번 부른다. 결과는 `schema` 모양의 JSON (structured outputs `output_config.format`로 받는다).
+ * Opus 5.5는 강제 도구 호출(tool_choice tool·any)을 400으로 거절해서 이 방식을 쓴다.
  * 한도를 넘었으면 부르지 않고 `limit`, 크레딧 부족이면 `credit`을 돌려주고 알림을 보낸다.
  * Anthropic까지 간 호출은 성공·실패 모두 기록하고, 하루 호출 수에 센다.
  */
@@ -243,8 +299,7 @@ export async function callClaude(caller: Caller, input: CallClaudeInput): Promis
         max_tokens: input.maxTokens ?? 4096,
         system: input.system,
         messages: [{ role: "user", content: input.content }],
-        tools: [{ name: RESULT_TOOL, description: "결과를 이 모양으로 돌려준다", input_schema: input.schema }],
-        tool_choice: { type: "tool", name: RESULT_TOOL },
+        output_config: { format: { type: "json_schema", schema: toOutputSchema(input.schema) } },
       }),
     });
   } catch {
@@ -279,15 +334,38 @@ export async function callClaude(caller: Caller, input: CallClaudeInput): Promis
       await noticeCredit(caller, usageNow);
       return { kind: "credit" };
     }
+    logUpstream(input, response.status, body);
     return { kind: "error", reason: "upstream" };
   }
   await noticeNear(caller, usageNow, costUsd);
 
-  const blocks = (body as { content?: unknown } | null)?.content;
-  const toolUse = Array.isArray(blocks)
-    ? blocks.find((b) => (b as { type?: unknown }).type === "tool_use")
-    : undefined;
-  const data = (toolUse as { input?: unknown } | undefined)?.input;
+  const data = readResult(input, body);
   if (data === undefined) return { kind: "error", reason: "bad-response" };
   return { kind: "ok", data, costUsd };
+}
+
+/**
+ * 성공 응답에서 결과 JSON을 꺼낸다. structured outputs라 글자 블록 하나가 스키마 모양의 JSON이다.
+ * 중간에 끊겼거나(max_tokens) 거절(refusal)이면 모양이 맞지 않을 수 있어 버린다. 못 꺼내면 undefined
+ */
+function readResult(input: CallClaudeInput, body: unknown): unknown {
+  const stop = (body as { stop_reason?: unknown } | null)?.stop_reason;
+  if (stop !== "end_turn") {
+    console.error(`Anthropic 응답 끝 이유가 예상과 다름: stop_reason=${String(stop)} task=${input.task} model=${input.model}`);
+    return undefined;
+  }
+  const blocks = (body as { content?: unknown } | null)?.content;
+  const text = Array.isArray(blocks)
+    ? (blocks.find((b) => (b as { type?: unknown }).type === "text") as { text?: unknown } | undefined)?.text
+    : undefined;
+  if (typeof text !== "string") {
+    console.error(`Anthropic 응답에 글자 블록이 없음: task=${input.task} model=${input.model}`);
+    return undefined;
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    console.error(`Anthropic 응답 JSON 해석 실패: task=${input.task} model=${input.model}`);
+    return undefined;
+  }
 }

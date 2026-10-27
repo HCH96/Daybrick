@@ -13,6 +13,7 @@ import type { ApiErrorKind } from "../../../features/server/management";
 import "../../server-setup/wizard/WizardShell.css";
 import type { StatusLine } from "../profile/profileFormat";
 import PostingPopup from "../popup/PostingPopup";
+import ProcessStatusLine from "../process/ProcessStatusLine";
 import ArchivedList from "./ArchivedList";
 import CollectStatusLine from "./CollectStatusLine";
 import FilteredList from "./FilteredList";
@@ -27,7 +28,7 @@ const MAX_RESCORE_CALLS = 20;
 
 /** 추천 공고 탭 (R4–R9, R23, R75): 상태 상자(사용액·수집 상태), 도구 줄, 카드 3열. 보관함·걸러진 공고는 카드 자리를 바꾼다 */
 function RecommendTab() {
-  const { session, data: shared, refresh } = useJobSearch();
+  const { session, data: shared, refresh, runner } = useJobSearch();
   const openedAt = useOpenedAt();
   const [data, setData] = useState<RecommendState | null>(null);
   const [loadError, setLoadError] = useState<ApiErrorKind | null>(null);
@@ -54,6 +55,11 @@ function RecommendTab() {
   useEffect(() => {
     void loadAll();
   }, [loadAll]);
+
+  // [지금 평가]가 공고를 처리할 때마다 카드·개수를 다시 읽는다
+  useEffect(() => {
+    if (runner.version > 0) void reload();
+  }, [runner.version, reload]);
 
   const profileVersion = shared?.settings.profileVersion ?? 0;
   const items = useMemo(() => (data ? sortPostings(data.postings, sort, new Date()) : []), [data, sort]);
@@ -99,7 +105,7 @@ function RecommendTab() {
     const List = view === "archived" ? ArchivedList : FilteredList;
     return (
       <div className="js-recommend">
-        <List refreshKey={listKey} onBack={() => setView("cards")} onOpen={setOpenId} onChanged={onChanged} />
+        <List refreshKey={listKey} onOpen={setOpenId} onChanged={onChanged} />
         {popup}
       </div>
     );
@@ -112,6 +118,9 @@ function RecommendTab() {
         {data && (
           <CollectStatusLine lastCollectAt={data.lastCollectAt} failedSites={data.failedSites} waiting={data.waiting} />
         )}
+        <div className="js-recommend__status-row">
+          <ProcessStatusLine />
+        </div>
       </div>
 
       {!data ? (

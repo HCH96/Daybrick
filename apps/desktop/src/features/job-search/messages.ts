@@ -8,7 +8,8 @@ import type { PostingStage } from "./types";
 
 /** 구직 관리 화면의 오류·안내 문구는 모두 여기 둔다. 키·토큰 값은 어떤 문구에도 넣지 않는다. */
 
-function reason(kind: ApiErrorKind): string {
+/** 서버 오류 종류별 안내 한 문장 */
+export function reason(kind: ApiErrorKind): string {
   switch (kind) {
     case "network":
       return "인터넷 연결을 확인해 주세요.";

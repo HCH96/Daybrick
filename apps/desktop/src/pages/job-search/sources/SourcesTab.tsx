@@ -21,6 +21,7 @@ import type { Adapter, Site } from "../../../features/job-search/types";
 import { useJobSearch } from "../../../features/job-search/useJobSearch";
 import type { ApiErrorKind } from "../../../features/server/management";
 import "../../server-setup/wizard/WizardShell.css";
+import ProcessStatusLine from "../process/ProcessStatusLine";
 import type { StatusLine } from "../profile/profileFormat";
 import AdapterCards from "./AdapterCards";
 import AdapterGuideDialog from "./AdapterGuideDialog";
@@ -38,6 +39,8 @@ function SourcesTab() {
   const [collecting, setCollecting] = useState(false);
   const [status, setStatus] = useState<StatusLine>(null);
   const [dialog, setDialog] = useState<AddSiteMode | { kind: "guide" } | null>(null);
+  /** 수집을 마칠 때마다 1씩 늘려 처리 상태 줄을 다시 읽게 한다 */
+  const [collectCount, setCollectCount] = useState(0);
 
   /** 기본 사이트를 맞추고 표를 다시 읽는다. 실패하면 원인을 돌려준다 */
   const reload = useCallback(async (): Promise<ApiErrorKind | null> => {
@@ -114,6 +117,7 @@ function SourcesTab() {
     const loadFailed = await reload();
     setStatus(loadFailed && line.ok ? { ok: false, text: sourcesLoadErrorMessage(loadFailed) } : line);
     setCollecting(false);
+    setCollectCount((n) => n + 1);
   }
 
   if (!data) {
@@ -169,6 +173,10 @@ function SourcesTab() {
             사이트 추가
           </button>
         </div>
+      </div>
+
+      <div className="js-sources__process">
+        <ProcessStatusLine refreshKey={collectCount} />
       </div>
 
       {data.sites.length === 0 ? (

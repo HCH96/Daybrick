@@ -127,7 +127,7 @@ export async function extract(ctx: Context, p: PostingRow): Promise<Extraction |
     system: EXTRACT_SYSTEM,
     content: [...images, { type: "text", text: postingBlock(meta(p), guard.text, images.length) }],
     schema: EXTRACT_SCHEMA,
-    maxTokens: 4096,
+    maxTokens: 8192,
   });
   if (result.kind === "limit") return { stop: { reason: "limit", which: result.which } };
   if (result.kind === "credit") return { stop: { reason: "credit" } };
@@ -211,7 +211,7 @@ export async function score(ctx: Context, p: PostingRow, fields: unknown): Promi
       system: SCORE_SYSTEM,
       content: scoreContent(ctx.profile.data, meta(p), fields),
       schema: SCORE_SCHEMA,
-      maxTokens: 2048,
+      maxTokens: 8192,
     });
     if (result.kind === "limit") return { kind: "stop", stop: { reason: "limit", which: result.which } };
     if (result.kind === "credit") return { kind: "stop", stop: { reason: "credit" } };

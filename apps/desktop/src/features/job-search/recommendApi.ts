@@ -151,23 +151,26 @@ export interface ProcessResult {
   remaining: number;
 }
 
-function parseStop(value: unknown): ProcessStop | null {
+export function parseStop(value: unknown): ProcessStop | null {
   if (!isRecord(value)) return null;
   if (value.reason === "limit") return { reason: "limit", which: value.which === "monthly" ? "monthly" : "daily" };
   return { reason: STOP_REASONS.find((r) => r === value.reason) ?? "upstream" };
+}
+
+/** js-process 응답({ ok, done, stopped, remaining })을 읽는다 */
+export function parseProcessResult(data: unknown): ProcessResult | null {
+  if (!isRecord(data) || data.ok !== true) return null;
+  return {
+    done: Array.isArray(data.done) ? data.done.length : 0,
+    stopped: parseStop(data.stopped),
+    remaining: toNumber(data.remaining) ?? 0,
+  };
 }
 
 /** 이전 프로필 기준 점수를 지금 프로필로 다시 채점한다 (R23, `js-process { mode: "rescore" }` 한 번 부르기) */
 export async function rescoreOnce(session: ServerSession): Promise<ApiResult<ProcessResult>> {
   const { data, error } = await session.client.functions.invoke<unknown>("js-process", { body: { mode: "rescore" } });
   if (error) return { ok: false, error: functionError(error) };
-  if (!isRecord(data) || data.ok !== true) return { ok: false, error: "bad-response" };
-  return {
-    ok: true,
-    value: {
-      done: Array.isArray(data.done) ? data.done.length : 0,
-      stopped: parseStop(data.stopped),
-      remaining: toNumber(data.remaining) ?? 0,
-    },
-  };
+  const value = parseProcessResult(data);
+  return value ? { ok: true, value } : { ok: false, error: "bad-response" };
 }

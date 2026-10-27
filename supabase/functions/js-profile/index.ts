@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
     system: PROFILE_SYSTEM,
     content,
     schema: PROFILE_SCHEMA,
-    maxTokens: 8192,
+    maxTokens: 16000,
   });
   if (result.kind === "limit") return json({ ok: false, reason: "limit", which: result.which });
   if (result.kind === "credit") return json({ ok: false, reason: "credit" });

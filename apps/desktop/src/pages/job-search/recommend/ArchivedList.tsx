@@ -14,7 +14,6 @@ import "./ArchivedList.css";
 interface ArchivedListProps {
   /** 바뀌면 목록을 다시 읽는다 (팝업에서 바꾼 뒤) */
   refreshKey: number;
-  onBack: () => void;
   onOpen: (id: string) => void;
   onChanged: () => void;
 }
@@ -40,7 +39,7 @@ function subLine(p: ListPosting, expired: boolean) {
 }
 
 /** 지원 안 함 보관함 (R15, R16): 보관한 공고와 [되돌리기]. 마감 지난 공고는 남겨 두되 되돌리기를 끈다 */
-function ArchivedList({ refreshKey, onBack, onOpen, onChanged }: ArchivedListProps) {
+function ArchivedList({ refreshKey, onOpen, onChanged }: ArchivedListProps) {
   const { session } = useJobSearch();
   const [list, setList] = useState<ListPosting[] | null>(null);
   const [loadError, setLoadError] = useState<ApiErrorKind | null>(null);
@@ -73,7 +72,7 @@ function ArchivedList({ refreshKey, onBack, onOpen, onChanged }: ArchivedListPro
   const now = new Date();
   return (
     <div className="js-list">
-      <ListHead title="지원 안 함 보관함" count={list?.length ?? 0} desc={ARCHIVED_DESC} onBack={onBack} />
+      <ListHead title="지원 안 함 보관함" count={list?.length ?? 0} desc={ARCHIVED_DESC} />
       {status && (
         <p className="js-list__msg js-list__msg--bad" role="status">
           {status.text}

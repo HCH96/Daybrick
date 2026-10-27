@@ -57,10 +57,55 @@ interface Target {
   vars: Record<string, string>;
 }
 
-function chunks<T>(items: T[]): T[][] {
-  const out: T[][] = [];
-  for (let i = 0; i < items.length; i += QUERY_CHUNK) out.push(items.slice(i, i + QUERY_CHUNK));
+/**
+ * in() 조건 하나에 넣을 값의 주소 바이트 상한. 요청 주소가 8KB를 넘으면 게이트웨이가 연결을 끊는다
+ * (사용자 테스트 r1 4번: 넥슨 한글 키 40개 = 8,198바이트에서 실패, L25). 나머지 주소 부분을 위해 넉넉히 둔다.
+ */
+const QUERY_MAX_BYTES = 4_000;
+
+/** in() 조회용으로 값을 나눈다: 묶음마다 최대 QUERY_CHUNK개, 주소 바이트 QUERY_MAX_BYTES 이하 */
+function chunks(values: string[]): string[][] {
+  const out: string[][] = [];
+  let part: string[] = [];
+  let bytes = 0;
+  for (const value of values) {
+    // 값 하나 + 구분 쉼표(%2C)의 주소 바이트. 따옴표로 감싸일 수 있어 여유를 더한다
+    const size = encodeURIComponent(value).length + 9;
+    if (part.length > 0 && (part.length >= QUERY_CHUNK || bytes + size > QUERY_MAX_BYTES)) {
+      out.push(part);
+      part = [];
+      bytes = 0;
+    }
+    part.push(value);
+    bytes += size;
+  }
+  if (part.length > 0) out.push(part);
   return out;
+}
+
+interface DbResult {
+  status: number;
+  error: { message?: string; code?: string; details?: string | null; hint?: string | null } | null;
+}
+
+/** 값 목록을 in() 조건으로 넣을 때 주소에서 차지하는 대략의 바이트 수 (주소 길이 한도 확인용) */
+function inParamBytes(values: string[]): number {
+  return encodeURIComponent(`in.(${values.join(",")})`).length;
+}
+
+/**
+ * saveNew의 DB 실패를 로그로 남기고 던질 오류를 만든다 (사용자 테스트 r1 4번: 넥슨 "공고를 저장하지 못함" 원인 확인용).
+ * 상태 코드·오류 코드·메시지(300자)·단계·사이트·개수만 남긴다. 공고 제목 같은 값은 남기지 않는다.
+ */
+function dbFail(step: string, siteId: string, res: DbResult, extra: Record<string, number> = {}): Error {
+  const e = res.error;
+  const info = Object.entries(extra).map(([k, v]) => ` ${k}=${v}`).join("");
+  console.error(
+    `js-collect 저장 실패: step=${step} site=${siteId} status=${res.status} code=${e?.code ?? "(없음)"}` +
+      `${info} message=${(e?.message ?? "(없음)").slice(0, 300)}` +
+      ` details=${(e?.details ?? "(없음)").slice(0, 300)} hint=${(e?.hint ?? "(없음)").slice(0, 200)}`,
+  );
+  return new Error("database");
 }
 
 /** 새 공고만 넣는다 (R35). 넣은 공고 수. 목록이 준 본문은 listBodies(사이트|ext_id → HTML)에 모은다 */
@@ -76,7 +121,7 @@ async function saveNew(caller: Caller, siteId: string, items: ListItem[], listBo
   for (const part of chunks(exts)) {
     const found = await caller.admin.from("js_postings").select("ext_id")
       .eq("user_id", caller.userId).eq("site_id", siteId).in("ext_id", part);
-    if (found.error) throw new Error("database");
+    if (found.error) throw dbFail("ext-lookup", siteId, found, { count: part.length, inBytes: inParamBytes(part) });
     for (const row of found.data ?? []) candidates.delete(row.ext_id as string);
   }
   const keys = [...new Set([...candidates.values()].flatMap((c) => (c.key ? [c.key] : [])))];
@@ -84,7 +129,7 @@ async function saveNew(caller: Caller, siteId: string, items: ListItem[], listBo
   for (const part of chunks(keys)) {
     const found = await caller.admin.from("js_postings").select("norm_key, site_id")
       .eq("user_id", caller.userId).in("norm_key", part);
-    if (found.error) throw new Error("database");
+    if (found.error) throw dbFail("norm-key-lookup", siteId, found, { count: part.length, inBytes: inParamBytes(part) });
     for (const row of found.data ?? []) if (row.site_id !== siteId) taken.add(row.norm_key as string);
   }
   const rows = [...candidates.values()]
@@ -99,7 +144,7 @@ async function saveNew(caller: Caller, siteId: string, items: ListItem[], listBo
   if (rows.length === 0) return 0;
   const saved = await caller.admin.from("js_postings")
     .upsert(rows, { onConflict: "user_id,site_id,ext_id", ignoreDuplicates: true }).select("id");
-  if (saved.error) throw new Error("database");
+  if (saved.error) throw dbFail("insert", siteId, saved, { rows: rows.length });
   return saved.data?.length ?? 0;
 }
 
@@ -246,7 +291,11 @@ async function run(caller: Caller, siteId: string | null): Promise<Response> {
           try {
             result.added = await saveNew(caller, site.id, list.items, listBodies);
             result.ok = true;
-          } catch {
+          } catch (e) {
+            // DB 실패는 dbFail이 이미 남겼다. 그 밖의 예외(코드 오류 등)만 여기서 남긴다
+            if (!(e instanceof Error && e.message === "database")) {
+              console.error(`js-collect 저장 중 예외: site=${site.id} ${e instanceof Error ? e.stack ?? e.message : String(e)}`);
+            }
             result.reason = "공고를 저장하지 못함";
           }
         }

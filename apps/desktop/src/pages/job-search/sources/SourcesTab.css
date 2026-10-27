@@ -292,3 +292,12 @@
   padding: 0 10px;
   font-size: 12px;
 }
+
+/* 수집 뒤 처리 상태 줄 (사용자 테스트 r1 추가 요청 5) */
+.js-sources__process {
+  margin-bottom: 14px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}

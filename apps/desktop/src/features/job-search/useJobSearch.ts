@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 import type { ApiErrorKind } from "../server/management";
 import type { ServerSession } from "../server/session";
 import type { AiCall, BalanceRecord, JsSettings } from "./types";
+import type { ProcessRunner } from "./useProcessRunner";
 
 /** 구직 관리 탭들이 같이 쓰는 데이터. 단계마다 넓힌다. */
 export interface JobSearchData {
@@ -21,6 +22,8 @@ export interface JobSearchState {
   error: ApiErrorKind | null;
   /** 설정·기록·사용량을 다시 읽는다 */
   refresh: () => Promise<void>;
+  /** [지금 평가] 실행기 (탭을 옮겨도 이어 돈다) */
+  runner: ProcessRunner;
 }
 
 /** JobSearchProvider가 값을 넣는다 */

@@ -3,6 +3,7 @@ import type { ApiErrorKind } from "../server/management";
 import type { ServerSession } from "../server/session";
 import { loadAiCallsSince, loadBalanceRecords, loadSettings } from "./api";
 import { callsSince } from "./usage";
+import { useProcessRunner } from "./useProcessRunner";
 import { JobSearchContext, type JobSearchData, type JobSearchState } from "./useJobSearch";
 
 /** 입력 기록 표에 보여 줄 기준 잔액 수 */
@@ -41,9 +42,13 @@ export function JobSearchProvider({ session, children }: { session: ServerSessio
     void refresh();
   }, [refresh]);
 
+  // 평가가 끝나면 사용액(AI 호출 기록)을 다시 읽는다
+  const afterRun = useCallback(() => void refresh(), [refresh]);
+  const runner = useProcessRunner(session, afterRun);
+
   const value = useMemo<JobSearchState>(
-    () => ({ session, data, loading, error, refresh }),
-    [session, data, loading, error, refresh],
+    () => ({ session, data, loading, error, refresh, runner }),
+    [session, data, loading, error, refresh, runner],
   );
 
   return <JobSearchContext.Provider value={value}>{children}</JobSearchContext.Provider>;
