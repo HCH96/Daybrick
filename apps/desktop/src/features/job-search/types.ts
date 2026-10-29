@@ -134,6 +134,8 @@ export interface Site {
   adapterId: string | null;
   vars: Record<string, string>;
   enabled: boolean;
+  /** 자사 채용 사이트 여부 (`own_site`, R90). 중복 공고 대표 고르기에 쓴다 (R86) */
+  ownSite: boolean;
   /** 아직 수집한 적이 없으면 null */
   lastResult: SiteLastResult | null;
   lastAt: string | null;
@@ -149,8 +151,17 @@ export interface CollectRun {
   reason: string | null;
 }
 
-/** 공고 처리 단계 */
-export type PostingStage = "new" | "filtered1" | "extracted" | "filtered2" | "suspect" | "scored" | "waiting" | "failed";
+/** 공고 처리 단계. duplicate는 다른 사이트 공고에 묶인 공고로, 화면 목록에는 나오지 않는다 (R85, D54) */
+export type PostingStage =
+  | "new"
+  | "filtered1"
+  | "extracted"
+  | "filtered2"
+  | "suspect"
+  | "scored"
+  | "waiting"
+  | "failed"
+  | "duplicate";
 
 /** 공고 (`js_postings`) */
 export interface Posting {
@@ -169,6 +180,10 @@ export interface Posting {
   filteredBy: unknown;
   hiddenAt: string | null;
   appliedAt: string | null;
+  /** 묶인 대표 공고 id (`dup_of`). 대표이거나 묶이지 않았으면 null */
+  dupOf: string | null;
+  /** 사용자가 [따로 보기]로 묶음을 풀었는지 (R93) */
+  unbundled: boolean;
 }
 
 /** 추출 결과 (`js_extractions`, R48) */

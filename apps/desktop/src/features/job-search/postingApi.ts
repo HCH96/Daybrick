@@ -8,7 +8,7 @@ import type { PostingStage } from "./types";
 /** 공고 하나 읽기·지원 안 함·되돌리기·그래도 채점, 걸러진 공고·보관함 목록 (R9–R16, R46, R49, D11, D37) */
 
 const BUCKET = "job-search";
-const STAGES: readonly PostingStage[] = ["new", "filtered1", "extracted", "filtered2", "suspect", "scored", "waiting", "failed"];
+const STAGES: readonly PostingStage[] = ["new", "filtered1", "extracted", "filtered2", "suspect", "scored", "waiting", "failed", "duplicate"];
 
 export interface PostingScore {
   score: number;

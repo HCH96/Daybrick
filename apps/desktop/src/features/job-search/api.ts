@@ -430,6 +430,8 @@ function parseSite(row: unknown): Site | null {
     adapterId: typeof row.adapter_id === "string" ? row.adapter_id : null,
     vars,
     enabled: row.enabled !== false,
+    // own_site를 읽는 것은 2단계(loadSources select)에서 더한다. 그 전에는 false
+    ownSite: row.own_site === true,
     lastResult: parseLastResult(row.last_result),
     lastAt: typeof row.last_at === "string" ? row.last_at : null,
   };
