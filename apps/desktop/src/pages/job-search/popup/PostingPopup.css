@@ -425,64 +425,80 @@
   color: var(--red);
 }
 
-/* 출처 블록 (R92, R93): 칩 줄 아래 "출처  사이트 ↗ (대표) … [따로 보기]" */
-.js-popup__sources {
+/* 출처 칩 줄 (R92, R93): 제목 아래 "출처  [넥슨 ↗ · 대표] [게임잡 ↗]  [⋯]", 칩은 위 .js-popup__chip 모양 */
+.js-popup__src-row {
   display: flex;
-  gap: 12px;
-  margin-top: 12px;
-  font-size: 13px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: -2px 0 10px;
+  font-size: 12px;
 }
 
-.js-popup__sources-label {
-  flex-shrink: 0;
-  padding-top: 4px;
+.js-popup__src-label {
+  margin-right: 4px;
   color: var(--muted);
   font-weight: 700;
 }
 
-.js-popup__sources-list {
-  flex: 1;
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.js-popup__source-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.js-popup__source-link {
+.js-popup__src-chip {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  min-width: 0;
-  padding: 2px 0;
+  height: 22px;
+  padding: 0 8px;
   border: none;
-  background: none;
-  color: var(--accent);
+  border-radius: 99px;
+  background: var(--neutral-soft);
+  color: var(--muted);
   font: inherit;
+  font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
 }
 
-.js-popup__source-link:hover:not(:disabled) {
-  text-decoration: underline;
+.js-popup__src-chip:hover:not(:disabled),
+.js-popup__src-chip--rep {
+  color: var(--text);
 }
 
-.js-popup__source-link:disabled {
-  color: var(--muted);
+.js-popup__src-chip:disabled {
   cursor: default;
+  opacity: 0.6;
 }
 
-.js-popup__source-rep {
+/* ⋯ 단추 (목업 sources.html 사이트 표의 ⋯) */
+.js-popup__src-dots {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
   color: var(--muted);
+  cursor: pointer;
 }
 
-.js-popup__source-split {
-  margin-left: auto;
+.js-popup__src-dots:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.js-popup__src-dots:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.js-popup__src-chip:focus-visible,
+.js-popup__src-dots:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ⋯ 메뉴 (공용 Popover, 줄은 .pop-row) */
+.js-popup__src-menu .pop-row__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

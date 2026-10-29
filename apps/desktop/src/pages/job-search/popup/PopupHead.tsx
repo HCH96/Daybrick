@@ -12,7 +12,7 @@ interface PopupHeadProps {
   /** 마감까지 남은 날 (상시 null) */
   days: number | null;
   onClose: () => void;
-  /** 칩 줄 아래 출처 블록 (R92) */
+  /** 제목 아래(경력·형태 칩 줄 위) 출처 칩 줄 (R92) */
   sources?: ReactNode;
 }
 
@@ -24,7 +24,7 @@ function deadlineChip(date: string | null, days: number | null): { text: string;
   return { text: `${label.text} · ${monthDay(date)} 마감`, tone: label.kind === "soon" ? "red" : "blue" };
 }
 
-/** 팝업 머리 (R10): 회사·사이트·수집일 / 제목 / 경력·형태·근무지·마감 칩, 오른쪽 [원문 보기]·X */
+/** 팝업 머리 (R10): 회사·사이트·수집일 / 제목 / 출처 칩 줄 / 경력·형태·근무지·마감 칩, 오른쪽 [원문 보기]·X */
 function PopupHead({ detail, days, onClose, sources }: PopupHeadProps) {
   const f = detail.fields;
   const chips = [f?.experience.text ?? null, f?.employment.join(", ") || null, f?.location ?? null].filter(
@@ -41,6 +41,7 @@ function PopupHead({ detail, days, onClose, sources }: PopupHeadProps) {
           <span>· {shortDay(detail.collectedAt)} 수집</span>
         </div>
         <h2 className="js-popup__title">{detail.title ?? "제목 없음"}</h2>
+        {sources}
         <div className="js-popup__chips">
           {chips.map((c) => (
             <span key={c} className="js-popup__chip">
@@ -55,7 +56,6 @@ function PopupHead({ detail, days, onClose, sources }: PopupHeadProps) {
             </span>
           )}
         </div>
-        {sources}
       </div>
       <div className="js-popup__head-side">
         <button type="button" className="setup-btn" disabled={!url} onClick={() => url && openExternal(url)}>

@@ -1,50 +1,80 @@
-import { ExternalLinkIcon } from "../../../components/icons/CommonIcons";
+import { useState } from "react";
+import Popover from "../../../components/common/Popover";
+import { DotsIcon, ExternalLinkIcon } from "../../../components/icons/CommonIcons";
 import type { BundleSource } from "../../../features/job-search/types";
 import { openExternal } from "../../server-setup/wizard/openExternal";
 
 interface PopupSourcesProps {
   sources: BundleSource[];
-  /** 지원한 공고는 묶음에서 움직이지 않으므로 [따로 보기]를 끈다 (D57) */
+  /** 지원한 공고는 묶음에서 움직이지 않으므로 따로 보기 항목을 끈다 (D57) */
   locked: boolean;
-  /** 다른 단추가 도는 중이면 [따로 보기]를 끈다 */
+  /** 다른 단추가 도는 중이면 ⋯ 메뉴를 끈다 */
   disabled: boolean;
   /** 지금 풀고 있는 공고 id */
   busyId: string | null;
   onUnbundle: (source: BundleSource) => void;
 }
 
-/** 팝업 머리 아래 출처 블록 (R92, R93): 사이트 이름 ↗ (대표) … [따로 보기]. 묶인 공고가 없으면 그리지 않는다 */
+/**
+ * 팝업 제목 아래 출처 칩 줄 (R92, R93): `출처 [넥슨 ↗ · 대표] [게임잡 ↗] [⋯]`.
+ * 칩을 누르면 그 공고 링크를 열고, ⋯ 메뉴에서 공고마다 "<사이트> 따로 보기". 묶인 공고가 없으면 그리지 않는다
+ */
 function PopupSources({ sources, locked, disabled, busyId, onUnbundle }: PopupSourcesProps) {
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   if (sources.length < 2) return null;
   return (
-    <div className="js-popup__sources">
-      <span className="js-popup__sources-label">출처</span>
-      <ul className="js-popup__sources-list">
-        {sources.map((s) => (
-          <li key={s.postingId} className="js-popup__source-row">
+    <div className="js-popup__src-row">
+      <span className="js-popup__src-label">출처</span>
+      {sources.map((s) => (
+        <button
+          key={s.postingId}
+          type="button"
+          className={`js-popup__src-chip${s.isRep ? " js-popup__src-chip--rep" : ""}`}
+          disabled={!s.url}
+          title={s.url ?? "링크 없음"}
+          onClick={() => s.url && openExternal(s.url)}
+        >
+          {s.siteName}
+          <ExternalLinkIcon size={11} />
+          {s.isRep && <span>· 대표</span>}
+          {busyId === s.postingId && <span>· 푸는 중…</span>}
+        </button>
+      ))}
+      <button
+        type="button"
+        className="js-popup__src-dots"
+        aria-label="출처 메뉴"
+        disabled={disabled}
+        onClick={(e) => setMenuAnchor(e.currentTarget)}
+      >
+        <DotsIcon />
+      </button>
+      {menuAnchor && (
+        <Popover
+          anchor={menuAnchor}
+          onClose={() => setMenuAnchor(null)}
+          placement="bottom-start"
+          width={200}
+          ariaLabel="출처 메뉴"
+          className="js-popup__src-menu"
+        >
+          {sources.map((s) => (
             <button
+              key={s.postingId}
               type="button"
-              className="js-popup__source-link"
-              disabled={!s.url}
-              title={s.url ?? "링크 없음"}
-              onClick={() => s.url && openExternal(s.url)}
-            >
-              {s.siteName}
-              <ExternalLinkIcon size={12} />
-            </button>
-            {s.isRep && <span className="js-popup__source-rep">(대표)</span>}
-            <button
-              type="button"
-              className="setup-btn js-popup__source-split"
+              className="pop-row"
               disabled={locked || disabled}
               title={locked ? "지원한 공고는 묶음을 풀 수 없어요." : undefined}
-              onClick={() => onUnbundle(s)}
+              onClick={() => {
+                setMenuAnchor(null);
+                onUnbundle(s);
+              }}
             >
-              {busyId === s.postingId ? "푸는 중…" : "따로 보기"}
+              <span className="pop-row__label">{s.siteName} 따로 보기</span>
             </button>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </Popover>
+      )}
     </div>
   );
 }
