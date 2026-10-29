@@ -38,5 +38,5 @@
 - 수정2 명세 (L44): 직군 거르기, Batch API 일괄 처리, 재등록·애매한 쌍 묶기, 출처 표시·new 배지·흐름 줄 수정 (R94–R115, D64–D69)
 - 수정 계획 1: [../../archive/plan-dedupe/index.md](../../archive/plan-dedupe/index.md) (2026-10-29 승인, 보관) — 중복 공고 묶기 7단계(근거 L33). 묶인 공고는 `stage duplicate`+`dup_of`, 대표 바꾸기는 분석 복사(D54). 유사도는 정리 제목 같음·Dice 0.8·직무 같음(D55), 소급은 첫 처리 때 백업과 함께(D56)
 - 처음 구현 계획: [../../archive/plan-initial/index.md](../../archive/plan-initial/index.md) (2026-10-27 승인) — 15단계. 어댑터 규칙 형식 v1을 정하고(D16), Gmail은 앱이 직접 Google 인증을 열어 서버가 토큰을 암호화해 둔다(D18). 예약 실행은 pg_cron + 예약 비밀값(D19)
-- 테스트 문서 (r2, 수정1): AI 테스트 [../tests/r2/](../tests/r2/) · 사용자 테스트 [../../human/tests/r2-user-test.md](../../human/tests/r2-user-test.md) (r1은 [../../archive/tests/](../../archive/tests/))
+- 테스트 문서 (r3, 수정2): AI 테스트 [../tests/r3/](../tests/r3/) · 사용자 테스트 [../../human/tests/r3-user-test.md](../../human/tests/r3-user-test.md) (r1·r2는 [../../archive/tests/](../../archive/tests/))
 - 진행 기록: [../logs/index.md](../logs/index.md)
