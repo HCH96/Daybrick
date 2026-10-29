@@ -13,10 +13,6 @@
 - 7단계: 상세 팝업 출처·따로 보기 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 모든 단계 완료
-- 수정 계획: 근거 기록 L33, 커밋 접두어 "구직 관리 수정1"
-- 관련 결정: D53, D54, D57, D58, D59, D60, D61, D62, D63 (ai/spec/decisions.md에서 이 줄만 읽기)
+- /test job-search
 
 ## 확인할 문서 (경로는 docs/features/job-search/ 기준, 파일 통째로 읽기)
-- ai/logs/L35.md ~ L41.md (수정1 각 단계 기록)
-- ai/plan/step-01.md ~ step-07.md의 "확인할 결과"
