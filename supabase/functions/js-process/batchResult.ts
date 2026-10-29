@@ -3,7 +3,7 @@
 // 추출 결과는 인젝션 의심 → 중복 확인 → 2차 필터(`routeExtracted`)를 AI 없이 하고, 통과한 공고(`extracted`)는
 // 같은 실행의 `submitBatches`가 채점 일괄로 맡긴다. 채점 결과는 점수를 저장하고 `scored`로 둔다.
 // 저장한 공고는 `batch_id`를 비우므로, 같은 결과를 다시 읽어도(시간이 다 되어 다음 실행이 처음부터 읽을 때) 두 번 저장하지 않는다.
-// 직군 채우기 일괄(kind family)은 7단계가 따로 읽는다.
+// 직군 채우기 일괄(kind family)은 familyBackfill.ts가 따로 읽는다 (D75).
 import { type AiModel, isCreditError, noticeCredit, readResult, recordBatchCall } from "../_shared/ai.ts";
 import { type BatchLine, getBatch, isBatchFailure, readResults } from "../_shared/batch.ts";
 import { routeExtracted } from "./batch.ts";

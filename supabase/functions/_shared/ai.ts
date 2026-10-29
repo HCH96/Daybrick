@@ -9,8 +9,8 @@ import { noticeKeys, sendNoticeOnce } from "./notify.ts";
 
 export type AiModel = "claude-haiku-5-5" | "claude-opus-5-5";
 
-/** 작업 종류: 호출 기록의 task 칸 */
-export type AiTask = "extract" | "injection" | "score" | "profile" | "mail";
+/** 작업 종류: 호출 기록의 task 칸. `family`는 기존 공고 직군 채우기 일괄 (R100, D75) */
+export type AiTask = "extract" | "injection" | "score" | "profile" | "mail" | "family";
 
 export interface CallClaudeInput {
   task: AiTask;

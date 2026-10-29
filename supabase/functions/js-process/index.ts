@@ -6,8 +6,9 @@
 //         예약 실행이 15분마다 부른다(R74). 대기열을 다 비운 실행이 "새 추천 공고 N개" 알림을 보낸다.
 //         순서: waiting(한도로 미룬 것, R74) → extracted(채점 전에 멈춘 것) → new. 원문이 없거나 숨긴 공고는 건너뛴다 (D31, D11).
 //       { mode: "force", postingId } — 그래도 채점 (R46, R49): 필터·의심을 건너뛰고 채점한다.
+//         지금 프로필 버전 점수가 있으면 AI를 부르지 않고 scored로 되돌린다 (R99, D73).
 //       { mode: "rescore", limit? } — 이전 프로필 버전으로 채점한 공고를 지금 프로필로 다시 채점한다 (R23).
-//       { mode: "batch" } — 끝난 일괄의 결과를 저장하고(batchResult.ts) 대기 공고의 추출·채점을
+//       { mode: "batch" } — 기존 공고 직군 채우기·옮기기(familyBackfill.ts, 업데이트 뒤 한 번) → 끝난 일괄의 결과를 저장하고(batchResult.ts) 대기 공고의 추출·채점을
 //         Anthropic 일괄 작업으로 맡긴다 (R102–R104, R106, R110, D71, batch.ts).
 //         응답 { ok: true, saved: { extract, score }, submitted: { extract, score }, held, inFlight: BatchState[], stopped }.
 //         예약·앱은 queue 대신 이것을 부른다 (queue는 남겨 둔다, D71).
@@ -19,6 +20,7 @@ import { getCaller } from "../_shared/auth.ts";
 import { loadInFlight, submitBatches } from "./batch.ts";
 import { pollBatches } from "./batchResult.ts";
 import { backfillDedupe, checkDuplicate } from "./dedupe.ts";
+import { ensureFamilyBackfill } from "./familyBackfill.ts";
 import { handleOptions, json } from "../_shared/cors.ts";
 import type { FilterRow } from "../_shared/filters.ts";
 import { lastNoticeAt, sendNotice } from "../_shared/notify.ts";
@@ -31,6 +33,7 @@ import {
   type PostingRow,
   score,
   secondFilter,
+  hasCurrentScore,
   setStage,
   type Stop,
   type StepResult,
@@ -45,6 +48,8 @@ const SCORE_BEFORE_MS = 80_000;
 const BACKFILL_BEFORE_MS = 60_000;
 /** 일괄 결과 읽기는 시작 100초에서 멈추고 다음 실행이 이어 읽는다 (D71) */
 const POLL_BEFORE_MS = 100_000;
+/** 직군 채우기(D75)의 결과 읽기는 이 시각까지만 하고 나머지 시간은 일반 결과 저장·맡기기에 둔다 */
+const FAMILY_BEFORE_MS = 40_000;
 const QUEUE_STAGES = ["waiting", "extracted", "new"] as const;
 
 async function loadContext(caller: Context["caller"]): Promise<Context | null> {
@@ -211,15 +216,23 @@ async function loadExtractionFields(ctx: Context, postingId: string): Promise<un
   return row.data?.fields ?? null;
 }
 
-/** 그래도 채점 (R46, R49): 필터·의심 표시를 건너뛴다. 한도에 걸려도 단계는 그대로 둔다 */
+/**
+ * 그래도 채점 (R46, R49): 필터·의심 표시를 건너뛴다. 한도에 걸려도 단계는 그대로 둔다.
+ * 지금 프로필 버전 점수가 있으면(직군으로 옮겨진 공고 등) AI 없이 scored·filtered_by 비움 (R99, D73).
+ */
 async function runForce(ctx: Context, postingId: string) {
   const row = await ctx.caller.admin.from("js_postings").select(POSTING_COLUMNS)
     .eq("user_id", ctx.caller.userId).eq("id", postingId).maybeSingle();
   if (row.error) return json({ ok: false, reason: "database" });
   if (!row.data) return json({ ok: false, reason: "not-found" });
   const p = row.data as PostingRow;
-  if (p.body_text === null) return json({ ok: false, reason: "no-body" });
   if (!ctx.profile) return json({ ok: false, reason: "no-profile" });
+  const current = await hasCurrentScore(ctx, p.id);
+  if (current === null) return json({ ok: false, reason: "database" });
+  if (current) {
+    return (await setStage(ctx, p.id, "scored")) ? json({ ok: true, stage: "scored" }) : json({ ok: false, reason: "database" });
+  }
+  if (p.body_text === null) return json({ ok: false, reason: "no-body" });
   const ex = await extract(ctx, p);
   if ("stop" in ex) return json({ ok: false, ...ex.stop });
   const scored = await score(ctx, p, ex.fields);
@@ -259,12 +272,13 @@ async function runRescore(ctx: Context, limit: number) {
 }
 
 /**
- * 일괄 처리 (R102–R104, R106, D71): 진행 중 일괄의 결과 저장(pollBatches) → 맡기기(submitBatches).
+ * 일괄 처리 (R102–R104, R106, D71): 직군 채우기(D75) → 진행 중 일괄의 결과 저장(pollBatches) → 맡기기(submitBatches).
  * 추출 결과를 저장하며 `extracted`가 된 공고는 같은 실행에서 채점 일괄로 간다 (R103의 두 번째 맡기기).
  * 결과를 저장한 실행에서 진행 중 일괄도 맡길 공고도 남지 않았으면 새 추천 공고 알림을 보낸다 (R80).
  */
 async function runBatch(ctx: Context) {
   const startedAt = Date.now();
+  await ensureFamilyBackfill(ctx, startedAt + FAMILY_BEFORE_MS);
   const polled = await pollBatches(ctx, startedAt + POLL_BEFORE_MS);
   const result = await submitBatches(ctx, startedAt);
   const inFlight = await loadInFlight(ctx);

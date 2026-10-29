@@ -27,7 +27,7 @@ const PICK_LIMIT = 400;
 /** id 목록으로 읽을 때 한 번에 넣는 id 수 (주소 길이) */
 const ID_CHUNK = 100;
 /** 예상 비용 기본값: 최근 30일 일괄 기록이 없을 때 (D72) */
-const DEFAULT_EST = { extract: 0.002, score: 0.03 } as const;
+const DEFAULT_EST = { extract: 0.002, score: 0.03, family: 0.0005 } as const;
 const EST_DAYS = 30;
 
 export type BatchKind = "extract" | "score" | "family";
@@ -65,7 +65,7 @@ export async function loadInFlight(ctx: Context): Promise<{ states: BatchState[]
 }
 
 /** 작업별 예상 비용: 최근 30일 일괄 호출(성공) 평균, 없으면 기본값 (D72) */
-async function estimateCost(ctx: Context, task: "extract" | "score"): Promise<number> {
+export async function estimateCost(ctx: Context, task: keyof typeof DEFAULT_EST): Promise<number> {
   const since = new Date(Date.now() - EST_DAYS * 24 * 60 * 60 * 1000).toISOString();
   const rows = await ctx.caller.admin.from("js_ai_calls").select("cost_usd")
     .eq("user_id", ctx.caller.userId).eq("batch", true).eq("task", task).eq("ok", true).gte("at", since)
