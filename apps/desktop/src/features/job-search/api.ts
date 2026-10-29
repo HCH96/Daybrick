@@ -1,7 +1,7 @@
 import { FunctionsFetchError, FunctionsHttpError, type PostgrestError } from "@supabase/supabase-js";
 import type { ApiErrorKind, ApiResult } from "../server/management";
 import type { ServerSession } from "../server/session";
-import type { FlowPosting } from "./filterRules";
+import { TITLE_NONDEV_DEFAULT_WORDS, type FlowPosting } from "./filterRules";
 import { parseProfileData } from "./profileDraft";
 import type {
   Adapter,
@@ -712,16 +712,25 @@ async function selectFilters(session: ServerSession): Promise<ApiResult<FilterRu
   return rules.every((r): r is FilterRule => r !== null) ? { ok: true, value: rules } : { ok: false, error: "bad-response" };
 }
 
+/** 없으면 넣는 기본 줄: 기술스택 자동 추림(R44), 비개발 직군 낱말(R96), 개발 직군만(R98). 0008과 같은 값 (D74) */
+const DEFAULT_FILTERS: readonly { stage: 1 | 2; kind: FilterKind; value: unknown }[] = [
+  { stage: 2, kind: "skill-overlap", value: {} },
+  { stage: 1, kind: "title-nondev", value: { words: [...TITLE_NONDEV_DEFAULT_WORDS] } },
+  { stage: 2, kind: "dev-only", value: {} },
+];
+
 /**
- * 필터 조건 목록. 2차의 기술스택 자동 추림 줄(R44)이 없으면 켜진 상태로 하나 넣고 다시 읽는다 (D35).
+ * 필터 조건 목록. 기본 줄(DEFAULT_FILTERS) 중 같은 종류 줄이 없는 것은 켜진 상태로 넣고 다시 읽는다 (D35, D74).
  * 줄 순서는 넣은 순서가 아니라 id 순서라, 화면은 종류별로 묶지 않고 받은 순서대로 보여 준다.
  */
 export async function loadFilters(session: ServerSession): Promise<ApiResult<FilterRule[]>> {
   const first = await selectFilters(session);
-  if (!first.ok || first.value.some((r) => r.kind === "skill-overlap")) return first;
+  if (!first.ok) return first;
+  const missing = DEFAULT_FILTERS.filter((d) => !first.value.some((r) => r.kind === d.kind));
+  if (missing.length === 0) return first;
   const { error, status } = await session.client
     .from("js_filters")
-    .insert({ stage: 2, kind: "skill-overlap", value: {}, enabled: true });
+    .insert(missing.map((d) => ({ ...d, enabled: true })));
   if (error) return { ok: false, error: postgrestError(error, status) };
   return selectFilters(session);
 }

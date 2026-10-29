@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { familyLabel } from "../../../features/job-search/filterRules";
 import { NOT_EXTRACTED } from "../../../features/job-search/messages";
 import { dateTime, scheduleLine } from "../../../features/job-search/postingFormat";
 import type { PostingFields } from "../../../features/job-search/postingParse";
@@ -32,6 +33,7 @@ function rows(f: PostingFields): [string, ReactNode][] {
   const schedule = f.schedule.map((s) => ({ line: scheduleLine(s), raw: s.text }));
   return [
     ["직무", f.role],
+    ["직군", f.family === null ? null : familyLabel(f.family)],
     ["경력", experience],
     ["고용 형태", f.employment.join(", ") || null],
     ["근무지", f.location],

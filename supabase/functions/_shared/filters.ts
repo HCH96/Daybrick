@@ -12,7 +12,9 @@ export type FilterKind =
   | "skill-exclude"
   | "max-years"
   | "employment"
-  | "skill-overlap";
+  | "skill-overlap"
+  | "title-nondev"
+  | "dev-only";
 
 /** `js_filters` 한 줄. value는 낱말 목록 `{ words }`, 경력 기준 `{ years }`, 자동 추림 `{}` */
 export interface FilterRow {
@@ -46,12 +48,20 @@ export interface ExtractionForFilter {
   minYears: number | null;
   /** 고용 형태 (예: 정규직, 계약직) */
   employment: string[];
+  /** 직군 (`fields.family`, D74). 추출 전 공고나 옛 추출은 null */
+  family: string | null;
 }
 
 /** 프로필에서 쓰는 값: 기술스택 이름 */
 export interface ProfileForFilter {
   skills: string[];
 }
+
+/** 비개발 낱말이 있어도 함께 있으면 1차에서 거르지 않는 개발 낱말 (R96, D74) */
+export const DEV_WORDS = ["프로그래머", "개발", "엔지니어"];
+
+/** `dev-only`가 통과시키는 직군. 없음(null)도 통과 (R98, R101) */
+export const DEV_FAMILIES = ["dev", "unknown"];
 
 /** 비교용: 호환 문자 정리·소문자·공백 제거. 기호(C++, C#)는 남긴다 */
 export function normalizeWord(text: string): string {
@@ -87,7 +97,7 @@ function result(hits: FilterHit[]): FilterResult {
   return hits.length === 0 ? { pass: true } : { pass: false, hits };
 }
 
-/** 1차 필터 (R42): 제목·직무 포함(하나라도)/제외, 회사 제외 */
+/** 1차 필터 (R42, R96): 제목·직무 포함(하나라도)/제외, 회사 제외, 비개발 직군 낱말(개발 낱말이 함께 있으면 통과) */
 export function applyFirst(posting: PostingForFilter, filters: FilterRow[]): FilterResult {
   const hits: FilterHit[] = [];
   const texts = [posting.title, posting.duty];
@@ -101,6 +111,11 @@ export function applyFirst(posting: PostingForFilter, filters: FilterRow[]): Fil
     } else if (f.kind === "title-exclude") {
       const matched = containedWords(words, texts);
       if (matched.length > 0) hits.push({ id: f.id, kind: f.kind, matched });
+    } else if (f.kind === "title-nondev") {
+      const matched = containedWords(words, texts);
+      if (matched.length > 0 && containedWords(DEV_WORDS, texts).length === 0) {
+        hits.push({ id: f.id, kind: f.kind, matched });
+      }
     } else if (f.kind === "company-exclude") {
       const matched = containedWords(words, [posting.company]);
       if (matched.length > 0) hits.push({ id: f.id, kind: f.kind, matched });
@@ -111,7 +126,8 @@ export function applyFirst(posting: PostingForFilter, filters: FilterRow[]): Fil
 
 /**
  * 2차 필터 (R43–R44): 기술스택 포함(하나라도)/제외, 경력 연수(N년 이상 요구하면 제외),
- * 고용 형태 제외(공고의 고용 형태가 모두 제외 목록에 걸릴 때만), 기술스택 자동 추림(프로필과 하나도 안 겹치면).
+ * 고용 형태 제외(공고의 고용 형태가 모두 제외 목록에 걸릴 때만), 기술스택 자동 추림(프로필과 하나도 안 겹치면),
+ * 개발 직군만(직군이 dev·unknown·없음이 아니면, R98·R101).
  */
 export function applySecond(
   extraction: ExtractionForFilter,
@@ -126,6 +142,13 @@ export function applySecond(
       const years = filterYears(f.value);
       if (years !== null && extraction.minYears !== null && extraction.minYears >= years) {
         hits.push({ id: f.id, kind: f.kind, matched: [`${extraction.minYears}`] });
+      }
+      continue;
+    }
+    if (f.kind === "dev-only") {
+      const family = extraction.family;
+      if (family !== null && family !== "" && !DEV_FAMILIES.includes(family)) {
+        hits.push({ id: f.id, kind: f.kind, matched: [family] });
       }
       continue;
     }

@@ -8,11 +8,41 @@ import type { FilterKind, FilterRule, PostingStage } from "./types";
 /** 화면에서 칩 색: 포함 보라, 제외 빨강, 숫자 기준 파랑 */
 export type ChipTone = "accent" | "red" | "blue";
 
-/** 고정 줄 종류: 자동 추림(2차)과 직군 거르기 두 줄(D74). 화면 줄은 수정2 3단계에서 따로 만든다 */
-const FIXED_KINDS: readonly FilterKind[] = ["skill-overlap", "title-nondev", "dev-only"];
+/** 고정 줄 종류: 2차 판 위의 스위치 줄 (기술스택 자동 추림, 개발 직군만 D74) */
+const FIXED_KINDS: readonly FilterKind[] = ["skill-overlap", "dev-only"];
 
 /** 사용자가 추가할 수 있는 종류 (고정 줄 종류는 빠짐) */
-export type AddableKind = Exclude<FilterKind, "skill-overlap" | "title-nondev" | "dev-only">;
+export type AddableKind = Exclude<FilterKind, "skill-overlap" | "dev-only">;
+
+/** 비개발 직군 낱말 기본값 (R96, 0008과 같은 값 D74) */
+export const TITLE_NONDEV_DEFAULT_WORDS: readonly string[] = [
+  "모델러",
+  "원화",
+  "애니메이터",
+  "이펙트",
+  "테크니컬 아티스트",
+  "테크니컬 디자이너",
+  "기획",
+];
+
+/** 비개발 낱말이 있어도 함께 있으면 1차에서 거르지 않는 개발 낱말 (서버 `filters.ts DEV_WORDS`와 같음) */
+export const DEV_WORDS: readonly string[] = ["프로그래머", "개발", "엔지니어"];
+
+/** 직군 화면 이름 (R97, D74) */
+export const FAMILY_LABEL: Record<string, string> = {
+  dev: "개발",
+  art: "아트",
+  design: "기획",
+  qa: "QA",
+  business: "사업·운영",
+  other: "기타",
+  unknown: "판단 불가",
+};
+
+/** 직군 값 → 화면 이름. 모르는 값은 그대로 */
+export function familyLabel(family: string): string {
+  return FAMILY_LABEL[family] ?? family;
+}
 
 interface KindInfo {
   stage: 1 | 2;
@@ -25,13 +55,14 @@ export const KIND_INFO: Record<AddableKind, KindInfo> = {
   "title-include": { stage: 1, label: "제목·직무 포함 (하나라도)", tone: "accent", placeholder: "키워드 입력 후 Enter (쉼표로 여러 개)" },
   "title-exclude": { stage: 1, label: "제목·직무 제외", tone: "red", placeholder: "키워드 입력 후 Enter (쉼표로 여러 개)" },
   "company-exclude": { stage: 1, label: "회사 제외", tone: "red", placeholder: "회사 이름 입력 후 Enter (쉼표로 여러 개)" },
+  "title-nondev": { stage: 1, label: "비개발 직군 낱말", tone: "red", placeholder: "낱말 입력 후 Enter (예: 모델러, 원화)" },
   "skill-include": { stage: 2, label: "기술스택 포함 (하나라도)", tone: "accent", placeholder: "기술 입력 후 Enter (쉼표로 여러 개)" },
   "skill-exclude": { stage: 2, label: "기술스택 제외", tone: "red", placeholder: "기술 입력 후 Enter (쉼표로 여러 개)" },
   "max-years": { stage: 2, label: "경력 연수", tone: "blue", placeholder: "연수 입력 (예: 5)" },
   employment: { stage: 2, label: "고용 형태 제외", tone: "red", placeholder: "고용 형태 입력 후 Enter (예: 인턴, 파견)" },
 };
 
-export const FIRST_KINDS: AddableKind[] = ["title-include", "title-exclude", "company-exclude"];
+export const FIRST_KINDS: AddableKind[] = ["title-include", "title-exclude", "company-exclude", "title-nondev"];
 export const SECOND_KINDS: AddableKind[] = ["skill-exclude", "skill-include", "max-years", "employment"];
 
 export function isAddableKind(kind: FilterKind): kind is AddableKind {

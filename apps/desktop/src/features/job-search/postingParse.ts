@@ -23,6 +23,8 @@ export interface ScheduleItem {
 /** 추출 항목 (D36 `js_extractions.fields`) */
 export interface PostingFields {
   role: string | null;
+  /** 직군 `dev|art|design|qa|business|other|unknown` (R97, D74). 옛 추출이면 null */
+  family: string | null;
   requirements: string[];
   preferred: string[];
   skills: string[];
@@ -96,6 +98,7 @@ export function parseFields(value: unknown): PostingFields {
   const deadline = isRecord(f.deadline) ? f.deadline : {};
   return {
     role: text(f.role),
+    family: text(f.family),
     requirements: strings(f.requirements),
     preferred: strings(f.preferred),
     skills: strings(f.skills),

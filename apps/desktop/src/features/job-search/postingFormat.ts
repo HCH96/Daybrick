@@ -1,4 +1,4 @@
-import { KIND_INFO, isAddableKind } from "./filterRules";
+import { KIND_INFO, familyLabel, isAddableKind } from "./filterRules";
 import type { FilterHit, ScheduleItem } from "./postingParse";
 import type { PostingStage } from "./types";
 
@@ -39,7 +39,6 @@ export function scheduleLine(item: ScheduleItem): string {
 
 /** 걸린 조건 단계: 1차 회색, 2차 파랑 */
 export function hitStage(hit: FilterHit): 1 | 2 {
-  if (hit.kind === "title-nondev") return 1;
   return isAddableKind(hit.kind) ? KIND_INFO[hit.kind].stage : 2;
 }
 
@@ -69,10 +68,9 @@ export function hitLabel(hit: FilterHit): string {
     case "skill-overlap":
       return `${head}기술스택 자동 추림 (겹치는 기술 없음)`;
     case "title-nondev":
-      return `${head}비개발 직군 ${quoted(m)}`;
+      return `${head}비개발 낱말: ${m.join(", ")}`;
     case "dev-only":
-      // 직군 이름(아트 등)으로 바꾸기는 수정2 3단계에서
-      return `${head}직군: ${m.join(", ")}`;
+      return m.length > 0 ? `${head}직군: ${m.map(familyLabel).join(", ")}` : `${head}개발 직군만`;
   }
 }
 

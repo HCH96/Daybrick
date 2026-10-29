@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { PlusIcon } from "../../../components/icons/CommonIcons";
-import { KIND_INFO, parseFilterInput, type AddableKind } from "../../../features/job-search/filterRules";
+import { DEV_WORDS, KIND_INFO, parseFilterInput, type AddableKind } from "../../../features/job-search/filterRules";
 
 interface FilterAddRowProps {
   kinds: AddableKind[];
@@ -64,6 +64,11 @@ function FilterAddRow({ kinds, disabled, onAdd }: FilterAddRowProps) {
         </button>
       </div>
       {kind === "max-years" && !error && <p className="js-filters__hint">넣은 연수 이상을 요구하는 공고를 제외해요.</p>}
+      {kind === "title-nondev" && !error && (
+        <p className="js-filters__hint">
+          제목·직무에 낱말이 있으면 거르고, {DEV_WORDS.join("·")} 낱말이 함께 있으면 거르지 않아요.
+        </p>
+      )}
       {error && (
         <p className="js-filters__hint js-filters__hint--bad" role="alert">
           {error}

@@ -12,6 +12,7 @@ import {
   FIRST_KINDS,
   SECOND_KINDS,
   KIND_INFO,
+  isAddableKind,
   kstWeekStart,
   summarizeFlow,
   type AddableKind,
@@ -31,7 +32,7 @@ import type { ApiErrorKind, ApiResult } from "../../../features/server/managemen
 import "../../server-setup/wizard/WizardShell.css";
 import type { StatusLine } from "../profile/profileFormat";
 import { AlertIcon } from "../sources/SourcesIcons";
-import FilterPanel from "./FilterPanel";
+import FilterPanel, { FilterSwitch } from "./FilterPanel";
 import FlowLine from "./FlowLine";
 import "./FiltersTab.css";
 
@@ -50,7 +51,7 @@ function skillsSummary(profile: ProfileSkills | null): string {
   return `${base} (프로필 v${profile.version}: ${shown}${rest > 0 ? ` 외 ${rest}개` : ""})`;
 }
 
-/** 필터 탭 (R41–R45, R47): 처리 순서 줄, 1차·2차 필터 판 */
+/** 필터 탭 (R41–R47, R96, R98): 처리 순서 줄, 1차·2차 필터 판 */
 function FiltersTab() {
   const { session } = useJobSearch();
   const [rules, setRules] = useState<FilterRule[] | null>(null);
@@ -125,8 +126,9 @@ function FiltersTab() {
   }
 
   const overlap = rules.find((r) => r.kind === "skill-overlap") ?? null;
-  const first = rules.filter((r) => r.stage === 1 && r.kind !== "skill-overlap");
-  const second = rules.filter((r) => r.stage === 2 && r.kind !== "skill-overlap");
+  const devOnly = rules.find((r) => r.kind === "dev-only") ?? null;
+  const first = rules.filter((r) => r.stage === 1 && isAddableKind(r.kind));
+  const second = rules.filter((r) => r.stage === 2 && isAddableKind(r.kind));
 
   return (
     <div className="js-filters">
@@ -151,7 +153,7 @@ function FiltersTab() {
         <FilterPanel
           title="2차 필터"
           tag="AI 없음 · 추출 항목 사용"
-          desc="항목 추출이 끝난 공고를 기술스택·경력·고용 형태로 거릅니다."
+          desc="항목 추출이 끝난 공고를 직군·기술스택·경력·고용 형태로 거릅니다."
           rules={second}
           kinds={SECOND_KINDS}
           disabled={busy}
@@ -159,23 +161,26 @@ function FiltersTab() {
           onDelete={remove}
           onAdd={add}
           top={
-            overlap && (
-              <div className="js-filters__auto">
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={overlap.enabled}
-                  aria-label={`기술스택 자동 추림 ${overlap.enabled ? "끄기" : "켜기"}`}
-                  className={`js-filters__switch${overlap.enabled ? " js-filters__switch--on" : ""}`}
+            <>
+              {devOnly && (
+                <FilterSwitch
+                  rule={devOnly}
+                  title="개발 직군만"
+                  desc="직군이 개발·판단 불가인 공고만 통과 (이미 채점한 공고에도 적용)"
                   disabled={busy}
-                  onClick={() => toggle(overlap)}
+                  onToggle={toggle}
                 />
-                <div className={`js-filters__rule-main${overlap.enabled ? "" : " js-filters__rule-main--off"}`}>
-                  <b>기술스택 자동 추림</b>
-                  <div className="js-filters__sub">{skillsSummary(profile)}</div>
-                </div>
-              </div>
-            )
+              )}
+              {overlap && (
+                <FilterSwitch
+                  rule={overlap}
+                  title="기술스택 자동 추림"
+                  desc={skillsSummary(profile)}
+                  disabled={busy}
+                  onToggle={toggle}
+                />
+              )}
+            </>
           }
         />
       </div>

@@ -144,6 +144,7 @@ export function forFilter(fields: unknown): ExtractionForFilter {
     skills: strings(f.skills),
     minYears: typeof years === "number" && Number.isFinite(years) ? years : null,
     employment: strings(f.employment),
+    family: typeof f.family === "string" && f.family.trim() !== "" ? f.family.trim() : null,
   };
 }
 
