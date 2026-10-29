@@ -1,30 +1,29 @@
-# 구직 관리 7단계: 사이트 추가·시험 수집·어댑터 가이드
+# 구직 관리 수정1 7단계: 상세 팝업 출처·따로 보기
 
-- 요구사항: R28–R30, R32
-- 목업: part-add-site.html (add-site-form, add-site-test, add-site-foot), part-adapter-guide.html (adapter-guide-toc, adapter-guide-body)
-- 경로 기준: `apps/desktop/src/` (서버는 저장소 `supabase/`)
-- 공통 규칙: [index.md](index.md)의 결정 D16, [structure.md](structure.md) 3절 규칙 형식
+- 요구사항: R92, R93 (영향: R55 지원하기는 대표 링크)
+- 목업: `popup.html` (popup-head), `popup-warn.html` (popup-warn-alert 아래 머리) — CSS: popup.css·common.css에서 클래스 검색
+- 경로 기준: [index.md](index.md) 맨 위
+- 공통 규칙: D39, D40, D54, D57
 
 ## 할 일
-- `js-collect` `test`: 규칙 + 사이트별 값을 받아 목록만 읽고(상세는 처음 5개만), 저장하지 않고 공고 수·항목별 읽힘 개수·처음 5개를 돌려준다 (R29).
-- `adapterRule.ts`: 앱에서 먼저 하는 형식 검사(서버 `adapter.ts`와 같은 필수 칸). 오류는 "list.item이 없어요"처럼 키 이름으로 알려 준다.
-- `AddSiteDialog` (1100px): 머리 단계 표시(입력 → 시험 수집 → 저장).
-  - 왼쪽: 이름, 주소, 어댑터(기존 고르기 / 규칙 파일 올리기), 규칙의 `vars`에 맞춘 사이트별 값 칸 (R28).
-  - 오른쪽 `TestResult`: 초록 성공 줄, 항목별 읽힘 칩, 처음 5개 표.
-  - [저장]은 시험 수집이 성공한 뒤에만 켜진다. 입력을 바꾸면 다시 꺼진다.
-- 어댑터 교체 (R32): 어댑터 카드 ⋯ → [새 버전 올리기] → 같은 창에서 그 어댑터를 쓰는 사이트 하나로 시험 수집 → 성공하면 `version + 1`로 저장.
-- `AdapterGuideDialog` (1080px): 왼쪽 목차, 오른쪽 본문(형식 설명, 게임잡·넥슨 예시, 키 설명 표, AI에게 맡길 때 쓸 프롬프트 틀). 코드 상자에 [복사] (R30). 본문은 `guideContent.ts`, 예시는 `supabase/adapters/*.json`과 같은 내용.
+- `bundleApi.ts`: `unbundlePosting(session, postingId)` → rpc `js_unbundle`. 실패는 `postgrestError`로.
+- `postingApi.ts`의 `loadPostingDetail` 뒤 `loadBundleSources([id])`로 팝업 출처를 읽는다 (`PostingDetail.sources`).
+- 새 `pages/job-search/popup/PopupSources.tsx`: 묶인 공고가 있을 때만 머리 아래 "출처" 블록. 줄마다 사이트 이름 ↗(누르면 그 공고 링크를 기존 외부 링크 열기 방식으로), 대표 줄에 "(대표)", 각 줄 오른쪽 [따로 보기]. 누르면 확인 없이 실행 → 성공 문구 "따로 볼게요. 다음 처리 뒤 별도 공고로 보여요." → `onChanged`(목록·개수·열린 목록 다시 읽기, D39). 대표를 풀었으면 팝업을 닫는다(대표가 바뀜).
+- 지원한 공고 팝업은 [따로 보기]를 끈다 (D57: 지원한 공고는 묶음에서 움직이지 않음).
+- 대표의 `body_text`가 아직 없으면(4단계 대표 바뀜 직후) 원문 칸에 "원문을 받는 중이에요. 다음 수집 처리 뒤 보여요." (`messages.ts`).
+- [지원하기]는 지금처럼 팝업 공고(대표)의 링크를 쓴다 (R92) — 바꿀 코드 없음, 확인만.
+
+## 목업과 다른 점
+- `popup.html`·`popup-warn.html` 머리에 출처 블록이 없다 → 제목·회사·링크 줄 아래, 점수 상자 위에 명세 화면 구성 그림대로 ("출처  스마일게이트 채용 ↗ (대표) / 게임잡 ↗ [따로 보기]"). 인젝션 경고줄은 그대로 맨 위.
 
 ## 확인할 결과
-- 필수 칸이 빠진 규칙 파일을 올리면 시험 전에 빠진 키 이름이 빨간 글로 보인다.
-- 게임잡 규칙 + 다른 직무 코드로 시험 수집 → 공고 수와 처음 5개가 보이고, 그 뒤 [저장]이 켜진다. 저장하면 표에 새 줄이 생긴다.
-- 시험 수집이 0개면 [저장]이 꺼진 채로 이유가 보인다.
-- 어댑터 새 버전 올리기 → 시험 성공 후 카드의 버전 숫자가 1 오른다.
-- 가이드의 [복사]를 누르면 클립보드에 예시 JSON이 들어간다.
-- `npm run build`, `cargo check` 성공.
+- `npx tsc --noEmit`, `npm run build` 성공.
+- 묶인 공고가 있는 카드의 팝업에 출처가 사이트 수만큼 보이고, 각 ↗가 그 사이트의 공고를 연다. 묶인 공고가 없으면 블록이 없다.
+- 묶인 공고 [따로 보기] → 출처 줄이 사라지고, [지금 평가] 뒤 그 공고가 별도 카드로 나온다. 다시 수집·평가해도 다시 묶이지 않는다 (`unbundled` true).
+- 대표 [따로 보기] → 팝업이 닫히고, 남은 공고가 새 대표로 같은 점수로 보인다(AI 호출 없음). 풀린 옛 대표는 처리 뒤 별도 카드.
+- **이전 테스트 r1 8번(빈칸)** 다시: 팝업에 제목·회사·링크, 점수·등급, 강점·부족한 점 근거, 추출 항목, 원문, 이미지 크게 보기·Esc.
+- **이전 테스트 r1 11번(빈칸)** 다시: 묶음 팝업에서 [지원하기] → 만든 카드의 공고 링크가 대표(자사) 링크이고, 일정 제안 창 동작은 전과 같음. 지원한 공고 팝업의 [따로 보기]는 꺼져 있음.
 
 ## 이 단계에서 만들거나 고칠 파일
-- `supabase/functions/js-collect/index.ts`, `src-tauri/src/server/migrations.rs`
-- `features/job-search/adapterRule.ts`, `guideContent.ts`, `api.ts`
-- `pages/job-search/sources/AddSiteDialog.tsx`(+css), `TestResult.tsx`, `AdapterGuideDialog.tsx`(+css), `CodeBox.tsx`
-- 수정: `pages/job-search/sources/SourcesTab.tsx`, `AdapterCards.tsx`
+- `features/job-search/bundleApi.ts`, `postingApi.ts`, `messages.ts`
+- 새 `pages/job-search/popup/PopupSources.tsx`, 수정 `PostingPopup.tsx`, `PopupHead.tsx`, `SourceView.tsx`(원문 받는 중), `PostingPopup.css`

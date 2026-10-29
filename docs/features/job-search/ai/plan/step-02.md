@@ -1,31 +1,27 @@
-# 구직 관리 2단계: 서버 구조 3번과 자동 생성 비밀값
+# 구직 관리 수정1 2단계: 수집 사이트 자사 여부
 
-- 요구사항: data.md 전체, R79(기본 단가), R3(공개 정책 없음)
-- 목업: 없음
-- 경로 기준: 저장소 `supabase/`, `apps/desktop/src-tauri/src/`, `apps/desktop/src/`
-- 공통 규칙: [index.md](index.md)의 결정 D14, D19
+- 요구사항: R90 (영향: R24 사이트 표, R28 사이트 추가)
+- 목업: `sources.html` (sources-table), `part-add-site.html` (add-site-form)
+- 경로 기준: [index.md](index.md) 맨 위
+- 공통 규칙: D32, D33, D34, D54
 
 ## 할 일
-- 시작 전에 확인: 관리 API로 비밀값 이름 목록을 받을 수 있는지, Storage 버킷·정책을 SQL로 만들 수 있는지.
-- `supabase/migrations/0003_job_search.sql`: [structure.md](structure.md) 2절의 테이블 전부.
-  - RLS는 본인 행만. `js_gmail_tokens`에는 정책을 두지 않는다 (서비스 역할만 접근).
-  - 앱이 읽는 `js_gmail_status` 보기 (연결 여부·이메일·마지막 확인만).
-  - 비공개 버킷 `job-search`, 본인 폴더(`<user_id>/…`)만 허용하는 Storage 정책.
-  - 다시 실행해도 안전하게 (`if not exists`, `create or replace`).
-- 기본 설정 행: `js_settings`가 없으면 만드는 RPC `js_ensure_settings()`. 기본 단가는 Opus 5.5 $4/$20, Haiku 5.5 $0.10/$0.50 (100만 토큰당), 캐시 읽기·쓰기 칸 포함.
-- Rust `migrations.rs`: 3번 추가, 자동 생성 비밀값 목록 `GENERATED_SECRETS = ["DAYBRICK_CRON_SECRET", "GMAIL_TOKEN_KEY"]`.
-- Rust `management.rs`: 이미 있는 비밀값 이름을 읽고, 없는 것만 무작위 값(32바이트)으로 만든다. `DAYBRICK_CRON_SECRET`은 같은 호출 안에서 SQL로 vault(`daybrick_cron_secret`)에도 넣는다 (15단계 예약 작업이 읽음). 값은 앱에 남기지 않는다.
-- `serverUpdate.ts`·`setupRunner.ts`·`rerunSetup.ts`: 서버 업데이트·자동 세팅의 비밀값 단계에서 위 동작을 부른다.
-- `features/job-search/types.ts`(2절 타입), `api.ts`(설정 읽기만 먼저).
+- `api.ts`: `loadSources`가 `own_site`를 `Site.ownSite`로 읽는다. 새 `setSiteOwn(session, siteId, own)`. `addSite`에 `ownSite` 인자를 더해 사이트 행에 넣는다.
+- `SiteTable.tsx`: 어댑터 칸 다음에 "자사" 칸. 켜짐 칸과 같은 스위치를 쓰고, 바꾸면 `setSiteOwn` → 성공 뒤 `reload()`, 실패면 문구.
+- `AddSiteForm.tsx`·`addSiteRules.ts`: "자사 채용 사이트" 체크(기본 꺼짐)와 도움말 한 줄 "회사가 직접 운영하는 채용 사이트면 켜세요. 같은 공고가 다른 사이트에도 있으면 이 사이트 공고를 대표로 보여줘요." 체크를 바꿔도 시험 결과는 지우지 않는다(규칙과 상관없는 값). 새 버전 올리기(`mode: replace`)에는 보이지 않는다.
+- `SourcesTab.css`: 칸 폭만.
+
+## 목업과 다른 점
+- `sources.html` 사이트 표에 "자사" 칸이 없다 → 어댑터와 켜짐 사이에 스위치 칸을 넣는다 (명세 화면 구성 "이름 · 어댑터 · 자사 · 켜짐 · 결과 · 시각").
+- `part-add-site.html` 입력 줄에 자사 체크가 없다 → 사이트별 값 아래에 체크 한 줄.
 
 ## 확인할 결과
-- 2번까지 적용된 테스트 서버로 앱을 켜면 서버 업데이트 안내가 나오고, 진행하면 "서버 구조 3번"이 적용된다.
-- Supabase 대시보드: `js_` 테이블들(RLS 켜짐), 비공개 버킷 `job-search`, 비밀값 2개가 새로 보인다. 기존 비밀값 3개는 그대로.
-- 서버 업데이트를 한 번 더 해도 오류가 없고 비밀값 값이 바뀌지 않는다 (대시보드의 비밀값 요약값으로 비교).
-- `npm run build`, `cargo check` 성공.
+- `npx tsc --noEmit`, `npm run build` 성공.
+- 수집 사이트 탭에 자사 칸이 있고 넥슨 켜짐·게임잡 꺼짐(1단계 값).
+- 게임잡 자사를 켜고 다른 탭에 갔다 오면 유지, 다시 끄면 꺼짐 (SQL `own_site`도 같음).
+- 사이트 추가에서 체크하고 시험 수집 → 저장하면 표에 자사 켜짐. 체크하지 않으면 꺼짐.
+- 이전 테스트 r1 4번(수집 사이트와 지금 수집)·5번(사이트 추가·시험 수집)이 전처럼 동작 (켜기·끄기·지우기·시험 수집·저장).
 
 ## 이 단계에서 만들거나 고칠 파일
-- `supabase/migrations/0003_job_search.sql`
-- `src-tauri/src/server/migrations.rs`, `server/management.rs`, `lib.rs`
-- `features/server/serverUpdate.ts`, `setupRunner.ts`, `rerunSetup.ts`, `management.ts`
-- `features/job-search/types.ts`, `api.ts`
+- `features/job-search/api.ts`
+- `pages/job-search/sources/SiteTable.tsx`, `AddSiteForm.tsx`, `addSiteRules.ts`, `SourcesTab.css` (필요하면 `AddSiteDialog.tsx`에서 값 넘기기)

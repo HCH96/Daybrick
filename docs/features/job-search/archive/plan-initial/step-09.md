@@ -3,7 +3,7 @@
 - 요구사항: R41, R44, R48–R53, R74(미룬 작업), R78
 - 목업: 없음 (결과 화면은 10·11단계)
 - 경로 기준: 저장소 `supabase/`
-- 공통 규칙: [index.md](index.md)의 결정 D15, D17, [../spec/ai-rules.md](../spec/ai-rules.md)
+- 공통 규칙: [index.md](index.md)의 결정 D15, D17, [../spec/ai-rules.md](../../ai/spec/ai-rules.md)
 
 ## 할 일
 - 시작 전에 확인(추측 검증):

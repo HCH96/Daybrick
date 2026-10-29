@@ -1,7 +1,7 @@
 # 구직 관리 (job-search) 명세서 색인
 
 ## 기능 개요
-등록한 채용 사이트에서 공고를 주 1회 서버가 모으고, 필터를 통과한 공고를 AI가 프로필과 비교해 채점해 추천한다. 지원하면 지원 관리 카드를 만들고, Gmail 메일로 상태 변경을 제안한다.
+등록한 채용 사이트에서 공고를 주 1회 서버가 모으고, 필터를 통과한 공고를 AI가 프로필과 비교해 채점해 추천한다. 지원하면 지원 관리 카드를 만들고, Gmail 메일로 상태 변경을 제안한다. 다른 사이트에 올라온 같은 공고는 대표 하나로 묶어 보여준다.
 
 ## 먼저 있어야 하는 기능 (별도 명세)
 - 서버 연결 `server-setup`: 로그인(Supabase Auth), 첫 실행 설정, 빈 Supabase 자동 세팅, 설치 가이드, 일시정지 감지·재개 안내
@@ -12,10 +12,11 @@
 ## 요구사항 (묶음 → 파일)
 | 묶음 | R 범위 | 파일 |
 |---|---|---|
-| 페이지·추천 공고·상세 팝업 (+ 화면 구성) | R1–R16 | [req-recommend.md](req-recommend.md) |
+| 페이지·추천 공고·상세 팝업 (+ 화면 구성) | R1–R16, R91–R93 | [req-recommend.md](req-recommend.md) |
 | 프로필 (+ 화면 구성) | R17–R23 | [req-profile.md](req-profile.md) |
-| 수집 사이트·어댑터 (+ 화면 구성) | R24–R32 | [req-sources.md](req-sources.md) |
-| 공고 수집 | R33–R40 | [req-collect.md](req-collect.md) |
+| 수집 사이트·어댑터 (+ 화면 구성) | R24–R32, R90 | [req-sources.md](req-sources.md) |
+| 공고 수집 | R33–R40, R82 | [req-collect.md](req-collect.md) |
+| 중복 공고 묶기 | R83–R89 | [req-dedupe.md](req-dedupe.md) |
 | 필터·항목 추출·적합도 채점 | R41–R53 | [req-analysis.md](req-analysis.md) |
 | 지원하기·일정 제안 | R54–R59 | [req-apply.md](req-apply.md) |
 | Gmail 연동·메일 제안 | R60–R70 | [req-gmail.md](req-gmail.md) |
@@ -29,9 +30,10 @@
 | [data.md](data.md) | 다룰 데이터와 저장 위치 |
 | [scope.md](scope.md) | 제외, 다른 기능으로 넘긴 것, 나중에 고려할 것, 계획 단계에서 확인할 것 |
 | [mockup.md](mockup.md) | 목업 경로(2026-10-27 승인)와 목업에서 정한 것 |
-| [decisions.md](decisions.md) | 결정 사항 D1–D44 |
+| [decisions.md](decisions.md) | 결정 사항 D1–D57 |
 
 ## 다른 문서
-- 구현 계획: [../plan/index.md](../plan/index.md) (2026-10-27 승인) — 15단계. 어댑터 규칙 형식 v1을 정하고(D16), Gmail은 앱이 직접 Google 인증을 열어 서버가 토큰을 암호화해 둔다(D18). 예약 실행은 pg_cron + 예약 비밀값(D19)
+- 수정 계획 1: [../plan/index.md](../plan/index.md) (2026-10-29 승인) — 중복 공고 묶기 7단계(근거 L33). 묶인 공고는 `stage duplicate`+`dup_of`, 대표 바꾸기는 분석 복사(D54). 유사도는 정리 제목 같음·Dice 0.8·직무 같음(D55), 소급은 첫 처리 때 백업과 함께(D56)
+- 처음 구현 계획: [../../archive/plan-initial/index.md](../../archive/plan-initial/index.md) (2026-10-27 승인) — 15단계. 어댑터 규칙 형식 v1을 정하고(D16), Gmail은 앱이 직접 Google 인증을 열어 서버가 토큰을 암호화해 둔다(D18). 예약 실행은 pg_cron + 예약 비밀값(D19)
 - 테스트 문서: AI 테스트 [../tests/r1/](../tests/r1/) · 사용자 테스트 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md)
 - 진행 기록: [../logs/index.md](../logs/index.md)

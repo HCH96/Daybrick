@@ -3,7 +3,7 @@
 - 요구사항: R64–R69
 - 목업: mail.html (mail-bar, mail-list, mail-done)
 - 경로 기준: `apps/desktop/src/` (서버는 저장소 `supabase/`)
-- 공통 규칙: [index.md](index.md)의 결정 D15, D18, [../spec/ai-rules.md](../spec/ai-rules.md) "원문 취급"
+- 공통 규칙: [index.md](index.md)의 결정 D15, D18, [../spec/ai-rules.md](../../ai/spec/ai-rules.md) "원문 취급"
 
 ## 할 일
 - `js-gmail check` (R64–R67, R69):

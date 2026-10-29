@@ -1,135 +1,57 @@
-# 구직 관리 계획: 파일 목록과 데이터 모양
-전체 구조가 필요할 때만 읽는다. 경로 기준은 [index.md](index.md) 맨 위.
+# 구직 관리 수정1: 파일 목록과 데이터 모양
+전체 구조가 필요할 때만 읽는다. 경로 기준은 [index.md](index.md) 맨 위. 처음 계획의 전체 파일 목록·테이블·어댑터 규칙 형식 v1은 [../../archive/plan-initial/structure.md](../../archive/plan-initial/structure.md).
 
-## 1. 파일 목록
+## 1. 파일 목록 (새 파일은 "새")
 ### 서버 (저장소 `supabase/`)
 | 파일 | 하는 일 | 단계 |
 |---|---|---|
-| `migrations/0003_job_search.sql` | 2절 테이블·RLS·버킷 `job-search`·기본 설정 행(한도·단가)·기본 어댑터 자리 | 2 (5에서 어댑터 행) |
-| `migrations/0004_job_search_cron.sql` | pg_cron 작업 3개(주간 수집, 처리 이어 하기, 하루 메일 확인), pg_net 호출 | 15 |
-| `functions/_shared/ai.ts` | Claude 호출, 한도 검사(R73–R74), 호출 기록·비용(R72), 크레딧 부족 판정(R78) | 3 |
-| `functions/_shared/auth.ts` | 사용자 토큰 또는 예약 비밀값으로 호출자 확인, 서비스 클라이언트 | 3 (15에서 넓힘) |
-| `functions/_shared/adapter.ts` | 규칙 형식 검사·실행(목록·상세·이미지), 요청 간격 | 5 |
-| `functions/_shared/adapterSession.ts` | 규칙의 세션 준비 `list.session`(쿠키·토큰 헤더) 검사·실행 (D50) | 수정 |
-| `functions/_shared/dedupe.ts` | 같은 공고 판정 키(R35) | 5 |
-| `functions/_shared/filters.ts` | 1차·2차 필터, 기술스택 자동 추림 (순수 함수) | 8 |
-| `functions/_shared/prompts.ts` | 프로필·추출·채점·메일 분류 프롬프트와 출력 JSON 형식 | 4, 9, 14 |
-| `functions/_shared/notify.ts` | `daybrick_notify` 호출 감싸기, 합치기 키 | 5 (15에서 모두 연결) |
-| `functions/js-profile/index.ts` | 자료 읽기(PDF는 문서 블록) → Opus 초안 | 4 |
-| `functions/js-collect/index.ts` | `run`(켜진 사이트 전체 또는 하나)·`test`(규칙+값, 저장 안 함) | 5, 7 |
-| `functions/js-process/index.ts` | 처리 순서 R41, 미룬 작업 이어 하기, `force`(그래도 채점), `rescore` | 9 |
-| `functions/js-gmail/index.ts` | `connect`(갱신 토큰 확인·암호화, `token.ts`)·`disconnect`·`check` | 13, 14 |
-| `adapters/gamejob.json`, `adapters/nexon.json` | 기본 어댑터 원본 (SQL에 넣을 내용, 가이드 예시) | 5 |
-| `adapters/custom/*.json` | 사용자가 앱에서 추가할 사이트 규칙 원본 (기본 어댑터 아님, L30) | 수정 |
+| 새 `migrations/0007_job_search_dedupe.sql` | 2절 칸·stage 검사·백업 표·`js_switch_rep`·`js_unbundle`·`js_ensure_defaults`·`js_cron_continue` | 1 |
+| `functions/_shared/dedupe.ts` | `cleanTitle`·`normKey`(R35), `companyMatch`·`sameDeadline`·`titleSimilar`·`isSameJob`(R84), `pickRep`(R86) — 순수 함수 | 3 |
+| `functions/js-collect/index.ts` | `saveNew`: 다른 사이트 일치 → duplicate 저장·대표 바꾸기, `fetchBodies`·`bodiesOnly`: duplicate 건너뜀 | 4 |
+| 새 `functions/js-process/dedupe.ts` | 중복 확인(후보 읽기·판정·묶기·묶음 합치기), 소급 적용 `backfillDedupe` | 5 |
+| `functions/js-process/index.ts` | `processOne`에 추출 뒤 중복 확인, `runQueue` 시작 때 소급 적용 | 5 |
 
 ### Rust (`apps/desktop/src-tauri/src/`)
 | 파일 | 하는 일 | 단계 |
 |---|---|---|
-| `server/migrations.rs` | 3·4번 SQL, 함수 4개와 `_shared` 파일, 자동 생성 비밀값 목록 | 2, 3, 4, 5, 9, 13, 15 |
-| `server/management.rs` | 없는 비밀값만 만들기(`list_secrets` 후 `set_secrets`) | 2 |
-| `job_search.rs` | `job-search.json` 읽기·쓰기 (임시 파일 바꿔치기) | 10 |
-| `server/oauth_listener.rs` | 그대로 재사용 (Gmail 콜백) | 13 |
-| `lib.rs` | 명령 등록 | 2, 10 |
+| `server/migrations.rs` | `MIGRATIONS`에 0007, js-process `files`에 `DEDUPE`와 `js-process/dedupe.ts` | 1, 5 |
 
-### 프론트 로직 (`features/job-search/`)
+### 앱 (`apps/desktop/src/`)
 | 파일 | 하는 일 | 단계 |
 |---|---|---|
-| `types.ts` | 2절 타입 | 2 |
-| `api.ts` | 테이블 읽기·쓰기, 서버 함수 호출 (ServerProvider 세션 사용) | 2 (단계마다 추가) |
-| `JobSearchProvider.tsx`, `useJobSearch.ts` | 탭들이 같이 쓰는 데이터·새로고침 | 3 (단계마다 넓힘) |
-| `messages.ts` | 오류·안내 문구 | 3 |
-| `usage.ts` | 사용액 줄 계산(오늘 호출, 이번 달, 기준 이후, 예상 잔액) | 3 |
-| `profileDraft.ts` | 초안 ↔ 편집 값, 버전 번호 | 4 |
-| `adapterRule.ts` | 규칙 파일 형식 검사 (서버와 같은 규칙, 앱에서 먼저 알림) | 7 |
-| `guideContent.ts`, `guideKeys.ts` | 어댑터 가이드 본문·예시·프롬프트 틀, 키 표 | 7 |
-| `filterRules.ts` | 조건 종류·값 표시 이름 | 8 |
-| `dday.ts`, `grade.ts`, `sortPostings.ts` | D-n·상시, 등급·색, 정렬·마감 지난 공고 빼기 | 10 |
-| `localState.ts` | `job-search.json` 감싸기 (Tauri 밖이면 메모리) | 10 |
-| `buildCard.ts`, `scheduleSuggest.ts` | 공고 → 지원 카드, 일정 제안 목록(정확한 날짜만) | 12 |
-| `statusSync.ts` | 카드 상태 → 서버 지원 건, 대기 목록 반영 | 12 |
-| `gmailConnect.ts` | Supabase Google 로그인(Gmail 권한) → `provider_refresh_token` → `js-gmail connect` (D18, 서버 호출은 `gmailApi.ts`) | 13 |
-| `applySuggestion.ts` | 승인한 제안 → 카드 상태·세부 단계·결과·일정 | 14 |
+| `features/job-search/types.ts` | `Site.ownSite`, `PostingStage`에 `duplicate`, `Posting.dupOf`·`unbundled` | 1 |
+| `features/job-search/api.ts` | `loadSources`가 `own_site` 읽기, 새 `setSiteOwn`, `addSite`에 ownSite | 2 |
+| `pages/job-search/sources/SiteTable.tsx`·`AddSiteForm.tsx`·`addSiteRules.ts`·`SourcesTab.css` | 자사 칸 스위치, 추가 창 체크 | 2 |
+| 새 `features/job-search/bundleApi.ts` | `loadBundleSources(session, repIds)` → `Map<repId, BundleSource[]>`, `unbundlePosting` | 6, 7 |
+| `features/job-search/recommendApi.ts`·`postingApi.ts` | 보관함 목록·수에 duplicate 제외, 목록에 출처 붙이기 | 6 |
+| 새 `pages/job-search/recommend/SourceNames.tsx` (+ `PostingCard.tsx`·`FilteredList.tsx`·`ArchivedList.tsx`·css) | "출처: A · B" 한 줄 | 6 |
+| 새 `pages/job-search/popup/PopupSources.tsx` (+ `PostingPopup.tsx`·`PopupHead.tsx`·`PostingPopup.css`) | 출처 줄 ×N, ↗ 링크, [따로 보기] | 7 |
+| `features/job-search/messages.ts` | 따로 보기 실패·원문 받는 중 문구 | 7 |
 
-### 화면 (`pages/job-search/`, css는 같은 이름)
-| 파일 | 단계 |
-|---|---|
-| `JobSearchPage.tsx`, `JobSearchTabs.tsx`, `JobSearchDisconnected.tsx`, `TabPlaceholder.tsx` | 1 |
-| `settings/JobSettingsTab.tsx`, `LimitsPanel.tsx`, `BalancePanel.tsx`, `PricesPanel.tsx`, `recommend/UsageLine.tsx` | 3 |
-| `profile/ProfileTab.tsx`, `SourcePanel.tsx`, `ProfileEditor.tsx`, `ProfileField.tsx`, `SkillChips.tsx`, `ExperienceList.tsx` | 4 |
-| `sources/SourcesTab.tsx`, `SiteTable.tsx`, `SiteRowMenu.tsx`, `AdapterCards.tsx` | 6 |
-| `sources/AddSiteDialog.tsx`, `TestResult.tsx`, `AdapterGuideDialog.tsx`, `CodeBox.tsx` | 7 |
-| `filters/FiltersTab.tsx`, `FlowLine.tsx`, `FilterPanel.tsx`, `FilterRow.tsx`, `FilterAddRow.tsx` | 8 |
-| `recommend/RecommendTab.tsx`, `CollectStatusLine.tsx`, `RecommendToolbar.tsx`, `PostingGrid.tsx`, `PostingCard.tsx` | 10 |
-| `popup/PostingPopup.tsx`, `PopupHead.tsx`, `ScoreBox.tsx`, `ReasonList.tsx`, `FieldTable.tsx`, `SourceView.tsx`, `ImageZoom.tsx`, `InjectionAlert.tsx`, `PopupFoot.tsx`, `recommend/FilteredList.tsx`, `ArchivedList.tsx` | 11 |
-| `popup/ScheduleSuggestDialog.tsx` | 12 |
-| `settings/GmailPanel.tsx` | 13 |
-| `mail/MailTab.tsx`, `SuggestionCard.tsx`, `DoneList.tsx` | 14 |
-| 수정: `app/types.ts`·`pageLabels.ts`·`pages.ts`, `components/icons/NavIcons.tsx` (돋보기) | 1 |
-| 수정: `features/applications/types.ts`·`reducer.ts`·`store.tsx` | 12 |
-| 수정: `features/server/serverUpdate.ts`·`rerunSetup.ts`·`setupRunner.ts` (자동 생성 비밀값) | 2 |
+## 2. 데이터 모양 (0007이 더하는 것)
+- `js_sites.own_site bool not null default false` — 기존 기본 넥슨 사이트는 true
+- `js_postings.dup_of uuid null references js_postings(id) on delete set null`, `js_postings.unbundled bool not null default false`, 색인 `(user_id, dup_of)`
+- `js_postings.stage`에 `duplicate` 추가 (0006처럼 검사를 지우고 다시)
+- `js_settings.dedupe_version int not null default 0` — 1이면 소급 적용 끝
+- `js_postings_backup_0007(id, user_id, stage, norm_key, backed_up_at)` — 표가 없을 때만 만들고 그때 한 번 채움. RLS 본인 읽기만
+- `js_switch_rep(p_user uuid, p_old uuid, p_new uuid)` (서비스 역할만): 새 대표에 옛 대표의 stage·filtered_by·hidden_at 복사, `js_extractions`·`js_scores` 행 복사(upsert), 옛 대표와 `dup_of = old`인 공고 → `stage duplicate, dup_of = new, hidden_at null`
+- `js_unbundle(p_id uuid)` (본인만): 묶인 공고면 `dup_of null, unbundled true, stage new`. 대표면 남은 공고 중 `own_site` 먼저·`collected_at` 빠른 순으로 새 대표 → `js_switch_rep` → 옛 대표 `unbundled true, stage new`
+- 앱 타입: `BundleSource { postingId, siteName, url, isRep }`
 
-## 2. 데이터 모양
-서버 테이블 (모두 `user_id uuid → auth.users`, RLS 본인 행만. `js_gmail_tokens`만 서비스 역할 전용)
-- `js_settings(user_id pk, daily_limit int=100, monthly_limit_usd numeric=10, prices jsonb, profile_version int)`
-- `js_balance_records(id, user_id, amount_usd, set_at)`: 마지막 행이 기준 (R76)
-- `js_ai_calls(id, user_id, at, model, task, input_tokens, output_tokens, cache_read, cache_write, cost_usd, ok)`
-- `js_profile_sources(id, user_id, name, kind 'pdf'|'md'|'text', storage_path, text, created_at)`
-- `js_profiles(id, user_id, version int, data jsonb, sources jsonb, saved_at)` / `js_profile_drafts(user_id pk, data jsonb, created_at)`
-- `js_adapters(id, user_id, name, rule jsonb, version int, builtin bool)`
-- `js_sites(id, user_id, name, url, adapter_id, vars jsonb, enabled, last_result jsonb, last_at)`
-- `js_collect_runs(id, user_id, site_id, at, count, ok, reason)`
-- `js_postings(id, user_id, site_id, ext_id, url, company, title, duty, norm_key, body_text, image_paths text[], collected_at, stage, filtered_by jsonb, hidden_at, applied_at)`
-  - `stage`: `new` → `filtered1` | `extracted` → `filtered2` | `suspect` | `scored` / `waiting`(한도)
-- `js_extractions(posting_id pk, user_id, fields jsonb, suspect bool, suspect_quotes text[])`
-- `js_scores(posting_id pk, user_id, profile_version, score, grade, strengths jsonb, gaps jsonb, summary)`
-- `js_filters(id, user_id, stage 1|2, kind, value jsonb, enabled)`: 종류 `title-include`·`title-exclude`·`company-exclude`·`skill-include`·`skill-exclude`·`max-years`·`employment`·`skill-overlap`
-- `js_applications(id, user_id, posting_id, company, domain, card_id, status, closed bool)`
-- `js_mail_suggestions(id, user_id, application_id, subject, sender, received_at, category, from_status, to_status, stage, schedule jsonb, quote, state 'pending'|'approved'|'rejected', handled_at)`
-- `js_gmail_tokens(user_id pk, cipher text, iv text, email, last_checked_at, broken_at)` / 앱이 읽는 `js_gmail_status` 보기(연결 여부·이메일·마지막 확인만)
-
-```ts
-// job-search.json (앱 데이터 폴더, D21)
-interface JobSearchLocal { version: 1; recommendOpenedAt: string | null;
-  pendingStatus: { serverId: string; status: StatusId; closed: boolean; at: string }[]; }
-// 지원 관리 카드 (D20): Application에 선택 칸 추가, 파일 version 2 그대로
-interface Application { /* 기존 */ jobLink?: { serverId: string } | null }
+```
+공고 상태: new → filtered1 | (추출) → [중복 확인] → duplicate(dup_of)
+                                        └ filtered2 | suspect | extracted → scored
 ```
 
-## 3. 어댑터 규칙 형식 v1 (D16)
-```json
-{ "format": 1, "name": "gamejob", "vars": ["dutyCode"], "delayMs": 1500,
-  "list": { "url": "https://…?duty={dutyCode}&page={page}", "pages": 3, "type": "html",
-    "item": "CSS 선택자 또는 JSON 경로($.data.list[*])",
-    "fields": { "id": { "sel": "a", "attr": "href", "regex": "GI_No=(\\d+)" },
-      "title": { "sel": ".tit" }, "company": { "sel": ".corp" },
-      "link": { "sel": "a", "attr": "href", "base": "https://www.gamejob.co.kr" },
-      "duty": { "sel": ".duty", "optional": true }, "deadline": { "sel": ".date", "optional": true } } },
-  "detail": { "url": "{link}", "type": "html", "body": "CSS 선택자", "images": "img 선택자(src)" } }
+## 3. 컴포넌트 구조 (바뀌는 곳만)
 ```
-- 필수 칸: `format`, `name`, `list.url`, `list.item`, `fields.title`, `fields.link`. `{변수}`는 `vars`·`page`·목록 칸 값으로 바꾼다.
-- 키 이름은 목업 가이드 그림의 예시(list.item 등)를 이 형식으로 확정한다.
-- 선택 `detail.frame`(html만): 상세 페이지 안 iframe 선택자. 있으면 그 src를 한 번 더 받아 거기서 body·images를 읽는다 (D48).
-- 칸 틀 `{ "template": "https://…/view?seq={id}" }`: `{이름}`에 같은 공고의 다른 칸·vars 값. 값이 비면 칸이 null, `{}` 없으면 고정 글자. sel·attr·regex·base와 같이 못 씀. id·title·company·link·duty·body 말고 다른 이름의 칸은 틀에만 쓰는 보조 칸 (D49).
-- 선택 `list.session { url, token?: { regex, header } }`: 목록 첫 쪽 전에 url을 GET, Set-Cookie와 토큰(regex 첫 괄호)을 목록의 모든 쪽 요청 헤더로. 상세에는 붙이지 않음 (D50).
-- `detail.body`는 문자열 또는 배열. 배열이면 차례로 읽어 잇고(빈 칸 건너뜀, 이미지는 모두 모음), JSON 값이 이스케이프된 HTML이면 한 번 풀고 태그 없는 글은 줄바꿈을 살린다 (D51).
-
-## 4. 컴포넌트 구조
-```
-JobSearchPage ─ (연결 안 됨) JobSearchDisconnected
-              └ JobSearchProvider ─ JobSearchTabs (usePageIntent "job-search")
-   ├ RecommendTab ─ UsageLine · CollectStatusLine · RecommendToolbar
-   │    ├ PostingGrid ─ PostingCard ×N   |  FilteredList  |  ArchivedList
-   │    └ PostingPopup ─ InjectionAlert · PopupHead · ScoreBox · ReasonList
-   │          · FieldTable · SourceView(→ImageZoom) · PopupFoot → ScheduleSuggestDialog
-   ├ ProfileTab ─ SourcePanel · ProfileEditor ─ ProfileField · SkillChips · ExperienceList
-   ├ FiltersTab ─ FlowLine · FilterPanel ×2 ─ FilterRow ×N · FilterAddRow
-   ├ SourcesTab ─ SiteTable(SiteRowMenu) · AdapterCards · AddSiteDialog(TestResult) · AdapterGuideDialog
-   ├ MailTab ─ SuggestionCard ×N · DoneList
-   └ JobSettingsTab ─ GmailPanel · LimitsPanel · BalancePanel · PricesPanel
+SourcesTab ─ SiteTable (+ 자사 칸 스위치) · AddSiteDialog ─ AddSiteForm (+ 자사 체크)
+RecommendTab ─ PostingGrid ─ PostingCard ─ SourceNames
+             ├ FilteredList / ArchivedList ─ 행 ─ SourceNames
+             └ PostingPopup ─ PopupHead ─ PopupSources (출처 줄 ×N, ↗, [따로 보기])
 ```
 
 ## C++ 비유
-- 어댑터 규칙 파일은 데이터로 된 설정이고, `adapter.ts`는 그 설정을 읽어 도는 인터프리터다. 새 사이트를 추가해도 인터프리터(서버 함수)를 다시 컴파일·배포하지 않는다.
-- 공고의 `stage`는 상태 기계의 현재 상태다. `js-process`는 큐에서 몇 개씩 꺼내 다음 상태로 넘기는 작업 루프이고, 한도에 걸리면 `waiting`에 두고 루프를 끝낸다.
-- `_shared/ai.ts`는 모든 AI 호출이 거치는 래퍼 함수다. 호출 전 한도 검사, 호출 후 기록을 RAII처럼 한 곳에서 처리한다.
-- `pendingStatus`는 보내지 못한 쓰기를 모아 둔 재시도 큐다 (알림의 `pendingAcks`와 같은 방식).
+- `dup_of`는 union-find의 부모 포인터다. 다만 깊이는 늘 1(묶인 공고는 바로 대표를 가리킴)이라 묶음을 합칠 때는 자식 전체를 새 대표로 다시 가리킨다.
+- `js_switch_rep`는 대표 교체를 한 트랜잭션으로 묶은 원자적 연산이다. 분석 결과는 move가 아니라 copy라서, 옛 대표를 다시 꺼내도 자기 값이 남아 있다.
+- 소급 적용은 버전 번호(`dedupe_version`)로 지키는 한 번만 도는 마이그레이션 함수다.

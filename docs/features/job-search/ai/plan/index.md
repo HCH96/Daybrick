@@ -1,47 +1,36 @@
-# 구직 관리 (job-search) 구현 계획 색인
-- 기능 명세서: [../spec/index.md](../spec/index.md) · 목업: [../../human/mockups/index.html](../../human/mockups/index.html)
-- 작성일: 2026-10-27 · 상태: 승인됨 (2026-10-27), 구현 대기
-- 경로 기준: `apps/desktop/src/` (Rust는 `apps/desktop/src-tauri/src/`, 서버는 저장소 `supabase/`) · 파일 목록·데이터 모양: [structure.md](structure.md)
-- 커밋 이름: "구직 관리 N단계: …"
-- 3단계부터는 사용자의 테스트용 Supabase·Anthropic 키로 확인한다 (API 비용이 조금 든다).
+# 구직 관리 (job-search) 수정 계획 색인
+- 종류: 수정 계획 (근거 기록: L33)
+- 대상 R: R35, R41, R82–R93
+- 영향받는 R: R4, R7, R9, R15–R16, R24, R28, R33, R39–R40, R46–R47, R53, R55, R80
+- 커밋 접두어: 구직 관리 수정1
 
-## 결정 (계획 중 정함, D14–D21)
-- 테이블은 `js_` 접두어·본인 행만(RLS), 비공개 버킷 `job-search`. 서버 구조 3번(0003), 예약 실행은 4번(0004) (D14).
-- 서버 함수 4개 `js-profile`·`js-collect`·`js-process`·`js-gmail`, 공용 `_shared/`. AI 호출은 모두 `_shared/ai.ts`를 거친다 (D15).
-- 어댑터 규칙 형식 v1: structure.md 3절 (D16). 처리 함수는 한 번에 정해진 개수만 처리 (D17).
-- Gmail: 앱이 직접 Google 인증, 코드 교환·토큰 암호화는 `js-gmail`, 해제 때 권한 취소 (D18).
-- 예약 실행: pg_cron + pg_net + 예약 비밀값. 자동 생성 비밀값은 서버 업데이트 때 없으면 추가 (D19).
-- 지원 관리 카드에 선택 칸 `jobLink`, 파일 버전 2 유지 (D20). 로컬 `job-search.json` (D21).
+- 기능 명세서: [../spec/index.md](../spec/index.md) · 목업: [../../human/mockups/index.html](../../human/mockups/index.html) · 이전 계획: [../../archive/plan-initial/index.md](../../archive/plan-initial/index.md)
+- 작성일: 2026-10-29 · 상태: 승인됨 (2026-10-29), 구현 대기
+- 경로 기준: `apps/desktop/src/` (Rust는 `apps/desktop/src-tauri/src/`, 서버는 저장소 `supabase/`) · 파일 목록·데이터 모양: [structure.md](structure.md)
+- 커밋 이름: "구직 관리 수정1 N단계: …"
+
+## 결정 (계획 중 정함, D54–D57)
+- 묶인 공고는 `stage = 'duplicate'` + `dup_of = 대표`. 대표 바꾸기 `js_switch_rep`는 분석(stage·filtered_by·hidden_at·추출·점수)을 **복사**, 묶음 풀기 `js_unbundle`는 `unbundled = true`·`stage = 'new'` (D54).
+- 유사도(R84): 정리한 제목이 같음, 또는 2글자 묶음 Dice ≥ 0.8, 또는 정리한 추출 직무가 같음 — 사용자 결정 (D55).
+- 소급 적용(R89)·norm_key 다시 계산: 서버 업데이트 뒤 첫 `js-process queue`에서 1회(`js_settings.dedupe_version`), 0007이 `js_postings_backup_0007`에 백업 — 사용자 결정 (D56).
+- 작은 규칙 묶음 (D57): 지원한 공고는 묶인 쪽이 되지 않음, 숨김은 대표만, 풀린 공고는 판정 양쪽에서 빠짐, force는 중복 확인 건너뜀, 소급 대표는 지원함 > 채점 있음 > R86.
 
 ### 작은 규칙
-- 모델 id: `claude-haiku-5-5`(추출·인젝션·메일 분류), `claude-opus-5-5`(채점·프로필). 구조화 출력(JSON)만 받는다.
-- 페이지 id `job-search`, 탭 id `recommend`·`profile`·`filters`·`sources`·`mail`·`settings`. 알림 `source`는 `job-search`.
-- 단가표에 캐시 읽기·캐시 쓰기 칸을 추가한다 (목업 "계획 단계에서 정할 것"). 비용 = 각 토큰 수 × 단가 합.
-- 수집 요청 간격 기본 1500ms(규칙 `delayMs`로 바꿈), 처리 함수 한 번에 기본 5개.
-- 오류 문구는 `features/job-search/messages.ts` 한 곳. 키·토큰 값은 어떤 문구·기록에도 넣지 않는다.
-- 추측으로 정한 것(넥슨 읽기 경로, 무료 플랜 예약 실행·시간 제한, Gmail 갱신 토큰, deno-dom 동작)은 해당 단계 처음에 실제로 확인하고, 다르면 진행 기록에 적는다.
+- 바뀌는 기존 결정: D31(수집 저장 규칙), D38·D39(보관함 조건), D43(예약 이어 하기 조건). `js_ensure_defaults`는 D44대로 0007에서 다시 만든다.
+- 목업은 고치지 않는다. 화면이 목업과 다른 곳은 step 파일의 "목업과 다른 점"에 있다.
+- deno가 없어 서버 TS 타입 검사는 못 한다. 순수 함수는 Node로 실행해 확인한다.
 
 ## 단계
 | 단계 | 이름 | 파일 | 요구사항 |
 |---|---|---|---|
-| 1 | 페이지 틀과 탭 | [step-01.md](step-01.md) | R1–R3 |
-| 2 | 서버 구조 3번과 자동 생성 비밀값 | [step-02.md](step-02.md) | data.md, R79 |
-| 3 | AI 호출 모듈과 설정 탭(한도·잔액·단가) | [step-03.md](step-03.md) | R71–R79 |
-| 4 | 프로필 | [step-04.md](step-04.md) | R17–R22 |
-| 5 | 규칙 실행기와 수집 함수 | [step-05.md](step-05.md) | R25–R27, R35–R40 |
-| 6 | 수집 사이트 탭 | [step-06.md](step-06.md) | R24, R31, R34 |
-| 7 | 사이트 추가·시험 수집·어댑터 가이드 | [step-07.md](step-07.md) | R28–R30, R32 |
-| 8 | 필터 탭 | [step-08.md](step-08.md) | R42–R45, R47 |
-| 9 | 처리 함수 (필터·추출·채점) | [step-09.md](step-09.md) | R41, R44, R48–R53, R74, R78 |
-| 10 | 추천 공고 탭 | [step-10.md](step-10.md) | R4–R8, R23, R75 |
-| 11 | 상세 팝업·걸러진 공고·보관함 | [step-11.md](step-11.md) | R9–R16, R46, R49 |
-| 12 | 지원하기·일정 제안 (지원 관리 수정) | [step-12.md](step-12.md) | R54–R59 |
-| 13 | Gmail 연결·해제 | [step-13.md](step-13.md) | R60–R63, R70 |
-| 14 | 메일 확인·메일 제안 탭 | [step-14.md](step-14.md) | R64–R69 |
-| 15 | 예약 실행과 알림 | [step-15.md](step-15.md) | R33, R36, R74, R80–R81 |
+| 1 | 서버 구조 7번 (칸·stage·백업·SQL 함수) | [step-01.md](step-01.md) | data.md, R85, R87, R90, R93 |
+| 2 | 수집 사이트 자사 여부 | [step-02.md](step-02.md) | R90 (R24, R28) |
+| 3 | 정리 규칙·중복 판정 함수 | [step-03.md](step-03.md) | R35, R84, R86 |
+| 4 | 수집 단계에서 묶기 | [step-04.md](step-04.md) | R35, R82, R86–R88 (R39) |
+| 5 | 처리 단계 중복 확인·소급 적용 | [step-05.md](step-05.md) | R41, R83–R89 (R47, R53) |
+| 6 | 목록·카드에 출처 표시 | [step-06.md](step-06.md) | R91 (R4, R7, R9, R15–R16, R46) |
+| 7 | 상세 팝업 출처·따로 보기 | [step-07.md](step-07.md) | R92–R93 (R55) |
 
 ## 이번 계획에 넣지 않는 것
-- 자소서·면접 준비, 푸시·OS 알림, 남은 크레딧 조회, 코드 어댑터, Claude 외 AI, Batch API, 지원 관리 전체 서버 동기화, 직접 만든 카드 연결, 테스트 도구 도입.
-
-## 수정 계획
-- [fix-rule-ext.md](fix-rule-ext.md): 규칙 v1에 칸 틀·세션 준비·여러 본문 (L30 후속, 완료: L31)
+- 같은 사이트 안 재등록 묶기, 애매한 쌍을 AI에게 묻는 판정 (scope "나중에 고려할 것")
+- 목업 수정, 손으로 묶음 만들기, 테스트 도구 도입
