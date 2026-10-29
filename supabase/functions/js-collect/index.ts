@@ -3,11 +3,13 @@
 // 서비스 역할로 쓰되 항상 호출자 user_id로 거른다. AI는 부르지 않는다.
 // 요청: { action: "run", siteId? } — siteId가 없으면 켜진 사이트 전체, 있으면 그 사이트 하나(꺼져 있어도).
 // 순서: 사이트마다 목록 읽기 → 새 공고만 넣기(stage new, body_text null) → 남은 시간 안에 원문 받기.
+// 다른 사이트의 같은 공고(norm_key)는 그 묶음 대표에 stage duplicate·dup_of로 넣고 원문을 받지 않는다 (R82, D54).
 // 실패한 사이트는 "수집 실패" 알림을 보낸다 (R36, 사이트별 합치기 키).
 // 원문을 못 받은 공고(body_text null)는 다음 실행이 이어 받는다 (R39: 받은 원문은 다시 받지 않는다).
 //       { action: "bodies" } — 원문만 이어 받기 (예약 실행이 원문 없는 공고가 있을 때 부른다).
 //       { action: "test", rule, vars } — 시험 수집 (R29, R32, test.ts): 저장하지 않는다.
-// 응답: { ok: true, sites: [{ siteId, name, ok, read, added, reason? }], pending } 또는 { ok: false, reason }
+// 응답: { ok: true, sites: [{ siteId, name, ok, read, added, bundled, reason? }], pending } 또는 { ok: false, reason }
+//       added는 새 대표·단독 공고 수, bundled는 다른 사이트 공고에 묶인 수.
 import {
   type AdapterRule,
   judgeList,
@@ -22,7 +24,7 @@ import {
 } from "../_shared/adapter.ts";
 import { type Caller, getCaller } from "../_shared/auth.ts";
 import { handleOptions, json } from "../_shared/cors.ts";
-import { extId, normKey } from "../_shared/dedupe.ts";
+import { extId, normKey, pickRep, type RepCandidate } from "../_shared/dedupe.ts";
 import { noticeKeys, sendNotice } from "../_shared/notify.ts";
 import { testRule } from "./test.ts";
 
@@ -39,6 +41,7 @@ interface SiteRow {
   id: string;
   name: string;
   vars: Record<string, unknown> | null;
+  own_site?: boolean;
   adapter: { rule: unknown } | null;
 }
 
@@ -48,6 +51,7 @@ interface SiteRun {
   ok: boolean;
   read: number;
   added: number;
+  bundled: number;
   reason?: string;
 }
 
@@ -108,9 +112,88 @@ function dbFail(step: string, siteId: string, res: DbResult, extra: Record<strin
   return new Error("database");
 }
 
-/** 새 공고만 넣는다 (R35). 넣은 공고 수. 목록이 준 본문은 listBodies(사이트|ext_id → HTML)에 모은다 */
-async function saveNew(caller: Caller, siteId: string, items: ListItem[], listBodies: Map<string, string>) {
-  const candidates = new Map<string, { item: ListItem; ext: string; key: string | null }>();
+interface SaveResult {
+  /** 새 대표·단독 공고 수 */
+  added: number;
+  /** 다른 사이트 공고에 묶여 들어간 수 (R82) */
+  bundled: number;
+}
+
+interface Candidate {
+  item: ListItem;
+  ext: string;
+  key: string | null;
+}
+
+/** 묶음 대표 후보 (pickRep 입력) */
+interface RepRow extends RepCandidate {
+  siteId: string | null;
+}
+
+/**
+ * 다른 사이트에서 같은 norm_key를 가진 공고의 묶음 대표를 찾는다 (R35, R82, D57).
+ * 풀린 공고(unbundled)는 후보에서 빼고, 대표와 묶인 공고 모두로 찾아 대표(dup_of ?? id)로 올린다.
+ * 돌려주는 값: norm_key → 대표 (여러 묶음이 걸리면 pickRep으로 하나)
+ */
+async function findReps(caller: Caller, siteId: string, keys: string[]): Promise<Map<string, RepRow>> {
+  const repIdsByKey = new Map<string, Set<string>>();
+  for (const part of chunks(keys)) {
+    const found = await caller.admin.from("js_postings").select("id, site_id, norm_key, dup_of")
+      .eq("user_id", caller.userId).eq("unbundled", false).in("norm_key", part);
+    if (found.error) throw dbFail("norm-key-lookup", siteId, found, { count: part.length, inBytes: inParamBytes(part) });
+    for (const row of found.data ?? []) {
+      if (row.site_id === siteId) continue; // 같은 사이트는 ext_id로만 판정한다
+      const key = row.norm_key as string;
+      const set = repIdsByKey.get(key) ?? new Set<string>();
+      set.add((row.dup_of as string | null) ?? (row.id as string));
+      repIdsByKey.set(key, set);
+    }
+  }
+  const repIds = [...new Set([...repIdsByKey.values()].flatMap((s) => [...s]))];
+  if (repIds.length === 0) return new Map();
+
+  const sites = await caller.admin.from("js_sites").select("id, own_site").eq("user_id", caller.userId);
+  if (sites.error) throw dbFail("site-lookup", siteId, sites);
+  const own = new Map((sites.data ?? []).map((s) => [s.id as string, s.own_site === true]));
+
+  const reps = new Map<string, RepRow>();
+  for (const part of chunks(repIds)) {
+    const found = await caller.admin.from("js_postings").select("id, site_id, applied_at, collected_at")
+      .eq("user_id", caller.userId).in("id", part);
+    if (found.error) throw dbFail("rep-lookup", siteId, found, { count: part.length });
+    for (const row of found.data ?? []) {
+      const rowSite = row.site_id as string | null;
+      reps.set(row.id as string, {
+        id: row.id as string,
+        siteId: rowSite,
+        applied: row.applied_at !== null,
+        scored: false,
+        ownSite: rowSite ? own.get(rowSite) ?? false : false,
+        collectedAt: row.collected_at as string,
+      });
+    }
+  }
+  const out = new Map<string, RepRow>();
+  for (const [key, ids] of repIdsByKey) {
+    const rep = pickRep([...ids].flatMap((id) => reps.get(id) ?? []));
+    if (rep) out.set(key, rep);
+  }
+  return out;
+}
+
+/**
+ * 새 공고를 넣는다 (R35, R82, R86–R88). 목록이 준 본문은 listBodies(사이트|ext_id → HTML)에 모은다.
+ * 다른 사이트의 같은 공고가 있으면 버리지 않고 그 묶음 대표에 duplicate로 넣는다 (원문·AI 처리 없음).
+ * 대표가 자사 사이트가 아니고 이 사이트가 자사이며 대표를 지원하지 않았으면 새 공고로 대표를 바꾼다 (R87, D54, D57).
+ */
+async function saveNew(
+  caller: Caller,
+  site: SiteRow,
+  items: ListItem[],
+  listBodies: Map<string, string>,
+): Promise<SaveResult> {
+  const siteId = site.id;
+  const candidates = new Map<string, Candidate>();
   for (const item of items) {
     if (!item.title || !item.link) continue;
     const ext = extId(item.id, item.link);
@@ -124,28 +207,53 @@ async function saveNew(caller: Caller, siteId: string, items: ListItem[], listBo
     if (found.error) throw dbFail("ext-lookup", siteId, found, { count: part.length, inBytes: inParamBytes(part) });
     for (const row of found.data ?? []) candidates.delete(row.ext_id as string);
   }
+  if (candidates.size === 0) return { added: 0, bundled: 0 };
+
   const keys = [...new Set([...candidates.values()].flatMap((c) => (c.key ? [c.key] : [])))];
-  const taken = new Set<string>();
-  for (const part of chunks(keys)) {
-    const found = await caller.admin.from("js_postings").select("norm_key, site_id")
-      .eq("user_id", caller.userId).in("norm_key", part);
-    if (found.error) throw dbFail("norm-key-lookup", siteId, found, { count: part.length, inBytes: inParamBytes(part) });
-    for (const row of found.data ?? []) if (row.site_id !== siteId) taken.add(row.norm_key as string);
+  const reps = await findReps(caller, siteId, keys);
+
+  const row = ({ item, ext, key }: Candidate, dupOf: string | null) => {
+    if (item.body) listBodies.set(`${siteId}|${ext}`, item.body);
+    return {
+      user_id: caller.userId, site_id: siteId, ext_id: ext, url: item.link, company: item.company,
+      title: item.title, duty: item.duty, norm_key: key,
+      stage: dupOf ? "duplicate" : "new", dup_of: dupOf,
+    };
+  };
+  const alone = [...candidates.values()].filter((c) => !c.key || !reps.has(c.key)).map((c) => row(c, null));
+  const bundledRows = [...candidates.values()]
+    .flatMap((c) => (c.key && reps.has(c.key) ? [row(c, reps.get(c.key)!.id)] : []));
+
+  let added = 0;
+  if (alone.length > 0) {
+    const saved = await caller.admin.from("js_postings")
+      .upsert(alone, { onConflict: "user_id,site_id,ext_id", ignoreDuplicates: true }).select("id");
+    if (saved.error) throw dbFail("insert", siteId, saved, { rows: alone.length });
+    added = saved.data?.length ?? 0;
   }
-  const rows = [...candidates.values()]
-    .filter((c) => !c.key || !taken.has(c.key))
-    .map(({ item, ext, key }) => {
-      if (item.body) listBodies.set(`${siteId}|${ext}`, item.body);
-      return {
-        user_id: caller.userId, site_id: siteId, ext_id: ext, url: item.link, company: item.company,
-        title: item.title, duty: item.duty, norm_key: key, stage: "new",
-      };
-    });
-  if (rows.length === 0) return 0;
+  if (bundledRows.length === 0) return { added, bundled: 0 };
+
   const saved = await caller.admin.from("js_postings")
-    .upsert(rows, { onConflict: "user_id,site_id,ext_id", ignoreDuplicates: true }).select("id");
-  if (saved.error) throw dbFail("insert", siteId, saved, { rows: rows.length });
-  return saved.data?.length ?? 0;
+    .upsert(bundledRows, { onConflict: "user_id,site_id,ext_id", ignoreDuplicates: true }).select("id, dup_of");
+  if (saved.error) throw dbFail("insert-duplicate", siteId, saved, { rows: bundledRows.length });
+  let bundled = saved.data?.length ?? 0;
+
+  // R87: 자사 공고가 들어오면 대표를 바꾼다. 같은 대표에 여러 개가 묶였으면 처음 것 하나만 대표가 되고,
+  // 나머지는 js_switch_rep이 새 대표 아래로 옮긴다. 새 대표는 body_text가 null이라 fetchBodies가 원문만 받는다.
+  if (site.own_site !== true) return { added, bundled };
+  const byId = new Map([...reps.values()].map((r) => [r.id, r]));
+  const switched = new Set<string>();
+  for (const p of saved.data ?? []) {
+    const oldId = p.dup_of as string;
+    const rep = byId.get(oldId);
+    if (!rep || switched.has(oldId) || rep.ownSite || rep.applied) continue;
+    const res = await caller.admin.rpc("js_switch_rep", { p_user: caller.userId, p_old: oldId, p_new: p.id });
+    if (res.error) throw dbFail("switch-rep", siteId, res);
+    switched.add(oldId);
+    added++;
+    bundled--;
+  }
+  return { added, bundled };
 }
 
 function extOf(contentType: string): string | null {
@@ -175,11 +283,12 @@ async function storeImages(caller: Caller, postingId: string, urls: string[]): P
   return paths;
 }
 
-/** 원문이 없는 공고(body_text null)의 원문을 남은 시간 안에 받는다. 남은 공고 수 */
+/** 원문이 없는 공고(body_text null, 묶인 duplicate 제외)의 원문을 남은 시간 안에 받는다. 남은 공고 수 */
 async function fetchBodies(caller: Caller, targets: Target[], listBodies: Map<string, string>, deadline: number) {
   const bySite = new Map(targets.map((t) => [t.site.id, t]));
   const rows = await caller.admin.from("js_postings").select("id, site_id, ext_id, url")
     .eq("user_id", caller.userId).in("site_id", [...bySite.keys()]).is("body_text", null)
+    .neq("stage", "duplicate") // R82: 묶인 공고는 원문을 받지 않는다
     .order("collected_at", { ascending: false }).limit(300);
   if (rows.error) throw new Error("database");
   const postings = rows.data ?? [];
@@ -258,7 +367,7 @@ async function bodiesOnly(caller: Caller): Promise<Response> {
 
 async function run(caller: Caller, siteId: string | null): Promise<Response> {
   const deadline = Date.now() + BUDGET_MS;
-  let query = caller.admin.from("js_sites").select("id, name, vars, adapter:js_adapters(rule)")
+  let query = caller.admin.from("js_sites").select("id, name, vars, own_site, adapter:js_adapters(rule)")
     .eq("user_id", caller.userId);
   query = siteId ? query.eq("id", siteId) : query.eq("enabled", true);
   const sites = await query;
@@ -269,7 +378,7 @@ async function run(caller: Caller, siteId: string | null): Promise<Response> {
   const targets: Target[] = [];
   const listBodies = new Map<string, string>();
   for (const site of (sites.data ?? []) as unknown as SiteRow[]) {
-    const result: SiteRun = { siteId: site.id, name: site.name, ok: false, read: 0, added: 0 };
+    const result: SiteRun = { siteId: site.id, name: site.name, ok: false, read: 0, added: 0, bundled: 0 };
     const checked = site.adapter ? validateRule(site.adapter.rule) : null;
     const vars = stringVars(site.vars);
     let skipped = false;
@@ -289,7 +398,9 @@ async function run(caller: Caller, siteId: string | null): Promise<Response> {
         if (failed) result.reason = failed;
         else {
           try {
-            result.added = await saveNew(caller, site.id, list.items, listBodies);
+            const saved = await saveNew(caller, site, list.items, listBodies);
+            result.added = saved.added;
+            result.bundled = saved.bundled;
             result.ok = true;
           } catch (e) {
             // DB 실패는 dbFail이 이미 남겼다. 그 밖의 예외(코드 오류 등)만 여기서 남긴다
