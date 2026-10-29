@@ -33,7 +33,7 @@ export function useProcessRunner(session: ServerSession, onFinish: () => void): 
     runningRef.current = true;
     cancelRef.current = false;
     setResult(null);
-    setState({ kind: "processing", done: 0, remaining: 0 });
+    setState({ kind: "submitting" });
     void runProcessNow({
       session,
       onState: setState,

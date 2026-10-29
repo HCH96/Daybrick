@@ -89,3 +89,12 @@
 .js-process__msg--bad {
   color: var(--red);
 }
+
+/* 진행 중 일괄 줄 (R105): 처리 줄 아래 종류별 한 줄 */
+.js-process__batch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 22px;
+  padding-left: 2px;
+}

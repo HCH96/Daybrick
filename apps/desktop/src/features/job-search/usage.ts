@@ -55,7 +55,8 @@ export function summarizeUsage(
   now: Date,
 ): UsageSummary {
   const { dayStart, monthStart } = kstBoundaries(now);
-  const todayCalls = calls.filter((call) => new Date(call.at) >= dayStart).length;
+  // 하루 호출 수에는 일괄 처리 호출을 세지 않는다. 이번 달 사용액에는 넣는다 (R73, D25)
+  const todayCalls = calls.filter((call) => !call.batch && new Date(call.at) >= dayStart).length;
   const baseline = records[0] ?? null;
   const sinceBaselineUsd = baseline ? sumCost(calls, new Date(baseline.setAt)) : 0;
   return {

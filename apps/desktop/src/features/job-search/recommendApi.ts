@@ -30,7 +30,7 @@ export interface RecommendState {
   lastCollectAt: string | null;
   /** 켜진 사이트 중 마지막 수집이 실패한 곳 수 */
   failedSites: number;
-  /** 한도 때문에 채점이 미뤄진 공고 수 (`stage = waiting`, R7) */
+  /** 한도 때문에 채점이 미뤄진 공고 수 (`stage = waiting`, 일괄로 맡기지 않은 것, R7) */
   waiting: number;
   /** 지원 안 함 보관함 공고 수 (R9, D11) */
   archived: number;
@@ -110,7 +110,7 @@ export async function loadRecommend(session: ServerSession): Promise<ApiResult<R
     loadScored(session),
     session.client.from("js_collect_runs").select("at").order("at", { ascending: false }).limit(1).maybeSingle(),
     session.client.from("js_sites").select("last_result").eq("enabled", true),
-    count().eq("stage", "waiting").is("hidden_at", null),
+    count().eq("stage", "waiting").is("hidden_at", null).is("batch_id", null),
     count().not("hidden_at", "is", null).is("applied_at", null).neq("stage", "duplicate"),
     count().in("stage", ["filtered1", "filtered2", "suspect", "failed"]).is("hidden_at", null).is("applied_at", null),
   ]);

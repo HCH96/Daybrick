@@ -1,16 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-  CONTINUE_BATCH,
-  continueEtaMinutes,
-  continueRunning,
-  hhmm,
-  lastContinueAt,
-  nextContinueAt,
-} from "../../../features/job-search/cronSlots";
+import { continueRunning, hhmm, lastContinueAt, nextContinueAt } from "../../../features/job-search/cronSlots";
 import { loadProcessState, type ProcessState } from "../../../features/job-search/processApi";
 import {
+  BATCH_BUSY_TITLE,
   PROCESS_NOTHING,
-  etaText,
+  batchLines,
   pauseText,
   processStateErrorMessage,
 } from "../../../features/job-search/processMessages";
@@ -37,29 +31,19 @@ function RunningText({ state }: { state: Exclude<RunState, { kind: "idle" }> }) 
       </span>
     );
   }
-  const progress = state.done > 0 || state.remaining > 0 ? ` · 이번에 ${state.done}개 끝 · 남은 ${state.remaining}개` : "";
-  if (state.kind === "pause") {
-    return (
-      <span className="js-process__text">
-        {pauseText(state.until)}
-        {progress}
-      </span>
-    );
-  }
+  if (state.kind === "pause") return <span className="js-process__text">{pauseText(state.until)}</span>;
   return (
     <span className="js-process__text">
-      <b>평가 중</b>
-      {progress}
+      <b>일괄 처리로 맡기는 중</b>
     </span>
   );
 }
 
 function IdleText({ value, now }: { value: ProcessState; now: Date }) {
-  if (value.queue === 0 && value.bodies === 0) {
+  if (value.queue === 0 && value.bodies === 0 && value.inFlight.length === 0) {
     return <span className="js-process__text">{PROCESS_NOTHING}</span>;
   }
   const running = continueRunning(now);
-  const total = value.queue + value.bodies;
   return (
     <>
       {running ? (
@@ -67,23 +51,37 @@ function IdleText({ value, now }: { value: ProcessState; now: Date }) {
           예약 처리 중 ({hhmm(lastContinueAt(now))} 시작)
         </span>
       ) : (
-        <span className="js-process__chip">평가 대기 {value.queue}개</span>
+        value.queue > 0 && <span className="js-process__chip">평가 대기 {value.queue}개</span>
       )}
       {value.bodies > 0 && <span className="js-process__chip">원문 대기 {value.bodies}개</span>}
       <span className="js-process__text">
         다음 예약 처리 <b>{hhmm(nextContinueAt(now))}</b>
-        <span className="js-process__faint">
-          {" "}
-          · 15분마다 {CONTINUE_BATCH}개씩, 다 끝나기까지 {etaText(continueEtaMinutes(total))}
-        </span>
+        <span className="js-process__faint"> · 15분마다 결과를 확인하고 대기 공고를 일괄 처리로 맡겨요</span>
       </span>
     </>
   );
 }
 
+/** 진행 중 일괄: 종류별 한 줄 "일괄 처리 중: 채점 120개 맡김 · 10/30 06:12" (R105) */
+function BatchRows({ value }: { value: ProcessState }) {
+  return (
+    <>
+      {batchLines(value.inFlight).map((line) => (
+        <div key={line.kind} className="js-process__batch">
+          <span className="js-process__spinner" aria-hidden="true" />
+          <span className="js-process__text">
+            <b>일괄 처리 중</b>: {line.text}
+          </span>
+        </div>
+      ))}
+    </>
+  );
+}
+
 /**
- * 처리 상태 줄 (사용자 테스트 r1 추가 요청 3·5): 앱이 평가 중인지, 예약 처리 중·대기 중인지,
- * 다음 예약 처리 시각을 보여 주고 [지금 평가]·[멈추기]를 둔다.
+ * 처리 상태 줄 (사용자 테스트 r1 추가 요청 3·5, R105, R106): 앱이 맡기는 중인지, 진행 중 일괄,
+ * 예약 처리 중·대기 중, 다음 예약 처리 시각을 보여 주고 [지금 평가]·[멈추기]를 둔다.
+ * 진행 중 일괄이 있으면 [지금 평가]를 끈다.
  */
 function ProcessStatusLine({ refreshKey = 0 }: ProcessStatusLineProps) {
   const { session, runner } = useJobSearch();
@@ -110,7 +108,8 @@ function ProcessStatusLine({ refreshKey = 0 }: ProcessStatusLineProps) {
   }, [load]);
 
   const busy = runner.state.kind !== "idle";
-  const hasWork = value !== null && value.queue + value.bodies > 0;
+  const batchBusy = value !== null && value.inFlight.length > 0;
+  const hasWork = value !== null && (value.queue + value.bodies > 0 || batchBusy);
 
   return (
     <div className="js-process">
@@ -139,7 +138,13 @@ function ProcessStatusLine({ refreshKey = 0 }: ProcessStatusLineProps) {
             </button>
           ) : (
             hasWork && (
-              <button type="button" className="setup-btn setup-btn--sm setup-btn--primary" onClick={runner.start}>
+              <button
+                type="button"
+                className="setup-btn setup-btn--sm setup-btn--primary"
+                onClick={runner.start}
+                disabled={batchBusy}
+                title={batchBusy ? BATCH_BUSY_TITLE : undefined}
+              >
                 <PlayIcon />
                 지금 평가
               </button>
@@ -147,6 +152,7 @@ function ProcessStatusLine({ refreshKey = 0 }: ProcessStatusLineProps) {
           )}
         </span>
       </div>
+      {value && <BatchRows value={value} />}
       {!busy && runner.result && (
         <p className={`js-process__msg js-process__msg--${runner.result.ok ? "ok" : "bad"}`} role="status">
           {runner.result.text}

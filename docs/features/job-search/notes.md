@@ -9,15 +9,17 @@
 - 3단계: 직군 추출·직군 필터 (자동 진행, 최종 테스트 대기)
 - 4단계: 일괄 맡기기 (자동 진행, 최종 테스트 대기)
 - 5단계: 일괄 결과 받기·채점 맡기기 (자동 진행, 최종 테스트 대기)
+- 6단계: 예약 실행·[지금 평가]·상태 줄 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 6단계: 예약 실행·[지금 평가]·상태 줄 (앱이 `js-process batch`를 부르고, 진행 중 일괄을 상태 줄에 보이며 버튼을 끔, 오늘 호출 수에서 일괄 제외)
+- 7단계: 기존 공고 직군 채우기·옮기기 (batch 맨 앞 `familyBackfill`로 직군 없는 공고를 family 일괄로 맡기고, 저장 뒤 비개발 scored 공고를 filtered2로 옮김, force는 점수 재사용)
 - 수정 계획: 근거 기록 L44, 커밋 접두어 "구직 관리 수정2"
-- 관련 결정: D21, D25, D26, D38, D43, D46, D64, D68, D70, D71, D72, D80, D81 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 서버 batch 응답은 `{ ok, saved: { extract, score }, submitted: { extract, score }, held, inFlight: BatchState[], stopped }` (`js-process/index.ts` `runBatch`). `BatchState { kind, count, submittedAt }`이고 kind에 `family`도 올 수 있다. 진행 중 일괄은 `js_batches.status = 'submitted'`.
+- 관련 결정: D26, D37, D39, D43, D56, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D75, D80, D81, D82 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: `pollBatches`는 지금 `kind family` 행을 읽지 않는다(D81). `loadInFlight`(`js-process/batch.ts`)는 family 행도 진행 중으로 세므로 앱 상태 줄에 "직군 N개 맡김"이 이미 보인다. 월 한도 예상 비용 계산은 `batch.ts`의 `estimateCost`·`loadInFlight().estSum`을 같이 쓴다.
 
 ## 확인할 문서 (경로는 docs/features/job-search/ 기준, 파일 통째로 읽기)
-- ai/plan/step-06.md
-- ai/spec/req-batch.md (R105, R106), ai/spec/req-collect.md (R40), ai/spec/req-usage.md (R73, R75), ai/spec/req-recommend.md (R7)
-- ai/logs/L50.md
-- human/mockups/recommend.html의 recommend-status 구역, sources.html의 sources-bar 구역 (CSS: recommend.css·manage.css·common.css에서 클래스 검색)
+- ai/plan/step-07.md
+- ai/spec/req-analysis.md (R47, R99, R100, R101)
+- ai/logs/L51.md
+- human/mockups/filtered.html의 filtered-rows 구역 (CSS: recommend.css에서 클래스 검색)
+- ai/plan/structure.md의 js-process/ 줄 (새 파일 familyBackfill.ts 위치 확인할 때만)
