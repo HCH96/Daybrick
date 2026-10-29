@@ -89,6 +89,12 @@ const ADAPTER: (&str, &str) = (
     include_str!("../../../../../supabase/functions/_shared/adapter.ts"),
 );
 
+/// 구직 관리 공용: 어댑터 규칙의 세션 준비 (`adapter.ts`가 불러오므로 ADAPTER와 늘 함께 올린다, D50)
+const ADAPTER_SESSION: (&str, &str) = (
+    "_shared/adapterSession.ts",
+    include_str!("../../../../../supabase/functions/_shared/adapterSession.ts"),
+);
+
 /// 구직 관리 공용: 같은 공고 판정 키
 const DEDUPE: (&str, &str) = (
     "_shared/dedupe.ts",
@@ -165,6 +171,7 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
             CORS,
             AUTH,
             ADAPTER,
+            ADAPTER_SESSION,
             DEDUPE,
             NOTIFY,
         ],
