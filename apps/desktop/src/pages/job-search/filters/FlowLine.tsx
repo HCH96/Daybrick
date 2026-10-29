@@ -52,6 +52,11 @@ function FlowLine({ counts }: FlowLineProps) {
           </Fragment>
         );
       })}
+      {counts && counts.bundled > 0 && (
+        <span className="js-filters__chip" title="다른 사이트 공고에 묶여 따로 처리하지 않은 공고">
+          중복으로 묶음 {counts.bundled}개
+        </span>
+      )}
     </div>
   );
 }

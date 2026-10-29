@@ -108,17 +108,30 @@ export interface FlowCounts {
   secondPassed: number;
   scored: number;
   waiting: number;
+  /** 다른 사이트 공고에 묶인 공고 (stage duplicate, R95) */
+  bundled: number;
 }
 
 /**
  * 단계별 개수. 한도 대기(waiting) 공고는 추출 결과가 있으면 2차까지 통과하고 채점을 기다리는 것으로 본다.
  * 필터를 바꿔 new로 되돌린 공고는 다시 처리하기 전까지 수집 개수에만 든다.
+ * 처리 실패(failed)는 걸러진 공고처럼 수집 개수에만 들고, 묶인 공고(duplicate)는 `bundled`로도 센다 (R95).
  */
 export function summarizeFlow(postings: readonly FlowPosting[]): FlowCounts {
-  const counts: FlowCounts = { collected: 0, unprocessed: 0, firstPassed: 0, extractedOk: 0, secondPassed: 0, scored: 0, waiting: 0 };
+  const counts: FlowCounts = {
+    collected: 0,
+    unprocessed: 0,
+    firstPassed: 0,
+    extractedOk: 0,
+    secondPassed: 0,
+    scored: 0,
+    waiting: 0,
+    bundled: 0,
+  };
   for (const p of postings) {
     counts.collected += 1;
     if (p.stage === "new") counts.unprocessed += 1;
+    if (p.stage === "duplicate") counts.bundled += 1;
     const waitingScore = p.stage === "waiting" && p.extracted;
     if (p.stage === "waiting") counts.waiting += 1;
     if (["extracted", "filtered2", "suspect", "scored"].includes(p.stage) || waitingScore) counts.firstPassed += 1;

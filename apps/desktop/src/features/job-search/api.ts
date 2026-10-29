@@ -755,9 +755,22 @@ export async function refilter(session: ServerSession): Promise<ApiResult<number
   return count === null ? { ok: false, error: "bad-response" } : { ok: true, value: count };
 }
 
-const POSTING_STAGES: readonly PostingStage[] = ["new", "filtered1", "extracted", "filtered2", "suspect", "scored", "waiting"];
+const POSTING_STAGES: readonly PostingStage[] = [
+  "new",
+  "filtered1",
+  "extracted",
+  "filtered2",
+  "suspect",
+  "scored",
+  "waiting",
+  "failed",
+  "duplicate",
+];
 
-/** 처리 순서 줄(R41)에 쓸 `sinceIso` 이후 수집 공고의 단계와 추출 결과 유무 */
+/**
+ * 처리 순서 줄(R41, R94)에 쓸 `sinceIso` 이후 수집 공고의 단계와 추출 결과 유무.
+ * 모르는 단계의 행은 건너뛴다 (그 행 하나 때문에 전체를 실패로 보지 않는다)
+ */
 export async function loadFlowPostings(session: ServerSession, sinceIso: string): Promise<ApiResult<FlowPosting[]>> {
   const postings: FlowPosting[] = [];
   for (let from = 0; ; from += PAGE_SIZE) {
@@ -772,7 +785,7 @@ export async function loadFlowPostings(session: ServerSession, sinceIso: string)
     for (const row of rows) {
       if (!isRecord(row)) return { ok: false, error: "bad-response" };
       const stage = POSTING_STAGES.find((s) => s === row.stage);
-      if (!stage) return { ok: false, error: "bad-response" };
+      if (!stage) continue;
       // 1:1 관계라 객체 하나(또는 null)로 오지만, 배열로 와도 받는다
       const ex: unknown = row.js_extractions;
       const extracted = Array.isArray(ex) ? ex.length > 0 : ex !== null && ex !== undefined;

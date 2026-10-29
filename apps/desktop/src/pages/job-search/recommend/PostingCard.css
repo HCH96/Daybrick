@@ -53,12 +53,6 @@
   font-weight: 600;
 }
 
-.posting-card__site {
-  margin-left: auto;
-  color: var(--faint);
-  font-size: 12px;
-}
-
 .posting-card__title {
   font-size: 15px;
   font-weight: 700;
@@ -139,13 +133,4 @@
 
 .posting-card__score--muted {
   color: var(--muted);
-}
-
-/* 묶음 출처 한 줄 (R91, SourceNames). 목업에 없어 .job-meta 글씨 크기에 회색 */
-.posting-card__src {
-  overflow: hidden;
-  color: var(--faint);
-  font-size: 12px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }

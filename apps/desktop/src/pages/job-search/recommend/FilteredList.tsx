@@ -18,7 +18,6 @@ import type { StatusLine } from "../profile/profileFormat";
 import { AlertIcon } from "./RecommendIcons";
 import { SparkIcon } from "../popup/PopupIcons";
 import ListHead from "./ListHead";
-import SourceNames from "./SourceNames";
 import "./ArchivedList.css";
 
 interface FilteredListProps {
@@ -143,7 +142,6 @@ function FilteredList({ refreshKey, onOpen, onChanged }: FilteredListProps) {
                   <span className="js-list__co">{posting.company ?? "회사 없음"}</span>
                   {posting.title ?? "제목 없음"}
                 </div>
-                <SourceNames sources={posting.sources} className="js-list__src" />
                 <Hits posting={posting} />
                 {posting.stage === "suspect" &&
                   posting.suspectQuotes.map((q, i) => (

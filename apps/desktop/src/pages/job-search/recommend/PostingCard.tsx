@@ -1,7 +1,6 @@
 import { ddayLabel } from "../../../features/job-search/dday";
 import { gradeLabel, gradeTone } from "../../../features/job-search/grade";
 import type { RecommendPosting } from "../../../features/job-search/recommendApi";
-import SourceNames from "./SourceNames";
 import "./PostingCard.css";
 
 interface PostingCardProps {
@@ -15,7 +14,7 @@ interface PostingCardProps {
   onOpen?: () => void;
 }
 
-/** 공고 카드 (R4, R8, R23, R91): 회사·"새"·사이트 / 제목 / 경력·고용 형태·근무지 / D-n · 점수·등급 / 출처 */
+/** 공고 카드 (R4, R8, R23): 회사·"new" / 제목 / 경력·고용 형태·근무지 / D-n · 점수·등급. 출처·사이트 이름은 표시하지 않는다 (R91) */
 function PostingCard({ posting, days, isNew, stale, onOpen }: PostingCardProps) {
   const dday = ddayLabel(days);
   const meta = [posting.experience, posting.employment.join(", ") || null, posting.location].filter(
@@ -30,8 +29,7 @@ function PostingCard({ posting, days, isNew, stale, onOpen }: PostingCardProps) 
     >
       <div className="posting-card__top">
         <span className="posting-card__co">{posting.company ?? "회사 없음"}</span>
-        {isNew && <span className="posting-card__new">새</span>}
-        {posting.siteName && <span className="posting-card__site">{posting.siteName}</span>}
+        {isNew && <span className="posting-card__new">new</span>}
       </div>
       <div className="posting-card__title">{posting.title ?? "제목 없음"}</div>
       {meta.length > 0 && <div className="posting-card__meta">{meta.join(" · ")}</div>}
@@ -46,7 +44,6 @@ function PostingCard({ posting, days, isNew, stale, onOpen }: PostingCardProps) 
           <span>{gradeLabel(posting.grade)}</span>
         </div>
       </div>
-      <SourceNames sources={posting.sources} className="posting-card__src" />
     </button>
   );
 }
