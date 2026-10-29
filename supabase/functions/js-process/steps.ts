@@ -1,6 +1,8 @@
 // js-process: 공고 하나의 단계별 처리 (job-search R41, R44, R48–R53).
 // 1차 필터 → 추출(+인젝션 검사) → 2차 필터 → 채점. 결과 저장은 모두 호출자 user_id로 거른다.
-import { callClaude } from "../_shared/ai.ts";
+// 추출·채점은 "요청 만들기(extractRequest·scoreRequest)"와 "결과 저장(saveExtraction·saveScore)"으로 나눠
+// 바로 호출(extract·score)과 일괄 처리(batch.ts)가 같이 쓴다 (D71).
+import { callClaude, type CallClaudeInput } from "../_shared/ai.ts";
 import type { Caller } from "../_shared/auth.ts";
 import {
   applyFirst,
@@ -93,16 +95,14 @@ function strings(value: unknown): string[] {
   return value.filter((v): v is string => typeof v === "string" && v.trim() !== "").map((v) => v.trim());
 }
 
-/** 추출 + 인젝션 검사 (R48–R50). 이미 있으면 그것을 돌려준다 */
-export async function extract(ctx: Context, p: PostingRow): Promise<Extraction | { stop: Stop }> {
-  const saved = await ctx.caller.admin.from("js_extractions").select("fields, suspect")
-    .eq("posting_id", p.id).eq("user_id", ctx.caller.userId).maybeSingle();
-  if (saved.error) return { stop: { reason: "database" } };
-  if (saved.data) return { fields: saved.data.fields, suspect: saved.data.suspect === true };
-
+/**
+ * 추출 요청 만들기 (R48–R50): 첨부(이미지·나눈 PDF)와 규칙 검사로 보이지 않는 문자를 지운 원문.
+ * 바로 호출(`extract`)과 일괄 맡기기(`batch.ts`)가 같은 요청을 쓴다 (D71).
+ */
+export async function extractRequest(ctx: Context, p: PostingRow): Promise<CallClaudeInput> {
   const guard = guardText(p.body_text ?? "");
   const attached = await postingAttachments(ctx.caller, p.image_paths ?? []);
-  const result = await callClaude(ctx.caller, {
+  return {
     task: "extract",
     model: "claude-haiku-5-5",
     system: EXTRACT_SYSTEM,
@@ -112,14 +112,16 @@ export async function extract(ctx: Context, p: PostingRow): Promise<Extraction |
     ],
     schema: EXTRACT_SCHEMA,
     maxTokens: 8192,
-  });
-  if (result.kind === "limit") return { stop: { reason: "limit", which: result.which } };
-  if (result.kind === "credit") return { stop: { reason: "credit" } };
-  if (result.kind === "error") {
-    return { stop: result.rejected ? { reason: "rejected", message: result.rejected } : { reason: result.reason } };
-  }
+  };
+}
 
-  const data = isRecord(result.data) ? result.data : {};
+/**
+ * 추출 결과 저장: AI 결과 JSON(`{ fields, injection }`)과 규칙 검사(원문에서 다시 계산)를 합쳐 의심 여부를 정한다.
+ * 같은 공고를 다시 저장해도 한 행이다 (posting_id 기준 upsert). 저장하지 못하면 null.
+ */
+export async function saveExtraction(ctx: Context, p: PostingRow, result: unknown): Promise<Extraction | null> {
+  const guard = guardText(p.body_text ?? "");
+  const data = isRecord(result) ? result : {};
   const fields = isRecord(data.fields) ? data.fields : {};
   const injection = isRecord(data.injection) ? data.injection : {};
   const quotes = [...guard.quotes, ...strings(injection.quotes)];
@@ -131,8 +133,25 @@ export async function extract(ctx: Context, p: PostingRow): Promise<Extraction |
     suspect,
     suspect_quotes: suspect ? [...new Set(quotes)] : [],
   }, { onConflict: "posting_id" });
-  if (stored.error) return { stop: { reason: "database" } };
+  if (stored.error) return null;
   return { fields, suspect };
+}
+
+/** 추출 + 인젝션 검사 (R48–R50), 바로 호출. 이미 있으면 그것을 돌려준다 */
+export async function extract(ctx: Context, p: PostingRow): Promise<Extraction | { stop: Stop }> {
+  const saved = await ctx.caller.admin.from("js_extractions").select("fields, suspect")
+    .eq("posting_id", p.id).eq("user_id", ctx.caller.userId).maybeSingle();
+  if (saved.error) return { stop: { reason: "database" } };
+  if (saved.data) return { fields: saved.data.fields, suspect: saved.data.suspect === true };
+
+  const result = await callClaude(ctx.caller, await extractRequest(ctx, p));
+  if (result.kind === "limit") return { stop: { reason: "limit", which: result.which } };
+  if (result.kind === "credit") return { stop: { reason: "credit" } };
+  if (result.kind === "error") {
+    return { stop: result.rejected ? { reason: "rejected", message: result.rejected } : { reason: result.reason } };
+  }
+  const stored = await saveExtraction(ctx, p, result.data);
+  return stored ?? { stop: { reason: "database" } };
 }
 
 /** 저장된 추출 항목을 2차 필터 모양으로 바꾼다 (D35) */
@@ -185,37 +204,62 @@ function totalOf(parts: unknown): number {
   return sum;
 }
 
-/** 적합도 채점 (R51). 같은 프로필 버전의 점수가 있으면 다시 부르지 않는다 (R53) */
-export async function score(ctx: Context, p: PostingRow, fields: unknown): Promise<StepResult> {
-  if (!ctx.profile) return { kind: "stop", stop: { reason: "no-profile" } };
+/** 채점 요청 만들기 (R51): 지금 프로필과 추출 항목. 프로필이 없으면 null */
+export function scoreRequest(ctx: Context, p: PostingRow, fields: unknown): CallClaudeInput | null {
+  if (!ctx.profile) return null;
+  return {
+    task: "score",
+    model: "claude-opus-5-5",
+    system: SCORE_SYSTEM,
+    content: scoreContent(ctx.profile.data, meta(p), fields),
+    schema: SCORE_SCHEMA,
+    maxTokens: 8192,
+  };
+}
+
+/**
+ * 채점 결과 저장: 항목 점수를 더해 점수·등급을 정하고(D36) `scored`로 둔다.
+ * `profileVersion`은 요청을 만들 때의 프로필 버전이다. 같은 공고를 다시 저장해도 한 행이다. 실패하면 false.
+ */
+export async function saveScore(ctx: Context, p: PostingRow, result: unknown, profileVersion: number): Promise<boolean> {
+  const data = isRecord(result) ? result : {};
+  const total = totalOf(data.parts);
+  const stored = await ctx.caller.admin.from("js_scores").upsert({
+    posting_id: p.id,
+    user_id: ctx.caller.userId,
+    profile_version: profileVersion,
+    score: total,
+    grade: gradeOf(total),
+    strengths: reasons(data.strengths),
+    gaps: reasons(data.gaps),
+    summary: typeof data.summary === "string" ? data.summary.trim() : "",
+  }, { onConflict: "posting_id" });
+  if (stored.error) return false;
+  return await setStage(ctx, p.id, "scored");
+}
+
+/** 지금 프로필 버전의 점수가 이미 있는지 (R53, D73). 읽지 못하면 null */
+export async function hasCurrentScore(ctx: Context, postingId: string): Promise<boolean | null> {
+  if (!ctx.profile) return false;
   const saved = await ctx.caller.admin.from("js_scores").select("profile_version")
-    .eq("posting_id", p.id).eq("user_id", ctx.caller.userId).maybeSingle();
-  if (saved.error) return { kind: "stop", stop: { reason: "database" } };
-  if (saved.data?.profile_version !== ctx.profile.version) {
-    const result = await callClaude(ctx.caller, {
-      task: "score",
-      model: "claude-opus-5-5",
-      system: SCORE_SYSTEM,
-      content: scoreContent(ctx.profile.data, meta(p), fields),
-      schema: SCORE_SCHEMA,
-      maxTokens: 8192,
-    });
+    .eq("posting_id", postingId).eq("user_id", ctx.caller.userId).maybeSingle();
+  if (saved.error) return null;
+  return saved.data?.profile_version === ctx.profile.version;
+}
+
+/** 적합도 채점 (R51), 바로 호출. 같은 프로필 버전의 점수가 있으면 다시 부르지 않는다 (R53) */
+export async function score(ctx: Context, p: PostingRow, fields: unknown): Promise<StepResult> {
+  const request = scoreRequest(ctx, p, fields);
+  if (!ctx.profile || !request) return { kind: "stop", stop: { reason: "no-profile" } };
+  const current = await hasCurrentScore(ctx, p.id);
+  if (current === null) return { kind: "stop", stop: { reason: "database" } };
+  if (!current) {
+    const result = await callClaude(ctx.caller, request);
     if (result.kind === "limit") return { kind: "stop", stop: { reason: "limit", which: result.which } };
     if (result.kind === "credit") return { kind: "stop", stop: { reason: "credit" } };
     if (result.kind === "error") return { kind: "stop", stop: { reason: result.reason } };
-    const data = isRecord(result.data) ? result.data : {};
-    const total = totalOf(data.parts);
-    const stored = await ctx.caller.admin.from("js_scores").upsert({
-      posting_id: p.id,
-      user_id: ctx.caller.userId,
-      profile_version: ctx.profile.version,
-      score: total,
-      grade: gradeOf(total),
-      strengths: reasons(data.strengths),
-      gaps: reasons(data.gaps),
-      summary: typeof data.summary === "string" ? data.summary.trim() : "",
-    }, { onConflict: "posting_id" });
-    if (stored.error) return { kind: "stop", stop: { reason: "database" } };
+    if (!(await saveScore(ctx, p, result.data, ctx.profile.version))) return { kind: "stop", stop: { reason: "database" } };
+    return { kind: "done", stage: "scored" };
   }
   if (!(await setStage(ctx, p.id, "scored"))) return { kind: "stop", stop: { reason: "database" } };
   return { kind: "done", stage: "scored" };

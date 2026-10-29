@@ -2,6 +2,8 @@
 // 호출 전 한도 검사(R73, R74), 호출 뒤 모델·작업·토큰·비용 기록(R72, R79), 크레딧 부족 판정(R78).
 // 날짜 경계(오늘·이번 달)는 한국 시간 기준이다 (D25). 키 값과 응답 본문은 기록하지 않는다.
 // 한도 80%·초과·크레딧 부족 알림도 여기서 보낸다 (R74, R78, R80). 같은 기간에 한 번만 보낸다.
+// 일괄(Batch) 호출은 `messageParams`로 같은 요청 본문을 만들고, 결과가 오면 `recordBatchCall`로 할인 단가 기록을 남긴다.
+// 일괄 호출은 하루 호출 수에 세지 않고 이번 달 사용액에만 넣는다 (R73, R110, D25, D64, D72).
 import type { Caller } from "./auth.ts";
 import { noticeKeys, sendNoticeOnce } from "./notify.ts";
 
@@ -48,6 +50,9 @@ const DEFAULT_PRICES: Record<AiModel, Price> = {
 };
 
 const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+
+/** 일괄 처리 할인 배율: 기록 비용 = 토큰 × 단가 × 이 값 (단가표는 그대로, D72) */
+export const BATCH_DISCOUNT = 0.5;
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -126,7 +131,18 @@ interface Usage {
   cacheWrite: number;
 }
 
-/** 비용 = 각 토큰 수 × 100만 토큰당 단가의 합 */
+/** Anthropic 응답의 usage 칸을 토큰 수로 읽는다 (없는 값은 0) */
+function readTokens(raw: unknown): Usage {
+  const r = isPlainObject(raw) ? raw : {};
+  return {
+    input: num(r.input_tokens, 0),
+    output: num(r.output_tokens, 0),
+    cacheRead: num(r.cache_read_input_tokens, 0),
+    cacheWrite: num(r.cache_creation_input_tokens, 0),
+  };
+}
+
+/** 비용 =각 토큰 수 × 100만 토큰당 단가의 합 */
 function costOf(usage: Usage, price: Price): number {
   const sum =
     usage.input * price.input +
@@ -146,13 +162,25 @@ interface UsageState {
   monthlyLimit: number;
 }
 
-/** 오늘 호출 수와 이번 달 사용액을 읽는다. 읽지 못하면 null */
+/** 한도·단가 설정 행. 읽지 못하면 undefined (행이 없으면 null) */
+async function readSettings(caller: Caller): Promise<Record<string, unknown> | null | undefined> {
+  const row = await caller.admin
+    .from("js_settings")
+    .select("daily_limit, monthly_limit_usd, prices")
+    .eq("user_id", caller.userId)
+    .maybeSingle();
+  if (row.error) return undefined;
+  return row.data as Record<string, unknown> | null;
+}
+
+/** 오늘 호출 수(일괄 제외, R73)와 이번 달 사용액(일괄 포함)을 읽는다. 읽지 못하면 null */
 async function readUsage(caller: Caller, settings: Record<string, unknown> | null): Promise<UsageState | null> {
   const { dayStart, monthStart } = kstBoundaries(new Date());
   const today = await caller.admin
     .from("js_ai_calls")
     .select("id", { count: "exact", head: true })
     .eq("user_id", caller.userId)
+    .eq("batch", false)
     .gte("at", dayStart);
   if (today.error) return null;
 
@@ -221,6 +249,11 @@ async function noticeNear(caller: Caller, usage: UsageState, costUsd: number) {
       mergeKey: noticeKeys.limit("day"),
     }, usage.dayStart);
   }
+  await noticeNearMonth(caller, usage, costUsd);
+}
+
+/** 월 한도 80% 알림만 (일괄 호출은 하루 호출 수에 세지 않는다, R73) */
+async function noticeNearMonth(caller: Caller, usage: UsageState, costUsd: number) {
   const cost = usage.monthCost + costUsd;
   if (cost >= usage.monthlyLimit * NEAR_RATIO) {
     await sendNoticeOnce(caller, {
@@ -234,8 +267,8 @@ async function noticeNear(caller: Caller, usage: UsageState, costUsd: number) {
   }
 }
 
-/** 크레딧 부족 알림 (R78): 하루에 한 번 */
-async function noticeCredit(caller: Caller, usage: UsageState) {
+/** 크레딧 부족 알림 (R78): 하루에 한 번. 일괄 맡기기·결과에서 크레딧 부족을 봤을 때도 부른다 */
+export async function noticeCredit(caller: Caller, usage: Pick<UsageState, "dayStart"> = kstBoundaries(new Date())) {
   await sendNoticeOnce(caller, {
     kind: "credit",
     importance: "warning",
@@ -247,7 +280,7 @@ async function noticeCredit(caller: Caller, usage: UsageState) {
 }
 
 /** 크레딧 부족 오류인지: Anthropic은 400 invalid_request_error에 "credit balance" 문구를 돌려준다 */
-function isCreditError(status: number, body: unknown): boolean {
+export function isCreditError(status: number, body: unknown): boolean {
   if (status !== 400 && status !== 402) return false;
   const message = (body as { error?: { message?: unknown } } | null)?.error?.message;
   return typeof message === "string" && /credit balance/i.test(message);
@@ -288,13 +321,8 @@ export async function callClaude(caller: Caller, input: CallClaudeInput): Promis
   const key = Deno.env.get("ANTHROPIC_API_KEY");
   if (!key) return { kind: "error", reason: "missing-key" };
 
-  const settingsRow = await caller.admin
-    .from("js_settings")
-    .select("daily_limit, monthly_limit_usd, prices")
-    .eq("user_id", caller.userId)
-    .maybeSingle();
-  if (settingsRow.error) return { kind: "error", reason: "database" };
-  const settings = settingsRow.data as Record<string, unknown> | null;
+  const settings = await readSettings(caller);
+  if (settings === undefined) return { kind: "error", reason: "database" };
 
   const usageNow = await readUsage(caller, settings);
   if (!usageNow) return { kind: "error", reason: "database" };
@@ -309,26 +337,14 @@ export async function callClaude(caller: Caller, input: CallClaudeInput): Promis
     response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-      body: JSON.stringify({
-        model: input.model,
-        max_tokens: input.maxTokens ?? 4096,
-        system: input.system,
-        messages: [{ role: "user", content: input.content }],
-        output_config: { format: { type: "json_schema", schema: toOutputSchema(input.schema) } },
-      }),
+      body: JSON.stringify(messageParams(input)),
     });
   } catch {
     return { kind: "error", reason: "network" };
   }
 
   const body: unknown = await response.json().catch(() => null);
-  const rawUsage = (body as { usage?: Record<string, unknown> } | null)?.usage ?? {};
-  const usage: Usage = {
-    input: num(rawUsage.input_tokens, 0),
-    output: num(rawUsage.output_tokens, 0),
-    cacheRead: num(rawUsage.cache_read_input_tokens, 0),
-    cacheWrite: num(rawUsage.cache_creation_input_tokens, 0),
-  };
+  const usage = readTokens((body as { usage?: unknown } | null)?.usage);
   const costUsd = response.ok ? costOf(usage, readPrice(settings?.prices, input.model)) : 0;
 
   const logged = await caller.admin.from("js_ai_calls").insert({
@@ -360,10 +376,81 @@ export async function callClaude(caller: Caller, input: CallClaudeInput): Promis
 }
 
 /**
+ * Messages API 요청 본문. 바로 호출(`callClaude`)과 일괄 맡기기(`_shared/batch.ts`의 params)가 같이 쓴다.
+ * 결과는 structured outputs(`output_config.format`)로 받는다 (D45).
+ */
+export function messageParams(input: CallClaudeInput): Record<string, unknown> {
+  return {
+    model: input.model,
+    max_tokens: input.maxTokens ?? 4096,
+    system: input.system,
+    messages: [{ role: "user", content: input.content }],
+    output_config: { format: { type: "json_schema", schema: toOutputSchema(input.schema) } },
+  };
+}
+
+/**
+ * 이번 달 남은 사용액 = 월 한도 − 이번 달 사용액 (하루 호출 수는 보지 않는다, D64). 0보다 작으면 0.
+ * 남은 양이 없으면 월 한도 초과 알림을 보낸다 (이번 달 한 번, R74). 읽지 못하면 null.
+ */
+export async function monthlyRoom(caller: Caller): Promise<number | null> {
+  const settings = await readSettings(caller);
+  if (settings === undefined) return null;
+  const usage = await readUsage(caller, settings);
+  if (!usage) return null;
+  const room = usage.monthlyLimit - usage.monthCost;
+  if (room > 0) return room;
+  await noticeOver(caller, "monthly", usage);
+  return 0;
+}
+
+export interface BatchCallRecord {
+  task: AiTask;
+  model: AiModel;
+  /** 결과 메시지의 usage 칸 그대로 (실패 항목이면 없어도 된다) */
+  usage: unknown;
+  ok: boolean;
+}
+
+/**
+ * 일괄 결과 하나를 호출 기록에 남긴다 (`batch = true`, 비용 = 토큰 × 단가 × BATCH_DISCOUNT, R110, D72).
+ * 기록한 뒤 이번 달 사용액이 80%·100%에 이르렀으면 월 한도 알림을 보낸다 (R74).
+ * 기록한 비용을 돌려주고, 읽기·기록에 실패하면 null.
+ */
+export async function recordBatchCall(caller: Caller, record: BatchCallRecord): Promise<number | null> {
+  const settings = await readSettings(caller);
+  if (settings === undefined) return null;
+  const usageNow = await readUsage(caller, settings);
+  if (!usageNow) return null;
+  const tokens = readTokens(record.usage);
+  const costUsd = record.ok ? costOf(tokens, readPrice(settings?.prices, record.model)) * BATCH_DISCOUNT : 0;
+  const logged = await caller.admin.from("js_ai_calls").insert({
+    user_id: caller.userId,
+    model: record.model,
+    task: record.task,
+    input_tokens: tokens.input,
+    output_tokens: tokens.output,
+    cache_read: tokens.cacheRead,
+    cache_write: tokens.cacheWrite,
+    cost_usd: costUsd,
+    ok: record.ok,
+    batch: true,
+  });
+  if (logged.error) {
+    console.error("js_ai_calls 일괄 기록 실패");
+    return null;
+  }
+  const after = { ...usageNow, monthCost: usageNow.monthCost + costUsd };
+  if (after.monthCost >= after.monthlyLimit) await noticeOver(caller, "monthly", after);
+  else await noticeNearMonth(caller, usageNow, costUsd);
+  return costUsd;
+}
+
+/**
  * 성공 응답에서 결과 JSON을 꺼낸다. structured outputs라 글자 블록 하나가 스키마 모양의 JSON이다.
  * 중간에 끊겼거나(max_tokens) 거절(refusal)이면 모양이 맞지 않을 수 있어 버린다. 못 꺼내면 undefined
  */
-function readResult(input: CallClaudeInput, body: unknown): unknown {
+export function readResult(input: Pick<CallClaudeInput, "task" | "model">, body: unknown): unknown {
   const stop = (body as { stop_reason?: unknown } | null)?.stop_reason;
   if (stop !== "end_turn") {
     console.error(`Anthropic 응답 끝 이유가 예상과 다름: stop_reason=${String(stop)} task=${input.task} model=${input.model}`);

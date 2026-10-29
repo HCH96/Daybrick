@@ -7,11 +7,15 @@
 //         순서: waiting(한도로 미룬 것, R74) → extracted(채점 전에 멈춘 것) → new. 원문이 없거나 숨긴 공고는 건너뛴다 (D31, D11).
 //       { mode: "force", postingId } — 그래도 채점 (R46, R49): 필터·의심을 건너뛰고 채점한다.
 //       { mode: "rescore", limit? } — 이전 프로필 버전으로 채점한 공고를 지금 프로필로 다시 채점한다 (R23).
+//       { mode: "batch" } — 대기 공고의 추출·채점을 Anthropic 일괄 작업으로 맡긴다 (R102, R106, R110, D71, batch.ts).
+//         응답 { ok: true, submitted: { extract, score }, held, inFlight: BatchState[], stopped }.
+//         예약·앱은 queue 대신 이것을 부른다 (queue는 남겨 둔다, D71).
 // 한도에 걸리면 그 공고를 waiting으로 두고 멈춘다 (queue). 크레딧 부족도 같다 (R78, 알림은 _shared/ai.ts).
 // Anthropic이 공고 하나의 요청만 거절하면(rejected) 그 공고를 failed로 두고 다음 공고로 간다 (L28).
 // 응답: { ok: true, done: [{ postingId, stage }], stopped: { reason, which? } | null, remaining }
 //       force는 { ok: true, stage } 또는 { ok: false, reason, which? }. 실패 { ok: false, reason: unauthorized|database|… }
 import { getCaller } from "../_shared/auth.ts";
+import { loadInFlight, submitBatches } from "./batch.ts";
 import { backfillDedupe, checkDuplicate } from "./dedupe.ts";
 import { handleOptions, json } from "../_shared/cors.ts";
 import type { FilterRow } from "../_shared/filters.ts";
@@ -250,6 +254,20 @@ async function runRescore(ctx: Context, limit: number) {
   return json({ ok: true, done, stopped, remaining: left.count ?? 0 });
 }
 
+/** 일괄 맡기기 (R102, R106). 결과 확인(pollBatches)은 5단계에서 앞에 붙는다 */
+async function runBatch(ctx: Context) {
+  const startedAt = Date.now();
+  const result = await submitBatches(ctx, startedAt);
+  const inFlight = await loadInFlight(ctx);
+  return json({
+    ok: true,
+    submitted: result.submitted,
+    held: result.held,
+    inFlight: inFlight?.states ?? [],
+    stopped: result.stopped,
+  });
+}
+
 Deno.serve(async (req) => {
   const preflight = handleOptions(req);
   if (preflight) return preflight;
@@ -269,6 +287,7 @@ Deno.serve(async (req) => {
   const mode = body.mode ?? "queue";
   if (mode === "queue") return await runQueue(ctx, limitOf(body.limit));
   if (mode === "rescore") return await runRescore(ctx, limitOf(body.limit));
+  if (mode === "batch") return await runBatch(ctx);
   if (mode === "force") {
     if (typeof body.postingId !== "string") return json({ ok: false, reason: "bad-request" }, 400);
     return await runForce(ctx, body.postingId);

@@ -115,6 +115,12 @@ const FILTERS: (&str, &str) = (
     include_str!("../../../../../supabase/functions/_shared/filters.ts"),
 );
 
+/// 구직 관리 공용: Anthropic 일괄(Batch) API (처리 함수 묶음에 함께 올린다, D71)
+const BATCH: (&str, &str) = (
+    "_shared/batch.ts",
+    include_str!("../../../../../supabase/functions/_shared/batch.ts"),
+);
+
 /// 구직 관리 공용: 알림 보내기 (`_shared/ai.ts`가 쓰므로 js- 함수 묶음 모두에 넣는다)
 const NOTIFY: (&str, &str) = (
     "_shared/notify.ts",
@@ -213,12 +219,17 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
                 "js-process/dedupe.ts",
                 include_str!("../../../../../supabase/functions/js-process/dedupe.ts"),
             ),
+            (
+                "js-process/batch.ts",
+                include_str!("../../../../../supabase/functions/js-process/batch.ts"),
+            ),
             CORS,
             AUTH,
             AI,
             PROMPTS,
             FILTERS,
             DEDUPE,
+            BATCH,
             NOTIFY,
         ],
     },
