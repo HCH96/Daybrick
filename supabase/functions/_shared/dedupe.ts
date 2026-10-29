@@ -1,6 +1,7 @@
 // 서버 함수 공용: 같은 공고 판정 (job-search R35, R84, R86). DB·네트워크 없는 순수 함수만 둔다.
 // 같은 사이트 안에서는 ext_id(공고 고유 id, 없으면 주소), 사이트가 다르면
 // 수집 단계는 회사+정리 제목 키(norm_key, 회사 정확히 같음, D52), 중복 확인 단계는 isSameJob(D55)로 본다.
+// 같은 사이트 재등록(ext_id가 바뀌어 다시 올라온 공고)은 isRelisted(R111, D66)로 본다.
 
 /** 공백·기호를 지우고 소문자로. 회사 이름의 법인 표기(주식회사, (주), ㈜)도 뺀다 */
 export function normalizeText(text: string): string {
@@ -131,6 +132,32 @@ export function isSameJob(a: JobLike, b: JobLike): boolean {
     && companyMatch(a.company, b.company)
     && sameDeadline(a.deadline, b.deadline)
     && titleSimilar(a, b);
+}
+
+/** 재등록 판정 입력: 같은 사이트 공고 하나 */
+export interface RelistJob {
+  siteId: string;
+  /** 같은 사이트 안의 공고 값 (ext_id) */
+  extId: string;
+  company: string | null;
+  title: string | null;
+}
+
+/**
+ * 같은 사이트 재등록 판정 (R111, D66): 같은 사이트·다른 ext_id이고, 정리한 회사 이름이 정확히 같으며
+ * `cleanTitle`이 같고, 기존 공고의 ext_id가 이번 수집 목록(listedExtIds)에 없을 때(내려간 뒤 다시 올라옴) 참.
+ * 기존 공고도 목록에 있으면 동시에 올라온 다른 공고로 보고 거짓.
+ */
+export function isRelisted(newJob: RelistJob, oldJob: RelistJob, listedExtIds: ReadonlySet<string>): boolean {
+  if (newJob.siteId !== oldJob.siteId || newJob.extId === oldJob.extId) return false;
+  if (listedExtIds.has(oldJob.extId)) return false;
+  const ca = newJob.company ? normalizeText(newJob.company) : "";
+  const cb = oldJob.company ? normalizeText(oldJob.company) : "";
+  if (ca === "" || ca !== cb) return false;
+  if (!newJob.title || !oldJob.title) return false;
+  const ta = cleanTitle(newJob.title, newJob.company);
+  const tb = cleanTitle(oldJob.title, oldJob.company);
+  return ta !== "" && ta === tb;
 }
 
 /** 대표 고르기 입력 */

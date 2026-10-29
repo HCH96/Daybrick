@@ -3,13 +3,14 @@
 // 서비스 역할로 쓰되 항상 호출자 user_id로 거른다. AI는 부르지 않는다.
 // 요청: { action: "run", siteId? } — siteId가 없으면 켜진 사이트 전체, 있으면 그 사이트 하나(꺼져 있어도).
 // 순서: 사이트마다 목록 읽기 → 새 공고만 넣기(stage new, body_text null) → 남은 시간 안에 원문 받기.
+// 같은 사이트 재등록(기존 공고가 목록에서 내려가고 같은 회사·정리 제목으로 다시 올라옴)은 먼저 묶는다 (R111–R112, D76).
 // 다른 사이트의 같은 공고(norm_key)는 그 묶음 대표에 stage duplicate·dup_of로 넣고 원문을 받지 않는다 (R82, D54).
 // 실패한 사이트는 "수집 실패" 알림을 보낸다 (R36, 사이트별 합치기 키).
 // 원문을 못 받은 공고(body_text null)는 다음 실행이 이어 받는다 (R39: 받은 원문은 다시 받지 않는다).
 //       { action: "bodies" } — 원문만 이어 받기 (예약 실행이 원문 없는 공고가 있을 때 부른다).
 //       { action: "test", rule, vars } — 시험 수집 (R29, R32, test.ts): 저장하지 않는다.
 // 응답: { ok: true, sites: [{ siteId, name, ok, read, added, bundled, reason? }], pending } 또는 { ok: false, reason }
-//       added는 새 대표·단독 공고 수, bundled는 다른 사이트 공고에 묶인 수.
+//       added는 새 대표·단독 공고 수, bundled는 다른 사이트 공고나 같은 사이트 재등록으로 묶인 수.
 import {
   type AdapterRule,
   judgeList,
@@ -24,7 +25,7 @@ import {
 } from "../_shared/adapter.ts";
 import { type Caller, getCaller } from "../_shared/auth.ts";
 import { handleOptions, json } from "../_shared/cors.ts";
-import { extId, normKey, pickRep, type RepCandidate } from "../_shared/dedupe.ts";
+import { extId, isRelisted, normKey, pickRep, type RepCandidate } from "../_shared/dedupe.ts";
 import { noticeKeys, sendNotice } from "../_shared/notify.ts";
 import { testRule } from "./test.ts";
 
@@ -115,7 +116,7 @@ function dbFail(step: string, siteId: string, res: DbResult, extra: Record<strin
 interface SaveResult {
   /** 새 대표·단독 공고 수 */
   added: number;
-  /** 다른 사이트 공고에 묶여 들어간 수 (R82) */
+  /** 다른 사이트 공고에 묶이거나(R82) 같은 사이트 재등록으로 묶인(R111) 수 */
   bundled: number;
 }
 
@@ -181,10 +182,76 @@ async function findReps(caller: Caller, siteId: string, keys: string[]): Promise
   return out;
 }
 
+/** 재등록 처리 방법 (D76): 대표 아래 duplicate로 넣기, 또는 새 공고를 넣은 뒤 대표를 새 공고로 바꾸기 */
+type RelistPlan =
+  | { kind: "under"; repId: string }
+  | { kind: "switch"; oldId: string };
+
 /**
- * 새 공고를 넣는다 (R35, R82, R86–R88). 목록이 준 본문은 listBodies(사이트|ext_id → HTML)에 모은다.
+ * 같은 사이트 재등록을 찾는다 (R111, R112, D66, D76). 이번 목록에 없는 같은 사이트·같은 norm_key·풀리지 않은 공고와
+ * isRelisted로 비교한다. 애매하면 묶지 않는다(D53): 같은 키의 새 공고가 둘 이상이거나, 걸린 기존 공고가 여러 묶음이면 건너뛴다.
+ * - 걸린 기존 공고에 묶음 대표가 없고 묶인 공고만 걸림 → 그 대표 아래 duplicate
+ * - 대표가 걸렸고 지원한 공고 → 대표 아래 duplicate (D57: 지원한 묶음은 대표를 바꾸지 않음)
+ * - 그 밖 → 새 공고를 대표로 (js_switch_rep)
+ * 돌려주는 값: 새 공고 ext_id → 처리 방법
+ */
+async function findRelists(
+  caller: Caller,
+  siteId: string,
+  candidates: Map<string, Candidate>,
+  listed: ReadonlySet<string>,
+): Promise<Map<string, RelistPlan>> {
+  const byKey = new Map<string, Candidate[]>();
+  for (const c of candidates.values()) {
+    if (!c.key) continue;
+    byKey.set(c.key, [...(byKey.get(c.key) ?? []), c]);
+  }
+  const keys = [...byKey].filter(([, list]) => list.length === 1).map(([key]) => key);
+  const plans = new Map<string, RelistPlan>();
+  if (keys.length === 0) return plans;
+
+  interface OldRow { id: string; ext: string; company: string | null; title: string | null; dupOf: string | null; applied: boolean }
+  const oldByKey = new Map<string, OldRow[]>();
+  for (const part of chunks(keys)) {
+    const found = await caller.admin.from("js_postings")
+      .select("id, ext_id, company, title, norm_key, dup_of, applied_at")
+      .eq("user_id", caller.userId).eq("site_id", siteId).eq("unbundled", false).in("norm_key", part);
+    if (found.error) throw dbFail("relist-lookup", siteId, found, { count: part.length, inBytes: inParamBytes(part) });
+    for (const row of found.data ?? []) {
+      const key = row.norm_key as string;
+      oldByKey.set(key, [...(oldByKey.get(key) ?? []), {
+        id: row.id as string,
+        ext: row.ext_id as string,
+        company: row.company as string | null,
+        title: row.title as string | null,
+        dupOf: row.dup_of as string | null,
+        applied: row.applied_at !== null,
+      }]);
+    }
+  }
+
+  for (const key of keys) {
+    const c = byKey.get(key)![0];
+    const newJob = { siteId, extId: c.ext, company: c.item.company, title: c.item.title };
+    const matched = (oldByKey.get(key) ?? [])
+      .filter((o) => isRelisted(newJob, { siteId, extId: o.ext, company: o.company, title: o.title }, listed));
+    if (matched.length === 0) continue;
+    const groups = new Set(matched.map((o) => o.dupOf ?? o.id));
+    if (groups.size !== 1) continue;
+    const repId = [...groups][0];
+    const rep = matched.find((o) => o.dupOf === null);
+    if (!rep || rep.applied) plans.set(c.ext, { kind: "under", repId });
+    else plans.set(c.ext, { kind: "switch", oldId: rep.id });
+  }
+  return plans;
+}
+
+/**
+ * 새 공고를 넣는다 (R35, R82, R86–R88, R111–R112). 목록이 준 본문은 listBodies(사이트|ext_id → HTML)에 모은다.
+ * 먼저 같은 사이트 재등록(findRelists)을 묶고, 묶인 공고는 다른 사이트 판정을 하지 않는다 (D76).
  * 다른 사이트의 같은 공고가 있으면 버리지 않고 그 묶음 대표에 duplicate로 넣는다 (원문·AI 처리 없음).
  * 대표가 자사 사이트가 아니고 이 사이트가 자사이며 대표를 지원하지 않았으면 새 공고로 대표를 바꾼다 (R87, D54, D57).
+ * judgeList를 통과한 목록에서만 부른다 (목록이 온전해야 "목록에 없음"을 믿을 수 있다).
  */
 async function saveNew(
   caller: Caller,
@@ -193,10 +260,12 @@ async function saveNew(
   listBodies: Map<string, string>,
 ): Promise<SaveResult> {
   const siteId = site.id;
+  const listed = new Set<string>();
   const candidates = new Map<string, Candidate>();
   for (const item of items) {
-    if (!item.title || !item.link) continue;
     const ext = extId(item.id, item.link);
+    if (ext) listed.add(ext);
+    if (!item.title || !item.link) continue;
     if (!ext || candidates.has(ext)) continue;
     candidates.set(ext, { item, ext, key: normKey(item.company, item.title) });
   }
@@ -209,9 +278,6 @@ async function saveNew(
   }
   if (candidates.size === 0) return { added: 0, bundled: 0 };
 
-  const keys = [...new Set([...candidates.values()].flatMap((c) => (c.key ? [c.key] : [])))];
-  const reps = await findReps(caller, siteId, keys);
-
   const row = ({ item, ext, key }: Candidate, dupOf: string | null) => {
     if (item.body) listBodies.set(`${siteId}|${ext}`, item.body);
     return {
@@ -220,6 +286,44 @@ async function saveNew(
       stage: dupOf ? "duplicate" : "new", dup_of: dupOf,
     };
   };
+
+  // R111–R112: 같은 사이트 재등록 묶기 (다른 사이트 판정보다 먼저). 묶인 수는 bundled로만 센다
+  let relisted = 0;
+  const relists = await findRelists(caller, siteId, candidates, listed);
+  if (relists.size > 0) {
+    const under: ReturnType<typeof row>[] = [];
+    const fresh: ReturnType<typeof row>[] = [];
+    for (const [ext, plan] of relists) {
+      const c = candidates.get(ext)!;
+      if (plan.kind === "under") under.push(row(c, plan.repId));
+      else fresh.push(row(c, null));
+    }
+    if (under.length > 0) {
+      const saved = await caller.admin.from("js_postings")
+        .upsert(under, { onConflict: "user_id,site_id,ext_id", ignoreDuplicates: true }).select("id");
+      if (saved.error) throw dbFail("insert-relist", siteId, saved, { rows: under.length });
+      relisted += saved.data?.length ?? 0;
+    }
+    if (fresh.length > 0) {
+      const saved = await caller.admin.from("js_postings")
+        .upsert(fresh, { onConflict: "user_id,site_id,ext_id", ignoreDuplicates: true }).select("id, ext_id");
+      if (saved.error) throw dbFail("insert-relist", siteId, saved, { rows: fresh.length });
+      // 새 공고가 대표가 되고 기존 공고의 단계·숨김·추출·점수를 복사한다 (R112, D54). 원문은 fetchBodies가 받는다
+      for (const p of saved.data ?? []) {
+        const plan = relists.get(p.ext_id as string);
+        if (plan?.kind !== "switch") continue;
+        const res = await caller.admin.rpc("js_switch_rep", { p_user: caller.userId, p_old: plan.oldId, p_new: p.id });
+        if (res.error) throw dbFail("switch-rep-relist", siteId, res);
+        relisted++;
+      }
+    }
+    for (const ext of relists.keys()) candidates.delete(ext);
+    if (candidates.size === 0) return { added: 0, bundled: relisted };
+  }
+
+  const keys = [...new Set([...candidates.values()].flatMap((c) => (c.key ? [c.key] : [])))];
+  const reps = await findReps(caller, siteId, keys);
+
   const alone = [...candidates.values()].filter((c) => !c.key || !reps.has(c.key)).map((c) => row(c, null));
   const bundledRows = [...candidates.values()]
     .flatMap((c) => (c.key && reps.has(c.key) ? [row(c, reps.get(c.key)!.id)] : []));
@@ -231,12 +335,12 @@ async function saveNew(
     if (saved.error) throw dbFail("insert", siteId, saved, { rows: alone.length });
     added = saved.data?.length ?? 0;
   }
-  if (bundledRows.length === 0) return { added, bundled: 0 };
+  if (bundledRows.length === 0) return { added, bundled: relisted };
 
   const saved = await caller.admin.from("js_postings")
     .upsert(bundledRows, { onConflict: "user_id,site_id,ext_id", ignoreDuplicates: true }).select("id, dup_of");
   if (saved.error) throw dbFail("insert-duplicate", siteId, saved, { rows: bundledRows.length });
-  let bundled = saved.data?.length ?? 0;
+  let bundled = relisted + (saved.data?.length ?? 0);
 
   // R87: 자사 공고가 들어오면 대표를 바꾼다. 같은 대표에 여러 개가 묶였으면 처음 것 하나만 대표가 되고,
   // 나머지는 js_switch_rep이 새 대표 아래로 옮긴다. 새 대표는 body_text가 null이라 fetchBodies가 원문만 받는다.
