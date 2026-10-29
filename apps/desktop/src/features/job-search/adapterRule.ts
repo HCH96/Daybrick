@@ -23,20 +23,62 @@ function checkRequest(where: string, raw: Record<string, unknown>, errors: strin
   if (raw.headers !== undefined && !isStringMap(raw.headers)) errors.push(`${where}.headers는 글자 값만 든 객체여야 해요`);
 }
 
+function isRegex(text: string): boolean {
+  try {
+    new RegExp(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function checkField(key: string, field: Record<string, unknown>, errors: string[]) {
+  if (field.template !== undefined) {
+    if (typeof field.template !== "string" || field.template.trim() === "") {
+      errors.push(`list.fields.${key}.template은 빈 글자가 아닌 글자여야 해요`);
+    }
+    if (["sel", "attr", "regex", "base"].some((k) => field[k] !== undefined)) {
+      errors.push(`list.fields.${key}는 template과 sel·attr·regex·base를 함께 쓸 수 없어요`);
+    }
+  }
+  if (typeof field.regex === "string" && !isRegex(field.regex)) {
+    errors.push(`list.fields.${key}.regex가 올바른 정규식이 아니에요`);
+  }
+}
+
 function checkFields(fields: Record<string, unknown>, errors: string[]) {
   if (!isRecord(fields.title)) errors.push("list.fields.title이 없어요");
   if (!isRecord(fields.link)) errors.push("list.fields.link가 없어요");
   for (const [key, field] of Object.entries(fields)) {
-    if (!isRecord(field)) {
-      errors.push(`list.fields.${key}는 객체여야 해요`);
-    } else if (typeof field.regex === "string") {
-      try {
-        new RegExp(field.regex);
-      } catch {
-        errors.push(`list.fields.${key}.regex가 올바른 정규식이 아니에요`);
-      }
-    }
+    if (!isRecord(field)) errors.push(`list.fields.${key}는 객체여야 해요`);
+    else checkField(key, field, errors);
   }
+}
+
+/** 서버 `adapterSession.ts`의 checkSession과 같은 검사 */
+function checkSession(raw: unknown, errors: string[]) {
+  if (raw === undefined) return;
+  if (!isRecord(raw)) {
+    errors.push("list.session은 객체여야 해요");
+    return;
+  }
+  if (typeof raw.url !== "string" || raw.url.trim() === "") errors.push("list.session.url이 없어요");
+  if (raw.token === undefined) return;
+  if (!isRecord(raw.token)) {
+    errors.push("list.session.token은 객체여야 해요");
+    return;
+  }
+  const { regex, header } = raw.token;
+  if (typeof regex !== "string" || regex === "") errors.push("list.session.token.regex가 없어요");
+  else if (!isRegex(regex)) errors.push("list.session.token.regex가 올바른 정규식이 아니에요");
+  if (typeof header !== "string" || header.trim() === "") errors.push("list.session.token.header가 없어요");
+}
+
+function checkDetailBody(body: unknown, errors: string[]) {
+  if (body === undefined) return;
+  const isText = (v: unknown) => typeof v === "string" && v.trim() !== "";
+  const ok = isText(body) || (Array.isArray(body) && body.length > 0 && body.every(isText));
+  if (!ok) errors.push("detail.body는 빈 글자가 아닌 글자 또는 그 배열이어야 해요");
 }
 
 function checkFrame(detail: Record<string, unknown>, errors: string[]) {
@@ -65,6 +107,7 @@ export function checkRule(raw: unknown): RuleCheck {
     if (list.pages !== undefined && (typeof list.pages !== "number" || list.pages < 1)) {
       errors.push("list.pages는 1 이상의 숫자여야 해요");
     }
+    checkSession(list.session, errors);
     if (!isRecord(list.fields)) errors.push("list.fields가 없어요");
     else checkFields(list.fields, errors);
   }
@@ -72,6 +115,7 @@ export function checkRule(raw: unknown): RuleCheck {
     if (!isRecord(raw.detail)) errors.push("detail은 객체여야 해요");
     else {
       checkRequest("detail", raw.detail, errors);
+      checkDetailBody(raw.detail.body, errors);
       checkFrame(raw.detail, errors);
     }
   }

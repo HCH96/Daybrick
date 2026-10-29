@@ -1,0 +1,26 @@
+{
+  "format": 1,
+  "name": "pearlabyss",
+  "vars": [],
+  "delayMs": 1500,
+  "list": {
+    "url": "https://www.pearlabyss.com/ko-KR/Company/Careers/List?_pageNo={page}",
+    "method": "GET",
+    "pages": 3,
+    "type": "html",
+    "item": ".career_list_body a.career_list_item",
+    "fields": {
+      "id": { "attr": "href", "regex": "_jobOpeningNo=(\\d+)" },
+      "title": { "sel": ".cell_title p.title" },
+      "company": { "template": "펄어비스" },
+      "link": { "attr": "href", "regex": "(detail\\?_jobOpeningNo=\\d+)", "base": "https://www.pearlabyss.com/ko-KR/Company/Careers/" },
+      "duty": { "sel": ".cell_category", "optional": true }
+    }
+  },
+  "detail": {
+    "url": "https://www.pearlabyss.com/ko-KR/Company/Careers/detail?_jobOpeningNo={id}",
+    "type": "html",
+    "body": "main.career .apply_detail .content",
+    "images": "img"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "format": 1,
+  "name": "shiftup",
+  "vars": [],
+  "delayMs": 1500,
+  "list": {
+    "url": "https://shiftup.co.kr/comm/lib/client_lib.php",
+    "method": "POST",
+    "headers": { "X-Requested-With": "XMLHttpRequest", "Referer": "https://shiftup.co.kr/recruit/recruit.php" },
+    "body": "workType=get_recruit_list&code=recruit&cat_idx=0&searchkey=",
+    "type": "json",
+    "item": "$.list[*]",
+    "fields": {
+      "id": { "sel": "idx" },
+      "title": { "sel": "subject" },
+      "company": { "template": "시프트업" },
+      "link": { "sel": "addinfo6", "regex": "^(https?://[^/]+/(?:ko/)?o/\\d+)" },
+      "duty": { "sel": "addinfo7", "optional": true },
+      "body": { "sel": "content", "optional": true }
+    }
+  }
+}

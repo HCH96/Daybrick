@@ -1,0 +1,25 @@
+{
+  "format": 1,
+  "name": "netmarble",
+  "vars": [],
+  "delayMs": 1500,
+  "list": {
+    "url": "https://career.netmarble.com/api/v1/apply/announces?page={page}&size=100",
+    "pages": 5,
+    "type": "json",
+    "item": "$.content[*]",
+    "fields": {
+      "id": { "sel": "carAnnoId" },
+      "title": { "sel": "annoSubject" },
+      "company": { "sel": "companyNm" },
+      "link": { "template": "https://career.netmarble.com/announce/view?anno_id={id}" },
+      "duty": { "sel": "carWorkGroupNm", "optional": true }
+    }
+  },
+  "detail": {
+    "url": "https://career.netmarble.com/api/v1/apply/announces/{id}/view",
+    "type": "json",
+    "body": "$.annoContents",
+    "images": "img"
+  }
+}

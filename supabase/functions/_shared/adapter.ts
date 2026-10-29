@@ -1,6 +1,7 @@
 // 서버 함수 공용: 어댑터 규칙 형식 v1 검사와 실행 (job-search R25, R37, D16, D30).
 // 규칙은 데이터(JSON)라 사이트를 더해도 함수를 다시 배포하지 않는다. HTML은 CSS 선택자, JSON은 점 경로로 읽는다.
 import { DOMParser, type Element } from "jsr:@b-fuze/deno-dom@0.1.56";
+import { checkSession, prepareSession, type SessionRule } from "./adapterSession.ts";
 
 export interface FieldRule {
   /** HTML: 항목 안 CSS 선택자(없으면 항목 자체). JSON: 항목 기준 점 경로 */
@@ -8,6 +9,8 @@ export interface FieldRule {
   attr?: string;
   regex?: string;
   base?: string;
+  /** 칸 틀 (D49): `{이름}`에 같은 공고의 다른 칸 값·사이트 값을 넣는다. sel·attr·regex·base와 함께 쓰지 않는다 */
+  template?: string;
   optional?: boolean;
 }
 
@@ -23,6 +26,9 @@ export interface RequestRule {
 export interface ListRule extends RequestRule {
   pages?: number;
   item: string;
+  /** 목록 첫 쪽 전에 받을 세션 화면 (D50). 쿠키·토큰을 목록의 모든 쪽 요청에 붙인다 */
+  session?: SessionRule;
+  /** id·title·company·link·duty·body 말고 다른 이름의 칸은 틀 안에서만 쓰는 보조 칸 */
   fields: Record<string, FieldRule>;
 }
 
@@ -31,8 +37,8 @@ export interface DetailRule {
   method?: "GET" | "POST";
   headers?: Record<string, string>;
   type: "html" | "json";
-  /** HTML: 본문 CSS 선택자(기본 body). JSON: 본문 HTML 문자열의 경로 */
-  body?: string;
+  /** HTML: 본문 CSS 선택자(기본 body). JSON: 본문 HTML 문자열의 경로. 배열이면 차례로 읽어 이어 붙인다 (D51) */
+  body?: string | string[];
   /** 본문 안 이미지 선택자(기본 img) */
   images?: string;
   /** HTML만: 끼워 넣은 화면(iframe 등) 선택자. 있으면 그 src 주소를 한 번 더 받아 거기서 body·images를 읽는다 */
@@ -96,6 +102,31 @@ function checkFrame(detail: Record<string, unknown>, errors: string[]) {
   else if (detail.type !== "html") errors.push("detail.frame은 detail.type이 html일 때만 씁니다");
 }
 
+function checkDetailBody(body: unknown, errors: string[]) {
+  if (body === undefined) return;
+  const isText = (v: unknown) => typeof v === "string" && v.trim() !== "";
+  const ok = isText(body) || (Array.isArray(body) && body.length > 0 && body.every(isText));
+  if (!ok) errors.push("detail.body는 빈 글자가 아닌 문자열 또는 그 배열입니다");
+}
+
+function checkField(key: string, field: Record<string, unknown>, errors: string[]) {
+  if (field.template !== undefined) {
+    if (typeof field.template !== "string" || field.template.trim() === "") {
+      errors.push(`list.fields.${key}.template은 빈 글자가 아닌 문자열입니다`);
+    }
+    if (["sel", "attr", "regex", "base"].some((k) => field[k] !== undefined)) {
+      errors.push(`list.fields.${key}는 template과 sel·attr·regex·base를 함께 쓰지 않습니다`);
+    }
+  }
+  if (typeof field.regex === "string") {
+    try {
+      new RegExp(field.regex);
+    } catch {
+      errors.push(`list.fields.${key}.regex가 올바른 정규식이 아닙니다`);
+    }
+  }
+}
+
 /** 규칙 형식 검사. 맞으면 규칙, 아니면 고칠 점 목록 (R29의 형식 검사도 이것을 쓴다) */
 export function validateRule(raw: unknown): { ok: true; rule: AdapterRule } | { ok: false; errors: string[] } {
   const errors: string[] = [];
@@ -117,6 +148,7 @@ export function validateRule(raw: unknown): { ok: true; rule: AdapterRule } | { 
     if (list.pages !== undefined && (typeof list.pages !== "number" || list.pages < 1)) {
       errors.push("list.pages는 1 이상의 숫자입니다");
     }
+    checkSession(list.session, errors);
     const fields = list.fields;
     if (!isRecord(fields)) {
       errors.push("list.fields가 없습니다");
@@ -125,13 +157,7 @@ export function validateRule(raw: unknown): { ok: true; rule: AdapterRule } | { 
       if (!isRecord(fields.link)) errors.push("list.fields.link가 없습니다");
       for (const [key, field] of Object.entries(fields)) {
         if (!isRecord(field)) errors.push(`list.fields.${key}는 객체입니다`);
-        else if (typeof field.regex === "string") {
-          try {
-            new RegExp(field.regex);
-          } catch {
-            errors.push(`list.fields.${key}.regex가 올바른 정규식이 아닙니다`);
-          }
-        }
+        else checkField(key, field, errors);
       }
     }
   }
@@ -139,6 +165,7 @@ export function validateRule(raw: unknown): { ok: true; rule: AdapterRule } | { 
     if (!isRecord(raw.detail)) errors.push("detail은 객체입니다");
     else {
       checkRequest("detail", raw.detail, errors);
+      checkDetailBody(raw.detail.body, errors);
       checkFrame(raw.detail, errors);
     }
   }
@@ -199,7 +226,11 @@ function fillJson(value: unknown, values: Record<string, string>): unknown {
 }
 
 /** 규칙의 요청 하나를 보낸다. 응답 글 또는 실패 이유 */
-async function send(req: RequestRule | DetailRule, values: Record<string, string>, extra?: { body?: RequestRule["body"] }) {
+async function send(
+  req: RequestRule | DetailRule,
+  values: Record<string, string>,
+  extra?: { body?: RequestRule["body"]; headers?: Record<string, string> },
+) {
   const method = req.method ?? "GET";
   const headers: Record<string, string> = { "User-Agent": USER_AGENT };
   let body: string | undefined;
@@ -213,7 +244,7 @@ async function send(req: RequestRule | DetailRule, values: Record<string, string
       headers["Content-Type"] = "application/json";
     }
   }
-  Object.assign(headers, req.headers ?? {});
+  Object.assign(headers, req.headers ?? {}, extra?.headers ?? {});
   try {
     const res = await fetch(fillTemplate(req.url, values), {
       method,
@@ -285,8 +316,31 @@ function jsonField(item: unknown, field: FieldRule): string | null {
   return null;
 }
 
-function toItem(read: (field: FieldRule) => string | null, fields: Record<string, FieldRule>): ListItem {
-  const get = (key: string) => (fields[key] ? read(fields[key]) : null);
+/** 칸 틀을 채운다. `{이름}` 값이 비어 있으면 칸 전체가 null (optional·필수 판정이 그대로 동작) */
+function fillField(template: string, values: Record<string, string>): string | null {
+  let empty = false;
+  const out = template.replace(/\{(\w+)\}/g, (_whole, name: string) => {
+    const value = values[name];
+    if (value === undefined || value === "") empty = true;
+    return value ?? "";
+  });
+  return empty || out.trim() === "" ? null : out.trim();
+}
+
+/** 틀이 없는 칸을 먼저 읽고, 그 값과 사이트 값으로 틀 칸을 채운다 (D49) */
+function toItem(
+  read: (field: FieldRule) => string | null,
+  fields: Record<string, FieldRule>,
+  vars: Record<string, string>,
+): ListItem {
+  const read1: Record<string, string | null> = {};
+  for (const [key, field] of Object.entries(fields)) if (field.template === undefined) read1[key] = read(field);
+  const values: Record<string, string> = { ...vars };
+  for (const [key, value] of Object.entries(read1)) if (value !== null) values[key] = value;
+  for (const [key, field] of Object.entries(fields)) {
+    if (field.template !== undefined) read1[key] = fillField(field.template, values);
+  }
+  const get = (key: string) => read1[key] ?? null;
   return {
     id: get("id"),
     title: get("title"),
@@ -297,7 +351,7 @@ function toItem(read: (field: FieldRule) => string | null, fields: Record<string
   };
 }
 
-function parseItems(list: ListRule, text: string): ListItem[] | string {
+function parseItems(list: ListRule, text: string, vars: Record<string, string>): ListItem[] | string {
   if (list.type === "json") {
     let root: unknown;
     try {
@@ -305,12 +359,12 @@ function parseItems(list: ListRule, text: string): ListItem[] | string {
     } catch {
       return "목록 응답이 JSON이 아닙니다";
     }
-    return jsonPath(root, list.item).map((item) => toItem((f) => jsonField(item, f), list.fields));
+    return jsonPath(root, list.item).map((item) => toItem((f) => jsonField(item, f), list.fields, vars));
   }
   const doc = new DOMParser().parseFromString(text, "text/html");
   if (!doc) return "목록 HTML을 읽지 못했습니다";
   const nodes = Array.from(doc.querySelectorAll(list.item)) as Element[];
-  return nodes.map((item) => toItem((f) => htmlField(item, f), list.fields));
+  return nodes.map((item) => toItem((f) => htmlField(item, f), list.fields, vars));
 }
 
 function itemKey(item: ListItem): string {
@@ -324,17 +378,23 @@ export async function readList(rule: AdapterRule, vars: Record<string, string>, 
   const pages = paged ? Math.min(list.pages ?? 1, MAX_PAGES) : 1;
   const items: ListItem[] = [];
   const seen = new Set<string>();
+  let sessionHeaders: Record<string, string> = {};
+  if (list.session) {
+    const session = await prepareSession(fillTemplate(list.session.url, vars), list.session, USER_AGENT, FETCH_TIMEOUT_MS);
+    if (!session.ok) return { ok: false, reason: session.reason };
+    sessionHeaders = session.headers;
+  }
   for (let page = 1; page <= pages; page++) {
     if (page > 1) {
       if (Date.now() + rule.delayMs > deadline) break;
       await sleep(rule.delayMs);
     }
-    const res = await send(list, { ...vars, page: String(page) }, { body: list.body });
+    const res = await send(list, { ...vars, page: String(page) }, { body: list.body, headers: sessionHeaders });
     if (!res.ok) {
       if (page === 1) return { ok: false, reason: `목록을 읽지 못함 (${res.reason})` };
       break;
     }
-    const parsed = parseItems(list, res.text);
+    const parsed = parseItems(list, res.text, vars);
     if (typeof parsed === "string") {
       if (page === 1) return { ok: false, reason: parsed };
       break;
@@ -416,8 +476,11 @@ export async function readDetail(
     } catch {
       return { ok: false, reason: "상세 응답이 JSON이 아닙니다" };
     }
-    const [html] = jsonPath(root, detail.body ?? "$");
-    return { ok: true, detail: readBodyHtml(typeof html === "string" ? html : "", imagesSel, url) };
+    const parts = bodyList(detail.body, "$").map((path) => {
+      const [html] = jsonPath(root, path);
+      return readBodyHtml(typeof html === "string" ? jsonBodyHtml(html) : "", imagesSel, url);
+    });
+    return { ok: true, detail: joinParts(parts) };
   }
   let doc = new DOMParser().parseFromString(res.text, "text/html");
   if (!doc) return { ok: false, reason: "상세 HTML을 읽지 못했습니다" };
@@ -430,9 +493,35 @@ export async function readDetail(
     if (!doc) return { ok: false, reason: "끼워 넣은 화면 HTML을 읽지 못했습니다" };
     pageUrl = frameUrl;
   }
-  const el = doc.querySelector(detail.body ?? "body");
-  if (!el) return { ok: true, detail: { text: "", images: [] } };
-  return { ok: true, detail: readBodyElement(el as unknown as Element, imagesSel, pageUrl) };
+  const page = doc;
+  const parts = bodyList(detail.body, "body").map((sel) => {
+    const el = page.querySelector(sel);
+    return el ? readBodyElement(el as unknown as Element, imagesSel, pageUrl) : { text: "", images: [] };
+  });
+  return { ok: true, detail: joinParts(parts) };
+}
+
+function bodyList(body: string | string[] | undefined, fallback: string): string[] {
+  if (body === undefined) return [fallback];
+  return Array.isArray(body) ? body : [body];
+}
+
+/** 여러 본문 칸을 차례로 잇는다. 빈 칸은 건너뛰고 이미지는 모든 칸에서 모은다 (D51) */
+function joinParts(parts: DetailResult[]): DetailResult {
+  if (parts.length === 1) return parts[0];
+  const images: string[] = [];
+  for (const part of parts) for (const src of part.images) if (!images.includes(src)) images.push(src);
+  return { text: parts.map((p) => p.text).filter((t) => t !== "").join("\n"), images };
+}
+
+/** JSON 본문 값: 이스케이프된 HTML(`&lt;p&gt;…`)은 한 번 풀고, 태그 없는 글은 줄바꿈을 살린다 (D51) */
+function jsonBodyHtml(value: string): string {
+  let html = value;
+  if (!html.includes("<") && html.includes("&lt;")) {
+    html = new DOMParser().parseFromString(html, "text/html")?.body?.textContent ?? html;
+  }
+  if (!html.includes("<")) html = html.replace(/\r?\n/g, "<br>");
+  return html;
 }
 
 /** 끼워 넣은 화면의 절대 주소. 못 찾으면 null (원래 페이지에서 읽는다) */

@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "name": "smilegate",
+  "vars": [],
+  "delayMs": 1500,
+  "list": {
+    "url": "https://careers.smilegate.com/api/apply/announce/guest",
+    "method": "POST",
+    "body": {
+      "careerTypeCd": [], "companyCd": [], "gameGenreCd": [], "hireTypeCd": [], "jobDtlCd": [], "jobMainCd": [],
+      "keyword": null, "pageIndex": "{page}", "pageSize": 50, "projectSeq": null, "usreId": null
+    },
+    "pages": 6,
+    "type": "json",
+    "item": "$.announce[*]",
+    "fields": {
+      "id": { "sel": "announceSeq" },
+      "title": { "sel": "title" },
+      "company": { "sel": "companyNm" },
+      "link": { "template": "https://careers.smilegate.com/apply/announce/view?seq={id}" },
+      "duty": { "sel": "jobDtlNm", "optional": true }
+    }
+  },
+  "detail": {
+    "url": "https://careers.smilegate.com/api/apply/announce/guest/{id}",
+    "type": "json",
+    "body": ["$.workInfo", "$.qualificationDesc", "$.abilityDesc", "$.specialDesc", "$.description", "$.requirementDoc"],
+    "images": "img"
+  }
+}

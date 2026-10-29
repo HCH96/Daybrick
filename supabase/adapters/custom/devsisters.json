@@ -1,0 +1,24 @@
+{
+  "format": 1,
+  "name": "devsisters",
+  "vars": [],
+  "delayMs": 1500,
+  "list": {
+    "url": "https://api.greetinghr.com/ats/v1.1/career/workspaces/12227/openings?page=0&pageSize=500",
+    "type": "json",
+    "item": "$.data.datas[*]",
+    "fields": {
+      "id": { "sel": "openingId" },
+      "title": { "sel": "title" },
+      "company": { "sel": "group.name" },
+      "link": { "sel": "openingId", "base": "https://careers.devsisters.com/ko/o/" },
+      "duty": { "sel": "openingJobPosition.openingJobPositions[*].workspaceJob.job", "optional": true }
+    }
+  },
+  "detail": {
+    "url": "https://careers.devsisters.com/ko/o/{id}",
+    "type": "html",
+    "body": ".ql-editor",
+    "images": "img"
+  }
+}

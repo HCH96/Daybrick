@@ -10,6 +10,7 @@
 | `functions/_shared/ai.ts` | Claude 호출, 한도 검사(R73–R74), 호출 기록·비용(R72), 크레딧 부족 판정(R78) | 3 |
 | `functions/_shared/auth.ts` | 사용자 토큰 또는 예약 비밀값으로 호출자 확인, 서비스 클라이언트 | 3 (15에서 넓힘) |
 | `functions/_shared/adapter.ts` | 규칙 형식 검사·실행(목록·상세·이미지), 요청 간격 | 5 |
+| `functions/_shared/adapterSession.ts` | 규칙의 세션 준비 `list.session`(쿠키·토큰 헤더) 검사·실행 (D50) | 수정 |
 | `functions/_shared/dedupe.ts` | 같은 공고 판정 키(R35) | 5 |
 | `functions/_shared/filters.ts` | 1차·2차 필터, 기술스택 자동 추림 (순수 함수) | 8 |
 | `functions/_shared/prompts.ts` | 프로필·추출·채점·메일 분류 프롬프트와 출력 JSON 형식 | 4, 9, 14 |
@@ -19,6 +20,7 @@
 | `functions/js-process/index.ts` | 처리 순서 R41, 미룬 작업 이어 하기, `force`(그래도 채점), `rescore` | 9 |
 | `functions/js-gmail/index.ts` | `connect`(갱신 토큰 확인·암호화, `token.ts`)·`disconnect`·`check` | 13, 14 |
 | `adapters/gamejob.json`, `adapters/nexon.json` | 기본 어댑터 원본 (SQL에 넣을 내용, 가이드 예시) | 5 |
+| `adapters/custom/*.json` | 사용자가 앱에서 추가할 사이트 규칙 원본 (기본 어댑터 아님, L30) | 수정 |
 
 ### Rust (`apps/desktop/src-tauri/src/`)
 | 파일 | 하는 일 | 단계 |
@@ -39,7 +41,7 @@
 | `usage.ts` | 사용액 줄 계산(오늘 호출, 이번 달, 기준 이후, 예상 잔액) | 3 |
 | `profileDraft.ts` | 초안 ↔ 편집 값, 버전 번호 | 4 |
 | `adapterRule.ts` | 규칙 파일 형식 검사 (서버와 같은 규칙, 앱에서 먼저 알림) | 7 |
-| `guideContent.ts` | 어댑터 가이드 본문·예시·프롬프트 틀 | 7 |
+| `guideContent.ts`, `guideKeys.ts` | 어댑터 가이드 본문·예시·프롬프트 틀, 키 표 | 7 |
 | `filterRules.ts` | 조건 종류·값 표시 이름 | 8 |
 | `dday.ts`, `grade.ts`, `sortPostings.ts` | D-n·상시, 등급·색, 정렬·마감 지난 공고 빼기 | 10 |
 | `localState.ts` | `job-search.json` 감싸기 (Tauri 밖이면 메모리) | 10 |
@@ -107,6 +109,9 @@ interface Application { /* 기존 */ jobLink?: { serverId: string } | null }
 - 필수 칸: `format`, `name`, `list.url`, `list.item`, `fields.title`, `fields.link`. `{변수}`는 `vars`·`page`·목록 칸 값으로 바꾼다.
 - 키 이름은 목업 가이드 그림의 예시(list.item 등)를 이 형식으로 확정한다.
 - 선택 `detail.frame`(html만): 상세 페이지 안 iframe 선택자. 있으면 그 src를 한 번 더 받아 거기서 body·images를 읽는다 (D48).
+- 칸 틀 `{ "template": "https://…/view?seq={id}" }`: `{이름}`에 같은 공고의 다른 칸·vars 값. 값이 비면 칸이 null, `{}` 없으면 고정 글자. sel·attr·regex·base와 같이 못 씀. id·title·company·link·duty·body 말고 다른 이름의 칸은 틀에만 쓰는 보조 칸 (D49).
+- 선택 `list.session { url, token?: { regex, header } }`: 목록 첫 쪽 전에 url을 GET, Set-Cookie와 토큰(regex 첫 괄호)을 목록의 모든 쪽 요청 헤더로. 상세에는 붙이지 않음 (D50).
+- `detail.body`는 문자열 또는 배열. 배열이면 차례로 읽어 잇고(빈 칸 건너뜀, 이미지는 모두 모음), JSON 값이 이스케이프된 HTML이면 한 번 풀고 태그 없는 글은 줄바꿈을 살린다 (D51).
 
 ## 4. 컴포넌트 구조
 ```

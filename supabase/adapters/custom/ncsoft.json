@@ -1,0 +1,37 @@
+{
+  "format": 1,
+  "name": "ncsoft",
+  "vars": [],
+  "delayMs": 1500,
+  "list": {
+    "url": "https://careers.ncsoft.com/interface/apply/list",
+    "method": "POST",
+    "headers": {
+      "Accept": "application/json, text/javascript, */*; q=0.01",
+      "X-Requested-With": "XMLHttpRequest",
+      "Referer": "https://careers.ncsoft.com/apply/list"
+    },
+    "body": "companyIds=&keywords=&channelCds=&job_type_cd=&pagesize=20&order_direction=desc&page={page}&job_group_cd=&order_type=ORDER_ETC&search_text=",
+    "pages": 5,
+    "session": {
+      "url": "https://careers.ncsoft.com/apply/list",
+      "token": { "regex": "<meta name=\"_csrf\" content=\\s*\"([^\"]+)\"", "header": "X-CSRF-TOKEN" }
+    },
+    "type": "json",
+    "item": "$.result.data.record[*]",
+    "fields": {
+      "id": { "sel": "jopenId" },
+      "regOpId": { "sel": "regOpId" },
+      "title": { "sel": "jopenNm" },
+      "company": { "sel": "companyNm" },
+      "link": { "template": "https://careers.ncsoft.com/apply/view?regOpId={regOpId}&jopenId={id}" },
+      "duty": { "sel": "jobName", "optional": true }
+    }
+  },
+  "detail": {
+    "url": "{link}",
+    "type": "html",
+    "body": ".apply-detail-content article.contents",
+    "images": "img"
+  }
+}
