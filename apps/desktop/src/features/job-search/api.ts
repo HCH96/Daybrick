@@ -430,7 +430,6 @@ function parseSite(row: unknown): Site | null {
     adapterId: typeof row.adapter_id === "string" ? row.adapter_id : null,
     vars,
     enabled: row.enabled !== false,
-    // own_site를 읽는 것은 2단계(loadSources select)에서 더한다. 그 전에는 false
     ownSite: row.own_site === true,
     lastResult: parseLastResult(row.last_result),
     lastAt: typeof row.last_at === "string" ? row.last_at : null,
@@ -452,7 +451,7 @@ export async function loadSources(session: ServerSession): Promise<ApiResult<Sou
   const [sites, adapters] = await Promise.all([
     session.client
       .from("js_sites")
-      .select("id, name, url, adapter_id, vars, enabled, last_result, last_at")
+      .select("id, name, url, adapter_id, vars, enabled, own_site, last_result, last_at")
       .order("name", { ascending: true }),
     session.client
       .from("js_adapters")
@@ -472,6 +471,12 @@ export async function loadSources(session: ServerSession): Promise<ApiResult<Sou
 /** 사이트 켜기·끄기 (R31). 꺼진 사이트는 [지금 수집]·예약 수집에서 빠진다 */
 export async function setSiteEnabled(session: ServerSession, siteId: string, enabled: boolean): Promise<ApiResult<null>> {
   const { error, status } = await session.client.from("js_sites").update({ enabled }).eq("id", siteId);
+  return error ? { ok: false, error: postgrestError(error, status) } : { ok: true, value: null };
+}
+
+/** 자사 채용 사이트 여부 바꾸기 (R90). 다음 중복 판정부터 적용된다 */
+export async function setSiteOwn(session: ServerSession, siteId: string, own: boolean): Promise<ApiResult<null>> {
+  const { error, status } = await session.client.from("js_sites").update({ own_site: own }).eq("id", siteId);
   return error ? { ok: false, error: postgrestError(error, status) } : { ok: true, value: null };
 }
 
@@ -628,7 +633,7 @@ export type NewSiteAdapter = { kind: "existing"; adapterId: string } | { kind: "
  */
 export async function addSite(
   session: ServerSession,
-  site: { name: string; url: string; vars: Record<string, string> },
+  site: { name: string; url: string; vars: Record<string, string>; ownSite: boolean },
   adapter: NewSiteAdapter,
 ): Promise<ApiResult<null>> {
   let adapterId: string;
@@ -649,7 +654,7 @@ export async function addSite(
   }
   const { error, status } = await session.client
     .from("js_sites")
-    .insert({ name: site.name, url: site.url, adapter_id: adapterId, vars: site.vars });
+    .insert({ name: site.name, url: site.url, adapter_id: adapterId, vars: site.vars, own_site: site.ownSite });
   if (error) {
     if (createdId) await session.client.from("js_adapters").delete().eq("id", createdId);
     return { ok: false, error: postgrestError(error, status) };

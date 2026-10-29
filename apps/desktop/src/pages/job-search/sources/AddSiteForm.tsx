@@ -1,3 +1,4 @@
+import { OWN_SITE_HELP } from "../../../features/job-search/messages";
 import type { Adapter, Site } from "../../../features/job-search/types";
 import RuleFilePicker, { type RuleFile } from "./RuleFilePicker";
 
@@ -12,6 +13,8 @@ export interface AddSiteInput {
   vars: Record<string, string>;
   /** 교체 때 시험에 쓸 사이트 */
   testSiteId: string;
+  /** 자사 채용 사이트 (R90, 기본 꺼짐). 규칙과 상관없어 바꿔도 시험 결과를 지우지 않는다 */
+  ownSite: boolean;
 }
 
 interface AddSiteFormProps {
@@ -50,7 +53,7 @@ function TextField({ label, value, placeholder, onChange }: {
   );
 }
 
-/** 사이트 추가 창 왼쪽 (R28): 이름·주소·어댑터·사이트별 값. 교체(R32)면 규칙 파일과 시험 사이트만 */
+/** 사이트 추가 창 왼쪽 (R28, R90): 이름·주소·어댑터·사이트별 값·자사 체크. 교체(R32)면 규칙 파일과 시험 사이트만 */
 function AddSiteForm({ replacing, adapters, usingSites, input, ruleFile, varNames, onEdit, onPickFile }: AddSiteFormProps) {
   const varsTitle = varNames.length > 0 ? `사이트별 값 (${varNames.length}개)` : null;
   return (
@@ -148,6 +151,15 @@ function AddSiteForm({ replacing, adapters, usingSites, input, ruleFile, varName
               </label>
             ))}
           </div>
+        </div>
+      )}
+      {!replacing && (
+        <div className="wiz-field">
+          <label className="js-add__own">
+            <input type="checkbox" checked={input.ownSite} onChange={(e) => onEdit({ ownSite: e.target.checked })} />
+            자사 채용 사이트
+          </label>
+          <span className="js-add__hint">{OWN_SITE_HELP}</span>
         </div>
       )}
     </div>

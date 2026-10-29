@@ -15,6 +15,8 @@ interface SiteTableProps {
   busyId: string | null;
   disabled: boolean;
   onToggle: (site: Site) => void;
+  /** 자사 채용 사이트 여부 바꾸기 (R90) */
+  onToggleOwn: (site: Site) => void;
   onDelete: (site: Site) => void;
 }
 
@@ -51,8 +53,8 @@ function ResultCell({ site }: { site: Site }) {
   );
 }
 
-/** 사이트 표 (R24): 켜짐 · 사이트 · 어댑터 · 사이트별 값 · 마지막 결과 · 마지막 수집 · ⋯ */
-function SiteTable({ sites, adapters, usage, busyId, disabled, onToggle, onDelete }: SiteTableProps) {
+/** 사이트 표 (R24, R90): 켜짐 · 사이트 · 어댑터 · 자사 · 사이트별 값 · 마지막 결과 · 마지막 수집 · ⋯ */
+function SiteTable({ sites, adapters, usage, busyId, disabled, onToggle, onToggleOwn, onDelete }: SiteTableProps) {
   const [menu, setMenu] = useState<{ site: Site; anchor: HTMLElement } | null>(null);
 
   return (
@@ -63,6 +65,7 @@ function SiteTable({ sites, adapters, usage, busyId, disabled, onToggle, onDelet
             <th>켜짐</th>
             <th>사이트</th>
             <th>어댑터</th>
+            <th className="js-sources__own">자사</th>
             <th>사이트별 값</th>
             <th>마지막 결과</th>
             <th>마지막 수집</th>
@@ -102,6 +105,18 @@ function SiteTable({ sites, adapters, usage, busyId, disabled, onToggle, onDelet
                   ) : (
                     <span className="js-sources__chip js-sources__chip--red">어댑터 없음</span>
                   )}
+                </td>
+                <td className="js-sources__own">
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={site.ownSite}
+                    aria-label={`${site.name} 자사 채용 사이트 ${site.ownSite ? "끄기" : "켜기"}`}
+                    title="회사가 직접 운영하는 채용 사이트"
+                    className={`js-sources__switch${site.ownSite ? " js-sources__switch--on" : ""}`}
+                    disabled={rowBusy}
+                    onClick={() => onToggleOwn(site)}
+                  />
                 </td>
                 <td className="js-sources__kv">{varsText(site.vars)}</td>
                 <td>

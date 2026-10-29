@@ -5,6 +5,7 @@ import {
   loadSources,
   runCollect,
   setSiteEnabled,
+  setSiteOwn,
   type SourcesState,
 } from "../../../features/job-search/api";
 import {
@@ -14,6 +15,7 @@ import {
   collectDoneMessage,
   collectFailMessage,
   siteDeleteErrorMessage,
+  siteOwnErrorMessage,
   siteToggleErrorMessage,
   sourcesLoadErrorMessage,
 } from "../../../features/job-search/messages";
@@ -76,6 +78,17 @@ function SourcesTab() {
     setStatus(null);
     const result = await setSiteEnabled(session, site.id, !site.enabled);
     if (!result.ok) setStatus({ ok: false, text: siteToggleErrorMessage(result.error) });
+    const failed = await reload();
+    if (result.ok && failed) setStatus({ ok: false, text: sourcesLoadErrorMessage(failed) });
+    setBusyId(null);
+  }
+
+  /** 자사 채용 사이트 여부 바꾸기 (R90): 다음 중복 판정부터 적용된다 */
+  async function toggleOwn(site: Site) {
+    setBusyId(site.id);
+    setStatus(null);
+    const result = await setSiteOwn(session, site.id, !site.ownSite);
+    if (!result.ok) setStatus({ ok: false, text: siteOwnErrorMessage(result.error) });
     const failed = await reload();
     if (result.ok && failed) setStatus({ ok: false, text: sourcesLoadErrorMessage(failed) });
     setBusyId(null);
@@ -189,6 +202,7 @@ function SourcesTab() {
           busyId={busyId}
           disabled={collecting}
           onToggle={(site) => void toggle(site)}
+          onToggleOwn={(site) => void toggleOwn(site)}
           onDelete={(site) => void remove(site)}
         />
       )}

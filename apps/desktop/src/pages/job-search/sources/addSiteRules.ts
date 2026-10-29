@@ -31,6 +31,14 @@ interface BlockerArgs {
   testSite: Site | null;
 }
 
+/** 규칙·시험과 상관없는 입력. 이것만 바꾸면 시험 결과를 지우지 않는다 (자사 여부, R90) */
+const TEST_FREE_KEYS: readonly (keyof AddSiteInput)[] = ["ownSite"];
+
+/** 이 입력 변경이 시험 결과를 지워야 하면 true */
+export function clearsTest(next: Partial<AddSiteInput>): boolean {
+  return Object.keys(next).some((key) => !TEST_FREE_KEYS.some((free) => free === key));
+}
+
 /** [시험 수집]을 누를 수 없는 이유 하나. 누를 수 있으면 null */
 export function blockerOf({ replacing, input, check, varNames, testVars, testSite }: BlockerArgs): string | null {
   if (!replacing && input.name.trim() === "") return NAME_NEEDED;

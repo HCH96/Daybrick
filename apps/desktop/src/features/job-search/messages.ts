@@ -136,6 +136,10 @@ export function siteToggleErrorMessage(kind: ApiErrorKind): string {
   return `사이트를 켜거나 끄지 못했어요. ${reason(kind)}`;
 }
 
+export function siteOwnErrorMessage(kind: ApiErrorKind): string {
+  return `자사 채용 사이트 여부를 바꾸지 못했어요. ${reason(kind)}`;
+}
+
 export function siteDeleteErrorMessage(kind: ApiErrorKind): string {
   return `사이트를 지우지 못했어요. ${reason(kind)}`;
 }
@@ -179,6 +183,8 @@ export const TESTING = "시험 수집 중… 목록과 처음 5개 공고를 읽
 export const TEST_IDLE = "왼쪽을 채우고 [시험 수집]을 누르면 읽힌 공고 수와 처음 5개가 여기 나와요.";
 export const TEST_NEEDED = "시험 수집이 성공해야 저장할 수 있어요.";
 export const ADD_SITE_NOTE = "저장하면 다음 수집부터 포함돼요";
+export const OWN_SITE_HELP =
+  "회사가 직접 운영하는 채용 사이트면 켜세요. 같은 공고가 다른 사이트에도 있으면 이 사이트 공고를 대표로 보여줘요.";
 export const INVALID_SITE_URL = "주소는 http:// 또는 https://로 시작해야 해요.";
 export const NO_RULE_FILE = "규칙 파일(.json)을 골라 주세요.";
 

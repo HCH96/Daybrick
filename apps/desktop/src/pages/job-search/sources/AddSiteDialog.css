@@ -303,3 +303,18 @@
 .js-test__bad {
   color: var(--red);
 }
+
+/* ===== 자사 채용 사이트 체크 (R90) ===== */
+.js-add__own {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.js-add__own input[type="checkbox"] {
+  margin: 0;
+  accent-color: var(--accent);
+}

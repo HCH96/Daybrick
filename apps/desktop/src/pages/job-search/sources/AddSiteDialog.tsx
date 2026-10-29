@@ -22,7 +22,7 @@ import type { RuleFile } from "./RuleFilePicker";
 import SourcesDialog from "./SourcesDialog";
 import { PlayIcon, UploadIcon } from "./SourcesIcons";
 import TestResult, { type TestState } from "./TestResult";
-import { blockerOf } from "./addSiteRules";
+import { blockerOf, clearsTest } from "./addSiteRules";
 
 /** 사이트 추가, 또는 어댑터 하나의 새 버전 올리기 (같은 창, R32) */
 export type AddSiteMode = { kind: "add" } | { kind: "replace"; adapter: Adapter };
@@ -60,7 +60,7 @@ function Steps({ step }: { step: number }) {
 
 /**
  * 사이트 추가 창 (R28, R29, R32): 왼쪽 입력 → [시험 수집] → 오른쪽 결과 → 성공하면 [저장].
- * 입력을 바꾸면 시험 결과를 지워 [저장]을 다시 끈다.
+ * 입력을 바꾸면 시험 결과를 지워 [저장]을 다시 끈다 (자사 체크는 예외).
  */
 function AddSiteDialog({ mode, adapters, sites, onClose, onSaved }: AddSiteDialogProps) {
   const { session } = useJobSearch();
@@ -73,6 +73,7 @@ function AddSiteDialog({ mode, adapters, sites, onClose, onSaved }: AddSiteDialo
     adapterId: adapters[0]?.id ?? "",
     vars: {},
     testSiteId: usingSites[0]?.id ?? "",
+    ownSite: false,
   });
   const [ruleFile, setRuleFile] = useState<RuleFile | null>(null);
   const [test, setTest] = useState<TestState>({ kind: "idle" });
@@ -95,8 +96,8 @@ function AddSiteDialog({ mode, adapters, sites, onClose, onSaved }: AddSiteDialo
 
   function edit(next: Partial<AddSiteInput>) {
     setInput((prev) => ({ ...prev, ...next }));
-    setTest({ kind: "idle" });
     setSaveError(null);
+    if (clearsTest(next)) setTest({ kind: "idle" });
   }
 
   function pickFile(file: RuleFile) {
@@ -120,7 +121,7 @@ function AddSiteDialog({ mode, adapters, sites, onClose, onSaved }: AddSiteDialo
       ? await replaceAdapterRule(session, replacing, check.rule)
       : await addSite(
           session,
-          { name: input.name.trim(), url: input.url.trim(), vars: testVars },
+          { name: input.name.trim(), url: input.url.trim(), vars: testVars, ownSite: input.ownSite },
           input.source === "existing"
             ? { kind: "existing", adapterId: input.adapterId }
             : { kind: "rule", name: ruleName(check.rule), rule: check.rule },

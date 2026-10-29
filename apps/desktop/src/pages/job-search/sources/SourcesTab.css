@@ -104,6 +104,12 @@
   opacity: 1;
 }
 
+/* 자사 스위치 칸 (R90): 스위치 하나 폭 */
+.js-sources__table .js-sources__own {
+  width: 58px;
+  white-space: nowrap;
+}
+
 .js-sources__site b {
   display: block;
   font-size: 14px;
