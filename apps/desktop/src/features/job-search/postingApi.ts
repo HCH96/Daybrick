@@ -40,6 +40,8 @@ export interface PostingDetail {
   suspect: boolean;
   suspectQuotes: string[];
   score: PostingScore | null;
+  /** 묶음 출처 (대표 먼저). 묶인 공고가 없으면 빈 배열 (R92) */
+  sources: BundleSource[];
 }
 
 function one(value: unknown): Record<string, unknown> | null {
@@ -74,7 +76,7 @@ function parseScore(value: unknown): PostingScore | null {
   };
 }
 
-/** 상세 팝업용으로 공고 하나를 모두 읽는다 (R10–R13) */
+/** 상세 팝업용으로 공고 하나를 모두 읽는다 (R10–R13, 출처 R92) */
 export async function loadPostingDetail(session: ServerSession, id: string): Promise<ApiResult<PostingDetail | null>> {
   const { data, error, status } = await session.client
     .from("js_postings")
@@ -92,6 +94,8 @@ export async function loadPostingDetail(session: ServerSession, id: string): Pro
     return { ok: false, error: "bad-response" };
   }
   const extraction = one(row.js_extractions);
+  const sources = await loadBundleSources(session, [row.id]);
+  if (!sources.ok) return sources;
   return {
     ok: true,
     value: {
@@ -111,6 +115,7 @@ export async function loadPostingDetail(session: ServerSession, id: string): Pro
       suspect: extraction?.suspect === true,
       suspectQuotes: strings(extraction?.suspect_quotes),
       score: parseScore(row.js_scores),
+      sources: sources.value.get(row.id) ?? [],
     },
   };
 }

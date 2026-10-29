@@ -424,3 +424,65 @@
 .js-popup__left--bad {
   color: var(--red);
 }
+
+/* 출처 블록 (R92, R93): 칩 줄 아래 "출처  사이트 ↗ (대표) … [따로 보기]" */
+.js-popup__sources {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.js-popup__sources-label {
+  flex-shrink: 0;
+  padding-top: 4px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.js-popup__sources-list {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.js-popup__source-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.js-popup__source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 2px 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+}
+
+.js-popup__source-link:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.js-popup__source-link:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+.js-popup__source-rep {
+  color: var(--muted);
+}
+
+.js-popup__source-split {
+  margin-left: auto;
+}

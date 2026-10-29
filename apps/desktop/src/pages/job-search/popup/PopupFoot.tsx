@@ -5,7 +5,7 @@ import { BriefcaseIcon, SparkIcon, UndoIcon } from "./PopupIcons";
 /** scored: [지원 안 함][지원하기], unscored: [지원 안 함][그래도 채점], archived: [되돌리기] */
 export type FootMode = "scored" | "unscored" | "archived";
 
-export type FootBusy = "hide" | "restore" | "force" | "apply" | null;
+export type FootBusy = "hide" | "restore" | "force" | "apply" | "unbundle" | null;
 
 interface PopupFootProps {
   mode: FootMode;

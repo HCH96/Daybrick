@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import Modal from "../../../components/common/Modal";
 import { useApplications } from "../../../features/applications/store";
 import { createServerApplication, markPostingApplied } from "../../../features/job-search/applyApi";
+import { unbundlePosting } from "../../../features/job-search/bundleApi";
 import { buildCard, mailDomain } from "../../../features/job-search/buildCard";
 import { daysLeft } from "../../../features/job-search/dday";
 import {
@@ -16,6 +17,8 @@ import {
   hideErrorMessage,
   postingLoadErrorMessage,
   restoreErrorMessage,
+  UNBUNDLE_DONE,
+  unbundleErrorMessage,
 } from "../../../features/job-search/messages";
 import {
   forceScore,
@@ -31,6 +34,7 @@ import {
   type SuggestedEvent,
   type VagueEvent,
 } from "../../../features/job-search/scheduleSuggest";
+import type { BundleSource } from "../../../features/job-search/types";
 import { useJobSearch } from "../../../features/job-search/useJobSearch";
 import type { ApiErrorKind } from "../../../features/server/management";
 import "../../server-setup/wizard/WizardShell.css";
@@ -40,6 +44,7 @@ import ImageZoom from "./ImageZoom";
 import InjectionAlert from "./InjectionAlert";
 import PopupFoot, { type FootBusy, type FootMode } from "./PopupFoot";
 import PopupHead from "./PopupHead";
+import PopupSources from "./PopupSources";
 import ReasonList from "./ReasonList";
 import ScheduleSuggestDialog from "./ScheduleSuggestDialog";
 import ScoreBox from "./ScoreBox";
@@ -94,6 +99,7 @@ function PostingPopup({ postingId, onClose, onChanged }: PostingPopupProps) {
   const [imageError, setImageError] = useState(false);
   const [zoom, setZoom] = useState<number | null>(null);
   const [busy, setBusy] = useState<FootBusy>(null);
+  const [unbundling, setUnbundling] = useState<string | null>(null);
   const [status, setStatus] = useState<StatusLine>(null);
   const [applied, setApplied] = useState<AppliedState | null>(null);
   const applications = useApplications();
@@ -151,6 +157,27 @@ function PostingPopup({ postingId, onClose, onChanged }: PostingPopupProps) {
       onChanged();
     }
     setBusy(null);
+  }
+
+  /** 따로 보기 (R93, D54): 확인 없이 풀고, 대표를 풀었으면 대표가 바뀌므로 팝업을 닫는다 */
+  async function unbundle(source: BundleSource) {
+    setBusy("unbundle");
+    setUnbundling(source.postingId);
+    setStatus(null);
+    const result = await unbundlePosting(session, source.postingId);
+    setBusy(null);
+    setUnbundling(null);
+    if (!result.ok) {
+      setStatus({ ok: false, text: unbundleErrorMessage(result.error) });
+      return;
+    }
+    onChanged();
+    if (source.isRep || source.postingId === postingId) {
+      onClose();
+      return;
+    }
+    setStatus({ ok: true, text: UNBUNDLE_DONE });
+    await load();
   }
 
   /** 지원하기 (R54–R57): 서버 지원 건 → 로컬 카드(`jobLink`) → 공고 `applied_at` → 일정 제안 */
@@ -237,13 +264,27 @@ function PostingPopup({ postingId, onClose, onChanged }: PostingPopupProps) {
       imageUrls={imageUrls}
       imageError={imageError}
       onZoom={setZoom}
+      bundled={detail.sources.length > 1}
     />
   );
   return (
     <Modal onClose={onClose} ariaLabel={`${detail.company ?? ""} ${detail.title ?? "공고"} 상세`}>
       <div className="js-popup">
         {detail.suspect && <InjectionAlert quotes={detail.suspectQuotes} scored={detail.score !== null} />}
-        <PopupHead detail={detail} days={days} onClose={onClose} />
+        <PopupHead
+          detail={detail}
+          days={days}
+          onClose={onClose}
+          sources={
+            <PopupSources
+              sources={detail.sources}
+              locked={detail.appliedAt !== null}
+              disabled={busy !== null}
+              busyId={unbundling}
+              onUnbundle={(s) => void unbundle(s)}
+            />
+          }
+        />
         <div className="js-popup__body">
           <div className="js-popup__col">
             <ScoreBox detail={detail} />

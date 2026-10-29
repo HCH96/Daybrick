@@ -81,3 +81,11 @@ export async function loadBundleSources(
   }
   return { ok: true, value: result };
 }
+
+/** 묶음 풀기 (R93, D54·D58): rpc `js_unbundle`. 대표를 풀었으면 새 대표 id, 아니면 null */
+export async function unbundlePosting(session: ServerSession, postingId: string): Promise<ApiResult<string | null>> {
+  const { data, error, status } = await session.client.rpc("js_unbundle", { p_id: postingId });
+  if (error) return { ok: false, error: postgrestError(error, status) };
+  const value: unknown = data;
+  return { ok: true, value: typeof value === "string" ? value : null };
+}

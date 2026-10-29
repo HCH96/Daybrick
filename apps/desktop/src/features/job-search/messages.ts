@@ -338,6 +338,13 @@ export function restoreErrorMessage(kind: ApiErrorKind): string {
 
 export const IMAGE_LOAD_ERROR = "공고 이미지를 읽지 못했어요.";
 export const NO_BODY_YET = "원문을 아직 받지 못했어요. 다음 수집 때 이어 받아요.";
+/** 대표가 바뀐 직후라 새 대표의 원문이 아직 없을 때 (R87) */
+export const REP_BODY_PENDING = "원문을 받는 중이에요. 다음 수집 처리 뒤 보여요.";
+export const UNBUNDLE_DONE = "따로 볼게요. 다음 처리 뒤 별도 공고로 보여요.";
+
+export function unbundleErrorMessage(kind: ApiErrorKind): string {
+  return `따로 보기를 하지 못했어요. ${reason(kind)}`;
+}
 export const NOT_EXTRACTED = "아직 항목을 추출하지 않았어요. [그래도 채점]을 누르면 추출부터 해요.";
 export const NO_REASON = "해당 내용 없음";
 export const FORCE_SCORING = "채점하는 중… 1분쯤 걸릴 수 있어요.";

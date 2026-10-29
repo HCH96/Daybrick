@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { ExternalLinkIcon } from "../../../components/icons/CommonIcons";
 import { CloseIcon } from "../../../components/icons/DialogIcons";
 import { ddayLabel } from "../../../features/job-search/dday";
@@ -11,6 +12,8 @@ interface PopupHeadProps {
   /** 마감까지 남은 날 (상시 null) */
   days: number | null;
   onClose: () => void;
+  /** 칩 줄 아래 출처 블록 (R92) */
+  sources?: ReactNode;
 }
 
 /** 마감 칩 글자·색: `D-12 · 11/08 마감`(파랑), D-5 이하 빨강, 지났으면 "마감 지남", 없으면 "상시" */
@@ -22,7 +25,7 @@ function deadlineChip(date: string | null, days: number | null): { text: string;
 }
 
 /** 팝업 머리 (R10): 회사·사이트·수집일 / 제목 / 경력·형태·근무지·마감 칩, 오른쪽 [원문 보기]·X */
-function PopupHead({ detail, days, onClose }: PopupHeadProps) {
+function PopupHead({ detail, days, onClose, sources }: PopupHeadProps) {
   const f = detail.fields;
   const chips = [f?.experience.text ?? null, f?.employment.join(", ") || null, f?.location ?? null].filter(
     (c): c is string => c !== null,
@@ -52,6 +55,7 @@ function PopupHead({ detail, days, onClose }: PopupHeadProps) {
             </span>
           )}
         </div>
+        {sources}
       </div>
       <div className="js-popup__head-side">
         <button type="button" className="setup-btn" disabled={!url} onClick={() => url && openExternal(url)}>

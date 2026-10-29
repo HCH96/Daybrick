@@ -1,4 +1,4 @@
-import { IMAGE_LOAD_ERROR, NO_BODY_YET } from "../../../features/job-search/messages";
+import { IMAGE_LOAD_ERROR, NO_BODY_YET, REP_BODY_PENDING } from "../../../features/job-search/messages";
 import { ImageIcon, TextIcon, ZoomIcon } from "./PopupIcons";
 
 interface SourceViewProps {
@@ -9,10 +9,12 @@ interface SourceViewProps {
   imageUrls: string[] | null;
   imageError: boolean;
   onZoom: (index: number) => void;
+  /** 묶음 대표인가. 대표가 바뀐 직후엔 원문이 아직 없다 (R87) */
+  bundled?: boolean;
 }
 
 /** 공고 원문 (R10, R11): 이미지 공고는 300px 이미지와 "크게 보기", 아니면 텍스트 */
-function SourceView({ bodyText, hasImages, imageUrls, imageError, onZoom }: SourceViewProps) {
+function SourceView({ bodyText, hasImages, imageUrls, imageError, onZoom, bundled = false }: SourceViewProps) {
   const text = bodyText?.trim() ?? "";
   if (hasImages) {
     return (
@@ -49,7 +51,7 @@ function SourceView({ bodyText, hasImages, imageUrls, imageError, onZoom }: Sour
         공고 원문
       </h3>
       {bodyText === null ? (
-        <p className="js-popup__empty">{NO_BODY_YET}</p>
+        <p className="js-popup__empty">{bundled ? REP_BODY_PENDING : NO_BODY_YET}</p>
       ) : (
         <div className="js-popup__source-text">{text || "—"}</div>
       )}
