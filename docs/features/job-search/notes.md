@@ -12,15 +12,16 @@
 - 6단계: 예약 실행·[지금 평가]·상태 줄 (자동 진행, 최종 테스트 대기)
 - 7단계: 기존 공고 직군 채우기·옮기기 (자동 진행, 최종 테스트 대기)
 - 8단계: 같은 사이트 재등록 묶기 (자동 진행, 최종 테스트 대기)
+- 9단계: 애매한 쌍 AI 판정 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 9단계: 애매한 쌍 AI 판정 (처리 단계 중복 확인에서 R113 애매한 쌍을 `js_pair_checks` 먼저 보고 Haiku 바로 호출로 묻기)
+- 10단계: 팝업 출처 칩·따로 보기 메뉴 (상세 팝업 출처를 한 줄 칩으로 바꾸고 [⋯] 메뉴로 따로 보기)
 - 수정 계획: 근거 기록 L44, 커밋 접두어 "구직 관리 수정2"
-- 관련 결정: D26, D31, D45, D53, D54, D55, D57, D59, D60, D61, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D77, D79, D80, D81, D82, D83 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 판정 함수가 순수 함수면 Node(`node --experimental-strip-types`)로 step 파일의 경우를 실행해 확인한다. 서버 TS 타입 검사는 저장소 밖 임시 tsconfig(jsr supabase-js → apps/desktop/node_modules 타입, deno-dom·Deno 자리 채움, `paths`만 쓰고 `baseUrl`은 빼기)로 `tsc`를 돌릴 수 있다 (L53). deno-dom 자리 채움 때문에 adapter.ts의 unknown 오류 3줄은 무시.
+- 관련 결정: D39, D53, D54, D57, D58, D62, D63, D70 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: 마지막 단계다. 앱 화면만 고치므로 서버 파일은 건드리지 않는다. 화면 확인은 하지 않고 `npm run build`까지만.
 
 ## 확인할 문서 (경로는 docs/features/job-search/ 기준, 파일 통째로 읽기)
-- ai/plan/step-09.md
-- ai/spec/req-dedupe.md (R113–R115, 참고 R84)
-- ai/logs/L53.md
-- 목업 없음
+- ai/plan/step-10.md
+- ai/spec/req-recommend.md (R92–R93, 맨 아래 "출처 표시" 글 그림, 참고 R55)
+- ai/logs/L54.md
+- human/mockups/popup.html의 popup-head 구역 (CSS: popup.css·common.css에서 클래스 검색)

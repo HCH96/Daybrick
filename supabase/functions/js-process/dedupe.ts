@@ -1,8 +1,20 @@
 // js-process 중복 확인 (job-search R83–R89, D53–D57): 추출 뒤·2차 필터 전에 다른 사이트의 같은 공고와 묶는다.
-// 판정은 `_shared/dedupe.ts`의 순수 함수(isSameJob·pickRep)만 쓰고, 여기서는 후보 읽기와 묶기(DB)만 한다.
-// - checkDuplicate: 처리 중인 공고 하나를 기존 대표들과 비교해 묶는다 (queue 모드만, force·rescore는 건너뜀).
+// 판정은 `_shared/dedupe.ts`의 순수 함수(pairKind·isSameJob·pickRep)만 쓰고, 여기서는 후보 읽기와 묶기(DB)만 한다.
+// - checkDuplicate: 처리 중인 공고 하나를 기존 대표들과 비교해 묶는다 (force·rescore는 건너뜀).
+//   같은 공고가 없고 애매한 쌍(R113)이 있으면 저장된 판정을 보거나 Haiku에 묻는다 (R114–R115, D77).
 // - backfillDedupe: 서버 업데이트 뒤 한 번, 이미 모은 공고의 norm_key를 다시 계산하고 서로 묶는다 (R89, D56).
-import { isSameJob, type JobLike, normalizeText, normKey, pickRep, type RepCandidate } from "../_shared/dedupe.ts";
+//   애매한 쌍은 묻지 않는다 (D77).
+import { type AiModel, callClaude } from "../_shared/ai.ts";
+import {
+  isSameJob,
+  type JobLike,
+  normalizeText,
+  normKey,
+  pairKind,
+  pickRep,
+  type RepCandidate,
+} from "../_shared/dedupe.ts";
+import { PAIR_SCHEMA, PAIR_SYSTEM, PAIR_VALUES, pairContent, type PairPosting } from "../_shared/prompts.ts";
 import type { Context, PostingRow } from "./steps.ts";
 
 /** 한 번에 읽는 행 수 (PostgREST 기본 최대 1000행) */
@@ -67,9 +79,73 @@ async function bundleInto(ctx: Context, win: string, lose: string[]): Promise<bo
 
 export type DedupeResult = { bundled: false } | { bundled: true; stage: string };
 
+/** 한 공고에서 AI에 묻는 애매한 쌍 수 (D77) */
+const MAX_PAIR_ASKS = 3;
+/** 쌍 판정 모델과 출력 상한 (D67) */
+const PAIR_MODEL: AiModel = "claude-haiku-5-5";
+const PAIR_MAX_TOKENS = 512;
+
+type PairResult = (typeof PAIR_VALUES)[number];
+
+function isPairResult(value: unknown): value is PairResult {
+  return typeof value === "string" && (PAIR_VALUES as readonly string[]).includes(value);
+}
+
+/**
+ * 애매한 쌍 판정 (R113–R115, D67, D77): 저장된 판정(`js_pair_checks`, a < b)을 먼저 보고, 없는 쌍만
+ * Haiku 바로 호출(task dedupe)로 최대 3개까지 묻고 결과를 저장한다. `same`으로 판정된 후보를 돌려준다.
+ * 하나라도 same이면 더 묻지 않는다. 한도·크레딧 부족이면 묻기를 멈추고, 오류면 그 쌍만 건너뛴다(둘 다 저장하지 않음).
+ * 저장된 판정을 읽지 못하면 null.
+ */
+async function judgePairs(
+  ctx: Context,
+  me: PairPosting & { id: string },
+  list: { member: Member; fields: unknown }[],
+): Promise<Member[] | null> {
+  if (list.length === 0) return [];
+  const { admin, userId } = ctx.caller;
+  const stored = await admin.from("js_pair_checks").select("a, b, result")
+    .eq("user_id", userId).or(`a.eq.${me.id},b.eq.${me.id}`);
+  if (stored.error) return null;
+  const known = new Map<string, PairResult>();
+  for (const row of stored.data ?? []) {
+    const other = row.a === me.id ? row.b as string : row.a as string;
+    if (isPairResult(row.result)) known.set(other, row.result);
+  }
+
+  const same = list.filter((x) => known.get(x.member.id) === "same").map((x) => x.member);
+  if (same.length > 0) return same;
+
+  let asked = 0;
+  for (const x of list) {
+    if (known.has(x.member.id)) continue;
+    if (asked >= MAX_PAIR_ASKS) break;
+    asked++;
+    const res = await callClaude(ctx.caller, {
+      task: "dedupe",
+      model: PAIR_MODEL,
+      system: PAIR_SYSTEM,
+      content: pairContent(me, { company: x.member.company, title: x.member.title, fields: x.fields }),
+      schema: PAIR_SCHEMA,
+      maxTokens: PAIR_MAX_TOKENS,
+    });
+    if (res.kind === "limit" || res.kind === "credit") break;
+    if (res.kind !== "ok") continue;
+    const result = isRecord(res.data) ? res.data.result : null;
+    if (!isPairResult(result)) continue;
+    const [a, b] = me.id < x.member.id ? [me.id, x.member.id] : [x.member.id, me.id];
+    const saved = await admin.from("js_pair_checks")
+      .upsert({ user_id: userId, a, b, result }, { onConflict: "user_id,a,b", ignoreDuplicates: true });
+    if (saved.error) console.error("js_pair_checks 저장 실패");
+    if (result === "same") return [x.member];
+  }
+  return [];
+}
+
 /**
  * 중복 확인 (R83–R88): 후보 = 같은 사용자·다른 사이트·대표(dup_of null)·풀리지 않음·추출 있음·본인 아님·
  * 마감이 오늘(한국 시간) 이후이거나 없음. 걸러진·숨긴·지원한 공고도 후보다.
+ * 후보마다 pairKind로 보고, same이 없을 때 ambiguous 후보는 judgePairs(저장된 판정 또는 Haiku)로 가린다.
  * 일치하면 pickRep([p, 후보 대표])로 대표를 정한다.
  * - 후보가 대표: p(와 p에 묶여 있던 공고, 필터 다시 적용으로 다시 처리되는 경우)를 후보 아래로 옮긴다. p의 추출은 남겨 둔다.
  * - p가 대표: js_switch_rep(후보 → p)로 후보의 stage·추출·점수를 p에 복사한다 (다시 채점하지 않음, R87, D53).
@@ -99,8 +175,10 @@ export async function checkDuplicate(ctx: Context, p: PostingRow, fields: unknow
 
   const today = todayKst();
   const matches: Member[] = [];
+  const ambiguous: { member: Member; fields: unknown }[] = [];
   for (const row of rows.data ?? []) {
-    const f = jobFields(embeddedFields((row as Record<string, unknown>).js_extractions));
+    const rawFields = embeddedFields((row as Record<string, unknown>).js_extractions);
+    const f = jobFields(rawFields);
     if (f.deadline !== null && f.deadline.slice(0, 10) < today) continue; // 마감이 지난 공고는 뺀다 (R83)
     const other: JobLike = {
       siteId: (row.site_id as string | null) ?? "",
@@ -109,8 +187,9 @@ export async function checkDuplicate(ctx: Context, p: PostingRow, fields: unknow
       role: f.role,
       deadline: f.deadline,
     };
-    if (!isSameJob(job, other)) continue;
-    matches.push({
+    const kind = pairKind(job, other);
+    if (kind === "different") continue;
+    const member: Member = {
       ...other,
       id: row.id as string,
       applied: row.applied_at !== null,
@@ -119,7 +198,17 @@ export async function checkDuplicate(ctx: Context, p: PostingRow, fields: unknow
       collectedAt: row.collected_at as string,
       stage: row.stage as string,
       hiddenAt: null,
-    });
+    };
+    if (kind === "same") matches.push(member);
+    else ambiguous.push({ member, fields: rawFields });
+  }
+  // 같은 공고가 없을 때만 애매한 쌍을 AI에 묻는다 (R113–R115). 둘 다 지원했으면 묶이지 않으므로 묻지 않는다 (D57)
+  if (matches.length === 0 && ambiguous.length > 0) {
+    const myApplied = self.data.applied_at !== null;
+    const askable = ambiguous.filter((x) => !(myApplied && x.member.applied));
+    const judged = await judgePairs(ctx, { id: p.id, company: p.company, title: p.title, fields }, askable);
+    if (judged === null) return null;
+    matches.push(...judged);
   }
   if (matches.length === 0) return { bundled: false };
 

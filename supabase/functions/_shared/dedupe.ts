@@ -2,6 +2,7 @@
 // 같은 사이트 안에서는 ext_id(공고 고유 id, 없으면 주소), 사이트가 다르면
 // 수집 단계는 회사+정리 제목 키(norm_key, 회사 정확히 같음, D52), 중복 확인 단계는 isSameJob(D55)로 본다.
 // 같은 사이트 재등록(ext_id가 바뀌어 다시 올라온 공고)은 isRelisted(R111, D66)로 본다.
+// 중복 확인 단계의 애매한 쌍(AI에 물을 쌍)은 pairKind(R113, D77)가 가린다.
 
 /** 공백·기호를 지우고 소문자로. 회사 이름의 법인 표기(주식회사, (주), ㈜)도 뺀다 */
 export function normalizeText(text: string): string {
@@ -126,12 +127,41 @@ export function titleSimilar(a: JobLike, b: JobLike): boolean {
   return ta === tb || dice(ta, tb) >= 0.8;
 }
 
+/** 쌍 판정 결과: 같은 공고 / AI에 물을 애매한 쌍 (R113) / 다른 공고 */
+export type PairKind = "same" | "ambiguous" | "different";
+
+/** 애매한 쌍의 제목 Dice 아래 끝 (R113). 위 끝은 같은 공고 기준 0.8 (D55) */
+const AMBIGUOUS_DICE = 0.5;
+const SAME_DICE = 0.8;
+
+/**
+ * 쌍 판정 (R84, R113, D55, D77). 다른 사이트이고 회사가 일치(companyMatch)할 때만 본다.
+ * - same: 마감일 일치 && 직무·제목 비슷함 (isSameJob과 같음)
+ * - ambiguous: 마감일 같고 정리 제목 Dice 0.5 이상 0.8 미만, 또는 정리 제목이나 정리 직무가 같은데 마감일이 한쪽만 있거나 다름
+ * - 그 밖 different
+ */
+export function pairKind(a: JobLike, b: JobLike): PairKind {
+  if (a.siteId === b.siteId || !companyMatch(a.company, b.company)) return "different";
+  const deadlineSame = sameDeadline(a.deadline, b.deadline);
+  if (deadlineSame && titleSimilar(a, b)) return "same";
+
+  const ra = a.role ? normalizeText(a.role) : "";
+  const rb = b.role ? normalizeText(b.role) : "";
+  const ta = a.title ? cleanTitle(a.title, a.company) : "";
+  const tb = b.title ? cleanTitle(b.title, b.company) : "";
+  if (!deadlineSame) {
+    const titleEq = ta !== "" && ta === tb;
+    const roleEq = ra !== "" && ra === rb;
+    return titleEq || roleEq ? "ambiguous" : "different";
+  }
+  if (ta === "" || tb === "") return "different";
+  const d = dice(ta, tb);
+  return d >= AMBIGUOUS_DICE && d < SAME_DICE ? "ambiguous" : "different";
+}
+
 /** 같은 공고 판정 (R84, 엄격): 다른 사이트 && 회사 일치 && 마감일 일치 && 직무·제목 비슷함 */
 export function isSameJob(a: JobLike, b: JobLike): boolean {
-  return a.siteId !== b.siteId
-    && companyMatch(a.company, b.company)
-    && sameDeadline(a.deadline, b.deadline)
-    && titleSimilar(a, b);
+  return pairKind(a, b) === "same";
 }
 
 /** 재등록 판정 입력: 같은 사이트 공고 하나 */
