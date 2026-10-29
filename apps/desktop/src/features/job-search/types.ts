@@ -41,6 +41,16 @@ export interface AiCall {
   cacheWrite: number;
   costUsd: number;
   ok: boolean;
+  /** 일괄(Batch) 호출이면 true: 할인 단가로 계산한 기록 (R110). 칸이 없던 기록은 false */
+  batch: boolean;
+}
+
+/** 진행 중인 일괄 작업 상태 (`js_batches`, R105, D70). 처리 상태 줄에 보여 준다 */
+export interface BatchState {
+  kind: "extract" | "score" | "family";
+  /** 맡긴 공고 수 */
+  count: number;
+  submittedAt: string;
 }
 
 export type ProfileSourceKind = "pdf" | "md" | "text";
@@ -222,7 +232,11 @@ export type FilterKind =
   | "skill-exclude"
   | "max-years"
   | "employment"
-  | "skill-overlap";
+  | "skill-overlap"
+  /** 비개발 직군 낱말 (1차, `{ words }`, D74) */
+  | "title-nondev"
+  /** 개발 직군만 (2차, `{}`, D74) */
+  | "dev-only";
 
 /** 필터 조건 (`js_filters`, D10) */
 export interface FilterRule {

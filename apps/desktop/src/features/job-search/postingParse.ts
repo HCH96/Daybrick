@@ -49,6 +49,8 @@ const KINDS: readonly FilterKind[] = [
   "max-years",
   "employment",
   "skill-overlap",
+  "title-nondev",
+  "dev-only",
 ];
 const SCHEDULE_KINDS: readonly ScheduleKind[] = ["assignment", "coding-test", "interview", "other"];
 

@@ -148,6 +148,7 @@ function parseAiCall(row: unknown): AiCall | null {
     cacheWrite: toNumber(row.cache_write) ?? 0,
     costUsd,
     ok: row.ok !== false,
+    batch: row.batch === true,
   };
 }
 
@@ -159,7 +160,7 @@ export async function loadAiCallsSince(session: ServerSession, sinceIso: string)
   for (let from = 0; ; from += PAGE_SIZE) {
     const { data, error, status } = await session.client
       .from("js_ai_calls")
-      .select("id, at, model, task, input_tokens, output_tokens, cache_read, cache_write, cost_usd, ok")
+      .select("id, at, model, task, input_tokens, output_tokens, cache_read, cache_write, cost_usd, ok, batch")
       .gte("at", sinceIso)
       .order("at", { ascending: true })
       .range(from, from + PAGE_SIZE - 1);
@@ -688,6 +689,8 @@ const FILTER_KINDS: readonly FilterKind[] = [
   "max-years",
   "employment",
   "skill-overlap",
+  "title-nondev",
+  "dev-only",
 ];
 
 function parseFilter(row: unknown): FilterRule | null {

@@ -41,6 +41,10 @@ pub const MIGRATIONS: &[(u32, &str)] = &[
         7,
         include_str!("../../../../../supabase/migrations/0007_job_search_dedupe.sql"),
     ),
+    (
+        8,
+        include_str!("../../../../../supabase/migrations/0008_job_search_batch.sql"),
+    ),
 ];
 
 /// 앱이 무작위 값으로 만들어 두는 서버 함수 비밀값 (job-search D19).

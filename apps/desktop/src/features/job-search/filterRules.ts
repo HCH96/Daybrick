@@ -8,8 +8,11 @@ import type { FilterKind, FilterRule, PostingStage } from "./types";
 /** 화면에서 칩 색: 포함 보라, 제외 빨강, 숫자 기준 파랑 */
 export type ChipTone = "accent" | "red" | "blue";
 
-/** 사용자가 추가할 수 있는 종류 (자동 추림은 2차 판의 고정 줄) */
-export type AddableKind = Exclude<FilterKind, "skill-overlap">;
+/** 고정 줄 종류: 자동 추림(2차)과 직군 거르기 두 줄(D74). 화면 줄은 수정2 3단계에서 따로 만든다 */
+const FIXED_KINDS: readonly FilterKind[] = ["skill-overlap", "title-nondev", "dev-only"];
+
+/** 사용자가 추가할 수 있는 종류 (고정 줄 종류는 빠짐) */
+export type AddableKind = Exclude<FilterKind, "skill-overlap" | "title-nondev" | "dev-only">;
 
 interface KindInfo {
   stage: 1 | 2;
@@ -32,7 +35,7 @@ export const FIRST_KINDS: AddableKind[] = ["title-include", "title-exclude", "co
 export const SECOND_KINDS: AddableKind[] = ["skill-exclude", "skill-include", "max-years", "employment"];
 
 export function isAddableKind(kind: FilterKind): kind is AddableKind {
-  return kind !== "skill-overlap";
+  return !FIXED_KINDS.includes(kind);
 }
 
 export function ruleWords(value: unknown): string[] {
