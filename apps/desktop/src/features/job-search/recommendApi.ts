@@ -1,7 +1,9 @@
 import type { ApiResult } from "../server/management";
 import type { ServerSession } from "../server/session";
 import { PAGE_SIZE, functionError, isRecord, postgrestError, toNumber } from "./api";
+import { loadBundleSources } from "./bundleApi";
 import { toGrade, type GradeId } from "./grade";
+import type { BundleSource } from "./types";
 
 /** 추천 공고 탭 서버 읽기와 `js-process` 다시 채점 (R4–R8, R23). 도우미는 api.ts의 것을 같이 쓴다 */
 
@@ -22,6 +24,8 @@ export interface RecommendPosting {
   location: string | null;
   /** 마감일 `YYYY-MM-DD`. 없으면 null (상시) */
   deadlineDate: string | null;
+  /** 묶음 출처 (대표 먼저, R91). 묶인 공고가 없으면 빈 배열 */
+  sources: BundleSource[];
 }
 
 export interface RecommendState {
@@ -74,6 +78,7 @@ function parseRecommend(row: Record<string, unknown>): RecommendPosting | null {
     employment,
     location: text(fields.location),
     deadlineDate: deadline,
+    sources: [],
   };
 }
 
@@ -99,8 +104,11 @@ async function loadScored(session: ServerSession): Promise<ApiResult<RecommendPo
       const posting = parseRecommend(row);
       if (posting) postings.push(posting);
     }
-    if (rows.length < PAGE_SIZE) return { ok: true, value: postings };
+    if (rows.length < PAGE_SIZE) break;
   }
+  const sources = await loadBundleSources(session, postings.map((p) => p.id));
+  if (!sources.ok) return sources;
+  return { ok: true, value: postings.map((p) => ({ ...p, sources: sources.value.get(p.id) ?? [] })) };
 }
 
 /** 추천 공고 탭 데이터를 한 번에 읽는다 */
@@ -111,7 +119,7 @@ export async function loadRecommend(session: ServerSession): Promise<ApiResult<R
     session.client.from("js_collect_runs").select("at").order("at", { ascending: false }).limit(1).maybeSingle(),
     session.client.from("js_sites").select("last_result").eq("enabled", true),
     count().eq("stage", "waiting").is("hidden_at", null),
-    count().not("hidden_at", "is", null).is("applied_at", null),
+    count().not("hidden_at", "is", null).is("applied_at", null).neq("stage", "duplicate"),
     count().in("stage", ["filtered1", "filtered2", "suspect", "failed"]).is("hidden_at", null).is("applied_at", null),
   ]);
   if (!postings.ok) return postings;

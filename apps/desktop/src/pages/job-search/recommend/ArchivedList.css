@@ -178,3 +178,13 @@
 .js-list__g--muted {
   color: var(--muted);
 }
+
+/* 묶음 출처 한 줄 (R91, SourceNames). 회사·제목 아래 */
+.js-list__src {
+  margin-top: 3px;
+  overflow: hidden;
+  color: var(--faint);
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

@@ -9,6 +9,7 @@ import type { ApiErrorKind } from "../../../features/server/management";
 import type { StatusLine } from "../profile/profileFormat";
 import { UndoIcon } from "../popup/PopupIcons";
 import ListHead from "./ListHead";
+import SourceNames from "./SourceNames";
 import "./ArchivedList.css";
 
 interface ArchivedListProps {
@@ -103,6 +104,7 @@ function ArchivedList({ refreshKey, onOpen, onChanged }: ArchivedListProps) {
                     <span className="js-list__co">{p.company ?? "회사 없음"}</span>
                     {p.title ?? "제목 없음"}
                   </div>
+                  <SourceNames sources={p.sources} className="js-list__src" />
                   {subLine(p, expired)}
                 </div>
                 <span className="js-list__when">

@@ -3,7 +3,8 @@ import type { ServerSession } from "../server/session";
 import { PAGE_SIZE, functionError, isRecord, postgrestError, toNumber } from "./api";
 import { toGrade, type GradeId } from "./grade";
 import { parseFailReason, parseFields, parseHits, parseReasons, type FilterHit, type PostingFields, type Reason } from "./postingParse";
-import type { PostingStage } from "./types";
+import { loadBundleSources } from "./bundleApi";
+import type { BundleSource, PostingStage } from "./types";
 
 /** 공고 하나 읽기·지원 안 함·되돌리기·그래도 채점, 걸러진 공고·보관함 목록 (R9–R16, R46, R49, D11, D37) */
 
@@ -179,6 +180,8 @@ export interface ListPosting {
   deadlineDate: string | null;
   score: number | null;
   grade: GradeId | null;
+  /** 묶음 출처 (대표 먼저, R91). 묶인 공고가 없으면 빈 배열 */
+  sources: BundleSource[];
 }
 
 function parseListRow(row: Record<string, unknown>): ListPosting | null {
@@ -204,6 +207,7 @@ function parseListRow(row: Record<string, unknown>): ListPosting | null {
     deadlineDate: fields?.deadline.date ?? null,
     score: points,
     grade: score && points !== null ? toGrade(score.grade, points) : null,
+    sources: [],
   };
 }
 
@@ -213,7 +217,7 @@ const LIST_COLUMNS =
 
 type ListKind = "filtered" | "archived";
 
-/** 걸러진 공고(1차·2차·인젝션 의심, 숨기지 않음, R46) 또는 보관함(숨김·지원 안 함, R15) */
+/** 걸러진 공고(1차·2차·인젝션 의심, 숨기지 않음, R46) 또는 보관함(숨김·지원 안 함·묶인 공고 아님, R15, D54). 대표 행에는 묶음 출처를 붙인다 (R91) */
 export async function loadPostingList(session: ServerSession, kind: ListKind): Promise<ApiResult<ListPosting[]>> {
   const list: ListPosting[] = [];
   for (let from = 0; ; from += PAGE_SIZE) {
@@ -221,7 +225,7 @@ export async function loadPostingList(session: ServerSession, kind: ListKind): P
     const query =
       kind === "filtered"
         ? base.in("stage", ["filtered1", "filtered2", "suspect", "failed"]).is("hidden_at", null).order("collected_at", { ascending: false })
-        : base.not("hidden_at", "is", null).order("hidden_at", { ascending: false });
+        : base.not("hidden_at", "is", null).neq("stage", "duplicate").order("hidden_at", { ascending: false });
     const { data, error, status } = await query.range(from, from + PAGE_SIZE - 1);
     if (error) return { ok: false, error: postgrestError(error, status) };
     const rows: unknown[] = data ?? [];
@@ -230,6 +234,9 @@ export async function loadPostingList(session: ServerSession, kind: ListKind): P
       const item = parseListRow(row);
       if (item) list.push(item);
     }
-    if (rows.length < PAGE_SIZE) return { ok: true, value: list };
+    if (rows.length < PAGE_SIZE) break;
   }
+  const sources = await loadBundleSources(session, list.map((p) => p.id));
+  if (!sources.ok) return sources;
+  return { ok: true, value: list.map((p) => ({ ...p, sources: sources.value.get(p.id) ?? [] })) };
 }

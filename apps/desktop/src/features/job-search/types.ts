@@ -186,6 +186,15 @@ export interface Posting {
   unbundled: boolean;
 }
 
+/** 묶음 안 공고 하나의 출처 (R91–R92). 대표가 먼저, 나머지는 수집 순 */
+export interface BundleSource {
+  postingId: string;
+  /** 수집한 사이트 이름. 사이트를 지웠으면 "지운 사이트" */
+  siteName: string;
+  url: string | null;
+  isRep: boolean;
+}
+
 /** 추출 결과 (`js_extractions`, R48) */
 export interface Extraction {
   postingId: string;
