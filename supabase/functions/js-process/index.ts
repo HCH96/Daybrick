@@ -1,4 +1,5 @@
-// js-process: 수집한 공고를 "1차 필터 → 추출(+인젝션 검사) → 2차 필터 → 채점" 순서로 처리한다 (job-search R41, R48–R53).
+// js-process: 수집한 공고를 "1차 필터 → 추출(+인젝션 검사) → 중복 확인 → 2차 필터 → 채점" 순서로 처리한다
+// (job-search R41, R48–R53, R83). 중복 확인은 queue 모드만 하고, 서버 업데이트 뒤 첫 queue가 소급 적용(R89)을 한 번 한다.
 // 게이트웨이 JWT 확인을 끄고 배포하고, 호출자는 getCaller(사용자 토큰 또는 예약 비밀값)로 확인한다.
 // 서비스 역할로 쓰되 항상 호출자 user_id로 거른다. AI 호출은 `_shared/ai.ts`만 거친다 (D15).
 // 요청: { mode: "queue", limit? }  — 기본. 대기 공고를 기본 5개(최대 10) 꺼내 처리한다 (D17).
@@ -11,6 +12,7 @@
 // 응답: { ok: true, done: [{ postingId, stage }], stopped: { reason, which? } | null, remaining }
 //       force는 { ok: true, stage } 또는 { ok: false, reason, which? }. 실패 { ok: false, reason: unauthorized|database|… }
 import { getCaller } from "../_shared/auth.ts";
+import { backfillDedupe, checkDuplicate } from "./dedupe.ts";
 import { handleOptions, json } from "../_shared/cors.ts";
 import type { FilterRow } from "../_shared/filters.ts";
 import { lastNoticeAt, sendNotice } from "../_shared/notify.ts";
@@ -33,6 +35,8 @@ const MAX_LIMIT = 10;
 /** 함수 시간 한도(무료 150초) 안에서 끝내려고, 이 시각이 지나면 새 AI 호출을 시작하지 않는다 */
 const EXTRACT_BEFORE_MS = 100_000;
 const SCORE_BEFORE_MS = 80_000;
+/** 소급 적용(R89)은 이 시각까지 끝내지 못하면 멈추고 다음 실행이 처음부터 다시 한다 (D56) */
+const BACKFILL_BEFORE_MS = 60_000;
 const QUEUE_STAGES = ["waiting", "extracted", "new"] as const;
 
 async function loadContext(caller: Context["caller"]): Promise<Context | null> {
@@ -93,6 +97,11 @@ async function processOne(ctx: Context, p: PostingRow, startedAt: number): Promi
     return (await setStage(ctx, p.id, "suspect")) ? { kind: "done", stage: "suspect" } : { kind: "stop", stop: { reason: "database" } };
   }
 
+  // 중복 확인 (R83): 묶이면 채점하지 않는다. p가 새 대표면 기존 대표의 단계·추출·점수를 이어 받는다 (R87)
+  const dup = await checkDuplicate(ctx, p, ex.fields);
+  if (dup === null) return { kind: "stop", stop: { reason: "database" } };
+  if (dup.bundled) return { kind: "done", stage: dup.stage };
+
   const filtered2 = await secondFilter(ctx, p, ex.fields);
   if (filtered2 === null) return { kind: "stop", stop: { reason: "database" } };
   if (filtered2) return { kind: "done", stage: "filtered2" };
@@ -126,8 +135,21 @@ async function countQueue(ctx: Context): Promise<number> {
   return res.count ?? 0;
 }
 
+/** 소급 적용이 아직이면(dedupe_version < 1) 한 번 한다. 실패·시간 부족이면 다음 실행이 다시 한다 (D56) */
+async function ensureBackfill(ctx: Context, startedAt: number) {
+  const row = await ctx.caller.admin.from("js_settings").select("dedupe_version")
+    .eq("user_id", ctx.caller.userId).maybeSingle();
+  if (row.error) return;
+  const version = typeof row.data?.dedupe_version === "number" ? row.data.dedupe_version : 0;
+  if (version >= 1) return;
+  if (!(await backfillDedupe(ctx, startedAt + BACKFILL_BEFORE_MS))) {
+    console.warn("js-process: 소급 묶기를 끝내지 못함 (다음 실행에서 다시)");
+  }
+}
+
 async function runQueue(ctx: Context, limit: number) {
   const startedAt = Date.now();
+  await ensureBackfill(ctx, startedAt);
   const postings = await pickQueue(ctx, limit);
   if (!postings) return json({ ok: false, reason: "database" });
   const done: { postingId: string; stage: string }[] = [];
