@@ -57,6 +57,7 @@ const KEYS: GuideKeyRow[] = [
   { key: "칸의 sel · attr · regex · base", desc: "선택자(JSON은 점 경로) · 읽을 속성 · 첫 괄호를 뽑을 정규식 · 앞에 붙일 주소", required: false },
   { key: "detail.url · type", desc: "상세 주소와 응답 종류. {id}·{link}를 쓸 수 있음. detail이 있으면 필수", required: false },
   { key: "detail.body · images", desc: "본문 위치(기본 body) · 이미지 선택자(기본 img). 글이 짧으면 이미지를 저장", required: false },
+  { key: "detail.frame", desc: "본문이 끼워 넣은 화면(iframe) 안에 있을 때 그 선택자. 화면 주소를 한 번 더 받아 거기서 body·images를 읽음 (html만)", required: false },
 ];
 
 const PROMPT = `아래 채용 사이트의 공고 목록을 읽는 Daybrick 어댑터 규칙 파일(JSON)을 만들어 줘.
@@ -64,7 +65,8 @@ const PROMPT = `아래 채용 사이트의 공고 목록을 읽는 Daybrick 어�
 [규칙 형식 v1]
 - 필수: format(1), name, list.url, list.type(html|json), list.item, list.fields.title, list.fields.link
 - 선택: vars(사이트별 값 이름), delayMs, list.method(GET|POST)·headers·body, list.pages(최대 10),
-  list.fields.id·company·duty·body, detail(url·type·body·images)
+  list.fields.id·company·duty·body, detail(url·type·body·images·frame)
+- 상세 본문이 iframe 안에 있으면 detail.frame에 그 iframe 선택자를 쓴다. body·images는 iframe 안 화면 기준이다.
 - {이름}은 vars 값, {page}는 쪽 번호, 상세 주소에서는 {id}·{link}로 바뀐다.
 - HTML은 CSS 선택자, JSON은 $.a.b[*] 같은 점 경로로 읽는다.
 - 칸은 { "sel": 선택자, "attr": 속성, "regex": 첫 괄호를 뽑는 정규식, "base": 앞에 붙일 주소, "optional": true }
@@ -140,7 +142,7 @@ export const GUIDE_SECTIONS: GuideSection[] = [
           "읽은 공고 0개: list.item 선택자가 맞지 않거나, 목록이 브라우저에서 스크립트로 그려지는 사이트예요. 개발자 도구의 네트워크 탭에서 목록 API를 찾아 type을 json으로 써 보세요.",
           "제목·링크가 빠진 공고가 절반을 넘음: fields.title·link의 sel이 항목 안에서 맞는지 보세요.",
           "HTTP 403·404: 주소가 틀렸거나 사이트가 막았어요. method·headers·body를 브라우저 요청과 같게 맞춰 보세요.",
-          "본문이 비어 있음: detail.body 선택자를 확인하세요. 이미지로 된 공고는 글이 짧으면 이미지를 따로 저장해요.",
+          "본문이 비어 있음: detail.body 선택자를 확인하세요. 상세 페이지가 공고를 iframe으로 끼워 보여 주면 detail.frame에 그 선택자를 쓰세요. 이미지로 된 공고는 글이 짧으면 이미지를 따로 저장해요.",
         ],
       },
     ],

@@ -106,6 +106,7 @@ interface Application { /* 기존 */ jobLink?: { serverId: string } | null }
 ```
 - 필수 칸: `format`, `name`, `list.url`, `list.item`, `fields.title`, `fields.link`. `{변수}`는 `vars`·`page`·목록 칸 값으로 바꾼다.
 - 키 이름은 목업 가이드 그림의 예시(list.item 등)를 이 형식으로 확정한다.
+- 선택 `detail.frame`(html만): 상세 페이지 안 iframe 선택자. 있으면 그 src를 한 번 더 받아 거기서 body·images를 읽는다 (D48).
 
 ## 4. 컴포넌트 구조
 ```

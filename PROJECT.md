@@ -29,7 +29,7 @@
 | 지원 관리 | 수정1 완료 (테스트 r2 통과) | docs/features/applications/index.md |
 | 서버 연결 | 완료 (AI·사용자 테스트 r1 통과, 일시정지 재개 U31만 미확인) (notifications·job-search의 선행) | docs/features/server-setup/index.md |
 | 알림 | 완료 (r1 사용자 테스트 통과, 수정1은 AI 테스트 r2 통과·사용자 테스트 보류) (선행: server-setup, job-search의 선행) | docs/features/notifications/index.md |
-| 구직 관리 | 구현 완료 (AI 테스트 r1 통과, 사용자 테스트 r1 진행 중, 추가 수정 1–5 반영) (선행: server-setup, notifications) | docs/features/job-search/index.md |
+| 구직 관리 | 구현 완료 (AI 테스트 r1 통과, 사용자 테스트 r1 진행 중, 추가 수정 1–5 반영, iframe 상세 읽기 추가·서버 업데이트 필요) (선행: server-setup, notifications) | docs/features/job-search/index.md |
 | 집중 타이머 | 시작 전 | - |
 | 집중 모드 | 시작 전 | - |
 | 공유 웹 | 시작 전 | - |

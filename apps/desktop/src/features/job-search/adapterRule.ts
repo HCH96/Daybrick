@@ -39,6 +39,12 @@ function checkFields(fields: Record<string, unknown>, errors: string[]) {
   }
 }
 
+function checkFrame(detail: Record<string, unknown>, errors: string[]) {
+  if (detail.frame === undefined) return;
+  if (typeof detail.frame !== "string" || detail.frame.trim() === "") errors.push("detail.frame은 선택자 글자여야 해요");
+  else if (detail.type !== "html") errors.push("detail.frame은 detail.type이 html일 때만 쓸 수 있어요");
+}
+
 /** 규칙 형식 검사. 맞으면 규칙과 사이트별 값 이름, 아니면 고칠 점 목록 */
 export function checkRule(raw: unknown): RuleCheck {
   const errors: string[] = [];
@@ -64,7 +70,10 @@ export function checkRule(raw: unknown): RuleCheck {
   }
   if (raw.detail !== undefined) {
     if (!isRecord(raw.detail)) errors.push("detail은 객체여야 해요");
-    else checkRequest("detail", raw.detail, errors);
+    else {
+      checkRequest("detail", raw.detail, errors);
+      checkFrame(raw.detail, errors);
+    }
   }
   if (errors.length > 0) return { ok: false, errors };
   const vars = Array.isArray(raw.vars) ? raw.vars.filter((v): v is string => typeof v === "string") : [];

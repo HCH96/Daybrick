@@ -35,6 +35,8 @@ export interface DetailRule {
   body?: string;
   /** 본문 안 이미지 선택자(기본 img) */
   images?: string;
+  /** HTML만: 끼워 넣은 화면(iframe 등) 선택자. 있으면 그 src 주소를 한 번 더 받아 거기서 body·images를 읽는다 */
+  frame?: string;
 }
 
 export interface AdapterRule {
@@ -88,6 +90,12 @@ function checkRequest(where: string, raw: Record<string, unknown>, errors: strin
   if (raw.headers !== undefined && !isStringMap(raw.headers)) errors.push(`${where}.headers는 문자열 값 객체입니다`);
 }
 
+function checkFrame(detail: Record<string, unknown>, errors: string[]) {
+  if (detail.frame === undefined) return;
+  if (typeof detail.frame !== "string" || detail.frame.trim() === "") errors.push("detail.frame은 선택자 문자열입니다");
+  else if (detail.type !== "html") errors.push("detail.frame은 detail.type이 html일 때만 씁니다");
+}
+
 /** 규칙 형식 검사. 맞으면 규칙, 아니면 고칠 점 목록 (R29의 형식 검사도 이것을 쓴다) */
 export function validateRule(raw: unknown): { ok: true; rule: AdapterRule } | { ok: false; errors: string[] } {
   const errors: string[] = [];
@@ -129,7 +137,10 @@ export function validateRule(raw: unknown): { ok: true; rule: AdapterRule } | { 
   }
   if (raw.detail !== undefined) {
     if (!isRecord(raw.detail)) errors.push("detail은 객체입니다");
-    else checkRequest("detail", raw.detail, errors);
+    else {
+      checkRequest("detail", raw.detail, errors);
+      checkFrame(raw.detail, errors);
+    }
   }
   if (errors.length > 0) return { ok: false, errors };
   const rule = raw as unknown as AdapterRule;
@@ -408,9 +419,30 @@ export async function readDetail(
     const [html] = jsonPath(root, detail.body ?? "$");
     return { ok: true, detail: readBodyHtml(typeof html === "string" ? html : "", imagesSel, url) };
   }
-  const doc = new DOMParser().parseFromString(res.text, "text/html");
+  let doc = new DOMParser().parseFromString(res.text, "text/html");
   if (!doc) return { ok: false, reason: "상세 HTML을 읽지 못했습니다" };
+  let pageUrl = url;
+  const frameUrl = detail.frame ? frameSrc(doc, detail.frame, url) : null;
+  if (frameUrl) {
+    const framed = await send({ url: frameUrl, type: "html" }, {});
+    if (!framed.ok) return { ok: false, reason: `끼워 넣은 화면을 읽지 못함 (${framed.reason})` };
+    doc = new DOMParser().parseFromString(framed.text, "text/html");
+    if (!doc) return { ok: false, reason: "끼워 넣은 화면 HTML을 읽지 못했습니다" };
+    pageUrl = frameUrl;
+  }
   const el = doc.querySelector(detail.body ?? "body");
   if (!el) return { ok: true, detail: { text: "", images: [] } };
-  return { ok: true, detail: readBodyElement(el as unknown as Element, imagesSel, url) };
+  return { ok: true, detail: readBodyElement(el as unknown as Element, imagesSel, pageUrl) };
+}
+
+/** 끼워 넣은 화면의 절대 주소. 못 찾으면 null (원래 페이지에서 읽는다) */
+function frameSrc(doc: { querySelector(sel: string): Element | null }, frameSel: string, baseUrl: string): string | null {
+  const src = doc.querySelector(frameSel)?.getAttribute("src")?.trim();
+  if (!src) return null;
+  try {
+    const href = new URL(src, baseUrl).href;
+    return href.startsWith("http") ? href : null;
+  } catch {
+    return null;
+  }
 }
