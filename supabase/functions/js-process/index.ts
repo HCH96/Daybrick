@@ -7,8 +7,9 @@
 //         순서: waiting(한도로 미룬 것, R74) → extracted(채점 전에 멈춘 것) → new. 원문이 없거나 숨긴 공고는 건너뛴다 (D31, D11).
 //       { mode: "force", postingId } — 그래도 채점 (R46, R49): 필터·의심을 건너뛰고 채점한다.
 //       { mode: "rescore", limit? } — 이전 프로필 버전으로 채점한 공고를 지금 프로필로 다시 채점한다 (R23).
-//       { mode: "batch" } — 대기 공고의 추출·채점을 Anthropic 일괄 작업으로 맡긴다 (R102, R106, R110, D71, batch.ts).
-//         응답 { ok: true, submitted: { extract, score }, held, inFlight: BatchState[], stopped }.
+//       { mode: "batch" } — 끝난 일괄의 결과를 저장하고(batchResult.ts) 대기 공고의 추출·채점을
+//         Anthropic 일괄 작업으로 맡긴다 (R102–R104, R106, R110, D71, batch.ts).
+//         응답 { ok: true, saved: { extract, score }, submitted: { extract, score }, held, inFlight: BatchState[], stopped }.
 //         예약·앱은 queue 대신 이것을 부른다 (queue는 남겨 둔다, D71).
 // 한도에 걸리면 그 공고를 waiting으로 두고 멈춘다 (queue). 크레딧 부족도 같다 (R78, 알림은 _shared/ai.ts).
 // Anthropic이 공고 하나의 요청만 거절하면(rejected) 그 공고를 failed로 두고 다음 공고로 간다 (L28).
@@ -16,6 +17,7 @@
 //       force는 { ok: true, stage } 또는 { ok: false, reason, which? }. 실패 { ok: false, reason: unauthorized|database|… }
 import { getCaller } from "../_shared/auth.ts";
 import { loadInFlight, submitBatches } from "./batch.ts";
+import { pollBatches } from "./batchResult.ts";
 import { backfillDedupe, checkDuplicate } from "./dedupe.ts";
 import { handleOptions, json } from "../_shared/cors.ts";
 import type { FilterRow } from "../_shared/filters.ts";
@@ -41,6 +43,8 @@ const EXTRACT_BEFORE_MS = 100_000;
 const SCORE_BEFORE_MS = 80_000;
 /** 소급 적용(R89)은 이 시각까지 끝내지 못하면 멈추고 다음 실행이 처음부터 다시 한다 (D56) */
 const BACKFILL_BEFORE_MS = 60_000;
+/** 일괄 결과 읽기는 시작 100초에서 멈추고 다음 실행이 이어 읽는다 (D71) */
+const POLL_BEFORE_MS = 100_000;
 const QUEUE_STAGES = ["waiting", "extracted", "new"] as const;
 
 async function loadContext(caller: Context["caller"]): Promise<Context | null> {
@@ -254,17 +258,26 @@ async function runRescore(ctx: Context, limit: number) {
   return json({ ok: true, done, stopped, remaining: left.count ?? 0 });
 }
 
-/** 일괄 맡기기 (R102, R106). 결과 확인(pollBatches)은 5단계에서 앞에 붙는다 */
+/**
+ * 일괄 처리 (R102–R104, R106, D71): 진행 중 일괄의 결과 저장(pollBatches) → 맡기기(submitBatches).
+ * 추출 결과를 저장하며 `extracted`가 된 공고는 같은 실행에서 채점 일괄로 간다 (R103의 두 번째 맡기기).
+ * 결과를 저장한 실행에서 진행 중 일괄도 맡길 공고도 남지 않았으면 새 추천 공고 알림을 보낸다 (R80).
+ */
 async function runBatch(ctx: Context) {
   const startedAt = Date.now();
+  const polled = await pollBatches(ctx, startedAt + POLL_BEFORE_MS);
   const result = await submitBatches(ctx, startedAt);
   const inFlight = await loadInFlight(ctx);
+  const savedAny = polled.saved.extract + polled.saved.score > 0;
+  const nothingLeft = inFlight !== null && inFlight.states.length === 0 && !result.stopped && result.held === 0;
+  if (savedAny && nothingLeft) await noticeRecommend(ctx);
   return json({
     ok: true,
+    saved: polled.saved,
     submitted: result.submitted,
     held: result.held,
     inFlight: inFlight?.states ?? [],
-    stopped: result.stopped,
+    stopped: result.stopped ?? polled.stopped,
   });
 }
 

@@ -220,8 +220,15 @@ export function scoreRequest(ctx: Context, p: PostingRow, fields: unknown): Call
 /**
  * 채점 결과 저장: 항목 점수를 더해 점수·등급을 정하고(D36) `scored`로 둔다.
  * `profileVersion`은 요청을 만들 때의 프로필 버전이다. 같은 공고를 다시 저장해도 한 행이다. 실패하면 false.
+ * `toScored`가 false면 점수만 저장하고 단계는 그대로 둔다 (일괄 결과가 오기 전에 묶이거나 걸러진 공고, batchResult.ts).
  */
-export async function saveScore(ctx: Context, p: PostingRow, result: unknown, profileVersion: number): Promise<boolean> {
+export async function saveScore(
+  ctx: Context,
+  p: PostingRow,
+  result: unknown,
+  profileVersion: number,
+  toScored = true,
+): Promise<boolean> {
   const data = isRecord(result) ? result : {};
   const total = totalOf(data.parts);
   const stored = await ctx.caller.admin.from("js_scores").upsert({
@@ -235,7 +242,7 @@ export async function saveScore(ctx: Context, p: PostingRow, result: unknown, pr
     summary: typeof data.summary === "string" ? data.summary.trim() : "",
   }, { onConflict: "posting_id" });
   if (stored.error) return false;
-  return await setStage(ctx, p.id, "scored");
+  return toScored ? await setStage(ctx, p.id, "scored") : true;
 }
 
 /** 지금 프로필 버전의 점수가 이미 있는지 (R53, D73). 읽지 못하면 null */

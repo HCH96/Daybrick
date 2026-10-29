@@ -223,6 +223,10 @@ pub const FUNCTIONS: &[EdgeFunction] = &[
                 "js-process/batch.ts",
                 include_str!("../../../../../supabase/functions/js-process/batch.ts"),
             ),
+            (
+                "js-process/batchResult.ts",
+                include_str!("../../../../../supabase/functions/js-process/batchResult.ts"),
+            ),
             CORS,
             AUTH,
             AI,
