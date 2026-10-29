@@ -1,36 +1,41 @@
 # 구직 관리 (job-search) 수정 계획 색인
-- 종류: 수정 계획 (근거 기록: L33)
-- 대상 R: R35, R41, R82–R93
-- 영향받는 R: R4, R7, R9, R15–R16, R24, R28, R33, R39–R40, R46–R47, R53, R55, R80
-- 커밋 접두어: 구직 관리 수정1
+- 종류: 수정 계획 (근거 기록: L44)
+- 대상 R: R8, R40, R41, R47, R48, R73, R74, R91–R93, R94–R115
+- 영향받는 R: R4, R7, R9, R16, R23, R33, R46, R53, R75, R80, R83–R89
+- 커밋 접두어: 구직 관리 수정2
 
-- 기능 명세서: [../spec/index.md](../spec/index.md) · 목업: [../../human/mockups/index.html](../../human/mockups/index.html) · 이전 계획: [../../archive/plan-initial/index.md](../../archive/plan-initial/index.md)
-- 작성일: 2026-10-29 · 상태: 승인됨 (2026-10-29), 구현 대기
+- 기능 명세서: [../spec/index.md](../spec/index.md) · 목업: [../../human/mockups/index.html](../../human/mockups/index.html) · 이전 계획: [../../archive/plan-dedupe/index.md](../../archive/plan-dedupe/index.md), [../../archive/plan-initial/index.md](../../archive/plan-initial/index.md)
+- 작성일: 2026-10-30 · 상태: 승인됨 (2026-10-30), 구현 대기
 - 경로 기준: `apps/desktop/src/` (Rust는 `apps/desktop/src-tauri/src/`, 서버는 저장소 `supabase/`) · 파일 목록·데이터 모양: [structure.md](structure.md)
-- 커밋 이름: "구직 관리 수정1 N단계: …"
+- 커밋 이름: "구직 관리 수정2 N단계: …"
 
-## 결정 (계획 중 정함, D54–D57)
-- 묶인 공고는 `stage = 'duplicate'` + `dup_of = 대표`. 대표 바꾸기 `js_switch_rep`는 분석(stage·filtered_by·hidden_at·추출·점수)을 **복사**, 묶음 풀기 `js_unbundle`는 `unbundled = true`·`stage = 'new'` (D54).
-- 유사도(R84): 정리한 제목이 같음, 또는 2글자 묶음 Dice ≥ 0.8, 또는 정리한 추출 직무가 같음 — 사용자 결정 (D55).
-- 소급 적용(R89)·norm_key 다시 계산: 서버 업데이트 뒤 첫 `js-process queue`에서 1회(`js_settings.dedupe_version`), 0007이 `js_postings_backup_0007`에 백업 — 사용자 결정 (D56).
-- 작은 규칙 묶음 (D57): 지원한 공고는 묶인 쪽이 되지 않음, 숨김은 대표만, 풀린 공고는 판정 양쪽에서 빠짐, force는 중복 확인 건너뜀, 소급 대표는 지원함 > 채점 있음 > R86.
+## 결정 (계획 중 정함, D70–D77)
+- 저장 모양은 0008: `js_batches`, `js_postings.batch_id`, `js_ai_calls.batch`, `js_pair_checks`, `js_settings.family_version`, 백업 `js_postings_backup_0008` (D70).
+- 일괄 처리는 `js-process {mode:"batch"}` 하나가 "진행 중 일괄 확인·결과 저장 → 추출 맡기기 → 채점 맡기기"를 한다. 한 번에 40개·약 30MB까지 맡기고, 결과 읽기는 100초에서 멈춘다. `queue`는 남기되 예약·앱이 부르지 않는다 (D71).
+- 예상 비용은 최근 30일 일괄 평균(없으면 기본값)으로 계산하고, 진행 중 일괄 예상분까지 더해 월 한도 안만 맡긴다. 할인 0.5배는 `ai.ts` 상수 (D72).
+- 이미 결과가 있으면 맡기지 않고, [그래도 채점]은 지금 프로필 점수가 있으면 호출 없이 되돌린다 (D73).
+- 직군 필터 종류와 직군 값 (D74). 기존 공고 옮기기는 첫 batch 실행 때·일괄로·백업과 함께 — 사용자 결정 (D75).
+- 재등록 묶기 세부 (D76), 애매한 쌍 판정 세부 (D77).
 
 ### 작은 규칙
-- 바뀌는 기존 결정: D31(수집 저장 규칙), D38·D39(보관함 조건), D43(예약 이어 하기 조건). `js_ensure_defaults`는 D44대로 0007에서 다시 만든다.
-- 목업은 고치지 않는다. 화면이 목업과 다른 곳은 step 파일의 "목업과 다른 점"에 있다.
-- deno가 없어 서버 TS 타입 검사는 못 한다. 순수 함수는 Node로 실행해 확인한다.
+- 바뀌는 기존 결정: D17·D37(처리 모드), D25(하루 수), D35(필터 종류·`js_refilter`), D36(`family`), D43·D46(예약·[지금 평가]), D60·D61(묶기), D62·D63(출처 표시).
+- 목업은 고치지 않는다 (사용자 결정: 명세 그림대로). 목업과 다른 곳은 step 파일의 "목업과 다른 점"에 있다.
+- deno가 없어 서버 TS 타입 검사는 못 한다. 순수 함수는 Node로 실행해 확인한다. 일괄 결과는 최대 24시간 걸릴 수 있어 4·5단계 실제 확인은 시간이 든다.
 
 ## 단계
 | 단계 | 이름 | 파일 | 요구사항 |
 |---|---|---|---|
-| 1 | 서버 구조 7번 (칸·stage·백업·SQL 함수) | [step-01.md](step-01.md) | data.md, R85, R87, R90, R93 |
-| 2 | 수집 사이트 자사 여부 | [step-02.md](step-02.md) | R90 (R24, R28) |
-| 3 | 정리 규칙·중복 판정 함수 | [step-03.md](step-03.md) | R35, R84, R86 |
-| 4 | 수집 단계에서 묶기 | [step-04.md](step-04.md) | R35, R82, R86–R88 (R39) |
-| 5 | 처리 단계 중복 확인·소급 적용 | [step-05.md](step-05.md) | R41, R83–R89 (R47, R53) |
-| 6 | 목록·카드에 출처 표시 | [step-06.md](step-06.md) | R91 (R4, R7, R9, R15–R16, R46) |
-| 7 | 상세 팝업 출처·따로 보기 | [step-07.md](step-07.md) | R92–R93 (R55) |
+| 1 | 서버 구조 8번 (표·칸·필터 종류·백업·예약) | [step-01.md](step-01.md) | data.md, R96, R98, R102–R110, R115 |
+| 2 | 흐름 줄·카드 표시 | [step-02.md](step-02.md) | R94–R95, R8, R91 (R4, R9) |
+| 3 | 직군 추출·직군 필터 | [step-03.md](step-03.md) | R48, R96–R98, R101, R47 (R46) |
+| 4 | 일괄 맡기기 | [step-04.md](step-04.md) | R102, R106, R109, R110, R73 |
+| 5 | 일괄 결과 받기·채점 맡기기 | [step-05.md](step-05.md) | R103–R104, R108, R74, R41 (R53, R80, R83–R89) |
+| 6 | 예약 실행·[지금 평가]·상태 줄 | [step-06.md](step-06.md) | R40, R105–R106, R73, R75 (R7, R23, R33) |
+| 7 | 기존 공고 직군 채우기·옮기기 | [step-07.md](step-07.md) | R99–R100, R47 (R46) |
+| 8 | 같은 사이트 재등록 묶기 | [step-08.md](step-08.md) | R111–R112 (R16, R88) |
+| 9 | 애매한 쌍 AI 판정 | [step-09.md](step-09.md) | R113–R115 (R84) |
+| 10 | 팝업 출처 칩·따로 보기 메뉴 | [step-10.md](step-10.md) | R92–R93 (R55) |
 
 ## 이번 계획에 넣지 않는 것
-- 같은 사이트 안 재등록 묶기, 애매한 쌍을 AI에게 묻는 판정 (scope "나중에 고려할 것")
-- 목업 수정, 손으로 묶음 만들기, 테스트 도구 도입
+- 목업 수정, 개발 외 직군을 골라 남기기, 일괄 작업 취소 버튼
+- 도구 줄 [다시 채점]을 일괄로 바꾸기 (R107대로 바로 호출 유지), 테스트 도구 도입
