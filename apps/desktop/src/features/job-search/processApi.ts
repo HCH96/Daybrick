@@ -34,7 +34,9 @@ export async function loadProcessState(session: ServerSession): Promise<ApiResul
     session.client.from("js_postings").select("id", { count: "exact", head: true })
       .in("stage", QUEUE_STAGES).is("hidden_at", null).is("batch_id", null).not("body_text", "is", null),
     session.client.from("js_postings").select("id, js_sites!inner(enabled)", { count: "exact", head: true })
-      .eq("js_sites.enabled", true).is("body_text", null).is("hidden_at", null).gt("collected_at", weekAgo),
+      // 묶인 공고(duplicate)는 서버가 원문을 받지 않으므로 세지 않는다 (예약 이어 하기 조건과 같게, D88)
+      .eq("js_sites.enabled", true).is("body_text", null).is("hidden_at", null).neq("stage", "duplicate")
+      .gt("collected_at", weekAgo),
     session.client.from("js_batches").select("kind, posting_ids, submitted_at")
       .eq("status", "submitted").order("submitted_at", { ascending: true }),
   ]);
