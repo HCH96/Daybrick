@@ -9,7 +9,8 @@
 // 원문을 못 받은 공고(body_text null)는 다음 실행이 이어 받는다 (R39: 받은 원문은 다시 받지 않는다).
 //       { action: "bodies" } — 원문만 이어 받기 (예약 실행이 원문 없는 공고가 있을 때 부른다).
 //       { action: "test", rule, vars } — 시험 수집 (R29, R32, test.ts): 저장하지 않는다.
-// 응답: { ok: true, sites: [{ siteId, name, ok, read, added, bundled, reason? }], pending } 또는 { ok: false, reason }
+// 응답: { ok: true, sites: [{ siteId, name, ok, read, added, bundled, reason? }], pending, failed: [{ site, extId, reason }] }
+//       또는 { ok: false, reason }. failed는 이번에 원문 받기에 실패한 공고 (최대 20건).
 //       added는 새 대표·단독 공고 수, bundled는 다른 사이트 공고나 같은 사이트 재등록으로 묶인 수.
 import {
   type AdapterRule,
@@ -387,8 +388,25 @@ async function storeImages(caller: Caller, postingId: string, urls: string[]): P
   return paths;
 }
 
-/** 원문이 없는 공고(body_text null, 묶인 duplicate 제외)의 원문을 남은 시간 안에 받는다. 남은 공고 수 */
-async function fetchBodies(caller: Caller, targets: Target[], listBodies: Map<string, string>, deadline: number) {
+/** 원문 받기 실패 한 건 (응답·함수 로그로 원인을 보려고 남긴다, D89) */
+interface BodyFailure {
+  site: string;
+  extId: string;
+  reason: string;
+}
+/** 응답에 싣는 실패 건수 상한 */
+const MAX_FAILURES = 20;
+
+/**
+ * 원문이 없는 공고(body_text null, 묶인 duplicate 제외)의 원문을 남은 시간 안에 받는다.
+ * 남은 공고 수와 실패 목록(최대 20건)을 돌려준다. 실패는 함수 로그에도 남긴다.
+ */
+async function fetchBodies(
+  caller: Caller,
+  targets: Target[],
+  listBodies: Map<string, string>,
+  deadline: number,
+): Promise<{ pending: number; failed: BodyFailure[] }> {
   const bySite = new Map(targets.map((t) => [t.site.id, t]));
   const rows = await caller.admin.from("js_postings").select("id, site_id, ext_id, url")
     .eq("user_id", caller.userId).in("site_id", [...bySite.keys()]).is("body_text", null)
@@ -398,6 +416,11 @@ async function fetchBodies(caller: Caller, targets: Target[], listBodies: Map<st
   const postings = rows.data ?? [];
   const lastRequest = new Map<string, number>();
   let done = 0;
+  const failed: BodyFailure[] = [];
+  const fail = (site: string, extId: string, reason: string) => {
+    console.warn(`js-collect: 원문 받기 실패 (${site} ${extId}): ${reason}`);
+    if (failed.length < MAX_FAILURES) failed.push({ site, extId, reason });
+  };
   for (const p of postings) {
     if (Date.now() > deadline) break;
     const target = bySite.get(p.site_id as string);
@@ -412,7 +435,10 @@ async function fetchBodies(caller: Caller, targets: Target[], listBodies: Map<st
       if (wait > 0) await sleep(wait); // R37: 같은 사이트 요청 사이 간격
       const res = await readDetail(target.rule, { ...target.vars, id: p.ext_id as string, link });
       lastRequest.set(target.site.id, Date.now());
-      if (!res.ok) continue; // 다음 실행이 다시 받는다
+      if (!res.ok) {
+        fail(target.site.name, p.ext_id as string, res.reason); // 다음 실행이 다시 받는다
+        continue;
+      }
       detail = res.detail;
     }
     const imagePaths = detail.text.length < IMAGE_BODY_MAX_TEXT && detail.images.length > 0
@@ -420,9 +446,10 @@ async function fetchBodies(caller: Caller, targets: Target[], listBodies: Map<st
       : [];
     const saved = await caller.admin.from("js_postings")
       .update({ body_text: detail.text, image_paths: imagePaths }).eq("id", p.id).eq("user_id", caller.userId);
-    if (!saved.error) done++;
+    if (saved.error) fail(target.site.name, p.ext_id as string, `저장 실패: ${saved.error.message}`);
+    else done++;
   }
-  return postings.length - done;
+  return { pending: postings.length - done, failed };
 }
 
 async function record(caller: Caller, run: SiteRun) {
@@ -462,8 +489,8 @@ async function bodiesOnly(caller: Caller): Promise<Response> {
   }
   if (targets.length === 0) return json({ ok: false, reason: "no-sites" });
   try {
-    const pending = await fetchBodies(caller, targets, new Map(), deadline);
-    return json({ ok: true, sites: [], pending });
+    const { pending, failed } = await fetchBodies(caller, targets, new Map(), deadline);
+    return json({ ok: true, sites: [], pending, failed });
   } catch {
     return json({ ok: false, reason: "database" });
   }
@@ -522,13 +549,13 @@ async function run(caller: Caller, siteId: string | null): Promise<Response> {
     runs.push(result);
   }
 
-  let pending = 0;
+  let bodies: { pending: number; failed: BodyFailure[] } = { pending: 0, failed: [] };
   try {
-    if (targets.length > 0) pending = await fetchBodies(caller, targets, listBodies, deadline);
+    if (targets.length > 0) bodies = await fetchBodies(caller, targets, listBodies, deadline);
   } catch {
     return json({ ok: false, reason: "database" });
   }
-  return json({ ok: true, sites: runs, pending });
+  return json({ ok: true, sites: runs, pending: bodies.pending, failed: bodies.failed });
 }
 
 Deno.serve(async (req) => {
