@@ -275,6 +275,15 @@ async function saveNew(
     const found = await caller.admin.from("js_postings").select("ext_id")
       .eq("user_id", caller.userId).eq("site_id", siteId).in("ext_id", part);
     if (found.error) throw dbFail("ext-lookup", siteId, found, { count: part.length, inBytes: inParamBytes(part) });
+    // 이미 있는데 원문이 비어 있는 공고는 이번 목록의 본문을 챙긴다 (상세가 막힌 사이트에서 다시 채우려고, D90)
+    const noBody = await caller.admin.from("js_postings").select("ext_id")
+      .eq("user_id", caller.userId).eq("site_id", siteId).in("ext_id", part)
+      .is("body_text", null).neq("stage", "duplicate");
+    if (noBody.error) throw dbFail("ext-lookup", siteId, noBody, { count: part.length, inBytes: inParamBytes(part) });
+    for (const row of noBody.data ?? []) {
+      const body = candidates.get(row.ext_id as string)?.item.body;
+      if (body) listBodies.set(`${siteId}|${row.ext_id}`, body);
+    }
     for (const row of found.data ?? []) candidates.delete(row.ext_id as string);
   }
   if (candidates.size === 0) return { added: 0, bundled: 0 };
@@ -413,7 +422,9 @@ async function fetchBodies(
     .neq("stage", "duplicate") // R82: 묶인 공고는 원문을 받지 않는다
     .order("collected_at", { ascending: false }).limit(300);
   if (rows.error) throw new Error("database");
-  const postings = rows.data ?? [];
+  // 목록이 준 본문이 있는 공고를 먼저 저장한다. 요청이 없어 빠르고, 시간이 모자라 버려지면 상세가 막힌 사이트는 다시 못 받는다 (D90)
+  const hasListed = (p: { site_id: unknown; ext_id: unknown }) => listBodies.has(`${p.site_id}|${p.ext_id}`);
+  const postings = [...(rows.data ?? [])].sort((a, b) => Number(hasListed(b)) - Number(hasListed(a)));
   const lastRequest = new Map<string, number>();
   let done = 0;
   const failed: BodyFailure[] = [];
