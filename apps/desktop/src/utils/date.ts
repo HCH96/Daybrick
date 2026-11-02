@@ -69,3 +69,13 @@ export function diffDays(a: string, b: string): number {
   // 서머타임 등으로 하루가 24시간이 아닐 수 있어 반올림한다.
   return Math.round((parseDateKey(b).getTime() - parseDateKey(a).getTime()) / 86_400_000);
 }
+
+/**
+ * ISO 주 번호 (월요일 시작, 그 주의 목요일이 든 해의 몇째 주). "YYYY-MM-DD"를 받는다.
+ * 예: 2026-11-02 → 45, 2026-01-01 → 1, 2026-12-28 → 53
+ */
+export function isoWeekNumber(key: string): number {
+  const thursday = parseDateKey(addDays(startOfWeek(key), 3));
+  const jan1 = toDateKey(new Date(thursday.getFullYear(), 0, 1));
+  return Math.floor(diffDays(jan1, toDateKey(thursday)) / 7) + 1;
+}

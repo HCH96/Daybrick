@@ -1,23 +1,34 @@
-import { addDays, diffDays, parseDateKey } from "../../utils/date";
+import { addDays, diffDays, isoWeekNumber, parseDateKey } from "../../utils/date";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"] as const;
 
+const MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+] as const;
+
+/** 달 이름 세 글자 "Oct" */
+function shortMonth(month: number): string {
+  return MONTHS[month].slice(0, 3);
+}
+
 /**
- * 주 기간 글자 (R4). weekStart는 월요일 "YYYY-MM-DD".
- * 같은 달 "2026년 11월 2일 – 8일", 달이 다르면 "2026년 11월 30일 – 12월 6일",
- * 해가 다르면 "2026년 12월 28일 – 2027년 1월 3일".
+ * 페이지 머리 기간 글자 (R4, D29). weekStart는 월요일 "YYYY-MM-DD".
+ * title: 한 달이면 "November 2026", 두 달이면 "Oct – Nov 2026", 해가 걸치면 "Dec 2026 – Jan 2027".
+ * week: ISO 주 번호 "Week 45".
  */
-export function formatWeekPeriod(weekStart: string): string {
+export function formatWeekTitle(weekStart: string): { title: string; week: string } {
   const start = parseDateKey(weekStart);
   const end = parseDateKey(addDays(weekStart, 6));
-  const head = `${start.getFullYear()}년 ${start.getMonth() + 1}월 ${start.getDate()}일`;
+  const week = `Week ${isoWeekNumber(weekStart)}`;
   if (start.getFullYear() !== end.getFullYear()) {
-    return `${head} – ${end.getFullYear()}년 ${end.getMonth() + 1}월 ${end.getDate()}일`;
+    const title = `${shortMonth(start.getMonth())} ${start.getFullYear()} – ${shortMonth(end.getMonth())} ${end.getFullYear()}`;
+    return { title, week };
   }
   if (start.getMonth() !== end.getMonth()) {
-    return `${head} – ${end.getMonth() + 1}월 ${end.getDate()}일`;
+    return { title: `${shortMonth(start.getMonth())} – ${shortMonth(end.getMonth())} ${end.getFullYear()}`, week };
   }
-  return `${head} – ${end.getDate()}일`;
+  return { title: `${MONTHS[start.getMonth()]} ${start.getFullYear()}`, week };
 }
 
 /** "YYYY-MM-DD" → "11/3" */

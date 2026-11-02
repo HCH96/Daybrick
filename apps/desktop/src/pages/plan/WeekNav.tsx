@@ -1,5 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "../../components/icons/CommonIcons";
-import { formatWeekPeriod } from "../../features/plan/format";
+import { formatWeekTitle } from "../../features/plan/format";
 import ScheduleSwitch from "./calendar/ScheduleSwitch";
 
 interface WeekNavProps {
@@ -9,12 +9,19 @@ interface WeekNavProps {
   onNext: () => void;
 }
 
-/** 달력 위 줄: 보고 있는 기간 글자 + ‹ 이전 주 · 이번 주 · 다음 주 › (R3·R4) + `지원 일정` 스위치 (R33) */
+/**
+ * 페이지 머리 오른쪽 줄 (목업 plan-calbar, D21): 기간 글자 + 주 번호 칩 (R4, D29)
+ * → ‹ 이전 주 · 이번 주 · 다음 주 › (R3·R4) → 구분선 + `지원 일정` 스위치 (R33). 창이 좁아도 한 줄이다.
+ */
 function WeekNav({ weekStart, onPrev, onThisWeek, onNext }: WeekNavProps) {
+  const { title, week } = formatWeekTitle(weekStart);
   return (
-    <div className="plan-calbar">
-      <div className="plan-calbar__period">{formatWeekPeriod(weekStart)}</div>
-      <div className="plan-calbar__nav">
+    <div className="plan-head-tools">
+      <div className="plan-period">
+        <b>{title}</b>
+        <span>{week}</span>
+      </div>
+      <div className="plan-weeknav">
         <button type="button" className="plan-btn plan-btn--ghost" onClick={onPrev}>
           <ChevronLeftIcon size={14} />
           이전 주

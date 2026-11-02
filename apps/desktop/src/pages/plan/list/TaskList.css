@@ -154,6 +154,7 @@
   padding: 12px;
   flex-shrink: 0;
   border-bottom: 1px solid var(--border);
+  container: plan-quick / inline-size; /* 좁은 목록 대응 (R46): 아래 @container */
 }
 
 .plan-field {
@@ -241,6 +242,17 @@
 
 .plan-quick__opt-name {
   flex: 1;
+}
+
+/* 좁은 목록 (R46, 960 창에서 목록 약 200px): 카테고리 칩은 색 점과 화살표만 남긴다 */
+@container plan-quick (max-width: 260px) {
+  .plan-quick__cat {
+    padding: 0 8px;
+  }
+
+  .plan-quick__cat-name {
+    display: none;
+  }
 }
 
 .plan-cat-dot {

@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  container: plan-week / inline-size; /* 좁은 달력 대응 (R46): 맨 아래 @container */
 }
 
 /* 요일 머리 (R21) */
@@ -321,13 +322,14 @@
   font-size: 13px;
 }
 
-/* 달력 위 줄 `지원 일정` 스위치 (R33) */
+/* 페이지 머리 오른쪽 `지원 일정` 스위치 (R33). 왼쪽 세로선이 주 이동 버튼과의 구분선이다 */
 .plan-switch {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-left: 12px;
-  padding: 0 0 0 16px;
+  flex-shrink: 0;
+  padding: 0 0 0 14px;
+  white-space: nowrap;
   border: none;
   border-left: 1px solid var(--border);
   background: none;
@@ -390,4 +392,16 @@
 
 .plan-tbar__meta + .plan-tbar__cut--r {
   margin-left: 0;
+}
+
+/* 좁은 달력 (R46, 앱 최소 960×640 창에서 달력 폭 약 500px): 요일 칸 여백을 줄이고 지원 일정 알약은 시간부터 숨긴다 */
+@container plan-week (max-width: 620px) {
+  .plan-day-h {
+    gap: 6px;
+    padding: 10px 8px;
+  }
+
+  .plan-ev em {
+    display: none;
+  }
 }

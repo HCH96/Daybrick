@@ -60,6 +60,7 @@ function QuickAdd() {
         className={pickAnchor ? "plan-quick__cat plan-quick__cat--on" : "plan-quick__cat"}
         style={{ "--cat": picked?.color ?? NONE_COLOR } as CSSProperties}
         aria-label="새 태스크 카테고리 고르기"
+        title={picked?.name ?? "미분류"}
         aria-haspopup="menu"
         onClick={(e) => setPickAnchor(pickAnchor ? null : e.currentTarget)}
       >

@@ -1,5 +1,5 @@
 import { useCallback, useState, type ReactNode } from "react";
-import { PAGE_LABELS } from "../../app/pageLabels";
+import { NAV_LABELS } from "../../app/pageLabels";
 import { usePlan } from "../../features/plan/store";
 import { addDays, startOfWeek } from "../../utils/date";
 import ApplicationDetailModal from "../applications/detail/ApplicationDetailModal";
@@ -11,7 +11,7 @@ import WeekNav from "./WeekNav";
 import "./PlanPage.css";
 
 /**
- * 플랜 화면: 머리 "플랜", 왼쪽 태스크 목록 + 오른쪽 주간 달력 (R1·R2).
+ * 플랜 화면: 머리 왼쪽 제목 `Plan`, 오른쪽 기간·주 이동·스위치(WeekNav, D21), 아래 왼쪽 태스크 목록 + 오른쪽 주간 달력 (R1·R2·R4).
  * 보고 있는 주는 화면 안에만 두므로, 다른 메뉴에 갔다 오면 다시 이번 주로 돌아온다 (R3).
  * 목록과 달력 사이 끌어 놓기는 PlanDragProvider가 맡는다 (D12).
  */
@@ -28,7 +28,13 @@ function PlanPage() {
   return (
     <div className="plan-page">
       <header className="plan-page__head">
-        <h1 className="plan-page__title">{PAGE_LABELS.plan}</h1>
+        <h1 className="plan-page__title">{NAV_LABELS.plan}</h1>
+        <WeekNav
+          weekStart={weekStart}
+          onPrev={() => setWeekStart((w) => addDays(w, -7))}
+          onThisWeek={() => setWeekStart(startOfWeek(new Date()))}
+          onNext={() => setWeekStart((w) => addDays(w, 7))}
+        />
       </header>
       <PlanDragProvider>
         <div className="plan-page__body">
@@ -38,12 +44,6 @@ function PlanPage() {
             </PlanPanelContent>
           </section>
           <section className="plan-panel plan-panel--cal" aria-label="주간 달력">
-            <WeekNav
-              weekStart={weekStart}
-              onPrev={() => setWeekStart((w) => addDays(w, -7))}
-              onThisWeek={() => setWeekStart(startOfWeek(new Date()))}
-              onNext={() => setWeekStart((w) => addDays(w, 7))}
-            />
             <PlanPanelContent state={state.kind} message={state.kind === "error" ? state.message : ""}>
               <WeekCalendar weekStart={weekStart} onOpenTask={setOpenTaskId} onOpenApplication={setOpenApplicationId} />
             </PlanPanelContent>

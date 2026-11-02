@@ -14,7 +14,11 @@ export const PAGE_LABELS: Record<PageId, string> = {
   settings: "설정",
 };
 
-/** 사이드바에 보일 영어 메뉴 이름. 화면 제목과 카드 버튼은 위의 한글 이름을 쓴다. */
+/**
+ * 사이드바에 보일 영어 메뉴 이름. 화면 제목과 카드 버튼은 위의 한글 이름을 쓴다.
+ * 예외: 플랜 화면 제목은 사이드바와 같은 `Plan`이라 이 값을 쓴다 (플랜 R1).
+ * 홈 카드 버튼·알림 출처는 "플랜으로 가기"처럼 한글 이름을 그대로 쓴다.
+ */
 export const NAV_LABELS: Record<PageId, string> = {
   home: "Home",
   plan: "Plan",
