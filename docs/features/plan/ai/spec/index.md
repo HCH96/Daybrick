@@ -21,10 +21,11 @@
 | [scope.md](scope.md) | 이번 범위에서 제외하는 것, 나중에 고려할 것 (투데이·타이머·프로젝트) |
 | [extension.md](extension.md) | 확장 구조: 공용 태스크 저장소, 나중 기능이 태스크를 쓰는 방식. **다른 기능을 붙일 때 읽기** |
 | [mockup.md](mockup.md) | 목업 경로(r1·r2 2026-11-02 승인)와 목업에서 정한 것 (r2: 기간 A1·요일 B2·완료 C1, 지원관리식 팝업) |
-| [decisions.md](decisions.md) | 결정 사항 D1~ (D26–D28: r1 수정) |
+| [decisions.md](decisions.md) | 결정 사항 D1~ (D26–D28: r1 수정, D29–D32: 수정 계획) |
 
 ## 다른 문서
-- 구현 계획: [../plan/index.md](../plan/index.md) (2026-11-02 승인, 9단계). 저장은 `plan.json` + 화면 설정 같은 파일, 메뉴 id `plan`, 끌기는 포인터 이벤트로 직접 구현 (D10–D17)
+- 구현 계획: [../plan/index.md](../plan/index.md) (수정 계획, 2026-11-02 승인, 6단계). 주 번호는 ISO 주, 배치 `minmax(200px, 2fr) 5fr`, 메모 저장 칸은 `memo` 유지(저장 파일 옮기기 없음) (D29–D32)
+- 처음 구현 계획: [../../archive/plan-initial/index.md](../../archive/plan-initial/index.md) (2026-11-02 승인, 9단계, 구현·테스트 r1 완료). 저장은 `plan.json`, 메뉴 id `plan`, 끌기는 포인터 이벤트 (D10–D17)
 - 테스트 문서: AI 보고서 [../tests/r1/](../tests/r1/), 사용자 체크리스트 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md)
 - 진행 기록: [../logs/index.md](../logs/index.md)
 - 사용자 테스트 r1 반영 수정(L15): R1·R4·R21·R36–R38 변경, R42–R46 추가, 완료 표시·팝업 등 디자인은 목업 r2에서 정함

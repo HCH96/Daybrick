@@ -1,34 +1,28 @@
-# 플랜 3단계: 태스크 목록
+# 플랜 수정1 3단계: 상세 팝업 틀·Notes·최대화
 
-- 요구사항: R11–R19 (R10 미분류 보이기)
-- 목업: `plan.html` plan-quick·plan-list 구역, `part-list.html` list-rows·list-inline·list-quickcat 구역, `plan-empty.html` plan-empty-list 구역 (CSS: plan.css·parts.css·common.css)
+- 요구사항: R36, R42, R43 (영향: R35, R39, R41)
+- 목업: `popup.html` popup-head·popup-props·popup-notes·popup-bare 구역, `popup-max.html` 전체 (CSS: popup.css·common.css)
+- 참고 코드: `pages/applications/detail/ApplicationDetailModal.tsx`의 머리·최대화 부분만 (grep `maximized`)
 - 경로 기준: [index.md](index.md) 맨 위
-- 공통 규칙: D7, D13, D15
+- 공통 규칙: D16, D17, D20(L17에서 변경), D25, D26, D32
 
 ## 할 일
-- reducer·store: `add-task`(제목, 카테고리, 기간 선택값 → 새 태스크 id 돌려줌, 상태 "시작 전" R19), `cycle-status`(D13, `completedAt` 기록·지우기), `toggle-collapsed`(카테고리 id 또는 "none").
-- `selectors.ts`: `groupTasksByCategory(data)` → 카테고리 순서대로 묶음 + 미분류(태스크 있을 때만, R10), `sortGroupTasks`(날짜 없음 먼저 → 시작일 순 → 만든 순, R13), 완료는 따로 (R15), `countOpen`(안 끝난 수, R12), `tasksOnDate(data, key)`(공용, 이 단계는 함수만).
-- `format.ts`: `formatShortRange(start, end)` → "11/3–11/5", 하루면 "11/6".
-- `StatusDot`: 시작 전 회색 빈 원, 진행 중 `#F0B860` 반쪽 원, 완료 `#66CF95` 채운 원 + 체크. 크기 두 가지(목록·막대).
-- `list/TaskRow`: 상태 표시(누르면 `cycle-status`, 줄 클릭과 분리), 제목, 아래 작은 회색 글자(기간 또는 "날짜 없음", R14). 완료 줄은 취소선·흐리게. 줄 클릭은 `onOpen(id)`만 받아 두고 4단계에서 연결.
-- `list/DoneFold`: "완료 N개" 접힌 줄, 누르면 펼침 (펼침은 화면 state, 저장 안 함).
-- `GroupHead`: 개수, 접기 (R12, 저장됨), `+` → 그 묶음 안 `InlineTaskInput` (R17).
-- `list/InlineTaskInput`: Enter → 만들기, 입력칸 유지. Esc·빈 칸으로 포커스 잃기 → 닫기. `keepOpen` 선택값으로 5단계(더블클릭)도 쓴다.
-- `list/QuickAdd` (R16): 목록 맨 위 입력칸 + 카테고리 고르기(`Popover`, 기본 미분류, 색 점과 이름). 만든 뒤 커서 유지. 고른 카테고리가 지워지면 미분류로.
-- `list/ListEmpty`: 태스크·카테고리가 없을 때 안내 (plan-empty-list).
-- `PlanIcons.tsx`: 목록에 필요한 아이콘(더하기·접기·더보기 등, 이미 있는 것은 다시 쓴다).
+- `detail/TaskDetailModal` (R42): 760×760. 머리 왼쪽 최대화 버튼 + 세로 구분선 + `Task`, 오른쪽 `SaveStateLabel`("자동 저장됨", R41) → 삭제 → 닫기. 아래쪽 저장 표시(`task-detail__foot`)는 없앤다. 순서: 제목(26px) → 속성 줄 → (체크리스트 자리, 4단계) → 구분선 → Notes.
+- 최대화 (R43): `useState` `maximized` → `Modal maximized`. 사이드바 오른쪽 본문을 꽉 채우고 어두운 막 없음, 내용 폭 820px까지 가운데. 버튼은 `RestoreIcon` + "원래 크기로". 지원관리 R13과 같은 동작(최대화 중엔 바깥 클릭으로 닫히지 않음은 `Modal`이 처리).
+- Notes (R36): 구분선 왼쪽 `Notes` 글자, 아래 `MarkdownBody`(14.5px). 빈 칸 안내 "공부하거나 작업한 내용을 정리해 보세요. 마크다운을 쓸 수 있어요." 저장 칸은 `memo` 그대로(D32).
+- `PropRows` (R35): 속성 이름 칸 150px, 마우스를 올린 줄만 옅게. 카테고리는 카테고리 색 옅은 둥근 사각 칩, 상태는 표시 + 글자.
+- `PeriodField`: `11월 2일 (월) → 11월 4일 (수)` + 회색 일수. "날짜 없음으로"는 기간 줄에 마우스를 올렸을 때만.
+- `LinkedCardRow` (R39): 같은 줄 모양, "연결 끊기"는 마우스를 올렸을 때만.
 
 ## 확인할 결과
 - `npm run build` 성공.
-- 빠른 입력칸에 제목 → Enter를 세 번 연속으로 하면 고른 카테고리에 태스크 세 개, 커서는 입력칸에 남는다.
-- 묶음 `+`로 그 카테고리에 바로 적힌다. 상태 표시를 누르면 ○ → ◐ → ● → ○.
-- 완료한 태스크는 "완료 N개" 줄로 모이고 누르면 펼쳐진다. 머리 개수는 안 끝난 것만 센다.
-- 접은 묶음은 앱을 다시 켜도 접혀 있다. 미분류는 태스크가 생길 때만 맨 아래에 보인다.
-- 카테고리를 지우면 그 태스크들이 미분류 묶음에 나타난다.
-- Node로 `sortGroupTasks`: 날짜 없음 2개 + 11/5, 11/3 시작 태스크 → 날짜 없음, 11/3, 11/5 순서.
+- 팝업 머리가 `[⤢] | Task ……… 자동 저장됨 🗑 ✕` 순서이고 아래쪽 저장 표시가 없다. 고치면 머리 표시가 "저장 중" → "자동 저장됨".
+- 속성 이름 칸이 같은 폭으로 줄 맞춤되고, 카테고리 칩·상태·기간(일수 포함)이 목업처럼 보인다. 기간 줄·지원 카드 줄에 마우스를 올려야 "날짜 없음으로"·"연결 끊기"가 보인다.
+- 아래 `Notes`에 마크다운을 쓰면 서식이 바뀌고, 닫았다 다시 열어도 남아 있다. 기존에 쓴 메모도 그대로 보인다.
+- 최대화를 누르면 사이드바 오른쪽을 꽉 채우고, "원래 크기로"로 760×760으로 돌아온다.
+- 지원 카드 이름을 누르면 지원관리 상세 팝업이 열린다 (D16, 그대로).
 
-## 이 단계에서 만들거나 고칠 파일
-- `apps/desktop/src/features/plan/reducer.ts`, `store.tsx`, `selectors.ts`, `format.ts`
-- 새 `components/icons/PlanIcons.tsx`
-- 새 `pages/plan/StatusDot.tsx`, `list/TaskRow.tsx`, `DoneFold.tsx`, `InlineTaskInput.tsx`, `QuickAdd.tsx`, `ListEmpty.tsx`
-- `pages/plan/list/TaskListPanel.tsx`, `CategoryGroup.tsx`, `GroupHead.tsx`, `TaskList.css`
+## 이 단계에서 고칠 파일
+- `apps/desktop/src/pages/plan/detail/TaskDetailModal.tsx`·`TaskDetailModal.css`
+- `pages/plan/detail/PropRows.tsx`, `PeriodField.tsx`, `LinkedCardRow.tsx`, `CardPickDialog.css`
+- `features/plan/format.ts` (팝업 기간 글자가 필요할 때)

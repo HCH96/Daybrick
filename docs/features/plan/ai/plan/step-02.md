@@ -1,29 +1,24 @@
-# 플랜 2단계: 카테고리
+# 플랜 수정1 2단계: 요일 머리·완료 표시
 
-- 요구사항: R6–R10
-- 목업: `part-list.html` list-menu·list-catform·list-reorder 구역, `part-confirm.html` confirm-cat 구역, `plan.html` plan-list의 묶음 머리 (CSS: parts.css·plan.css·common.css)
+- 요구사항: R21, R14 상태 표 (영향: R18, R24, R31)
+- 목업: `plan.html` plan-week·plan-sched·plan-bars·plan-list 구역, `part-list.html` list-rows 구역, `part-calendar.html` cal-events 구역 (CSS: plan.css·common.css·parts.css)
 - 경로 기준: [index.md](index.md) 맨 위
-- 공통 규칙: D5, D9, D10, D12, D15
+- 공통 규칙: D13, D19, D21, D23
 
 ## 할 일
-- reducer·store: `add-category`, `update-category`(이름·색), `move-category`(from, to), `delete-category`(그 안의 태스크 `categoryId` → null, D5), `push-recent-color`(맨 앞에 넣고 중복 제거, 최대 8개).
-- `color.ts`: `hexToHsv`, `hsvToHex`, `isHexColor`.
-- `list/ColorPicker`: 큰 견본, 색 평면(채도·밝기), 색상 막대, 색 값 입력(잘못된 값이면 빨간 테두리, 적용 안 함), 최근 쓴 색. 평면·막대는 포인터 이벤트로 끈다.
-- `list/CategoryForm`: `Popover` 안에 이름 + 색 선택기 + [만들기]/[저장]. 빈 이름이면 버튼을 막는다. 저장하면 그 색을 최근 쓴 색에 넣는다.
-- `list/GroupHead`: 접기 화살표 자리, 색 점, 이름, 개수 자리(3단계에서 채움). `…`·`+`는 마우스를 올렸을 때만 (`+` 동작은 3단계).
-- `list/CategoryMenu`: [이름·색 고치기] → CategoryForm, [삭제] → `ConfirmDialog`("'C++ 공부' 카테고리를 지울까요?", "태스크 N개는 미분류로 옮겨집니다", 빨간 삭제).
-- `useReorder.ts`: 세로 목록 끌어 순서 바꾸기 훅 (4px 넘게 움직이면 시작, 놓일 자리 줄 표시, 놓으면 `onMove(from, to)`). 카테고리 머리를 끌어 순서를 바꾼다 (R8).
-- 미분류 (R10): 맨 아래 고정, 테두리만 있는 점, `…` 없음, 끌 수 없음. 태스크가 없으면 숨김 (태스크 표시는 3단계라 이 단계에서는 항상 숨김).
-- 목록 아래 `+ 카테고리 추가` (R7).
+- `calendar/DayHeader.tsx` (R21, B2): 영어 요일 `Mon`~`Sun` + 날짜 숫자 한 줄, 둘 다 13px 같은 굵기(숫자만 밝은 색). 오늘은 둘을 옅은 보라 알약으로 감싸고 칸 전체를 아주 옅은 보라로. 토요일 파랑, 일요일 빨강 글자.
+- `StatusDot.tsx`·`.css` (R14, C1): 완료는 초록 채운 원(`#66CF95`) + 정가운데 체크(SVG 그림). 시작 전·진행 중은 그대로. 목록·막대·팝업이 같이 쓴다(D19).
+- 취소선 빼기: `list/TaskList.css`(완료 줄), `calendar/WeekCalendar.css`(완료 막대, R24), `detail/Checklist.css`(체크 항목). 흐리게만 남긴다.
+- `calendar/SchedTooltip.tsx` (R31): "누르면 지원관리 카드가 열려요" 줄을 지운다. 카드 제목·종류·시간은 그대로.
 
 ## 확인할 결과
 - `npm run build` 성공.
-- 카테고리를 만들고(색 평면·막대·색 값·최근 색 모두로 색 고르기), `…`로 이름·색을 고치고, 끌어서 순서를 바꾸고, 확인 창을 거쳐 지울 수 있다.
-- 앱을 껐다 켜도 카테고리·순서·최근 쓴 색이 남아 있고, 앱 데이터 폴더에 `plan.json`이 생긴다.
-- Node로 `hexToHsv`·`hsvToHex` 왕복: `#6C5CE7` → hsv → 같은 hex.
+- 요일 머리가 `Mon 2 … Sun 8` 한 줄이고 요일과 숫자 크기·굵기가 같다. 오늘 칸에 보라 알약, 토 파랑·일 빨강.
+- 상태 표시를 눌러 완료로 바꾸면 초록 원 가운데에 체크가 치우치지 않게 보인다 (목록·막대·팝업 모두). 시작 전 → 진행 중 → 완료 → 시작 전 순서는 그대로(R18).
+- 완료한 목록 줄·달력 막대·체크한 체크리스트 항목에 취소선이 없고 흐리게만 보인다.
+- 지원 일정 알약에 마우스를 올린 풍선에 안내 문구가 없다.
 
-## 이 단계에서 만들거나 고칠 파일
-- `apps/desktop/src/features/plan/reducer.ts`, `store.tsx`, 새 `color.ts`
-- 새 `apps/desktop/src/pages/plan/useReorder.ts`
-- 새 `pages/plan/list/CategoryGroup.tsx`, `GroupHead.tsx`, `CategoryMenu.tsx`, `CategoryForm.tsx`, `ColorPicker.tsx`·`ColorPicker.css`, `TaskList.css`
-- `pages/plan/list/TaskListPanel.tsx`
+## 이 단계에서 고칠 파일
+- `apps/desktop/src/pages/plan/calendar/DayHeader.tsx`, `WeekCalendar.css`, `SchedTooltip.tsx`
+- `pages/plan/StatusDot.tsx`·`StatusDot.css`
+- `pages/plan/list/TaskList.css`, `pages/plan/detail/Checklist.css`

@@ -1,34 +1,24 @@
-# 플랜 6단계: 끌어 놓기
+# 플랜 수정1 6단계: 목록 안 카테고리 옮기기
 
-- 요구사항: R22, R25–R27
-- 목업: `part-calendar.html` cal-drag·cal-move·cal-resize 구역, `part-list.html` list-drop 구역 (CSS: parts.css·plan.css)
+- 요구사항: R45 (영향: R13, R22, R27)
+- 목업: `part-row-actions.html` row-move-cat 구역 (CSS: parts.css·plan.css·common.css)
 - 경로 기준: [index.md](index.md) 맨 위
-- 공통 규칙: D2, D12
+- 공통 규칙: D12, D19, D22(L17에서 변경), D31
 
 ## 할 일
-- `dragMath.ts` (순수 함수):
-  - `placeOnDay(task, day)`: 날짜 없으면 하루짜리, 있으면 길이 유지하고 시작일만 옮김 (R22).
-  - `moveBy(task, days)`: 길이 유지 (R25).
-  - `resizeStart(task, day)`·`resizeEnd(task, day)`: 끝일보다 뒤로(시작일보다 앞으로) 갈 수 없게 막음 (R26).
-- `drag/PlanDragProvider`·`usePlanDrag` (D12):
-  - 끌 것 종류: 목록 태스크(`list-task`), 막대 옮기기(`bar-move`, 누른 날과 막대 시작일의 차이 기억), 막대 끝(`bar-start`·`bar-end`).
-  - 포인터를 누르고 4px 넘게 움직이면 끌기 시작, 아니면 그대로 클릭(팝업). `setPointerCapture`, Esc로 취소.
-  - 놓을 곳 찾기: 달력 칸은 `data-day` 열의 위치로 날짜를 계산, 왼쪽 목록 영역은 `data-drop="list"`.
-  - 놓으면 `update-task`로 기간만 바꾼다. 목록에 놓으면 날짜 지우기 (R27, 이미 날짜 없음이면 아무것도 안 함).
-- `drag/DragGhost`·`drag.css`: 포인터를 따라가는 끄는 모습, 놓일 칸 보라 테두리 + 옅은 보라 바탕, 아래에 놓일 날짜 알약("11/4 (수)" 또는 "11/4–11/6"), 옮기는 막대는 원래 자리에 흐린 점선 막대. 목록 위면 목록 영역 테두리 + "날짜 지우기".
-- `TaskBar`: 마우스를 올렸을 때만 양 끝 세로 손잡이 (잘린 쪽 끝에는 손잡이 없음).
-- 끄는 동안 글자 선택이 생기지 않게 한다.
+- `drag/usePlanDrag.ts`: `DropTarget`에 `{ kind: "group"; categoryId: string | null }` 추가 (미분류는 `null`, 묶음 키는 `NONE_GROUP_KEY`).
+- `CategoryGroup`(카테고리·미분류 묶음 전체)에 `data-drop-group="<id|none>"`. `PlanDragProvider`가 `list-task` 끌기일 때만 묶음을 놓을 곳으로 본다. `bar-move`는 예전처럼 목록 전체 = 날짜 지우기(R27), 카테고리는 바꾸지 않는다(D31).
+- 놓으면 `updateTask(id, { categoryId })`. 같은 묶음이면 아무것도 하지 않는다. 묶음 안 위치는 `sortGroupTasks` 순서(R13)를 따르므로 따로 순서를 저장하지 않는다.
+- 모습: 끄는 줄은 살짝 기울어 마우스를 따라옴(`DragGhost`), 원래 자리 점선, 놓을 묶음 전체 보라 테두리 + 머리 오른쪽 "여기로 옮기기" 알약. 줄 사이 선은 없음. 접힌 묶음에도 놓을 수 있다.
+- 달력 위로 가면 예전처럼 날짜 칸이 놓을 곳이다(R22).
 
 ## 확인할 결과
 - `npm run build` 성공.
-- 날짜 없는 태스크를 수요일 칸에 놓으면 하루짜리, 3일짜리 태스크를 놓으면 3일 길이로 그날부터.
-- 막대를 끌어 옮기면 길이가 그대로이고, 양 끝을 끌면 시작일·끝일이 바뀐다. 끝을 반대쪽 끝 너머로 끌어도 하루보다 짧아지지 않는다.
-- 막대를 왼쪽 목록에 놓으면 막대가 사라지고 목록 줄이 "날짜 없음".
-- 끄는 동안 놓일 칸·날짜 알약·점선 막대가 보이고, Esc를 누르면 원래대로.
-- 막대·목록 줄을 살짝 누르기만 하면 팝업이 열린다 (끌기로 잘못 잡히지 않음).
-- Node로 `dragMath` 실행: 11/3–11/5를 `moveBy(+2)` → 11/5–11/7, `resizeEnd(11/2)` → 11/3–11/3.
+- C++ 공부 묶음의 줄을 TrialGround 묶음에 끌면 그 묶음 전체에 보라 테두리 + "여기로 옮기기"가 보이고, 놓으면 TrialGround로 옮겨져 R13 순서 자리에 들어간다. 묶음 머리 개수가 둘 다 바뀌고, 달력 막대 색도 바뀐다.
+- 미분류 묶음에 놓으면 미분류가 되고, 미분류 줄을 카테고리 묶음에 놓으면 그 카테고리가 된다. 같은 묶음에 놓으면 변화 없음.
+- 목록 줄을 달력 칸에 놓기(R22)와 달력 막대를 목록에 놓아 날짜 지우기(R27)는 그대로 된다. 막대를 다른 묶음 위에 놓아도 카테고리는 그대로다.
+- 미분류 묶음 머리에 `…` 메뉴가 없다 (r1 2번에서 확인하지 못한 항목, L15).
 
-## 이 단계에서 만들거나 고칠 파일
-- 새 `apps/desktop/src/features/plan/dragMath.ts`
-- 새 `pages/plan/drag/PlanDragProvider.tsx`, `usePlanDrag.ts`, `DragGhost.tsx`, `drag.css`
-- `pages/plan/PlanPage.tsx`, `calendar/WeekCalendar.tsx`, `calendar/BarLayer.tsx`, `calendar/TaskBar.tsx`, `list/TaskRow.tsx`, `list/TaskListPanel.tsx`
+## 이 단계에서 고칠 파일
+- `apps/desktop/src/pages/plan/drag/usePlanDrag.ts`, `PlanDragProvider.tsx`, `DragGhost.tsx`, `drag.css`
+- `pages/plan/list/CategoryGroup.tsx`, `GroupHead.tsx`, `list/TaskList.css`

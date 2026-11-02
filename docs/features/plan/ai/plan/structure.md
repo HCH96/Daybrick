@@ -1,102 +1,57 @@
-# 플랜: 파일 목록·데이터 모양·컴포넌트 구조
-전체 구조가 필요할 때만 읽는다. 경로 기준은 [index.md](index.md) 맨 위.
+# 플랜 수정1: 파일 목록·데이터 모양·컴포넌트 구조
+전체 구조가 필요할 때만 읽는다. 경로 기준은 [index.md](index.md) 맨 위. 처음 계획의 전체 파일 목록은 [../../archive/plan-initial/structure.md](../../archive/plan-initial/structure.md).
 
-## 1. 파일 목록 (새 파일은 "새")
-### Rust (`apps/desktop/src-tauri/src/`)
+## 1. 고칠 파일 (새 파일 없음)
 | 파일 | 하는 일 | 단계 |
 |---|---|---|
-| 새 `plan.rs` | `plan.json` 읽기·쓰기 (`notifications.rs`와 같은 방식, 임시 파일 후 바꿔치기) | 1 |
-| `lib.rs` | `plan::load_plan`, `plan::save_plan` 등록 | 1 |
+| `app/pageLabels.ts` | 사이드바·화면 제목 모두 `Plan` (R1) | 1 |
+| `utils/date.ts` | `isoWeekNumber(key)` 추가 (D29) | 1 |
+| `features/plan/format.ts` | `formatWeekTitle(weekStart)` → `{ title, week }` (`November 2026` / `Oct – Nov 2026` / `Dec 2026 – Jan 2027`, `Week 45`). 쓰지 않게 된 `formatWeekPeriod`는 지운다 | 1 |
+| `pages/plan/PlanPage.tsx`·`.css` | 제목 줄 = 제목 + `WeekNav`, 2:5 배치 (D30), 좁은 창 | 1 |
+| `pages/plan/WeekNav.tsx` | 기간 글자 + 주 칩, 주 이동 3버튼, 세로 구분선 + `ScheduleSwitch` | 1 |
+| `calendar/WeekCalendar.tsx`·`.css`, `ScheduleSwitch.tsx` | 달력 위 줄 없앰. 좁은 창 요일 칸 여백, 알약 시간 숨김 | 1 |
+| `list/QuickAdd.tsx`, `list/TaskList.css` | 좁은 창: 카테고리 칩은 색 점만 | 1 |
+| `calendar/DayHeader.tsx`, `WeekCalendar.css` | B2 `Mon 2`, 오늘 알약·옅은 보라 칸 | 2 |
+| `StatusDot.tsx`·`.css` | 완료 C1 (초록 원 + 가운데 체크 그림) | 2 |
+| `list/TaskList.css`, `calendar/WeekCalendar.css`, `detail/Checklist.css` | 취소선 빼기 | 2 |
+| `calendar/SchedTooltip.tsx` | 안내 문구 삭제 | 2 |
+| `detail/TaskDetailModal.tsx`·`.css` | 지원관리식 틀, `maximized` 상태, Notes 구역, 아래쪽 저장 표시 삭제 | 3 |
+| `detail/PropRows.tsx`, `PeriodField.tsx`, `LinkedCardRow.tsx`, `CardPickDialog.css` | 150px 이름 칸, 카테고리 칩, 기간 글자 + 일수, 올렸을 때만 보이는 버튼 | 3 |
+| `features/plan/format.ts` | 팝업 기간 글자 `11월 2일 (월)` (`formatChipDay` 재사용 또는 고침) | 3 |
+| `detail/Checklist.tsx`, `ChecklistItemRow.tsx`, `Checklist.css` | 체크리스트 속성 줄 + 항목 목록 분리, 들여쓰기, 추가·삭제 자리 | 4 |
+| `pages/plan/useReorder.ts` | `follow` 옵션: 잡은 항목 위치(포인터 이동량) 돌려줌 | 4 |
+| `list/TaskRow.tsx`, `list/TaskList.css` | 휴지통 버튼 + `ConfirmDialog` (R40 문구) | 5 |
+| `drag/usePlanDrag.ts`, `PlanDragProvider.tsx`, `DragGhost.tsx`, `drag.css` | `DropTarget`에 `{ kind: "group"; categoryId: string \| null }`, 기울어진 끄는 모습 | 6 |
+| `list/CategoryGroup.tsx`, `GroupHead.tsx`, `list/TaskList.css` | `data-drop-group`, 놓을 묶음 테두리 + "여기로 옮기기" 알약 | 6 |
 
-### 공용 데이터 (`features/plan/`)
-| 파일 | 하는 일 | 단계 |
-|---|---|---|
-| 새 `types.ts` | 2절 모양 | 1 |
-| 새 `storage.ts` | `loadPlanData`·`savePlanData`, 빈 데이터, 버전 확인 (깨진 파일이면 저장 막기) | 1 |
-| 새 `reducer.ts` | 카테고리·태스크·체크리스트·화면 설정 동작, `createTask` | 1–9 |
-| 새 `store.tsx` | `PlanProvider`·`usePlan` (상태, 저장 표시, 동작 함수) | 1–9 |
-| 새 `useAutoSave.ts` | 0.5초 뒤 저장, 창 닫을 때 바로 저장 | 1 |
-| 새 `format.ts` | 주 기간 글자 "2026년 11월 2일 – 8일", 짧은 기간 "11/3–11/5", 일수 | 1, 3 |
-| 새 `selectors.ts` | `groupTasksByCategory`, `tasksOnDate`, `sortGroupTasks`, `countOpen` (다른 기능이 쓰는 공용 함수) | 1, 3 |
-| 새 `color.ts` | hex ↔ hsv 바꾸기, hex 확인 | 2 |
-| 새 `weekLayout.ts` | `layoutWeekBars(tasks, weekStart)` → 칸·길이·줄·잘림 | 5 |
-| 새 `dragMath.ts` | `placeOnDay`, `moveBy`, `resizeStart`, `resizeEnd` | 6 |
-| 새 `applicationEvents.ts` | 지원 일정 → 알약 목록 (종류·회사·시간) | 7 |
-| 새 `useLinkCleanup.ts` | 없어진 지원 카드 연결 지우기 (D14) | 9 |
+다시 쓰는 것: `components/common/Modal`(`maximized`), `ConfirmDialog`, `components/icons/DialogIcons`(`MaximizeIcon`·`RestoreIcon`·`TrashIcon`), `pages/applications/detail/` `MarkdownBody`·`TitleInput`·`SaveStateLabel`, store `updateTask`·`deleteTask`.
 
-### 화면 (`pages/plan/`)
-| 파일 | 하는 일 | 단계 |
-|---|---|---|
-| 새 `PlanPage.tsx`·`.css` | 머리, 왼쪽·오른쪽 두 영역, 팝업 상태 | 1, 4, 7 |
-| 새 `WeekNav.tsx` | 기간 글자, 이전·이번·다음 주, 스위치 자리 | 1, 7 |
-| 새 `StatusDot.tsx` | 상태 표시 ○◐● (목록·막대·팝업 공용) | 3 |
-| 새 `useReorder.ts` | 세로 목록 끌어 순서 바꾸기 (카테고리·체크리스트) | 2 |
-| 새 `list/TaskListPanel.tsx`·`TaskList.css` | 왼쪽 영역 전체 | 1–3 |
-| 새 `list/CategoryGroup.tsx`, `GroupHead.tsx`, `CategoryMenu.tsx` | 묶음, 머리(색·이름·수·`…`·`+`), `…` 메뉴 | 2, 3 |
-| 새 `list/CategoryForm.tsx`, `ColorPicker.tsx`·`.css` | 카테고리 만들기·고치기, 색 선택기 | 2 |
-| 새 `list/TaskRow.tsx`, `DoneFold.tsx`, `QuickAdd.tsx`, `InlineTaskInput.tsx`, `ListEmpty.tsx` | 태스크 줄, 완료 접힘, 빠른 입력, 바로 적기, 빈 목록 | 3 |
-| 새 `detail/TaskDetailModal.tsx`·`.css`, `PropRows.tsx`, `PeriodField.tsx` | 상세 팝업, 카테고리·상태 고르기, 기간 | 4 |
-| 새 `detail/Checklist.tsx`, `ChecklistItemRow.tsx` | 체크리스트 | 8 |
-| 새 `detail/LinkedCardRow.tsx`, `CardPickDialog.tsx`·`.css` | 지원 카드 연결 줄, 고르기 창 | 9 |
-| 새 `calendar/WeekCalendar.tsx`·`.css`, `DayHeader.tsx`, `BarLayer.tsx`, `TaskBar.tsx`, `WeekEmptyHint.tsx` | 주간 달력 | 5 |
-| 새 `calendar/SchedLayer.tsx`, `SchedPill.tsx`, `SchedTooltip.tsx`, `ScheduleSwitch.tsx` | 지원 일정 | 7 |
-| 새 `drag/PlanDragProvider.tsx`, `usePlanDrag.ts`, `DragGhost.tsx`, `drag.css` | 끌기 상태·놓을 곳 찾기·끄는 모습 | 6 |
-
-### 고칠 파일
-| 파일 | 하는 일 | 단계 |
-|---|---|---|
-| `app/types.ts`, `app/pageLabels.ts`, `app/pages.ts` | `calendar` → `plan`, "플랜"/`Plan`, `PlanPage` 연결 | 1 |
-| `components/icons/NavIcons.tsx` | `CalendarIcon` 자리에 `PlanIcon` (목업 `i-plan`) | 1 |
-| `App.tsx` | `ApplicationsProvider` 안쪽에 `PlanProvider` | 1 |
-| `pages/home/dashboardCards.tsx` | `linkTo: "plan"` | 1 |
-| `utils/date.ts` | `startOfWeek`, `addDays`, `diffDays` (월요일 시작, D6) | 1 |
-| `features/applications/calendarEntries.ts` | `CalendarEntry`에 `kind: EventKind` 추가 (기존 화면은 그대로) | 7 |
-| 새 `components/icons/PlanIcons.tsx` | 깃발·문서·코드·사람·더하기 등 목업 아이콘 | 3, 7 |
-
-다시 쓰는 것: `components/common/` `Modal`·`Popover`·`ConfirmDialog`·`MiniCalendar`, `pages/applications/detail/` `MarkdownBody`·`TitleInput`·`SaveStateLabel`·`ApplicationDetailModal`, `features/applications/schedule.ts` `isActive`·`sortByNextDate`.
-
-## 2. 데이터 모양 (`plan.json`)
+## 2. 데이터 모양
+저장 모양은 바뀌지 않는다 (`plan.json` version 1, `memo` 그대로, D32). 화면용 모양만 더한다.
 ```ts
-interface PlanData { version: 1; categories: Category[]; tasks: Task[]; view: PlanView }
-interface Category { id: string; name: string; color: string }        // "#RRGGBB", 순서 = 배열 순서 (D15)
-type TaskStatus = "todo" | "doing" | "done";
-interface Task {
-  id: string;                      // crypto.randomUUID()
-  title: string;
-  categoryId: string | null;       // null = 미분류
-  status: TaskStatus;
-  start: string | null;            // "YYYY-MM-DD", start·end는 둘 다 있거나 둘 다 null
-  end: string | null;
-  memo: string;                    // 마크다운
-  checklist: ChecklistItem[] | null; // null = 체크리스트 없음 (R37)
-  applicationId: string | null;
-  createdAt: string; updatedAt: string; completedAt: string | null; // ISO 시각
-}
-interface ChecklistItem { id: string; text: string; checked: boolean }
-interface PlanView {
-  collapsed: string[];             // 접힌 카테고리 id, 미분류는 "none"
-  showApplicationEvents: boolean;  // 기본 true
-  recentColors: string[];          // 최근 쓴 색, 최대 8개
-}
+// format.ts
+interface WeekTitle { title: string; week: string }   // "November 2026", "Week 45"
+// usePlanDrag.ts
+type DropTarget = { kind: "day"; day: string } | { kind: "list" } | { kind: "group"; categoryId: string | null };
+// useReorder.ts (follow 옵션일 때 더함)
+interface Reorder { /* 기존 */ dragOffset: { x: number; y: number } | null }
 ```
-막대 배치 결과(저장 안 함): `{ taskId, col: 0–6, span, lane, cutLeft, cutRight }`.
 
-## 3. 컴포넌트 구조
+## 3. 컴포넌트 구조 (바뀌는 곳)
 ```
-App → ApplicationsProvider → PlanProvider (+ useLinkCleanup)
 PlanPage
-├ PlanDragProvider (목록·달력을 함께 감쌈) + DragGhost
-│ ├ TaskListPanel ─ QuickAdd · ListEmpty
-│ │   · CategoryGroup[ GroupHead(CategoryMenu) · InlineTaskInput · TaskRow(StatusDot) · DoneFold ]
-│ │   · [+ 카테고리 추가] → CategoryForm(ColorPicker)
-│ └ WeekCalendar ─ WeekNav(ScheduleSwitch) · DayHeader · SchedLayer(SchedPill, SchedTooltip)
-│     · BarLayer(TaskBar) · InlineTaskInput(더블클릭) · WeekEmptyHint
-├ TaskDetailModal ─ TitleInput · PropRows · PeriodField · LinkedCardRow(CardPickDialog) · Checklist · MarkdownBody
-└ ApplicationDetailModal (지원 일정·연결 카드를 눌렀을 때, D16)
+├ header: 제목 Plan · WeekNav(기간 + Week 칩 · ‹ 이번 주 › · | · ScheduleSwitch)
+├ PlanDragProvider (놓을 곳: day · list · group)
+│ ├ TaskListPanel ─ CategoryGroup(data-drop-group) ─ TaskRow(+ 휴지통 → ConfirmDialog)
+│ └ WeekCalendar ─ DayHeader(B2) · SchedLayer · BarLayer
+└ TaskDetailModal (maximized)
+    ├ 머리: [최대화] | Task ……… SaveStateLabel · 삭제 · 닫기
+    ├ TitleInput · PropRows(카테고리·상태·기간·지원 카드·체크리스트 줄)
+    ├ Checklist 항목 (값 칸에 맞춰 들여 씀)
+    └ 구분선 Notes · MarkdownBody(memo)
 ```
 
 ## 4. C++ 비유
-- `PlanProvider`는 프로그램 전체가 공유하는 싱글턴 저장소 객체, `reducer`는 그 객체의 상태를 바꾸는 유일한 멤버 함수(`apply(Action)`)다. 화면은 저장소를 직접 고치지 않고 동작(명령 객체)만 보낸다.
-- `selectors.ts`·`weekLayout.ts`·`dragMath.ts`는 상태를 받아 결과만 돌려주는 순수 함수(`const` 자유 함수)라 따로 실행해 확인할 수 있다.
-- `useAutoSave`는 바뀐 내용을 모아 두었다가 0.5초 조용하면 디스크에 쓰는 지연 쓰기 버퍼다.
-- `PlanDragProvider`는 마우스 캡처를 잡은 동안의 상태 기계(대기 → 누름 → 끄는 중 → 놓음)다.
+- 머리 줄 옮기기는 같은 위젯 객체(`WeekNav`)를 다른 부모 레이아웃에 다시 붙이는 일이다. 객체 안의 동작은 그대로다.
+- `DropTarget`에 `group`을 더하는 것은 `std::variant`에 타입 하나를 추가하는 것과 같다. `switch`가 처리하지 않는 경우를 TypeScript가 알려 준다.
+- `useReorder`의 `follow` 옵션은 기본값이 있는 함수 인자다. 기존 호출부(카테고리)는 고치지 않아도 예전처럼 움직인다.

@@ -1,35 +1,31 @@
-# 플랜 1단계: 페이지·주 이동·저장소
+# 플랜 수정1 1단계: 페이지 머리·배치·창 크기
 
-- 요구사항: R1–R5
-- 목업: `plan.html` plan-head·plan-calbar 구역, 전체 배치는 plan 구역 (CSS: plan.css·common.css에서 클래스 검색)
+- 요구사항: R1, R4, R46 (영향: R2, R33)
+- 목업: `plan.html` plan-head·plan-quick·plan-list 구역, `plan-narrow.html` 전체 (CSS: plan.css·common.css)
 - 경로 기준: [index.md](index.md) 맨 위
-- 공통 규칙: D1, D4, D6, D10, D11
+- 공통 규칙: D6, D21·D23(L17에서 변경), D28, D29, D30
 
 ## 할 일
-- 메뉴 (R1, D1, D11):
-  - `app/types.ts`의 PageId `calendar`를 `plan`으로 바꾸고, `pageLabels.ts`에 "플랜"/`Plan`.
-  - `NavIcons.tsx`의 `CalendarIcon`을 `PlanIcon`으로 바꾼다 (목업 `icons.js`의 `i-plan` 모양). 쓰는 곳은 grep으로 찾는다.
-  - `pages.ts`의 placeholder를 `PlanPage`로 바꾼다. `dashboardCards.tsx`의 `linkTo`·`EmptyState linkTo`를 `"plan"`으로 (글자는 그대로).
-- 저장소 (R5, D4, D10):
-  - Rust `plan.rs`: `load_plan`(없으면 None), `save_plan`(임시 파일 후 바꿔치기). `lib.rs`에 등록.
-  - `features/plan/types.ts`·`storage.ts`·`useAutoSave.ts`·`reducer.ts`·`store.tsx`: 지원관리 `storage.ts`·`useAutoSave.ts`·`store.tsx`와 같은 흐름 (loading → ready / failed, 실패하면 저장 안 함). 이 단계 reducer는 `loaded`·`load-failed`만.
-  - `App.tsx`: `ApplicationsProvider` 안쪽에 `PlanProvider`.
-- 주 계산 (R3, D6): `utils/date.ts`에 `startOfWeek(date)`, `addDays(key|date, n)`, `diffDays(a, b)`. `getWeekDays`와 같은 월요일 기준.
-- 화면 (R2–R4):
-  - `PlanPage`: 머리 "플랜", 왼쪽 320px 목록 영역(`TaskListPanel` 빈 틀) + 오른쪽 달력 영역(이 단계는 `WeekNav`만).
-  - `WeekNav`: 기간 글자(`format.ts`의 `formatWeekPeriod`), `‹ 이전 주` `이번 주` `다음 주 ›`. 주 시작일은 `PlanPage`의 state.
-  - 기간 글자: 같은 달 "2026년 11월 2일 – 8일", 달이 다르면 "2026년 11월 30일 – 12월 6일", 해가 다르면 "2026년 12월 28일 – 2027년 1월 3일".
-  - 읽기 실패면 목록·달력 자리에 오류 문구 (지원관리 화면의 실패 표시와 같은 방식).
+- `app/pageLabels.ts`: 사이드바 이름과 화면 제목 모두 `Plan` (R1).
+- `utils/date.ts`: `isoWeekNumber(key)` (ISO 주, 월요일 시작, D29).
+- `features/plan/format.ts`: `formatWeekTitle(weekStart)` → `{ title, week }`.
+  - 한 달: `November 2026` / 두 달: `Oct – Nov 2026` / 해가 걸침: `Dec 2026 – Jan 2027`. 달 이름은 영어(한 달이면 전체 이름, 걸치면 세 글자).
+  - `week`: `Week 45`. 기존 `formatWeekPeriod`는 쓰는 곳이 없어지면 지운다.
+- `WeekNav`: 기간 글자(19px 굵게) + 회색 칩 → `‹ 이전 주` `이번 주` `다음 주 ›` → 세로 구분선 + `ScheduleSwitch`. 줄바꿈 없음(`white-space: nowrap`, 기간은 줄어들지 않음).
+- `PlanPage`: 머리 왼쪽 제목, 오른쪽 `WeekNav`. `WeekCalendar` 안의 달력 위 줄은 없앤다(스위치 상태·동작은 그대로, R33).
+- `PlanPage.css` 배치: `minmax(200px, 2fr) 5fr` (D30, R2·R46). 목록·달력 모두 `min-width: 0`.
+- 좁은 창(960×640, R46): 빠른 입력 옆 카테고리 칩은 색 점만, 요일 머리 칸 여백 줄임, 지원 일정 알약은 시간부터 숨김. CSS로만.
 
 ## 확인할 결과
-- `npm run build`, `cargo check` 성공.
-- 사이드바 Calendar 자리에 `Plan`, 누르면 제목 "플랜", 왼쪽·오른쪽 두 영역.
-- 처음 열면 오늘이 든 주 기간이 보이고, 버튼 셋으로 주가 바뀐다. 다른 메뉴에 갔다 오면 이번 주로 돌아온다.
-- 홈 "오늘 할 일" 카드의 이동 버튼이 플랜으로 간다.
-- Node로 `startOfWeek`·`formatWeekPeriod` 실행: 2026-11-02(월)·11-08(일) → 11-02, 세 가지 기간 글자 모양.
+- `npm run build` 성공.
+- 사이드바와 화면 제목이 `Plan`이다.
+- 이번 주(11/2–11/8)에 제목 줄 오른쪽 `November 2026` + `Week 45`, 주 이동 3버튼, 구분선, `지원 일정` 스위치가 한 줄로 보인다. 스위치를 끄고 켜면 지원 일정이 사라졌다 나타나고, 다시 열어도 유지된다.
+- 10/26 주는 `Oct – Nov 2026`, 12/28 주는 `Dec 2026 – Jan 2027` (L16 테스트 메모). `formatWeekTitle`·`isoWeekNumber`는 Node로 실행해 세 경우와 2026-01-01(Week 1), 2026-12-28(Week 53)을 확인한다.
+- 1440 창에서 목록:달력 폭이 약 2:5, 창을 줄이면 두 영역이 함께 줄고 목록은 200px에서 멈춘다.
+- 960×640에서 머리가 한 줄이고 기간 글자 모양·크기가 그대로이며 요일 칸이 넘치지 않는다 (L16 테스트 메모).
 
-## 이 단계에서 만들거나 고칠 파일
-- `apps/desktop/src-tauri/src/plan.rs`(새), `lib.rs`
-- `apps/desktop/src/app/types.ts`, `pageLabels.ts`, `pages.ts`, `App.tsx`, `components/icons/NavIcons.tsx`, `pages/home/dashboardCards.tsx`, `utils/date.ts`
-- 새 `features/plan/types.ts`, `storage.ts`, `useAutoSave.ts`, `reducer.ts`, `store.tsx`, `format.ts`, `selectors.ts`(빈 틀)
-- 새 `pages/plan/PlanPage.tsx`·`PlanPage.css`, `WeekNav.tsx`, `list/TaskListPanel.tsx`
+## 이 단계에서 고칠 파일
+- `apps/desktop/src/app/pageLabels.ts`, `utils/date.ts`, `features/plan/format.ts`
+- `pages/plan/PlanPage.tsx`·`PlanPage.css`, `WeekNav.tsx`
+- `pages/plan/calendar/WeekCalendar.tsx`·`WeekCalendar.css`, `ScheduleSwitch.tsx`
+- `pages/plan/list/QuickAdd.tsx`, `list/TaskList.css`
