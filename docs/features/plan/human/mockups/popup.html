@@ -1,0 +1,129 @@
+<!doctype html>
+<!-- 목업: 플랜 / 3. 태스크 상세 팝업
+  목차와 다른 화면: index.html
+  CSS: common.css, popup.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  popup               3. 태스크 상세 팝업            R35–R41
+    popup-head          3-1. 머리 (종류·삭제·닫기·제목)  R35, R40
+    popup-props         3-2. 속성 (카테고리·상태·기간·지원 카드)  R35, R39
+    popup-check         3-3. 체크리스트              R37–R38
+    popup-memo          3-4. 메모                    R36
+    popup-foot          3-5. 자동 저장 표시           R41
+    popup-bare          3-6. 비어 있는 태스크 (날짜·체크리스트·연결 없음)  R35, R37, R39
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>플랜 목업 · 3. 상세 팝업</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <h1>3. 태스크 상세 팝업</h1>
+  <p class="lead">목록의 태스크 줄이나 달력 막대를 누르면 열린다. 왼쪽은 내용이 다 찬 태스크, 오른쪽은 막 만든 태스크 (실제로는 하나만 뜬다).</p>
+  <div class="toc"><a href="index.html">← 목업 목차</a><a href="plan.html">1. 플랜 화면</a><a href="part-card-pick.html">7. 지원 카드 고르기</a></div>
+
+  <section class="screen" id="popup">
+    <div class="screen-head"><h2>상세 팝업</h2><span class="tag">R35–R41</span></div>
+    <div class="scale-note">앱 창 1440×900을 75%로 줄여 보여줌 (뒤 화면은 생략)</div>
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav"><span class="tb-btn"><svg class="ico sm"><use href="#i-back"/></svg></span><span class="tb-btn off"><svg class="ico sm"><use href="#i-fwd"/></svg></span></div>
+        <div class="tb-drag"></div>
+        <div class="win"><span><svg class="ico"><use href="#i-min"/></svg></span><span><svg class="ico"><use href="#i-max"/></svg></span><span><svg class="ico"><use href="#i-x"/></svg></span></div>
+      </div>
+      <div class="body">
+        <nav class="sidebar"><div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div></nav>
+        <main class="main"><h1 class="page-title">플랜</h1></main>
+      </div>
+      <div class="dim">
+        <!-- 내용이 다 찬 태스크 -->
+        <div class="pop">
+          <div class="pop-head" id="popup-head">
+            <span class="pop-kind"><svg class="ico sm"><use href="#i-plan"/></svg>태스크</span>
+            <span class="pop-tools"><span class="icon-btn"><svg class="ico sm"><use href="#i-trash"/></svg></span><span class="icon-btn"><svg class="ico sm"><use href="#i-x"/></svg></span></span>
+          </div>
+          <div class="pop-title">넥슨 자기소개서 쓰기</div>
+          <div class="props" id="popup-props">
+            <span class="p-label"><svg class="ico"><use href="#i-list"/></svg>카테고리</span>
+            <span class="p-val"><span class="chip c-amber"><span class="dot"></span>취업 준비<svg class="ico"><use href="#i-down"/></svg></span></span>
+            <span class="p-label"><svg class="ico"><use href="#i-check"/></svg>상태</span>
+            <span class="p-val"><span class="chip"><span class="st sm doing"></span>진행 중<svg class="ico"><use href="#i-down"/></svg></span></span>
+            <span class="p-label"><svg class="ico"><use href="#i-cal"/></svg>기간</span>
+            <span class="p-val"><span class="chip date"><svg class="ico"><use href="#i-cal"/></svg>11월 2일 (월)</span><span class="tilde">~</span><span class="chip date"><svg class="ico"><use href="#i-cal"/></svg>11월 4일 (수)</span><span class="days-n">3일</span><span class="txt-btn">날짜 없음으로</span></span>
+            <span class="p-label"><svg class="ico"><use href="#i-link"/></svg>지원 카드</span>
+            <span class="p-val"><span class="card-link"><b>게임 클라이언트 프로그래머</b><span class="co">넥슨</span><span class="st-badge">지원 준비</span></span><span class="txt-btn"><svg class="ico"><use href="#i-x"/></svg>연결 끊기</span></span>
+          </div>
+          <div class="pop-body">
+            <div id="popup-check">
+              <div class="sec-head"><svg class="ico"><use href="#i-list"/></svg>체크리스트 <span class="cnt">1/3</span><span class="txt-btn"><svg class="ico"><use href="#i-trash"/></svg>체크리스트 삭제</span></div>
+              <div class="prog-bar"><i></i></div>
+              <div class="ck on"><span class="grip"><svg class="ico"><use href="#i-grip"/></svg></span><span class="box"><svg class="ico"><use href="#i-check"/></svg></span><span class="ck-txt">지원 동기 (게임 엔진 관심 → 넥슨 클라이언트)</span></div>
+              <div class="ck hover"><span class="grip"><svg class="ico"><use href="#i-grip"/></svg></span><span class="box"></span><span class="ck-txt">직무 경험: TrialGround 전투 시스템</span><span class="del"><svg class="ico"><use href="#i-x"/></svg></span></div>
+              <div class="ck edit"><span class="grip"><svg class="ico"><use href="#i-grip"/></svg></span><span class="box"></span><span class="ck-txt">입사 후 포부 500자<span class="caret"></span></span></div>
+              <div class="ck-add"><svg class="ico"><use href="#i-plus"/></svg>항목 추가</div>
+            </div>
+            <div id="popup-memo">
+              <div class="sec-head"><svg class="ico"><use href="#i-note"/></svg>메모</div>
+              <div class="memo">
+                <h4>문항 정리</h4>
+                <ul><li>문항 3개, 각 <code>1,000자</code> 이내</li><li>마감 11/2(월) 18:00 — 지원관리 카드에 있음</li></ul>
+                <p>직무 경험은 <b>프레임 드랍 줄인 경험</b>을 숫자로 쓰기 (60 → 144fps).</p>
+              </div>
+            </div>
+          </div>
+          <div class="pop-foot" id="popup-foot"><svg class="ico"><use href="#i-check"/></svg>자동 저장됨 · 방금</div>
+        </div>
+
+        <!-- 막 만든 태스크 -->
+        <div class="pop narrow" id="popup-bare">
+          <div class="pop-head">
+            <span class="pop-kind"><svg class="ico sm"><use href="#i-plan"/></svg>태스크</span>
+            <span class="pop-tools"><span class="icon-btn"><svg class="ico sm"><use href="#i-trash"/></svg></span><span class="icon-btn"><svg class="ico sm"><use href="#i-x"/></svg></span></span>
+          </div>
+          <div class="pop-title">증명사진 다시 찍기</div>
+          <div class="props">
+            <span class="p-label"><svg class="ico"><use href="#i-list"/></svg>카테고리</span>
+            <span class="p-val"><span class="chip c-none"><span class="dot ring"></span>미분류<svg class="ico"><use href="#i-down"/></svg></span></span>
+            <span class="p-label"><svg class="ico"><use href="#i-check"/></svg>상태</span>
+            <span class="p-val"><span class="chip"><span class="st sm"></span>시작 전<svg class="ico"><use href="#i-down"/></svg></span></span>
+            <span class="p-label"><svg class="ico"><use href="#i-cal"/></svg>기간</span>
+            <span class="p-val"><span class="txt-btn add"><svg class="ico"><use href="#i-plus"/></svg>날짜 정하기</span><span class="days-n">날짜 없음</span></span>
+            <span class="p-label"><svg class="ico"><use href="#i-link"/></svg>지원 카드</span>
+            <span class="p-val"><span class="txt-btn add"><svg class="ico"><use href="#i-plus"/></svg>지원 카드 연결</span></span>
+          </div>
+          <div class="pop-body">
+            <div class="bare-add"><span class="btn sm"><svg class="ico xs"><use href="#i-list"/></svg>+ 체크리스트</span></div>
+            <div class="sec-head"><svg class="ico"><use href="#i-note"/></svg>메모</div>
+            <div class="memo"><span class="ph">메모를 적어 보세요. 마크다운을 쓸 수 있어요.</span></div>
+          </div>
+          <div class="pop-foot"><svg class="ico"><use href="#i-check"/></svg>자동 저장됨</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>머리·속성</b><ul>
+        <li>제목은 누르면 바로 고치는 큰 글자</li>
+        <li>카테고리·상태는 칩을 누르면 목록이 열린다</li>
+        <li>기간은 날짜 칩 두 개 + 일수. "날짜 없음으로"를 누르면 둘 다 지워진다</li>
+        <li>삭제는 휴지통 → 확인 창 (6. 확인 창)</li>
+      </ul></div>
+      <div class="note"><b>지원 카드</b><ul>
+        <li>카드 제목(밑줄)을 누르면 지원관리 상세 팝업이 열린다</li>
+        <li>회사 이름과 지원 상태 배지를 함께 보여준다</li>
+        <li>연결이 없으면 "+ 지원 카드 연결" → 7. 지원 카드 고르기</li>
+      </ul></div>
+      <div class="note"><b>체크리스트·메모</b><ul>
+        <li>처음엔 "+ 체크리스트" 버튼만. 만들면 진행도 막대가 생긴다</li>
+        <li>항목에 마우스를 올리면 끌기 손잡이·× 표시, 누르면 그 자리에서 고친다</li>
+        <li>메모는 지원관리 본문 편집기와 같은 모양</li>
+        <li>저장 버튼 없이 아래에 "자동 저장됨"만 보여준다</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

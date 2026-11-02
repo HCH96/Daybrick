@@ -1,0 +1,141 @@
+<!doctype html>
+<!-- 목업: 플랜 / 4. 목록 부품
+  목차와 다른 화면: index.html
+  CSS: common.css, plan.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  part-list           4. 목록 부품                  R7–R8, R12–R18, R27
+    list-rows           4-1. 태스크 줄 모양           R14–R15, R18
+    list-inline         4-2. 묶음 안에 바로 적기       R17
+    list-menu           4-3. 카테고리 … 메뉴           R8–R9
+    list-catform        4-4. 카테고리 만들기·고치기 (색 선택기)  R7–R8
+    list-quickcat       4-5. 빠른 입력 카테고리 고르기   R16
+    list-reorder        4-6. 카테고리 끌어 순서 바꾸기   R8
+    list-drop           4-7. 막대를 목록에 놓기 (날짜 지우기)  R27
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>플랜 목업 · 4. 목록 부품</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="plan.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <h1>4. 목록 부품</h1>
+  <p class="lead">왼쪽 태스크 목록에서 쓰는 작은 부품과 조작 중 모습. 실제 크기(100%).</p>
+  <div class="toc"><a href="index.html">← 목업 목차</a><a href="plan.html">1. 플랜 화면</a><a href="part-calendar.html">5. 달력 부품</a></div>
+
+  <section class="screen" id="part-list">
+    <div class="screen-head"><h2>목록 부품</h2><span class="tag">R7–R8, R12–R18, R27</span></div>
+    <div class="stage">
+      <div class="cell" id="list-rows">
+        <div class="cap"><b>4-1</b>태스크 줄 모양 (R14, R18)</div>
+        <div class="box-list c-blue">
+          <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">템플릿 특수화 정리</div><div class="task-meta"><span class="none">날짜 없음</span></div></div></div>
+          <div class="task hover"><span class="st doing"></span><div class="task-main"><div class="task-title">STL 컨테이너 복습</div><div class="task-meta"><span class="when">11/3–11/5</span><span class="prog"><svg class="ico"><use href="#i-list"/></svg>2/5</span></div></div></div>
+          <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">C++ 메모리 모델 읽기</div><div class="task-meta"><span class="when">11/6</span></div></div></div>
+          <div class="task"><span class="st doing"></span><div class="task-main"><div class="task-title">넥슨 자기소개서 쓰기</div><div class="task-meta"><span class="when">11/2–11/4</span><span class="prog"><svg class="ico"><use href="#i-list"/></svg>1/3</span><span class="lnk"><svg class="ico"><use href="#i-link"/></svg>넥슨</span></div></div></div>
+          <div class="done-row open"><svg class="ico"><use href="#i-fwd"/></svg>완료 2개</div>
+          <div class="task done"><span class="st done"></span><div class="task-main"><div class="task-title">스마트 포인터 정리</div><div class="task-meta"><span class="when">10/28</span></div></div></div>
+          <div class="task done"><span class="st done"></span><div class="task-main"><div class="task-title">람다 캡처 규칙</div><div class="task-meta"><span class="none">날짜 없음</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="cell" id="list-inline">
+        <div class="cap"><b>4-2</b>묶음 머리 + 누르고 바로 적기 (R17)</div>
+        <div class="box-list c-green">
+          <div class="g-head hover"><span class="fold"><svg class="ico"><use href="#i-down"/></svg></span><span class="dot"></span><span class="g-name">TrialGround</span><span class="g-count">3</span>
+            <span class="g-tools"><span class="icon-btn"><svg class="ico"><use href="#i-more"/></svg></span><span class="icon-btn on"><svg class="ico"><use href="#i-plus"/></svg></span></span></div>
+          <div class="task"><span class="st"></span><div class="task-main"><div class="field focus">사운드 매니저 붙이기<span class="caret"></span></div></div></div>
+          <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">플레이 테스트 빌드</div><div class="task-meta"><span class="none">날짜 없음</span></div></div></div>
+          <div class="task"><span class="st doing"></span><div class="task-main"><div class="task-title">전투 판정 리팩터링</div><div class="task-meta"><span class="when">10/30–11/3</span><span class="prog"><svg class="ico"><use href="#i-list"/></svg>3/4</span></div></div></div>
+          <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">맵 에디터 저장 기능</div><div class="task-meta"><span class="when">11/5–11/9</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="cell" id="list-menu">
+        <div class="cap"><b>4-3</b>카테고리 … 메뉴 (R8–R9)</div>
+        <div class="rel">
+          <div class="box-list c-blue"><div class="g-head hover"><span class="fold"><svg class="ico"><use href="#i-down"/></svg></span><span class="dot"></span><span class="g-name">C++ 공부</span><span class="g-count">3</span>
+            <span class="g-tools"><span class="icon-btn on"><svg class="ico"><use href="#i-more"/></svg></span><span class="icon-btn"><svg class="ico"><use href="#i-plus"/></svg></span></span></div></div>
+          <div class="menu below">
+            <div class="mi on"><svg class="ico"><use href="#i-pen"/></svg>이름·색 고치기</div>
+            <div class="sep"></div>
+            <div class="mi danger"><svg class="ico"><use href="#i-trash"/></svg>카테고리 삭제</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cell" id="list-catform">
+        <div class="cap"><b>4-4</b>카테고리 만들기 (고치기도 같은 창) (R7)</div>
+        <div class="catform c-pink">
+          <h4>새 카테고리</h4>
+          <div class="row"><span class="swatch"></span><div class="field focus">포트폴리오<span class="caret"></span></div></div>
+          <div class="sv"><i></i></div>
+          <div class="hue"><i></i></div>
+          <div class="row"><div class="field hex">#F29AD3</div></div>
+          <div class="recent">최근 <span class="c-blue"></span><span class="c-green"></span><span class="c-amber"></span></div>
+          <div class="foot"><span class="btn sm ghost">취소</span><span class="btn sm primary">만들기</span></div>
+        </div>
+      </div>
+
+      <div class="cell" id="list-quickcat">
+        <div class="cap"><b>4-5</b>빠른 입력 카테고리 고르기 (R16)</div>
+        <div class="box-list">
+          <div class="quick bare">
+            <div class="field focus">CMake 빌드 정리<span class="caret"></span></div>
+            <div class="cat-pick c-blue"><span class="dot"></span>C++ 공부<svg class="ico"><use href="#i-down"/></svg></div>
+          </div>
+          <div class="menu below">
+            <div class="mi c-none"><span class="dot ring"></span>미분류</div>
+            <div class="mi on c-blue"><span class="dot"></span>C++ 공부<svg class="ico chk"><use href="#i-check"/></svg></div>
+            <div class="mi c-green"><span class="dot"></span>TrialGround</div>
+            <div class="mi c-amber"><span class="dot"></span>취업 준비</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cell" id="list-reorder">
+        <div class="cap"><b>4-6</b>카테고리 머리를 끌어 순서 바꾸기 (R8)</div>
+        <div class="box-list">
+          <div class="g-head c-blue"><span class="fold"><svg class="ico"><use href="#i-down"/></svg></span><span class="dot"></span><span class="g-name">C++ 공부</span><span class="g-count">3</span></div>
+          <div class="drop-line"></div>
+          <div class="g-head c-green"><span class="fold"><svg class="ico"><use href="#i-down"/></svg></span><span class="dot"></span><span class="g-name">TrialGround</span><span class="g-count">3</span></div>
+          <div class="g-head drag c-amber"><span class="fold"><svg class="ico"><use href="#i-grip"/></svg></span><span class="dot"></span><span class="g-name">취업 준비</span><span class="g-count">3</span></div>
+          <div class="g-head fixed c-none"><span class="fold"><svg class="ico"><use href="#i-down"/></svg></span><span class="dot ring"></span><span class="g-name">미분류</span><span class="g-count">2</span></div>
+        </div>
+      </div>
+
+      <div class="cell" id="list-drop">
+        <div class="cap"><b>4-7</b>달력 막대를 목록 위로 끌어온 모습 (R27)</div>
+        <div class="box-list list-drop c-blue">
+          <div class="list-drop-msg"><svg class="ico sm"><use href="#i-x"/></svg>여기에 놓으면 날짜를 지워요</div>
+          <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">템플릿 특수화 정리</div><div class="task-meta"><span class="none">날짜 없음</span></div></div></div>
+          <div class="tbar c-blue lift demo"><span class="st sm"></span><span>C++ 메모리 모델 읽기</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>줄과 묶음</b><ul>
+        <li>기간·진행도·연결 회사는 제목 아래 작은 회색 글자</li>
+        <li>"완료 N개"는 › 화살표, 펼치면 ⌄로 돌고 흐린 줄이 아래에 붙는다</li>
+        <li>머리의 + 를 누르면 묶음 맨 위에 입력칸이 생기고 Enter로 만든다</li>
+      </ul></div>
+      <div class="note"><b>카테고리 편집</b><ul>
+        <li>만들기·고치기는 같은 작은 창: 이름, 큰 색 견본, 색 평면, 색상 막대, 색 값</li>
+        <li>최근에 쓴 색을 아래에 몇 개 보여준다</li>
+        <li>삭제는 빨간 글자, 누르면 확인 창 (6-1)</li>
+      </ul></div>
+      <div class="note"><b>끌기</b><ul>
+        <li>카테고리 머리를 끌면 들린 그림자 + 놓일 자리에 보라 선</li>
+        <li>미분류는 끌 수 없고 늘 맨 아래</li>
+        <li>막대를 목록 위로 끌어오면 목록 전체가 보라 테두리 + 안내</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

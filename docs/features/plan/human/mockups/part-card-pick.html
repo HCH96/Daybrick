@@ -1,0 +1,58 @@
+<!doctype html>
+<!-- 목업: 플랜 / 7. 지원 카드 고르기
+  목차와 다른 화면: index.html
+  CSS: common.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  part-card-pick      7. 지원 카드 고르기            R39
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>플랜 목업 · 7. 지원 카드 고르기</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <h1>7. 지원 카드 고르기</h1>
+  <p class="lead">상세 팝업의 "+ 지원 카드 연결"(또는 연결된 카드 옆 바꾸기)을 누르면 그 자리 아래에 뜨는 작은 창. 실제 크기(100%).</p>
+  <div class="toc"><a href="index.html">← 목업 목차</a><a href="popup.html">3. 상세 팝업</a></div>
+
+  <section class="screen" id="part-card-pick">
+    <div class="screen-head"><h2>지원 카드 고르기</h2><span class="tag">R39</span></div>
+    <div class="stage">
+      <div class="cell">
+        <div class="cap">찾기칸이 빈 처음 모습, 마우스가 둘째 줄 위</div>
+        <div class="picker">
+          <div class="field focus"><svg class="ico sm"><use href="#i-search"/></svg><span class="caret"></span>회사나 카드 제목으로 찾기</div>
+          <div class="pk-group">진행 중</div>
+          <div class="pk"><div class="pk-main"><div class="pk-title">게임 클라이언트 프로그래머</div><div class="pk-sub">넥슨 · 지원 마감 11/2 18:00</div></div><span class="st-badge b-prep">지원 준비</span></div>
+          <div class="pk on"><div class="pk-main"><div class="pk-title">서버 개발자 (신입)</div><div class="pk-sub">카카오 · 코딩테스트 11/3 14:00</div></div><span class="st-badge b-stage">전형 준비</span></div>
+          <div class="pk"><div class="pk-main"><div class="pk-title">엔진 프로그래머</div><div class="pk-sub">크래프톤 · 과제 마감 11/5</div></div><span class="st-badge b-stage">전형 준비</span></div>
+          <div class="pk"><div class="pk-main"><div class="pk-title">클라이언트 개발 인턴</div><div class="pk-sub">네오위즈 · 면접 11/5 15:30</div></div><span class="st-badge b-stage">전형 준비</span></div>
+          <div class="pk"><div class="pk-main"><div class="pk-title">게임플레이 프로그래머</div><div class="pk-sub">펄어비스</div></div><span class="st-badge b-wait">결과 대기</span></div>
+          <div class="pk-group">종료</div>
+          <div class="pk ended"><div class="pk-main"><div class="pk-title">C++ 개발자</div><div class="pk-sub">스마일게이트</div></div><span class="st-badge b-end">종료</span></div>
+          <div class="foot"><span>↑↓ 고르기 · Enter 연결 · Esc 닫기</span><span>카드 6개</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><b>목록</b><ul>
+        <li>진행 중 카드 먼저, 가까운 일정 순. 종료 카드는 아래에 흐리게</li>
+        <li>줄마다 카드 제목, 회사 · 가장 가까운 일정, 지원 상태 배지</li>
+      </ul></div>
+      <div class="note"><b>찾기</b><ul>
+        <li>창이 뜨면 바로 찾기칸에 커서</li>
+        <li>회사·카드 제목으로 걸러진다</li>
+      </ul></div>
+      <div class="note"><b>고른 뒤</b><ul>
+        <li>한 줄을 누르면 연결되고 창이 닫힌다</li>
+        <li>태스크 하나에 카드는 하나만</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

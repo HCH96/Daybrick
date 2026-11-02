@@ -19,7 +19,7 @@
 | [data.md](data.md) | 다룰 데이터 (카테고리, 태스크, 화면 설정), 저장 위치 |
 | [scope.md](scope.md) | 이번 범위에서 제외하는 것, 나중에 고려할 것 (투데이·타이머·프로젝트) |
 | [extension.md](extension.md) | 확장 구조: 공용 태스크 저장소, 나중 기능이 태스크를 쓰는 방식. **다른 기능을 붙일 때 읽기** |
-| mockup.md | (아직 없음) |
+| [mockup.md](mockup.md) | 목업 경로(2026-11-02 승인)와 목업에서 정한 것 |
 | [decisions.md](decisions.md) | 결정 사항 D1~ |
 
 ## 다른 문서

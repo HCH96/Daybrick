@@ -1,0 +1,158 @@
+<!doctype html>
+<!-- 목업: 플랜 / 1. 플랜 화면 (이번 주)
+  목차와 다른 화면: index.html
+  CSS: common.css, plan.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  plan                1. 플랜 화면                  R1–R34
+    plan-head           1-1. 페이지 머리            R1
+    plan-quick          1-2. 빠른 입력              R16
+    plan-list           1-3. 카테고리별 태스크 목록   R10–R15, R17–R20
+    plan-calbar         1-4. 기간·주 이동·지원 일정 스위치  R3–R4, R33
+    plan-week           1-5. 요일 머리·오늘 강조      R21
+    plan-sched          1-6. 지원 일정 줄            R31–R32, R34
+    plan-bars           1-7. 태스크 막대             R22–R30
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>플랜 목업 · 1. 플랜 화면</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="plan.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <h1>1. 플랜 화면</h1>
+  <p class="lead">오늘(2026년 11월 2일 월요일)이 들어 있는 주를 연 모습. 왼쪽은 카테고리별 태스크 목록, 오른쪽은 주간 달력.</p>
+  <div class="toc"><a href="index.html">← 목업 목차</a><a href="plan-empty.html">2. 처음 화면</a><a href="popup.html">3. 상세 팝업</a></div>
+
+  <section class="screen" id="plan">
+    <div class="screen-head"><h2>플랜 화면</h2><span class="tag">R1–R34</span></div>
+    <p class="screen-desc">TrialGround 묶음은 접힌 상태, 취업 준비 묶음은 "완료 1개"를 펼친 상태로 그렸다.</p>
+    <div class="scale-note">앱 창 1440×900을 75%로 줄여 보여줌</div>
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav"><span class="tb-btn"><svg class="ico sm"><use href="#i-back"/></svg></span><span class="tb-btn off"><svg class="ico sm"><use href="#i-fwd"/></svg></span></div>
+        <div class="tb-drag"></div>
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg></span>
+        <div class="win"><span><svg class="ico"><use href="#i-min"/></svg></span><span><svg class="ico"><use href="#i-max"/></svg></span><span><svg class="ico"><use href="#i-x"/></svg></span></div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+          <div class="nav on"><svg class="ico"><use href="#i-plan"/></svg>Plan</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock"/></svg>Scheduler</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag"/></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main">
+          <div class="page-head" id="plan-head"><h1 class="page-title">플랜</h1></div>
+          <div class="plan">
+            <!-- 왼쪽: 태스크 목록 -->
+            <div class="panel">
+              <div class="quick" id="plan-quick">
+                <div class="field"><svg class="ico sm"><use href="#i-plus"/></svg>새 태스크 (Enter로 추가)</div>
+                <div class="cat-pick c-none"><span class="dot ring"></span>미분류<svg class="ico"><use href="#i-down"/></svg></div>
+              </div>
+              <div class="list" id="plan-list">
+                <div class="group c-blue">
+                  <div class="g-head hover"><span class="fold"><svg class="ico"><use href="#i-down"/></svg></span><span class="dot"></span><span class="g-name">C++ 공부</span><span class="g-count">3</span>
+                    <span class="g-tools"><span class="icon-btn"><svg class="ico"><use href="#i-more"/></svg></span><span class="icon-btn"><svg class="ico"><use href="#i-plus"/></svg></span></span></div>
+                  <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">템플릿 특수화 정리</div><div class="task-meta"><span class="none">날짜 없음</span></div></div></div>
+                  <div class="task hover"><span class="st doing"></span><div class="task-main"><div class="task-title">STL 컨테이너 복습</div><div class="task-meta"><span class="when">11/3–11/5</span><span class="prog"><svg class="ico"><use href="#i-list"/></svg>2/5</span></div></div></div>
+                  <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">C++ 메모리 모델 읽기</div><div class="task-meta"><span class="when">11/6</span></div></div></div>
+                  <div class="done-row"><svg class="ico"><use href="#i-fwd"/></svg>완료 2개</div>
+                </div>
+                <div class="group c-green">
+                  <div class="g-head closed"><span class="fold"><svg class="ico"><use href="#i-down"/></svg></span><span class="dot"></span><span class="g-name">TrialGround</span><span class="g-count">3</span></div>
+                </div>
+                <div class="group c-amber">
+                  <div class="g-head"><span class="fold"><svg class="ico"><use href="#i-down"/></svg></span><span class="dot"></span><span class="g-name">취업 준비</span><span class="g-count">3</span></div>
+                  <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">크래프톤 포트폴리오 다듬기</div><div class="task-meta"><span class="none">날짜 없음</span></div></div></div>
+                  <div class="task"><span class="st doing"></span><div class="task-main"><div class="task-title">넥슨 자기소개서 쓰기</div><div class="task-meta"><span class="when">11/2–11/4</span><span class="prog"><svg class="ico"><use href="#i-list"/></svg>1/3</span><span class="lnk"><svg class="ico"><use href="#i-link"/></svg>넥슨</span></div></div></div>
+                  <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">CS 네트워크 정리</div><div class="task-meta"><span class="when">11/7–11/8</span></div></div></div>
+                  <div class="done-row open"><svg class="ico"><use href="#i-fwd"/></svg>완료 1개</div>
+                  <div class="task done"><span class="st done"></span><div class="task-main"><div class="task-title">백준 골드 문제 2개</div><div class="task-meta"><span class="when">11/2</span></div></div></div>
+                </div>
+                <div class="group c-none">
+                  <div class="g-head fixed"><span class="fold"><svg class="ico"><use href="#i-down"/></svg></span><span class="dot ring"></span><span class="g-name">미분류</span><span class="g-count">2</span></div>
+                  <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">증명사진 다시 찍기</div><div class="task-meta"><span class="none">날짜 없음</span></div></div></div>
+                  <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">은행 서류 제출</div><div class="task-meta"><span class="when">11/4</span></div></div></div>
+                </div>
+                <div class="add-cat"><svg class="ico sm"><use href="#i-plus"/></svg>카테고리 추가</div>
+              </div>
+            </div>
+            <!-- 오른쪽: 주간 달력 -->
+            <div class="panel cal">
+              <div class="cal-bar" id="plan-calbar">
+                <div class="period">2026년 11월 2일 – 8일</div>
+                <div class="weeknav">
+                  <span class="btn ghost"><svg class="ico sm"><use href="#i-back"/></svg>이전 주</span>
+                  <span class="btn">이번 주</span>
+                  <span class="btn ghost">다음 주<svg class="ico sm"><use href="#i-fwd"/></svg></span>
+                </div>
+                <span class="switch on"><i></i>지원 일정</span>
+              </div>
+              <div class="week">
+                <div class="days" id="plan-week">
+                  <div class="day-h today">월 <b>2</b></div><div class="day-h">화 <b>3</b></div><div class="day-h">수 <b>4</b></div><div class="day-h">목 <b>5</b></div>
+                  <div class="day-h">금 <b>6</b></div><div class="day-h sat">토 <b>7</b></div><div class="day-h sun">일 <b>8</b></div>
+                </div>
+                <div class="wk-body">
+                  <div class="cols"><i class="today"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                  <div class="layer sched" id="plan-sched">
+                    <div class="sched-cell"><span class="ev k-deadline"><svg class="ico"><use href="#i-flag"/></svg>넥슨<em>18:00</em></span></div>
+                    <div class="sched-cell"><span class="ev k-coding"><svg class="ico"><use href="#i-code"/></svg>카카오<em>14:00</em></span></div>
+                    <div class="sched-cell"></div>
+                    <div class="sched-cell"><span class="ev k-task"><svg class="ico"><use href="#i-file"/></svg>크래프톤</span><span class="ev k-interview"><svg class="ico"><use href="#i-users"/></svg>네오위즈<em>15:30</em></span></div>
+                    <div class="sched-cell"></div>
+                    <div class="sched-cell"><span class="ev k-coding"><svg class="ico"><use href="#i-code"/></svg>펄어비스<em>10:00</em></span></div>
+                    <div class="sched-cell"></div>
+                  </div>
+                  <div class="layer bars" id="plan-bars">
+                    <div class="tbar c-green cut-l l1 s1 w2"><span class="cut"><svg class="ico"><use href="#i-back"/></svg></span><span class="st sm doing"></span><span>전투 판정 리팩터링</span><b class="meta">3/4</b></div>
+                    <div class="tbar c-none l1 s3 w1"><span class="st sm"></span><span>은행 서류 제출</span></div>
+                    <div class="tbar c-green cut-r l1 s4 w4"><span class="st sm"></span><span>맵 에디터 저장 기능</span><span class="cut meta"><svg class="ico"><use href="#i-fwd"/></svg></span></div>
+                    <div class="tbar c-amber l2 s1 w3"><span class="st sm doing"></span><span>넥슨 자기소개서 쓰기</span><b class="meta">1/3</b></div>
+                    <div class="tbar c-blue l2 s5 w1"><span class="st sm"></span><span>C++ 메모리 모델 읽기</span></div>
+                    <div class="tbar c-amber l2 s6 w2"><span class="st sm"></span><span>CS 네트워크 정리</span></div>
+                    <div class="tbar c-amber done l3 s1 w1"><span class="st sm done"></span><span>백준 골드 문제 2개</span></div>
+                    <div class="tbar c-blue l3 s2 w3"><span class="st sm doing"></span><span>STL 컨테이너 복습</span><b class="meta">2/5</b></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>왼쪽 목록</b><ul>
+        <li>빠른 입력은 목록 맨 위. 옆 칩에서 카테고리를 고른다 (기본 미분류)</li>
+        <li>묶음 머리: 접기 ▾, 색 점, 이름, 안 끝난 개수. <code>…</code>·<code>+</code>는 마우스를 올렸을 때만 보인다</li>
+        <li>미분류는 테두리만 있는 점, 맨 아래 고정, <code>…</code> 없음</li>
+        <li>줄에 마우스를 올리면 왼쪽에 끌기 손잡이가 보인다</li>
+      </ul></div>
+      <div class="note"><b>상태 표시</b><ul>
+        <li>시작 전: 회색 빈 원</li>
+        <li>진행 중: 주황 반쪽 원</li>
+        <li>완료: 초록 채운 원 + 체크, 제목 취소선·흐리게</li>
+        <li>줄의 원을 누르면 다음 상태로 바뀐다 (R18)</li>
+      </ul></div>
+      <div class="note"><b>주간 달력</b><ul>
+        <li>오늘 칸: 날짜 숫자를 보라 원으로, 칸 전체를 아주 옅게</li>
+        <li>지원 일정은 둥근 알약 모양 + 종류 아이콘·색, 막대 위 점선 아래로 태스크 막대</li>
+        <li>주 경계를 넘는 막대는 잘린 쪽 모서리를 각지게 하고 ‹ › 표시</li>
+        <li>막대는 카테고리 색 옅은 바탕 + 왼쪽 굵은 선, 체크리스트 진행도는 오른쪽 끝</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

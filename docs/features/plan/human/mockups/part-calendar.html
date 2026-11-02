@@ -1,0 +1,127 @@
+<!doctype html>
+<!-- 목업: 플랜 / 5. 달력 부품
+  목차와 다른 화면: index.html
+  CSS: common.css, plan.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  part-calendar       5. 달력 부품 (월~목 4칸만 잘라 그림)  R22–R32
+    cal-drag            5-1. 목록에서 끌어 놓는 중      R22
+    cal-move            5-2. 막대 옮기는 중            R25
+    cal-resize          5-3. 막대 끝 끌기              R26
+    cal-new             5-4. 더블클릭으로 새 태스크      R28
+    cal-events          5-5. 지원 일정 4종과 마우스 올림  R31–R32
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>플랜 목업 · 5. 달력 부품</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="plan.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <h1>5. 달력 부품</h1>
+  <p class="lead">주간 달력에서 끌기·고치기를 하는 동안의 모습. 월~목 4칸만 잘라 실제 크기(100%)로 그렸다.</p>
+  <div class="toc"><a href="index.html">← 목업 목차</a><a href="plan.html">1. 플랜 화면</a><a href="part-list.html">4. 목록 부품</a></div>
+
+  <section class="screen" id="part-calendar">
+    <div class="screen-head"><h2>달력 부품</h2><span class="tag">R22–R32</span></div>
+    <div class="stage">
+      <div class="cell" id="cal-drag">
+        <div class="cap"><b>5-1</b>목록의 태스크를 화요일 칸으로 끌어오는 중 (R22)</div>
+        <div class="mini rel">
+          <div class="days"><div class="day-h today">월 <b>2</b></div><div class="day-h">화 <b>3</b></div><div class="day-h">수 <b>4</b></div><div class="day-h">목 <b>5</b></div></div>
+          <div class="wk-body">
+            <div class="cols"><i class="today"></i><i class="drop"></i><i></i><i></i></div>
+            <div class="layer bars"><div class="tbar c-amber l1 s1 w3"><span class="st sm doing"></span><span>넥슨 자기소개서 쓰기</span><b class="meta">1/3</b></div></div>
+          </div>
+          <div class="floating fl-drag c-blue"><div class="task"><span class="st"></span><div class="task-main"><div class="task-title">템플릿 특수화 정리</div><div class="task-meta"><span class="none">날짜 없음</span></div></div></div></div>
+          <div class="drop-hint">11월 3일 (화) 하루로 놓아요</div>
+        </div>
+      </div>
+
+      <div class="cell" id="cal-move">
+        <div class="cap"><b>5-2</b>막대를 하루 뒤로 옮기는 중, 길이는 그대로 (R25)</div>
+        <div class="mini rel">
+          <div class="days"><div class="day-h today">월 <b>2</b></div><div class="day-h">화 <b>3</b></div><div class="day-h">수 <b>4</b></div><div class="day-h">목 <b>5</b></div></div>
+          <div class="wk-body">
+            <div class="cols"><i class="today"></i><i></i><i class="drop"></i><i class="drop"></i></div>
+            <div class="layer bars">
+              <div class="tbar c-blue ghost l1 s2 w3"><span class="st sm doing"></span><span>STL 컨테이너 복습</span></div>
+              <div class="tbar c-blue lift cut-r l2 s3 w2"><span class="st sm doing"></span><span>STL 컨테이너 복습</span><span class="cut meta"><svg class="ico"><use href="#i-fwd"/></svg></span></div>
+            </div>
+          </div>
+          <div class="drop-hint">11/4 – 11/6 (3일)</div>
+        </div>
+      </div>
+
+      <div class="cell" id="cal-resize">
+        <div class="cap"><b>5-3</b>막대에 마우스를 올리면 양 끝 손잡이, 오른쪽 끝을 끄는 중 (R26)</div>
+        <div class="mini rel">
+          <div class="days"><div class="day-h today">월 <b>2</b></div><div class="day-h">화 <b>3</b></div><div class="day-h">수 <b>4</b></div><div class="day-h">목 <b>5</b></div></div>
+          <div class="wk-body">
+            <div class="cols"><i class="today"></i><i></i><i></i><i class="drop"></i></div>
+            <div class="layer bars">
+              <div class="tbar c-amber sel l1 s1 w4"><span class="h l"></span><span class="st sm doing"></span><span>넥슨 자기소개서 쓰기</span><b class="meta">1/3</b><span class="h r"></span></div>
+            </div>
+          </div>
+          <div class="resize-cursor cur-r">⇔</div>
+          <div class="drop-hint">끝일 11/5 (목) · 4일</div>
+        </div>
+      </div>
+
+      <div class="cell" id="cal-new">
+        <div class="cap"><b>5-4</b>수요일 빈 곳을 더블클릭해 제목을 적는 중 (R28)</div>
+        <div class="mini rel">
+          <div class="days"><div class="day-h today">월 <b>2</b></div><div class="day-h">화 <b>3</b></div><div class="day-h">수 <b>4</b></div><div class="day-h">목 <b>5</b></div></div>
+          <div class="wk-body">
+            <div class="cols"><i class="today"></i><i></i><i></i><i></i></div>
+            <div class="layer bars">
+              <div class="tbar c-amber l1 s1 w3"><span class="st sm doing"></span><span>넥슨 자기소개서 쓰기</span><b class="meta">1/3</b></div>
+              <div class="tbar c-blue l2 s2 w3"><span class="st sm doing"></span><span>STL 컨테이너 복습</span><b class="meta">2/5</b></div>
+              <div class="tbar c-none input l3 s3 w1"><span class="st sm"></span><span>은행 서류<span class="caret"></span></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cell" id="cal-events">
+        <div class="cap"><b>5-5</b>지원 일정 4종, 마우스를 올린 모습 (R31–R32)</div>
+        <div class="mini rel">
+          <div class="days"><div class="day-h today">월 <b>2</b></div><div class="day-h">화 <b>3</b></div><div class="day-h">수 <b>4</b></div><div class="day-h">목 <b>5</b></div></div>
+          <div class="wk-body">
+            <div class="cols"><i class="today"></i><i></i><i></i><i></i></div>
+            <div class="layer sched">
+              <div class="sched-cell"><span class="ev k-deadline"><svg class="ico"><use href="#i-flag"/></svg>넥슨<em>18:00</em></span></div>
+              <div class="sched-cell"><span class="ev k-coding"><svg class="ico"><use href="#i-code"/></svg>카카오<em>14:00</em></span></div>
+              <div class="sched-cell"><span class="ev k-task"><svg class="ico"><use href="#i-file"/></svg>크래프톤</span></div>
+              <div class="sched-cell"><span class="ev k-interview"><svg class="ico"><use href="#i-users"/></svg>네오위즈<em>15:30</em></span></div>
+            </div>
+          </div>
+          <div class="tip tip-ev"><b>카카오 · 서버 개발자 (신입)</b>코딩테스트 · 11월 3일 (화) 14:00<br>누르면 지원관리 카드가 열려요</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>끌어 놓기</b><ul>
+        <li>놓일 칸(들)은 보라 테두리 + 옅은 보라 바탕</li>
+        <li>아래에 놓였을 때의 날짜를 작은 알약으로 미리 알려준다</li>
+        <li>옮기는 막대는 원래 자리에 흐린 점선 막대가 남는다</li>
+      </ul></div>
+      <div class="note"><b>막대 고치기</b><ul>
+        <li>양 끝 손잡이는 마우스를 올렸을 때만 보인다</li>
+        <li>더블클릭한 칸에 흰 바탕 입력 막대가 생기고, Enter로 만들고 Esc로 취소</li>
+        <li>막대가 많으면 달력 몸통만 세로로 스크롤되고 요일 머리는 고정 (R29)</li>
+      </ul></div>
+      <div class="note"><b>지원 일정</b><ul>
+        <li>색·아이콘: 지원 마감 빨강 깃발, 과제 주황 문서, 코딩테스트 보라 코드, 면접 청록 사람</li>
+        <li>끌 수 없으므로 손잡이·그림자가 없다</li>
+        <li>마우스를 올리면 카드 제목·종류·시간 풍선 (목업 제안)</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

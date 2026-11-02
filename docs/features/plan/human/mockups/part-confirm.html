@@ -1,0 +1,62 @@
+<!doctype html>
+<!-- 목업: 플랜 / 6. 확인 창
+  목차와 다른 화면: index.html
+  CSS: common.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  part-confirm        6. 확인 창                    R9, R40
+    confirm-cat         6-1. 카테고리 삭제            R9
+    confirm-task        6-2. 태스크 삭제              R40
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>플랜 목업 · 6. 확인 창</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <h1>6. 확인 창</h1>
+  <p class="lead">지우기 전에 한 번 묻는 창. 화면 가운데에 어두운 덮개와 함께 뜬다. 실제 크기(100%).</p>
+  <div class="toc"><a href="index.html">← 목업 목차</a><a href="part-list.html">4. 목록 부품</a><a href="popup.html">3. 상세 팝업</a></div>
+
+  <section class="screen" id="part-confirm">
+    <div class="screen-head"><h2>확인 창</h2><span class="tag">R9, R40</span></div>
+    <div class="stage">
+      <div class="cell" id="confirm-cat">
+        <div class="cap"><b>6-1</b>카테고리 삭제 (R9)</div>
+        <div class="confirm">
+          <h4>"C++ 공부" 카테고리를 지울까요?</h4>
+          <p>안에 있는 태스크 <b>5개</b>는 지워지지 않고 <b>미분류</b>로 옮겨져요.</p>
+          <div class="foot"><span class="btn">취소</span><span class="btn danger"><svg class="ico sm"><use href="#i-trash"/></svg>카테고리 삭제</span></div>
+        </div>
+      </div>
+      <div class="cell" id="confirm-task">
+        <div class="cap"><b>6-2</b>태스크 삭제 (R40)</div>
+        <div class="confirm">
+          <h4>"STL 컨테이너 복습"을 지울까요?</h4>
+          <p>메모와 체크리스트 5개 항목도 함께 지워지고, 되돌릴 수 없어요.</p>
+          <div class="foot"><span class="btn">취소</span><span class="btn danger"><svg class="ico sm"><use href="#i-trash"/></svg>삭제</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><b>공통</b><ul>
+        <li>제목에 지울 대상 이름을 따옴표로</li>
+        <li>설명에 함께 일어나는 일을 한 줄로</li>
+        <li>지우기 버튼은 빨간 글자 + 휴지통, 기본 선택은 취소</li>
+      </ul></div>
+      <div class="note"><b>카테고리 삭제</b><ul>
+        <li>완료한 태스크까지 포함한 개수를 보여준다</li>
+        <li>태스크가 없는 카테고리면 설명 줄을 "빈 카테고리예요."로</li>
+      </ul></div>
+      <div class="note"><b>태스크 삭제</b><ul>
+        <li>메모·체크리스트가 없으면 "되돌릴 수 없어요."만</li>
+        <li>지운 뒤 팝업은 닫히고 목록·달력에서 바로 빠진다</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<!-- 목업: 플랜 / 2. 처음 화면 (태스크·카테고리 없음)
+  목차와 다른 화면: index.html
+  CSS: common.css, plan.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  plan-empty          2. 처음 화면                  R7, R10, R16, R33
+    plan-empty-list     2-1. 빈 목록 안내            R10, R16
+    plan-empty-cal      2-2. 빈 달력 (지원 일정 꺼짐, 다음 주)  R4, R28, R33
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>플랜 목업 · 2. 처음 화면</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="plan.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <h1>2. 처음 화면</h1>
+  <p class="lead">태스크도 카테고리도 없을 때. 달력은 "다음 주"로 옮겨 가고 지원 일정 스위치를 끈 모습을 함께 그렸다.</p>
+  <div class="toc"><a href="index.html">← 목업 목차</a><a href="plan.html">1. 플랜 화면</a><a href="popup.html">3. 상세 팝업</a></div>
+
+  <section class="screen" id="plan-empty">
+    <div class="screen-head"><h2>처음 화면</h2><span class="tag">R7, R10, R16, R33</span></div>
+    <div class="scale-note">앱 창 1440×900을 75%로 줄여 보여줌</div>
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav"><span class="tb-btn"><svg class="ico sm"><use href="#i-back"/></svg></span><span class="tb-btn off"><svg class="ico sm"><use href="#i-fwd"/></svg></span></div>
+        <div class="tb-drag"></div>
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg></span>
+        <div class="win"><span><svg class="ico"><use href="#i-min"/></svg></span><span><svg class="ico"><use href="#i-max"/></svg></span><span><svg class="ico"><use href="#i-x"/></svg></span></div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+          <div class="nav on"><svg class="ico"><use href="#i-plan"/></svg>Plan</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock"/></svg>Scheduler</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag"/></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main">
+          <div class="page-head"><h1 class="page-title">플랜</h1></div>
+          <div class="plan">
+            <div class="panel" id="plan-empty-list">
+              <div class="quick">
+                <div class="field focus">결과 보고서 초안<span class="caret"></span><span class="kbd">Enter</span></div>
+                <div class="cat-pick c-none"><span class="dot ring"></span>미분류<svg class="ico"><use href="#i-down"/></svg></div>
+              </div>
+              <div class="empty">
+                <span class="icon-box"><svg class="ico"><use href="#i-list"/></svg></span>
+                <b>아직 태스크가 없어요</b>
+                <div>위 입력칸에 제목을 적고 Enter를 누르면<br>날짜 없는 태스크가 생겨요.</div>
+              </div>
+              <div class="add-cat"><svg class="ico sm"><use href="#i-plus"/></svg>카테고리 추가</div>
+            </div>
+            <div class="panel cal" id="plan-empty-cal">
+              <div class="cal-bar">
+                <div class="period">2026년 11월 9일 – 15일</div>
+                <div class="weeknav">
+                  <span class="btn ghost"><svg class="ico sm"><use href="#i-back"/></svg>이전 주</span>
+                  <span class="btn">이번 주</span>
+                  <span class="btn ghost">다음 주<svg class="ico sm"><use href="#i-fwd"/></svg></span>
+                </div>
+                <span class="switch"><i></i>지원 일정</span>
+              </div>
+              <div class="week">
+                <div class="days">
+                  <div class="day-h">월 <b>9</b></div><div class="day-h">화 <b>10</b></div><div class="day-h">수 <b>11</b></div><div class="day-h">목 <b>12</b></div>
+                  <div class="day-h">금 <b>13</b></div><div class="day-h sat">토 <b>14</b></div><div class="day-h sun">일 <b>15</b></div>
+                </div>
+                <div class="wk-body">
+                  <div class="cols"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                  <div class="cal-hint">왼쪽 태스크를 날짜 칸에 끌어 놓거나, 빈 곳을 더블클릭해 새 태스크를 만드세요</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><b>빈 목록</b><ul>
+        <li>카테고리가 없어도 바로 태스크를 만들 수 있다 (미분류로 들어감)</li>
+        <li>미분류 묶음은 태스크가 생겨야 보인다</li>
+        <li>입력칸에 커서가 있을 때 오른쪽에 Enter 표시</li>
+      </ul></div>
+      <div class="note"><b>빈 달력</b><ul>
+        <li>막대가 하나도 없을 때만 아래쪽에 옅은 안내 한 줄</li>
+        <li>지원 일정 스위치를 끄면 위쪽 일정 줄과 점선이 통째로 사라진다</li>
+        <li>오늘이 없는 주라서 강조 칸이 없다</li>
+      </ul></div>
+      <div class="note"><b>주 이동</b><ul>
+        <li>기간 글자는 보고 있는 주를 그대로 보여준다</li>
+        <li>"이번 주"는 언제든 눌러 오늘 주로 돌아간다</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

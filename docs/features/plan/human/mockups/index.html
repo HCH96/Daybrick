@@ -1,0 +1,38 @@
+<!doctype html>
+<!-- 목업 목차: 플랜 (plan)
+  읽는 법: 이 목차에서 필요한 화면 파일만 골라 읽는다. CSS는 그 화면 파일 머리에 적힌 파일에서 필요한 클래스만 검색한다.
+  파일                  화면                         요구사항
+  plan.html             1. 플랜 화면 (이번 주)         R1–R34    부분 ID: plan-head, -quick, -list, -calbar, -week, -sched, -bars
+  plan-empty.html       2. 처음 화면 (태스크 없음)      R7, R10, R16, R33   부분 ID: plan-empty-list, plan-empty-cal
+  popup.html            3. 태스크 상세 팝업             R35–R41   부분 ID: popup-head, -props, -check, -memo, -foot, popup-bare
+  part-list.html        4. 목록 부품                   R7–R8, R12–R18, R27   부분 ID: list-rows, -inline, -menu, -catform, -quickcat, -reorder, -drop
+  part-calendar.html    5. 달력 부품                   R22–R32   부분 ID: cal-drag, -move, -resize, -new, -events
+  part-confirm.html     6. 확인 창                     R9, R40   부분 ID: confirm-cat, confirm-task
+  part-card-pick.html   7. 지원 카드 고르기             R39
+  CSS: common.css(색 토큰·앱 틀·버튼·스위치·상태 표시·카테고리 색·지원 상태 배지), plan.css(목록·주간 달력), popup.css(상세 팝업), parts.css(메뉴·색 선택기·확인 창·카드 고르기·달력 조작 장면)
+  아이콘: icons.js
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>플랜 목업</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<div class="doc">
+  <h1>플랜 목업</h1>
+  <p class="lead">카테고리별 태스크를 주간 달력에 끌어 놓아 한 주를 계획하는 화면. 디자인 확인용 정적 화면이라 눌러도 동작하지 않는다.<br>
+    색과 앱 창 틀은 메인 페이지·지원 관리 목업과 같다. 예시 날짜: 오늘 2026년 11월 2일 (월).</p>
+
+  <ul class="links">
+    <li><a href="plan.html"><b>1. 플랜 화면</b><span>왼쪽 카테고리별 목록 + 오른쪽 주간 달력, 지원 일정·여러 날 막대·주 경계</span><em>R1–R34</em></a></li>
+    <li><a href="plan-empty.html"><b>2. 처음 화면</b><span>태스크·카테고리가 없을 때, 다음 주로 옮기고 지원 일정을 끈 모습</span><em>R7, R10, R16, R33</em></a></li>
+    <li><a href="popup.html"><b>3. 태스크 상세 팝업</b><span>속성·지원 카드 연결·체크리스트·메모, 막 만든 태스크</span><em>R35–R41</em></a></li>
+    <li><a href="part-list.html"><b>4. 목록 부품</b><span>태스크 줄 모양, 바로 적기, … 메뉴, 색 선택기, 순서 바꾸기, 날짜 지우기</span><em>R7–R8, R12–R18, R27</em></a></li>
+    <li><a href="part-calendar.html"><b>5. 달력 부품</b><span>끌어 놓기, 막대 옮기기·끝 끌기, 더블클릭 새 태스크, 지원 일정 4종</span><em>R22–R32</em></a></li>
+    <li><a href="part-confirm.html"><b>6. 확인 창</b><span>카테고리 삭제, 태스크 삭제</span><em>R9, R40</em></a></li>
+    <li><a href="part-card-pick.html"><b>7. 지원 카드 고르기</b><span>상세 팝업에서 지원관리 카드 하나를 골라 연결</span><em>R39</em></a></li>
+  </ul>
+</div>
+</body>
+</html>
