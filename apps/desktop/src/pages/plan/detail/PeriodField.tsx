@@ -2,7 +2,6 @@ import { useState } from "react";
 import MiniCalendar from "../../../components/common/MiniCalendar";
 import Popover from "../../../components/common/Popover";
 import { PlusIcon } from "../../../components/icons/CommonIcons";
-import { DateIcon } from "../../../components/icons/PlanIcons";
 import { formatChipDay, formatDayCount } from "../../../features/plan/format";
 import type { TaskRange } from "../../../features/plan/store";
 
@@ -16,8 +15,8 @@ interface PeriodFieldProps {
 type Side = "start" | "end";
 
 /**
- * 기간 줄 값 (R35, D2·D17): [시작일] ~ [끝일] 날짜 칩 + 일수 + "날짜 없음으로".
- * 날짜 없는 태스크는 "+ 날짜 정하기"로 시작일을 고르고, 끝일도 같은 날이 된다.
+ * 기간 줄 값 (R35, D2·D17): "11월 2일 (월) → 11월 4일 (수)" + 회색 일수 + "날짜 없음으로"(줄에 마우스를 올렸을 때만).
+ * 날짜 없는 태스크는 "날짜 없음 + 날짜 정하기"로 시작일을 고르고, 끝일도 같은 날이 된다.
  */
 function PeriodField({ start, end, onChange }: PeriodFieldProps) {
   const [open, setOpen] = useState<{ side: Side; anchor: HTMLElement } | null>(null);
@@ -33,26 +32,26 @@ function PeriodField({ start, end, onChange }: PeriodFieldProps) {
     <>
       {range ? (
         <>
-          <DateChip label="시작일" value={range.start} active={open?.side === "start"} onOpen={(a) => setOpen({ side: "start", anchor: a })} />
-          <span className="task-detail__tilde">~</span>
-          <DateChip label="끝일" value={range.end} active={open?.side === "end"} onOpen={(a) => setOpen({ side: "end", anchor: a })} />
-          <span className="task-detail__days">{formatDayCount(range.start, range.end)}</span>
-          <button type="button" className="task-detail__txt-btn" onClick={() => onChange(null)}>
+          <DateButton label="시작일" value={range.start} active={open?.side === "start"} onOpen={(a) => setOpen({ side: "start", anchor: a })} />
+          <span className="task-detail__sep">→</span>
+          <DateButton label="끝일" value={range.end} active={open?.side === "end"} onOpen={(a) => setOpen({ side: "end", anchor: a })} />
+          <span className="task-detail__sub">{formatDayCount(range.start, range.end)}</span>
+          <button type="button" className="task-detail__hint" onClick={() => onChange(null)}>
             날짜 없음으로
           </button>
         </>
       ) : (
         <>
+          <span className="task-detail__empty">날짜 없음</span>
           <button
             type="button"
-            className="task-detail__txt-btn task-detail__txt-btn--add"
+            className="task-detail__add"
             aria-expanded={open !== null}
             onClick={(e) => setOpen({ side: "start", anchor: e.currentTarget })}
           >
-            <PlusIcon size={12} />
+            <PlusIcon size={14} />
             날짜 정하기
           </button>
-          <span className="task-detail__days">날짜 없음</span>
         </>
       )}
 
@@ -71,23 +70,23 @@ function PeriodField({ start, end, onChange }: PeriodFieldProps) {
   );
 }
 
-interface DateChipProps {
+interface DateButtonProps {
   label: string;
   value: string;
   active: boolean;
   onOpen: (anchor: HTMLElement) => void;
 }
 
-function DateChip({ label, value, active, onOpen }: DateChipProps) {
+/** 날짜 글자 "11월 2일 (월)". 누르면 작은 달력이 열린다. */
+function DateButton({ label, value, active, onOpen }: DateButtonProps) {
   return (
     <button
       type="button"
-      className={active ? "task-detail__chip task-detail__chip--date task-detail__chip--on" : "task-detail__chip task-detail__chip--date"}
+      className={active ? "task-detail__plain task-detail__plain--on" : "task-detail__plain"}
       aria-label={`${label}: ${formatChipDay(value)}`}
       aria-expanded={active}
       onClick={(e) => onOpen(e.currentTarget)}
     >
-      <DateIcon size={13} />
       {formatChipDay(value)}
     </button>
   );

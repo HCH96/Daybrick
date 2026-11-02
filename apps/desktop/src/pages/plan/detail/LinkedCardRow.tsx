@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { PlusIcon, SmallCloseIcon } from "../../../components/icons/CommonIcons";
+import { PlusIcon } from "../../../components/icons/CommonIcons";
 import { LinkIcon } from "../../../components/icons/PlanIcons";
 import { useApplications } from "../../../features/applications/store";
 import { findLinkCard } from "../../../features/plan/applicationLinks";
@@ -17,7 +17,7 @@ interface LinkedCardRowProps {
 
 /**
  * 상세 팝업 속성 줄 "지원 카드" (목업 popup-props·popup-bare, R39).
- * 연결이 없으면 "+ 지원 카드 연결", 있으면 카드 제목(밑줄)·회사·상태 배지와 [연결 끊기].
+ * 연결이 없으면 "+ 지원 카드 연결", 있으면 카드 제목(밑줄)·회사·상태 배지와 "연결 끊기"(줄에 마우스를 올렸을 때만).
  * 지원 데이터를 읽는 중·읽지 못했을 때는 연결을 그대로 두고 안내 글자만 보인다 (D14).
  */
 function LinkedCardRow({ task, onOpenApplication }: LinkedCardRowProps) {
@@ -29,8 +29,7 @@ function LinkedCardRow({ task, onOpenApplication }: LinkedCardRowProps) {
   const card = linkedId !== null && state.kind === "ready" ? findLinkCard(state.data, linkedId, new Date()) : null;
 
   const unlink = (
-    <button type="button" className="task-detail__txt-btn" onClick={() => linkApplication(task.id, null)}>
-      <SmallCloseIcon size={12} />
+    <button type="button" className="task-detail__hint" onClick={() => linkApplication(task.id, null)}>
       연결 끊기
     </button>
   );
@@ -68,7 +67,7 @@ function LinkedCardRow({ task, onOpenApplication }: LinkedCardRowProps) {
     value = (
       <button
         type="button"
-        className="task-detail__txt-btn task-detail__txt-btn--add"
+        className="task-detail__add"
         aria-haspopup="dialog"
         aria-expanded={pickAnchor !== null}
         onClick={(e) => {
@@ -76,14 +75,14 @@ function LinkedCardRow({ task, onOpenApplication }: LinkedCardRowProps) {
           setPickAnchor((a) => (a ? null : target));
         }}
       >
-        <PlusIcon size={12} />
+        <PlusIcon size={14} />
         지원 카드 연결
       </button>
     );
   }
 
   return (
-    <>
+    <div className="task-detail__prop">
       <span className="task-detail__label">
         <LinkIcon size={15} />
         지원 카드
@@ -96,7 +95,7 @@ function LinkedCardRow({ task, onOpenApplication }: LinkedCardRowProps) {
           onClose={() => setPickAnchor(null)}
         />
       )}
-    </>
+    </div>
   );
 }
 

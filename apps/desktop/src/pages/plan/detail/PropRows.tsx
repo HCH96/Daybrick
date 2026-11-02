@@ -1,6 +1,6 @@
 import { useState, type CSSProperties, type ReactNode } from "react";
 import Popover from "../../../components/common/Popover";
-import { ChevronDownIcon, SmallCheckIcon } from "../../../components/icons/CommonIcons";
+import { SmallCheckIcon } from "../../../components/icons/CommonIcons";
 import { ChecklistIcon, DateIcon } from "../../../components/icons/PlanIcons";
 import { NONE_CATEGORY_COLOR } from "../../../features/plan/color";
 import { usePlan } from "../../../features/plan/store";
@@ -27,7 +27,7 @@ interface PropRowsProps {
 
 /**
  * 상세 팝업 속성 줄 (목업 popup-props, R35·R39): 카테고리, 상태, 기간, 지원 카드.
- * 칩을 누르면 고르기 목록이 열린다.
+ * 값을 누르면 고르기 목록이 열린다. 카테고리는 카테고리 색 옅은 칩, 상태는 표시 + 글자.
  */
 function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
   const { updateTask } = usePlan();
@@ -51,11 +51,10 @@ function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
 
   return (
     <div className="task-detail__props">
-      <PropLabel icon={<ChecklistIcon size={15} />}>카테고리</PropLabel>
-      <div className="task-detail__val">
+      <PropRow icon={<ChecklistIcon size={15} />} label="카테고리">
         <button
           type="button"
-          className={open?.kind === "category" ? "task-detail__chip task-detail__chip--on" : "task-detail__chip"}
+          className={open?.kind === "category" ? "task-detail__cat task-detail__cat--on" : "task-detail__cat"}
           style={{ "--cat": category?.color ?? NONE_CATEGORY_COLOR } as CSSProperties}
           aria-haspopup="menu"
           aria-expanded={open?.kind === "category"}
@@ -63,33 +62,29 @@ function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
         >
           <span className={category ? "plan-cat-dot" : "plan-cat-dot plan-cat-dot--ring"} />
           {category?.name ?? "미분류"}
-          <ChevronDownIcon size={13} />
         </button>
-      </div>
+      </PropRow>
 
-      <PropLabel icon={<SmallCheckIcon size={15} />}>상태</PropLabel>
-      <div className="task-detail__val">
+      <PropRow icon={<SmallCheckIcon size={15} />} label="상태">
         <button
           type="button"
-          className={open?.kind === "status" ? "task-detail__chip task-detail__chip--on" : "task-detail__chip"}
+          className={open?.kind === "status" ? "task-detail__plain task-detail__plain--on" : "task-detail__plain"}
           aria-haspopup="menu"
           aria-expanded={open?.kind === "status"}
           onClick={(e) => toggle("status", e.currentTarget)}
         >
-          <StatusDot status={task.status} />
+          <StatusDot status={task.status} size="sm" />
           {statusLabel}
-          <ChevronDownIcon size={13} />
         </button>
-      </div>
+      </PropRow>
 
-      <PropLabel icon={<DateIcon size={15} />}>기간</PropLabel>
-      <div className="task-detail__val">
+      <PropRow icon={<DateIcon size={15} />} label="기간">
         <PeriodField
           start={task.start}
           end={task.end}
           onChange={(range) => updateTask(task.id, { start: range?.start ?? null, end: range?.end ?? null })}
         />
-      </div>
+      </PropRow>
 
       <LinkedCardRow task={task} onOpenApplication={onOpenApplication} />
 
@@ -129,12 +124,22 @@ function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
   );
 }
 
-function PropLabel({ icon, children }: { icon: ReactNode; children: ReactNode }) {
+interface PropRowProps {
+  icon: ReactNode;
+  label: string;
+  children: ReactNode;
+}
+
+/** 속성 한 줄: 이름 칸(150px) + 값 칸. 마우스를 올린 줄만 옅게 칠한다 (목업 .prop). 지원 카드 줄도 같은 클래스를 쓴다. */
+function PropRow({ icon, label, children }: PropRowProps) {
   return (
-    <span className="task-detail__label">
-      {icon}
-      {children}
-    </span>
+    <div className="task-detail__prop">
+      <span className="task-detail__label">
+        {icon}
+        {label}
+      </span>
+      <div className="task-detail__val">{children}</div>
+    </div>
   );
 }
 
