@@ -2,6 +2,7 @@ import { useCallback, useState, type ReactNode } from "react";
 import { PAGE_LABELS } from "../../app/pageLabels";
 import { usePlan } from "../../features/plan/store";
 import { addDays, startOfWeek } from "../../utils/date";
+import WeekCalendar from "./calendar/WeekCalendar";
 import TaskDetailModal from "./detail/TaskDetailModal";
 import TaskListPanel from "./list/TaskListPanel";
 import WeekNav from "./WeekNav";
@@ -14,7 +15,7 @@ import "./PlanPage.css";
 function PlanPage() {
   const { state } = usePlan();
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
-  // 상세 팝업으로 연 태스크 (R20). 목록 줄과 (6단계부터) 달력 막대가 같이 쓴다.
+  // 상세 팝업으로 연 태스크 (R20·R30). 목록 줄과 달력 막대가 같이 쓴다.
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
   const closeTask = useCallback(() => setOpenTaskId(null), []);
 
@@ -37,7 +38,7 @@ function PlanPage() {
             onNext={() => setWeekStart((w) => addDays(w, 7))}
           />
           <PlanPanelContent state={state.kind} message={state.kind === "error" ? state.message : ""}>
-            <div className="plan-week" />
+            <WeekCalendar weekStart={weekStart} onOpenTask={setOpenTaskId} />
           </PlanPanelContent>
         </section>
       </div>
