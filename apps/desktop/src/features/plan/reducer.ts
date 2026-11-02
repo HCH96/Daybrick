@@ -31,7 +31,8 @@ export type PlanAction =
   | { type: "update-task"; id: string; patch: TaskPatch; now: string }
   | { type: "delete-task"; id: string }
   | { type: "cycle-status"; id: string; now: string }
-  | { type: "toggle-collapsed"; key: string };
+  | { type: "toggle-collapsed"; key: string }
+  | { type: "set-show-application-events"; value: boolean };
 
 export function reducer(state: PlanState, action: PlanAction): PlanState {
   switch (action.type) {
@@ -97,6 +98,10 @@ function dataReducer(data: PlanData, action: PlanAction): PlanData {
         : [...collapsed, action.key];
       return { ...data, view: { ...data.view, collapsed: next } };
     }
+    case "set-show-application-events":
+      // 지원 일정 보이기·숨기기 (R33). 같은 값이면 저장하지 않게 그대로 둔다.
+      if (data.view.showApplicationEvents === action.value) return data;
+      return { ...data, view: { ...data.view, showApplicationEvents: action.value } };
     default:
       return data;
   }

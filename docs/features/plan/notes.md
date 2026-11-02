@@ -8,16 +8,16 @@
 - 4단계: 상세 팝업 기본 (자동 진행, 최종 테스트 대기)
 - 5단계: 주간 달력 표시 (자동 진행, 최종 테스트 대기)
 - 6단계: 끌어 놓기 (자동 진행, 최종 테스트 대기)
+- 7단계: 지원 일정 표시 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 7단계: 지원 일정 표시 (applicationEvents, SchedLayer·SchedPill·SchedTooltip·ScheduleSwitch, 알약 클릭 → 지원관리 상세 팝업)
-- 관련 결정: D8, D10, D16, D21, D22, 그 밖 이후 전체 D1–D7, D9, D11–D15, D17–D20 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 일정 층은 `WeekCalendar`의 `.plan-wk-inner` 안 막대 층 위에 넣는다. 알약에서는 `startDrag`를 부르지 않아 끌리지 않게 하고(D22), 알약 위로 끌어도 날짜 계산은 `.plan-cols` x 위치라 그대로 된다. 알약 층이 막대 위쪽 공간을 차지하면 더블클릭 바로 만들기 계산(`handleDoubleClick`의 `.closest` 제외 목록)에 알약 클래스도 넣는다. 지원 상세 팝업 `openApplicationId`는 `PlanPage`의 `PlanDragProvider` 밖(지금 `TaskDetailModal` 옆)에 둔다.
+- 8단계: 체크리스트 (상세 팝업 `detail/Checklist`·`ChecklistItemRow`, reducer 체크리스트 동작, 목록 줄·막대 진행도 `2/5`)
+- 관련 결정: D12, D15, D19, D20, D21, D22, 그 밖 이후 전체 D1–D11, D13–D14, D16–D18, D23 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: 항목 순서 바꾸기는 2단계 `pages/plan/useReorder.ts`를 그대로 쓴다(export만 grep). 막대 진행도는 `calendar/TaskBar.tsx` 오른쪽 끝, 잘린 쪽 `plan-tbar__cut--r`(margin-left:auto)과 겹치지 않게 순서를 맞춘다. 팝업 체크리스트 자리는 `detail/TaskDetailModal.tsx`에서 메모 위다(목업 popup-check 순서 확인).
 
 ## 확인할 문서 (경로는 docs/features/plan/ 기준, 파일 통째로 읽기)
-- ai/plan/step-07.md
-- ai/spec/req-applications.md
-- ai/logs/L09.md
-- docs/features/applications/ai/spec/req-schedule.md (저장소 기준 경로, 일정 규칙 R23–R27·R39 줄만)
-- human/mockups/plan.html의 plan-sched·plan-calbar 구역, part-calendar.html의 cal-events 구역, plan-empty.html의 plan-empty-cal 구역 (CSS: plan.css·parts.css·common.css에서 클래스 검색)
-- ai/plan/structure.md의 calendar/ Sched·ScheduleSwitch 줄과 `features/plan/applicationEvents.ts` 줄 (새 파일 위치를 정할 때만)
+- ai/plan/step-08.md
+- ai/spec/req-task-detail.md
+- ai/logs/L10.md
+- human/mockups/popup.html의 popup-check·popup-bare 구역, plan.html의 plan-list·plan-bars 구역에서 진행도 부분만 (CSS: popup.css·plan.css·common.css에서 클래스 검색)
+- ai/plan/structure.md의 `detail/Checklist.tsx` 줄과 `ChecklistItem` 데이터 모양 줄 (새 파일 위치를 정할 때만)

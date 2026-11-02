@@ -1,11 +1,12 @@
 import { EVENT_KIND_LABELS } from "./statuses";
-import type { Application, StatusId } from "./types";
+import type { Application, EventKind, StatusId } from "./types";
 
 /** 큰 달력의 날짜 칸에 그릴 일정 하나 (전형 일정 또는 지원 준비 카드의 지원 마감) */
 export interface CalendarEntry {
   key: string; // React key (카드 안에서 겹치지 않음)
   applicationId: string;
   title: string; // 카드 제목 (비어 있을 수 있음)
+  kind: EventKind; // 일정 종류 (플랜 달력 알약의 아이콘·색)
   label: string; // 일정 종류 ("면접", "지원 마감" 등)
   date: string; // "YYYY-MM-DD"
   time: string | null;
@@ -29,6 +30,7 @@ export function groupEntriesByDate(applications: readonly Application[]): Map<st
         key: event.id,
         applicationId: app.id,
         title: app.title,
+        kind: event.kind,
         label: EVENT_KIND_LABELS[event.kind],
         date: event.date,
         time: event.time,

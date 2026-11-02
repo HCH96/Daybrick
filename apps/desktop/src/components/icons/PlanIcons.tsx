@@ -34,6 +34,44 @@ export function DateIcon({ size = 15 }: { size?: number }) {
   );
 }
 
+/** 지원 마감 (달력 지원 일정 알약, 목업 i-flag) */
+export function FlagIcon({ size = 12 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <path d="M5 21V4h11l-2 4 2 4H5" />
+    </LineIcon>
+  );
+}
+
+/** 과제 마감 (목업 i-file) */
+export function FileIcon({ size = 12 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z" />
+      <path d="M14 3v5h5M9 13h6M9 17h4" />
+    </LineIcon>
+  );
+}
+
+/** 코딩테스트 (목업 i-code) */
+export function CodeIcon({ size = 12 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <path d="m8 7-5 5 5 5M16 7l5 5-5 5" />
+    </LineIcon>
+  );
+}
+
+/** 면접 (목업 i-users) */
+export function PeopleIcon({ size = 12 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <circle cx="9" cy="8" r="3.5" />
+      <path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6" />
+    </LineIcon>
+  );
+}
+
 /** 메모 (상세 팝업 메모 머리, 목업 i-note) */
 export function NoteIcon({ size = 15 }: { size?: number }) {
   return (

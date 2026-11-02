@@ -2,6 +2,7 @@ import { useCallback, useState, type ReactNode } from "react";
 import { PAGE_LABELS } from "../../app/pageLabels";
 import { usePlan } from "../../features/plan/store";
 import { addDays, startOfWeek } from "../../utils/date";
+import ApplicationDetailModal from "../applications/detail/ApplicationDetailModal";
 import WeekCalendar from "./calendar/WeekCalendar";
 import TaskDetailModal from "./detail/TaskDetailModal";
 import PlanDragProvider from "./drag/PlanDragProvider";
@@ -20,6 +21,9 @@ function PlanPage() {
   // 상세 팝업으로 연 태스크 (R20·R30). 목록 줄과 달력 막대가 같이 쓴다.
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
   const closeTask = useCallback(() => setOpenTaskId(null), []);
+  // 지원 일정 알약으로 연 지원 카드 (R32, D16). 페이지를 옮기지 않고 플랜 위에 띄운다.
+  const [openApplicationId, setOpenApplicationId] = useState<string | null>(null);
+  const closeApplication = useCallback(() => setOpenApplicationId(null), []);
 
   return (
     <div className="plan-page">
@@ -41,12 +45,13 @@ function PlanPage() {
               onNext={() => setWeekStart((w) => addDays(w, 7))}
             />
             <PlanPanelContent state={state.kind} message={state.kind === "error" ? state.message : ""}>
-              <WeekCalendar weekStart={weekStart} onOpenTask={setOpenTaskId} />
+              <WeekCalendar weekStart={weekStart} onOpenTask={setOpenTaskId} onOpenApplication={setOpenApplicationId} />
             </PlanPanelContent>
           </section>
         </div>
       </PlanDragProvider>
       {openTaskId && <TaskDetailModal taskId={openTaskId} onClose={closeTask} />}
+      {openApplicationId && <ApplicationDetailModal applicationId={openApplicationId} onClose={closeApplication} />}
     </div>
   );
 }

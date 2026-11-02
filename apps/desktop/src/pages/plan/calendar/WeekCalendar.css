@@ -1,4 +1,4 @@
-/* 주간 달력 (목업 plan.html의 plan-week·plan-bars, part-calendar.html의 cal-new, plan-empty.html의 plan-empty-cal) */
+/* 주간 달력 (목업 plan.html의 plan-week·plan-sched·plan-bars, part-calendar.html의 cal-new·cal-events, plan-empty.html의 plan-empty-cal) */
 .plan-week {
   display: flex;
   flex-direction: column;
@@ -209,4 +209,171 @@
   font-size: 12px;
   color: var(--faint);
   pointer-events: none;
+}
+
+/* 지원 일정 층 (R31·R32): 날짜 칸 위쪽, 막대 층과 점선으로 나눈다 */
+.plan-sched {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border-2);
+}
+
+.plan-sched__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 0 6px;
+}
+
+/* 알약: 끌 수 없으므로 손잡이·그림자가 없다 */
+.plan-ev {
+  --k: var(--muted);
+  --k-soft: var(--surface);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 24px;
+  padding: 0 8px 0 6px;
+  border: none;
+  border-radius: 99px;
+  background: var(--k-soft);
+  color: var(--k);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.plan-ev:hover {
+  background: color-mix(in srgb, var(--k) 22%, var(--k-soft));
+}
+
+.plan-ev:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1.5px var(--k);
+}
+
+.plan-ev svg {
+  flex-shrink: 0;
+}
+
+.plan-ev__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plan-ev em {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding-left: 4px;
+  font-style: normal;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.plan-ev--deadline {
+  --k: var(--red);
+  --k-soft: var(--red-soft);
+}
+
+.plan-ev--task {
+  --k: var(--amber);
+  --k-soft: var(--amber-soft);
+}
+
+.plan-ev--coding {
+  --k: var(--violet);
+  --k-soft: var(--violet-soft);
+}
+
+.plan-ev--interview {
+  --k: var(--teal);
+  --k-soft: var(--teal-soft);
+}
+
+/* 알약 풍선 (목업 제안). body에 포털로 띄운다. */
+.plan-ev-tip {
+  position: fixed;
+  z-index: 50;
+  padding: 10px 12px;
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  background: var(--popup);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+.plan-ev-tip b {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--text);
+  font-size: 13px;
+}
+
+/* 달력 위 줄 `지원 일정` 스위치 (R33) */
+.plan-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+  padding: 0 0 0 16px;
+  border: none;
+  border-left: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.plan-switch i {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  border-radius: 99px;
+  background: var(--border-2);
+}
+
+.plan-switch i::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: left 0.12s;
+}
+
+.plan-switch--on {
+  color: var(--text);
+}
+
+.plan-switch--on i {
+  background: var(--accent);
+}
+
+.plan-switch--on i::after {
+  left: 16px;
+  background: var(--on-accent);
+}
+
+.plan-switch:focus-visible {
+  outline: none;
+}
+
+.plan-switch:focus-visible i {
+  box-shadow: 0 0 0 2px var(--accent);
 }

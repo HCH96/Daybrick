@@ -29,6 +29,8 @@ export interface PlanStore {
   cycleStatus: (id: string) => void;
   /** 묶음 접기·펴기 (R12). key는 카테고리 id, 미분류는 "none" */
   toggleCollapsed: (key: string) => void;
+  /** 달력의 지원 일정 보이기·숨기기 (R33). plan.json view 칸에 저장된다 (D10). */
+  setShowApplicationEvents: (value: boolean) => void;
 }
 
 /** 태스크 기간 (둘 다 "YYYY-MM-DD") */
@@ -120,6 +122,9 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       },
       toggleCollapsed: (key) => {
         dispatch({ type: "toggle-collapsed", key });
+      },
+      setShowApplicationEvents: (value) => {
+        dispatch({ type: "set-show-application-events", value });
       },
     }),
     [state, saveStatus, ready],
