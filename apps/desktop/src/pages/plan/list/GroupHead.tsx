@@ -18,6 +18,8 @@ interface GroupHeadProps {
   dragging?: boolean;
   /** `…` 메뉴나 고치기 창이 열려 있는지 (도구 버튼을 계속 보인다) */
   active?: boolean;
+  /** 끌고 있는 태스크 줄을 이 묶음에 놓을 수 있을 때 true: 도구 대신 "여기로 옮기기" 알약 (R45) */
+  dropHint?: boolean;
   onPointerDown?: (e: ReactPointerEvent<HTMLDivElement>) => void;
   /** `…` 버튼을 누르면 그 버튼 요소를 넘긴다 (메뉴를 그 옆에 띄우려고) */
   onMenu?: (button: HTMLElement) => void;
@@ -28,13 +30,14 @@ interface GroupHeadProps {
  * 색은 부모 요소의 `--cat` 변수를 따른다. `…`·`+`는 마우스를 올렸을 때만 보인다.
  */
 function GroupHead(props: GroupHeadProps) {
-  const { name, count, collapsed, onToggle, onAdd, adding, fixed, dragging, active, onPointerDown, onMenu } = props;
+  const { name, count, collapsed, onToggle, onAdd, adding, fixed, dragging, active, dropHint, onPointerDown, onMenu } = props;
   const className = [
     "plan-ghead",
     fixed && "plan-ghead--fixed",
     collapsed && "plan-ghead--closed",
     dragging && "plan-ghead--drag",
     (active || adding) && "plan-ghead--active",
+    dropHint && "plan-ghead--drop",
   ]
     .filter(Boolean)
     .join(" ");
@@ -65,6 +68,7 @@ function GroupHead(props: GroupHeadProps) {
       <span className={fixed ? "plan-ghead__dot plan-ghead__dot--ring" : "plan-ghead__dot"} />
       <span className="plan-ghead__name">{name}</span>
       <span className="plan-ghead__count">{count}</span>
+      {dropHint && <span className="plan-ghead__drop-hint">여기로 옮기기</span>}
       <span className="plan-ghead__tools">
         {!fixed && (
           <button

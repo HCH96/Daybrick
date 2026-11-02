@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { moveBy, placeOnDay, resizeEnd, resizeStart, samePeriod, type Period } from "../../../features/plan/dragMath";
+import { NONE_GROUP_KEY } from "../../../features/plan/selectors";
 import { usePlan } from "../../../features/plan/store";
 import type { Task } from "../../../features/plan/types";
 import { diffDays } from "../../../utils/date";
@@ -24,11 +25,22 @@ function dayInCalendar(calendar: Element, x: number): string | null {
   return cells[index].dataset.day ?? null;
 }
 
-/** 포인터 아래 놓을 곳. 목록 영역은 막대 옮기기만 받는다 (R27) */
-function findTarget(x: number, y: number, kind: DragKind): DropTarget | null {
+/**
+ * 포인터 아래 놓을 곳. 목록 영역은 막대 옮기기만 받고(R27), 카테고리 묶음은 목록 줄 끌기만 받는다(R45, D31).
+ * 태스크가 지금 들어 있는 묶음은 놓을 곳으로 보지 않는다 (놓아도 바뀌는 것이 없음).
+ */
+function findTarget(x: number, y: number, kind: DragKind, task: Task): DropTarget | null {
   const el = document.elementFromPoint(x, y);
   if (!el) return null;
   if (kind === "bar-move" && el.closest('[data-drop="list"]')) return { kind: "list" };
+  if (kind === "list-task") {
+    const group = el.closest<HTMLElement>("[data-drop-group]");
+    if (group) {
+      const value = group.dataset.dropGroup;
+      const categoryId = value === undefined || value === NONE_GROUP_KEY ? null : value;
+      return categoryId === task.categoryId ? null : { kind: "group", categoryId };
+    }
+  }
   const calendar = el.closest('[data-drop="calendar"]');
   if (!calendar) return null;
   const day = dayInCalendar(calendar, x);
@@ -50,21 +62,27 @@ function previewFor(kind: DragKind, task: Task, grabDay: string | null, target: 
   }
 }
 
+function sameTarget(a: DropTarget | null, b: DropTarget | null): boolean {
+  if (a === null || b === null) return a === b;
+  switch (a.kind) {
+    case "list":
+      return b.kind === "list";
+    case "day":
+      return b.kind === "day" && a.day === b.day;
+    case "group":
+      return b.kind === "group" && a.categoryId === b.categoryId;
+  }
+}
+
 function sameDrag(a: PlanDrag | null, b: PlanDrag): boolean {
   if (!a) return false;
-  const sameTarget =
-    a.target === b.target ||
-    (a.target !== null &&
-      b.target !== null &&
-      a.target.kind === b.target.kind &&
-      (a.target.kind === "list" || (b.target.kind === "day" && a.target.day === b.target.day)));
   const samePreview = a.preview === b.preview || (a.preview !== null && b.preview !== null && samePeriod(a.preview, b.preview));
-  return sameTarget && samePreview;
+  return sameTarget(a.target, b.target) && samePreview;
 }
 
 /**
- * 플랜 화면 끌어 놓기 (D12): 목록 태스크 → 달력, 막대 옮기기·끝 끌기, 막대 → 목록(날짜 지우기).
- * 포인터를 누르고 4px 넘게 움직이면 끌기를 시작하고, 놓으면 기간만 바꾼다. Esc는 취소.
+ * 플랜 화면 끌어 놓기 (D12): 목록 태스크 → 달력·다른 묶음(카테고리 바꾸기), 막대 옮기기·끝 끌기, 막대 → 목록(날짜 지우기).
+ * 포인터를 누르고 4px 넘게 움직이면 끌기를 시작하고, 놓으면 기간 또는 카테고리만 바꾼다. Esc는 취소.
  */
 function PlanDragProvider({ children }: { children: ReactNode }) {
   const { state, updateTask } = usePlan();
@@ -114,7 +132,7 @@ function PlanDragProvider({ children }: { children: ReactNode }) {
           }
         }
         setPointer({ x: ev.clientX, y: ev.clientY, offsetX: startX - rect.left, offsetY: startY - rect.top, width: rect.width });
-        const target = findTarget(ev.clientX, ev.clientY, kind);
+        const target = findTarget(ev.clientX, ev.clientY, kind, task);
         const next: PlanDrag = { kind, taskId, target, preview: previewFor(kind, task, grabDay, target) };
         if (!sameDrag(current, next)) {
           current = next;
@@ -138,6 +156,9 @@ function PlanDragProvider({ children }: { children: ReactNode }) {
         if (current.target?.kind === "list") {
           // 목록에 놓으면 날짜 지우기. 이미 날짜 없음이면 아무것도 안 함 (R27)
           if (task.start !== null) updateTask(taskId, { start: null, end: null });
+        } else if (current.target?.kind === "group") {
+          // 다른 묶음에 놓으면 카테고리만 바꾼다. 묶음 안 자리는 R13 순서로 정해진다 (R45)
+          if (current.target.categoryId !== task.categoryId) updateTask(taskId, { categoryId: current.target.categoryId });
         } else if (current.preview && !samePeriod(current.preview, task)) {
           updateTask(taskId, current.preview);
         }

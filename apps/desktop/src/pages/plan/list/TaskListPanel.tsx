@@ -2,7 +2,7 @@ import { Fragment, useMemo, useState } from "react";
 import { PlusIcon, SmallCloseIcon } from "../../../components/icons/CommonIcons";
 import { groupTasksByCategory, NONE_GROUP_KEY, type TaskGroup } from "../../../features/plan/selectors";
 import { usePlan } from "../../../features/plan/store";
-import { usePlanDrag } from "../drag/usePlanDrag";
+import { dropGroupValue, useGroupDropHere, usePlanDrag } from "../drag/usePlanDrag";
 import { useReorder } from "../useReorder";
 import CategoryForm from "./CategoryForm";
 import CategoryGroup from "./CategoryGroup";
@@ -78,7 +78,7 @@ function TaskListPanel({ onOpenTask }: { onOpenTask: (id: string) => void }) {
   );
 }
 
-/** 미분류 묶음: 고치기·지우기·끌기 없이 접기와 `+`만 (R10) */
+/** 미분류 묶음: 고치기·지우기·끌기 없이 접기와 `+`만 (R10). 카테고리 묶음처럼 태스크 줄을 놓을 수 있다 (R45) */
 interface UncategorizedGroupProps {
   group: TaskGroup;
   collapsed: boolean;
@@ -88,12 +88,17 @@ interface UncategorizedGroupProps {
 function UncategorizedGroup({ group, collapsed, onOpenTask }: UncategorizedGroupProps) {
   const { toggleCollapsed } = usePlan();
   const [adding, setAdding] = useState(false);
+  const dropHere = useGroupDropHere(null);
 
   return (
-    <div className="plan-group plan-group--none">
+    <div
+      className={dropHere ? "plan-group plan-group--none plan-group--drop" : "plan-group plan-group--none"}
+      data-drop-group={dropGroupValue(null)}
+    >
       <GroupHead
         name="미분류"
         fixed
+        dropHint={dropHere}
         count={group.open.length}
         collapsed={collapsed}
         onToggle={() => toggleCollapsed(group.key)}

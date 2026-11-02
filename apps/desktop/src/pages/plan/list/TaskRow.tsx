@@ -8,7 +8,7 @@ import { formatShortRange, taskDeleteText } from "../../../features/plan/format"
 import { checklistProgress } from "../../../features/plan/selectors";
 import { usePlan } from "../../../features/plan/store";
 import type { Task } from "../../../features/plan/types";
-import { usePlanDrag } from "../drag/usePlanDrag";
+import { useIsDraggingRow, usePlanDrag } from "../drag/usePlanDrag";
 import StatusDot from "../StatusDot";
 
 interface TaskRowProps {
@@ -21,14 +21,17 @@ interface TaskRowProps {
  * 태스크 줄 (목업 list-rows): 상태 표시, 제목, 아래 작은 글자로 기간 또는 "날짜 없음"과 체크리스트 진행도 (R14),
  * 연결된 지원 카드의 회사 (R39).
  * 상태 표시를 누르면 상태만 바뀌고 줄 클릭으로 번지지 않는다 (R18). 완료 줄은 흐리게.
- * 4px 넘게 끌면 달력 칸에 놓을 수 있다 (R22). 살짝 누르기만 하면 그대로 클릭.
+ * 4px 넘게 끌면 달력 칸(R22)이나 다른 카테고리 묶음(R45)에 놓을 수 있다. 끄는 동안 원래 자리는 점선. 살짝 누르기만 하면 그대로 클릭.
  * 마우스를 올리면 오른쪽에 휴지통 (목업 row-trash, R44): 팝업 삭제와 같은 확인 창을 거쳐 지운다.
  */
 function TaskRow({ task, onOpen }: TaskRowProps) {
   const { cycleStatus, deleteTask } = usePlan();
   const { startDrag } = usePlanDrag();
+  const lifted = useIsDraggingRow(task.id);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
-  const className = task.status === "done" ? "plan-task plan-task--done" : "plan-task";
+  const className = ["plan-task", task.status === "done" && "plan-task--done", lifted && "plan-task--ghost"]
+    .filter(Boolean)
+    .join(" ");
   const progress = checklistProgress(task);
   // 연결된 지원 카드의 회사 (회사가 없으면 카드 제목). 지원 데이터가 준비되지 않았으면 보이지 않는다 (R39).
   const { state: applications } = useApplications();

@@ -1,16 +1,28 @@
 import { createContext, useContext, type PointerEvent as ReactPointerEvent } from "react";
 import type { Period } from "../../../features/plan/dragMath";
+import { NONE_GROUP_KEY } from "../../../features/plan/selectors";
 
 /**
  * 끌 것 종류 (D12):
- * - list-task: 왼쪽 목록의 태스크 줄 → 달력 칸 (R22)
+ * - list-task: 왼쪽 목록의 태스크 줄 → 달력 칸 (R22), 또는 다른 카테고리 묶음 (R45)
  * - bar-move: 막대 통째로 옮기기 (R25), 왼쪽 목록에 놓으면 날짜 지우기 (R27)
  * - bar-start·bar-end: 막대 왼쪽·오른쪽 끝 끌기 (R26)
  */
 export type DragKind = "list-task" | "bar-move" | "bar-start" | "bar-end";
 
-/** 놓을 곳: 달력의 날짜 칸, 또는 왼쪽 목록 영역(`data-drop="list"`) */
-export type DropTarget = { kind: "day"; day: string } | { kind: "list" };
+/**
+ * 놓을 곳: 달력의 날짜 칸, 왼쪽 목록 영역(`data-drop="list"`, 막대 옮기기만),
+ * 카테고리 묶음(`data-drop-group="<id|none>"`, 목록 줄 끌기만). 미분류 묶음은 categoryId가 null (D22·D31)
+ */
+export type DropTarget =
+  | { kind: "day"; day: string }
+  | { kind: "list" }
+  | { kind: "group"; categoryId: string | null };
+
+/** 묶음 요소의 `data-drop-group` 값 (미분류는 `NONE_GROUP_KEY`) */
+export function dropGroupValue(categoryId: string | null): string {
+  return categoryId ?? NONE_GROUP_KEY;
+}
 
 export interface PlanDrag {
   kind: DragKind;
@@ -43,4 +55,16 @@ export interface DragPointer {
 /** 플랜 화면 끌어 놓기 상태와 시작 함수 */
 export function usePlanDrag(): PlanDragApi {
   return useContext(PlanDragContext);
+}
+
+/** 끌고 있는 목록 줄을 이 묶음(미분류는 null)에 놓으려는 중인지 (R45) */
+export function useGroupDropHere(categoryId: string | null): boolean {
+  const { drag } = usePlanDrag();
+  return drag?.kind === "list-task" && drag.target?.kind === "group" && drag.target.categoryId === categoryId;
+}
+
+/** 이 태스크 줄을 목록에서 끌고 있는지 (원래 자리를 점선으로, R45) */
+export function useIsDraggingRow(taskId: string): boolean {
+  const { drag } = usePlanDrag();
+  return drag?.kind === "list-task" && drag.taskId === taskId;
 }

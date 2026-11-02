@@ -3,6 +3,7 @@ import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import type { TaskGroup } from "../../../features/plan/selectors";
 import { usePlan } from "../../../features/plan/store";
 import type { Category } from "../../../features/plan/types";
+import { dropGroupValue, useGroupDropHere } from "../drag/usePlanDrag";
 import CategoryForm from "./CategoryForm";
 import CategoryMenu from "./CategoryMenu";
 import GroupHead from "./GroupHead";
@@ -27,17 +28,25 @@ type Open = { kind: "menu" | "edit"; anchor: HTMLElement } | { kind: "confirm" }
 /**
  * 카테고리 묶음 하나: 머리 + 그 안의 태스크 줄.
  * 머리 `…`로 이름·색을 고치거나 확인을 받고 지운다 (R8·R9). `+`로 바로 적는다 (R17).
+ * 다른 묶음의 태스크 줄을 끌어 놓을 곳이다 (R45, `data-drop-group`, 접혀 있어도 머리에 놓을 수 있다).
  */
 function CategoryGroup({ category, group, collapsed, dragging, onDragStart, groupRef, onOpenTask }: CategoryGroupProps) {
   const { deleteCategory, toggleCollapsed } = usePlan();
   const [open, setOpen] = useState<Open>(null);
   const [adding, setAdding] = useState(false);
 
+  const dropHere = useGroupDropHere(category.id);
+
   const style = { "--cat": category.color } as CSSProperties;
   const taskCount = group.open.length + group.done.length;
 
   return (
-    <div ref={groupRef} className="plan-group" style={style}>
+    <div
+      ref={groupRef}
+      className={dropHere ? "plan-group plan-group--drop" : "plan-group"}
+      style={style}
+      data-drop-group={dropGroupValue(category.id)}
+    >
       <GroupHead
         name={category.name}
         count={group.open.length}
@@ -50,6 +59,7 @@ function CategoryGroup({ category, group, collapsed, dragging, onDragStart, grou
         adding={adding}
         dragging={dragging}
         active={open !== null}
+        dropHint={dropHere}
         onPointerDown={onDragStart}
         onMenu={(button) => setOpen({ kind: "menu", anchor: button })}
       />
