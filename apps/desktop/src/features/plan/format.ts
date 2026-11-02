@@ -41,3 +41,19 @@ export function formatChipDay(key: string): string {
 export function formatDayCount(start: string, end: string): string {
   return `${diffDays(start, end) + 1}일`;
 }
+
+/** "YYYY-MM-DD" → "11/4 (수)" */
+function shortDayWithWeekday(key: string): string {
+  return `${shortDay(key)} (${WEEKDAYS[parseDateKey(key).getDay()]})`;
+}
+
+/**
+ * 끄는 동안 달력 아래 놓일 날짜 알약 (R22·R25·R26).
+ * 옮기기: 하루면 "11/4 (수)", 여러 날이면 "11/4–11/6 (3일)". 끝 끌기: "끝일 11/5 (목) · 4일", "시작일 11/3 (화) · 3일".
+ */
+export function formatDropHint(edge: "start" | "end" | null, start: string, end: string): string {
+  if (edge === "start") return `시작일 ${shortDayWithWeekday(start)} · ${formatDayCount(start, end)}`;
+  if (edge === "end") return `끝일 ${shortDayWithWeekday(end)} · ${formatDayCount(start, end)}`;
+  if (start === end) return shortDayWithWeekday(start);
+  return `${formatShortRange(start, end)} (${formatDayCount(start, end)})`;
+}

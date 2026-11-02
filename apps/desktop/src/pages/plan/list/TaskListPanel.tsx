@@ -1,7 +1,8 @@
 import { Fragment, useMemo, useState } from "react";
-import { PlusIcon } from "../../../components/icons/CommonIcons";
+import { PlusIcon, SmallCloseIcon } from "../../../components/icons/CommonIcons";
 import { groupTasksByCategory, NONE_GROUP_KEY, type TaskGroup } from "../../../features/plan/selectors";
 import { usePlan } from "../../../features/plan/store";
+import { usePlanDrag } from "../drag/usePlanDrag";
 import { useReorder } from "../useReorder";
 import CategoryForm from "./CategoryForm";
 import CategoryGroup from "./CategoryGroup";
@@ -14,6 +15,7 @@ import "./TaskList.css";
 /**
  * 왼쪽 영역: 빠른 입력, 카테고리별 묶음, 미분류, `+ 카테고리 추가` (R2, R6–R19).
  * 카테고리 머리를 끌어 순서를 바꾼다 (R8). 미분류는 맨 아래 고정이고 태스크가 없으면 숨긴다 (R10).
+ * 달력 막대를 이 영역에 끌어 놓으면 날짜가 지워진다 (R27, `data-drop="list"`).
  */
 /** onOpenTask: 태스크 줄을 누르면 상세 팝업을 연다 (R20) */
 function TaskListPanel({ onOpenTask }: { onOpenTask: (id: string) => void }) {
@@ -24,12 +26,20 @@ function TaskListPanel({ onOpenTask }: { onOpenTask: (id: string) => void }) {
   const collapsed = data?.view.collapsed ?? [];
   const groups = useMemo(() => (data ? groupTasksByCategory(data) : []), [data]);
   const reorder = useReorder(categories.length, moveCategory);
+  const { drag } = usePlanDrag();
+  const dropHere = drag?.target?.kind === "list";
 
   const noneGroup = groups.find((g) => g.key === NONE_GROUP_KEY);
   const isEmpty = categories.length === 0 && (data?.tasks.length ?? 0) === 0;
 
   return (
-    <div className="plan-list">
+    <div className={dropHere ? "plan-list plan-list--drop" : "plan-list"} data-drop="list">
+      {dropHere && (
+        <div className="plan-list__drop-msg">
+          <SmallCloseIcon size={13} />
+          여기에 놓으면 날짜를 지워요
+        </div>
+      )}
       <QuickAdd />
       <div className="plan-list__groups">
         {isEmpty && <ListEmpty />}

@@ -1,7 +1,9 @@
 import { useMemo, useState, type MouseEvent } from "react";
 import { usePlan } from "../../../features/plan/store";
+import { formatDropHint } from "../../../features/plan/format";
 import { layoutWeekBars } from "../../../features/plan/weekLayout";
 import { addDays, diffDays, toDateKey } from "../../../utils/date";
+import { usePlanDrag } from "../drag/usePlanDrag";
 import BarLayer from "./BarLayer";
 import DayHeader from "./DayHeader";
 import WeekEmptyHint from "./WeekEmptyHint";
@@ -15,6 +17,7 @@ interface WeekCalendarProps {
 /**
  * 주간 달력 (R21·R23·R24·R28–R30, D3·D6): 요일 머리 + 7칸 세로줄 배경 위에 태스크 막대 층.
  * 몸통은 막대가 많아지면 세로로 스크롤된다. 지원 일정 층 자리는 7단계에서 막대 층 위에 넣는다.
+ * 끄는 동안(R22·R25·R26) 놓일 칸을 보라로 칠하고 아래에 놓일 날짜 알약을 띄운다. 끝을 끄는 막대는 바뀔 기간으로 바로 다시 그린다.
  */
 function WeekCalendar({ weekStart, onOpenTask }: WeekCalendarProps) {
   const { state, addTask } = usePlan();
@@ -26,7 +29,27 @@ function WeekCalendar({ weekStart, onOpenTask }: WeekCalendarProps) {
 
   const today = toDateKey(new Date());
   const days = useMemo(() => Array.from({ length: 7 }, (_, i) => addDays(weekStart, i)), [weekStart]);
-  const bars = useMemo(() => layoutWeekBars(tasks, weekStart), [tasks, weekStart]);
+  const { drag } = usePlanDrag();
+  const preview = drag?.preview ?? null;
+  const resizing = drag !== null && (drag.kind === "bar-start" || drag.kind === "bar-end");
+
+  // 끝을 끄는 중이면 그 태스크만 바뀔 기간으로 바꿔 자리를 다시 잡는다
+  const shownTasks = useMemo(() => {
+    if (!resizing || !drag || !preview) return tasks;
+    return tasks.map((t) => (t.id === drag.taskId ? { ...t, start: preview.start, end: preview.end } : t));
+  }, [tasks, resizing, drag, preview]);
+  const bars = useMemo(() => layoutWeekBars(shownTasks, weekStart), [shownTasks, weekStart]);
+
+  /** 놓일 칸: 옮기기는 바뀔 기간 전체, 끝 끌기는 포인터 아래 칸 하나 */
+  const isDropDay = (key: string): boolean => {
+    if (!drag || !preview || preview.start === null || preview.end === null) return false;
+    if (resizing) return drag.target?.kind === "day" && drag.target.day === key;
+    return key >= preview.start && key <= preview.end;
+  };
+  const hint =
+    drag && preview && preview.start !== null && preview.end !== null
+      ? formatDropHint(drag.kind === "bar-start" ? "start" : drag.kind === "bar-end" ? "end" : null, preview.start, preview.end)
+      : null;
 
   const draftOffset = draftDay ? diffDays(weekStart, draftDay) : -1;
   const draftCol = draftOffset >= 0 && draftOffset < 7 ? draftOffset : null;
@@ -46,13 +69,17 @@ function WeekCalendar({ weekStart, onOpenTask }: WeekCalendarProps) {
   };
 
   return (
-    <div className="plan-week">
+    <div className="plan-week" data-drop="calendar">
       <DayHeader days={days} today={today} />
       <div className="plan-wk-body">
         <div className="plan-wk-inner" onDoubleClick={handleDoubleClick}>
           <div className="plan-cols" aria-hidden="true">
             {days.map((key) => (
-              <i key={key} data-day={key} className={key === today ? "plan-cols__today" : undefined} />
+              <i
+                key={key}
+                data-day={key}
+                className={[key === today && "plan-cols__today", isDropDay(key) && "plan-cols__drop"].filter(Boolean).join(" ") || undefined}
+              />
             ))}
           </div>
           <BarLayer
@@ -65,8 +92,9 @@ function WeekCalendar({ weekStart, onOpenTask }: WeekCalendarProps) {
             onCloseDraft={() => setDraftDay(null)}
           />
         </div>
-        {bars.length === 0 && draftCol === null && <WeekEmptyHint />}
+        {bars.length === 0 && draftCol === null && !hint && <WeekEmptyHint />}
       </div>
+      {hint && <div className="plan-drop-hint">{hint}</div>}
     </div>
   );
 }
