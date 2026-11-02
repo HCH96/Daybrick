@@ -23,7 +23,7 @@
 | [decisions.md](decisions.md) | 결정 사항 D1~ |
 
 ## 다른 문서
-- 구현 계획: (아직 없음)
+- 구현 계획: [../plan/index.md](../plan/index.md) (2026-11-02 승인, 9단계). 저장은 `plan.json` + 화면 설정 같은 파일, 메뉴 id `plan`, 끌기는 포인터 이벤트로 직접 구현 (D10–D17)
 - 테스트 문서: (아직 없음)
 - 진행 기록: [../logs/index.md](../logs/index.md)
 - 지원관리 일정 규칙: [지원 관리 명세서 색인](../../../applications/ai/spec/index.md)의 req-schedule.md

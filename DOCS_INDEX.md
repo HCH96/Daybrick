@@ -13,7 +13,7 @@
 - [서버 연결](docs/features/server-setup/index.md): 자기 Supabase·Anthropic 키 연결, 첫 실행 가이드, 자동 세팅·서버 구조 갱신, 로그인, 일시정지 안내, Settings 화면 (완료)
 - [알림](docs/features/notifications/index.md): 앱 공용 알림 센터, 제목 표시줄 종 아이콘·빨간 숫자 배지, 펼침 목록·체크 확인, 서버 알림 받기 (목업 승인)
 - [구직 관리](docs/features/job-search/index.md): 공고 자동 수집·AI 채점 추천, 지원 관리 연결, Gmail 상태 제안, AI 사용액·한도 (계획 승인)
-- [플랜](docs/features/plan/index.md): 카테고리별 태스크, 주간 달력에 끌어 놓아 배치·여러 날 막대, 지원 일정 표시, 메모·체크리스트·지원 카드 연결 (목업 승인)
+- [플랜](docs/features/plan/index.md): 카테고리별 태스크, 주간 달력에 끌어 놓아 배치·여러 날 막대, 지원 일정 표시, 메모·체크리스트·지원 카드 연결 (계획 승인)
 
 ## 공용 문서 (docs/common)
 - [docs/common/ai/setup/desktop-setup.md](docs/common/ai/setup/desktop-setup.md): PC 앱(Tauri 2 + React + TS) 개발 환경 설치와 프로젝트 생성 기록
