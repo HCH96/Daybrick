@@ -24,7 +24,7 @@
 | 기능 | 상태 | 문서 |
 |---|---|---|
 | 메인 페이지 | 완료 (B안 배치·제목 표시줄·사이드바 접기·뒤로/앞으로 포함, 2차 AI·사용자 테스트 통과) | docs/features/main-page/index.md |
-| 캘린더 계획 (플랜) | 계획 승인 (구현 대기) | docs/features/plan/index.md |
+| 캘린더 계획 (플랜) | 구현 중 (1/9단계 완료) | docs/features/plan/index.md |
 | 일정 관리 | 시작 전 | - |
 | 지원 관리 | 수정1 완료 (테스트 r2 통과) | docs/features/applications/index.md |
 | 서버 연결 | 완료 (AI·사용자 테스트 r1 통과, 일시정지 재개 U31만 미확인) (notifications·job-search의 선행) | docs/features/server-setup/index.md |

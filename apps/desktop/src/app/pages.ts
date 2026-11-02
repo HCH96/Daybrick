@@ -3,15 +3,16 @@ import type { PageId } from "./types";
 import { NAV_LABELS, PAGE_LABELS } from "./pageLabels";
 import {
   ApplicationsIcon,
-  CalendarIcon,
   HomeIcon,
   JobSearchIcon,
+  PlanIcon,
   SchedulerIcon,
   SettingsIcon,
   TimerIcon,
 } from "../components/icons/NavIcons";
 import { makePlaceholderPage } from "../pages/PlaceholderPage";
 import HomePage from "../pages/home/HomePage";
+import PlanPage from "../pages/plan/PlanPage";
 import ApplicationsPage from "../pages/applications/ApplicationsPage";
 import JobSearchPage from "../pages/job-search/JobSearchPage";
 import SettingsPage from "../pages/settings/SettingsPage";
@@ -38,11 +39,11 @@ export const pages: PageDef[] = [
     component: HomePage,
   },
   {
-    id: "calendar",
-    label: PAGE_LABELS.calendar,
-    navLabel: NAV_LABELS.calendar,
-    icon: CalendarIcon,
-    component: makePlaceholderPage("캘린더", "캘린더 계획"),
+    id: "plan",
+    label: PAGE_LABELS.plan,
+    navLabel: NAV_LABELS.plan,
+    icon: PlanIcon,
+    component: PlanPage,
   },
   {
     id: "scheduler",

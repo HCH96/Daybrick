@@ -32,10 +32,10 @@ export const dashboardCards: DashboardCardDef[] = [
   {
     id: "today-todos",
     title: "오늘 할 일",
-    linkTo: "calendar",
+    linkTo: "plan",
     size: "large",
     body: () => (
-      <EmptyState linkTo="calendar" description="캘린더 기능을 만들면 여기에 오늘 할 일이 보여요" />
+      <EmptyState linkTo="plan" description="캘린더 기능을 만들면 여기에 오늘 할 일이 보여요" />
     ),
   },
   {

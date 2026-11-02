@@ -14,6 +14,7 @@ import ServerBanner from "./components/server/ServerBanner";
 import ServerUpdateScreen from "./components/server/ServerUpdateScreen";
 import { ApplicationsProvider } from "./features/applications/store";
 import { useJobStatusSync } from "./features/job-search/statusSync";
+import { PlanProvider } from "./features/plan/store";
 import { NotificationsProvider } from "./features/notifications/NotificationsProvider";
 import { ServerProvider } from "./features/server/ServerProvider";
 import { useServer } from "./features/server/useServer";
@@ -108,22 +109,24 @@ function AppMain() {
   return (
     <NavigationContext.Provider value={navigation}>
       <ApplicationsProvider>
-        <JobStatusSync />
-        <AppScreens
-          main={
-            // 갈 곳 이동은 평소 화면에서만 한다. 전체 화면(FullScreen)에는 Provider가 없어 이동할 수 없는 상태다 (D10)
-            <PageIntentProvider>
-              <AppLayout
-                titleBar={<TitleBar sidebarOpen={!sidebarCollapsed} onToggleSidebar={toggleSidebar} />}
-                banner={<ServerBanner />}
-                sidebar={<Sidebar />}
-                sidebarCollapsed={sidebarCollapsed}
-              >
-                {updateOpen ? <ServerUpdateScreen /> : <Page />}
-              </AppLayout>
-            </PageIntentProvider>
-          }
-        />
+        <PlanProvider>
+          <JobStatusSync />
+          <AppScreens
+            main={
+              // 갈 곳 이동은 평소 화면에서만 한다. 전체 화면(FullScreen)에는 Provider가 없어 이동할 수 없는 상태다 (D10)
+              <PageIntentProvider>
+                <AppLayout
+                  titleBar={<TitleBar sidebarOpen={!sidebarCollapsed} onToggleSidebar={toggleSidebar} />}
+                  banner={<ServerBanner />}
+                  sidebar={<Sidebar />}
+                  sidebarCollapsed={sidebarCollapsed}
+                >
+                  {updateOpen ? <ServerUpdateScreen /> : <Page />}
+                </AppLayout>
+              </PageIntentProvider>
+            }
+          />
+        </PlanProvider>
       </ApplicationsProvider>
     </NavigationContext.Provider>
   );

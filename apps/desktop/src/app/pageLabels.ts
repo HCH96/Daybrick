@@ -6,7 +6,7 @@ import type { PageId } from "./types";
  */
 export const PAGE_LABELS: Record<PageId, string> = {
   home: "홈",
-  calendar: "캘린더",
+  plan: "플랜",
   scheduler: "스케줄러",
   applications: "지원 현황",
   "job-search": "구직 관리",
@@ -17,7 +17,7 @@ export const PAGE_LABELS: Record<PageId, string> = {
 /** 사이드바에 보일 영어 메뉴 이름. 화면 제목과 카드 버튼은 위의 한글 이름을 쓴다. */
 export const NAV_LABELS: Record<PageId, string> = {
   home: "Home",
-  calendar: "Calendar",
+  plan: "Plan",
   scheduler: "Scheduler",
   applications: "Applications",
   "job-search": "Job Search",

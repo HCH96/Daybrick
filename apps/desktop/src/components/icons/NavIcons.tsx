@@ -20,6 +20,16 @@ export function CalendarIcon() {
   );
 }
 
+/** 플랜 메뉴 아이콘 (목업 i-plan: 달력 + 체크) */
+export function PlanIcon() {
+  return (
+    <LineIcon>
+      <rect x="3" y="4.5" width="18" height="16.5" rx="2" />
+      <path d="M3 9.5h18M8 2.5v4M16 2.5v4M9 15l2 2 4-4" />
+    </LineIcon>
+  );
+}
+
 export function SchedulerIcon() {
   return (
     <LineIcon>

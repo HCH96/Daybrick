@@ -50,3 +50,22 @@ export function daysUntil(key: string, today: Date): number {
   // 서머타임 등으로 하루가 24시간이 아닐 수 있어 반올림한다.
   return Math.round((parseDateKey(key).getTime() - from.getTime()) / 86_400_000);
 }
+
+/** 날짜가 든 주의 월요일 "YYYY-MM-DD" (getWeekDays와 같은 월요일 기준). 날짜 키나 Date 모두 받는다. */
+export function startOfWeek(date: string | Date): string {
+  const d = typeof date === "string" ? parseDateKey(date) : date;
+  const daysFromMonday = (d.getDay() + 6) % 7; // 월=0, ..., 일=6
+  return toDateKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() - daysFromMonday));
+}
+
+/** 날짜에서 n일 뒤(음수면 앞)의 "YYYY-MM-DD" */
+export function addDays(date: string | Date, n: number): string {
+  const d = typeof date === "string" ? parseDateKey(date) : date;
+  return toDateKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() + n));
+}
+
+/** a에서 b까지의 일 수 (b − a). 같은 날이면 0. */
+export function diffDays(a: string, b: string): number {
+  // 서머타임 등으로 하루가 24시간이 아닐 수 있어 반올림한다.
+  return Math.round((parseDateKey(b).getTime() - parseDateKey(a).getTime()) / 86_400_000);
+}
