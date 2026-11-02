@@ -22,7 +22,7 @@ interface TaskDetailModalProps {
 /**
  * 태스크 상세 팝업 (목업 popup·popup-max, R35–R43). 지원관리 카드 팝업과 같은 틀이다.
  * 머리: 왼쪽 최대화 | Task, 오른쪽 자동 저장 표시 → 삭제 → 닫기.
- * 내용: 제목 → 속성 줄 → 체크리스트 → 구분선 + Notes(마크다운, 저장 칸은 memo, D32).
+ * 내용: 제목 → 속성 줄(마지막 줄이 체크리스트) → 체크리스트 항목 → 구분선 + Notes(마크다운, 저장 칸은 memo, D32).
  * 고친 내용은 바로 저장소에 들어가 뒤의 목록에도 바로 보인다. 태스크가 사라지면 닫는다.
  */
 function TaskDetailModal({ taskId, onClose, onOpenApplication }: TaskDetailModalProps) {

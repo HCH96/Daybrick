@@ -246,43 +246,9 @@
 .task-detail__cat:focus-visible,
 .task-detail__plain:focus-visible,
 .task-detail__hint:focus-visible,
-.task-detail__add:focus-visible,
-.task-detail__txt-btn:focus-visible {
+.task-detail__add:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
-}
-
-/* 체크리스트(detail/Checklist)가 쓰는 머리·글자 버튼 */
-.task-detail__sec-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 16px 0 8px;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.task-detail__sec-head svg {
-  color: var(--muted);
-}
-
-.task-detail__txt-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 6px;
-  border: none;
-  border-radius: 6px;
-  background: none;
-  color: var(--muted);
-  font: inherit;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.task-detail__txt-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text);
 }
 
 /* 기간 고르기 작은 창 */

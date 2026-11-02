@@ -7,6 +7,13 @@ interface DragState {
   from: number;
   /** 놓일 자리: 0 = 맨 앞, count = 맨 끝 (항목 사이 틈 번호) */
   gap: number;
+  /** 누른 자리에서 포인터가 움직인 거리 (follow일 때만) */
+  offset: { x: number; y: number } | null;
+}
+
+export interface ReorderOptions {
+  /** 끄는 동안 포인터 이동량(dragOffset)을 알려 주어, 잡은 항목을 마우스에 따라 그리게 한다 (체크리스트, R38) */
+  follow?: boolean;
 }
 
 export interface Reorder {
@@ -14,6 +21,8 @@ export interface Reorder {
   dragIndex: number | null;
   /** 놓일 자리 줄을 그릴 틈 번호. 놓아도 순서가 그대로인 자리면 null */
   dropGap: number | null;
+  /** follow일 때 끄는 동안의 포인터 이동량 (그 밖엔 null). 잡은 항목의 transform에 쓴다 */
+  dragOffset: { x: number; y: number } | null;
   /** 끌 수 있는 항목의 바깥 요소를 등록한다 (자리 계산용) */
   itemRef: (index: number) => (el: HTMLElement | null) => void;
   /** 끌기를 시작할 요소(손잡이)의 onPointerDown */
@@ -21,12 +30,18 @@ export interface Reorder {
 }
 
 /**
- * 세로 목록을 끌어 순서 바꾸기 (카테고리 머리, 나중에 체크리스트 항목).
+ * 세로 목록을 끌어 순서 바꾸기 (카테고리 머리, 체크리스트 항목).
  * 포인터 이벤트로 직접 만든다 (D12). 4px 넘게 움직이면 끌기를 시작하고, 놓일 자리를 줄로 보이며,
  * 놓으면 onMove(from, to)를 부른다. 끌고 난 직후의 클릭은 막는다.
+ * `follow`를 켜면 포인터 이동량도 알려 주어, 부르는 쪽이 잡은 항목을 마우스에 따라 그린다.
  * 버튼·입력칸 위에서 누른 것은 끌기로 보지 않는다.
  */
-export function useReorder(count: number, onMove: (from: number, to: number) => void): Reorder {
+export function useReorder(
+  count: number,
+  onMove: (from: number, to: number) => void,
+  options: ReorderOptions = {},
+): Reorder {
+  const follow = options.follow ?? false;
   const items = useRef<(HTMLElement | null)[]>([]);
   const [drag, setDrag] = useState<DragState | null>(null);
   const cleanup = useRef<(() => void) | null>(null);
@@ -57,6 +72,7 @@ export function useReorder(count: number, onMove: (from: number, to: number) => 
     (index: number) => (e: ReactPointerEvent<HTMLElement>) => {
       if (e.button !== 0) return;
       if ((e.target as HTMLElement).closest("button, input, textarea")) return;
+      const startX = e.clientX;
       const startY = e.clientY;
       let dragging = false;
       let gap = index;
@@ -68,7 +84,8 @@ export function useReorder(count: number, onMove: (from: number, to: number) => 
           document.body.style.userSelect = "none";
         }
         gap = gapAt(ev.clientY);
-        setDrag({ from: index, gap });
+        const offset = follow ? { x: ev.clientX - startX, y: ev.clientY - startY } : null;
+        setDrag({ from: index, gap, offset });
       };
       const finish = (drop: boolean) => {
         cleanup.current?.();
@@ -106,13 +123,14 @@ export function useReorder(count: number, onMove: (from: number, to: number) => 
         cleanup.current = null;
       };
     },
-    [gapAt, onMove],
+    [gapAt, onMove, follow],
   );
 
   const unchanged = drag !== null && (drag.gap === drag.from || drag.gap === drag.from + 1);
   return {
     dragIndex: drag?.from ?? null,
     dropGap: drag && !unchanged ? drag.gap : null,
+    dragOffset: drag?.offset ?? null,
     itemRef,
     startDrag,
   };

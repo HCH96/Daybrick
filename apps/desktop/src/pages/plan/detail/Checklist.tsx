@@ -1,11 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
-import { PlusIcon } from "../../../components/icons/CommonIcons";
-import { TrashIcon } from "../../../components/icons/DialogIcons";
-import { ChecklistIcon } from "../../../components/icons/PlanIcons";
-import { checklistProgress } from "../../../features/plan/selectors";
+import { GripIcon, PlusIcon, SmallCheckIcon } from "../../../components/icons/CommonIcons";
 import { usePlan } from "../../../features/plan/store";
-import type { Task } from "../../../features/plan/types";
+import type { ChecklistItem, Task } from "../../../features/plan/types";
 import { useReorder } from "../useReorder";
 import ChecklistItemRow from "./ChecklistItemRow";
 import "./Checklist.css";
@@ -15,38 +12,40 @@ interface ChecklistProps {
 }
 
 /**
- * 상세 팝업의 체크리스트 (목업 popup-check·popup-bare, R37–R38).
- * 체크리스트가 없으면 `+ 체크리스트` 버튼만. 있으면 머리(진행도 글자·삭제), 진행도 막대, 항목, 아래 `+ 항목 추가`.
+ * 상세 팝업의 체크리스트 항목 목록 (목업 popup-check, R37–R38).
+ * 속성 줄의 "체크리스트" 줄(PropRows) 바로 아래에 값 칸(150px)에 맞춰 들여 쓴다. 체크리스트가 없으면 그리지 않는다.
+ * `+ 체크리스트`로 막 만들어지면 빈 항목 하나를 넣고 바로 고치기를 시작한다.
  * 항목 글자는 누르면 그 자리에서 고치고, Enter면 바로 아래에 새 항목을 만들어 이어 적는다.
- * 빈 글자로 고치기를 마치면 그 항목은 지운다. 순서는 손잡이를 끌어 바꾼다 (useReorder, D12·D15).
+ * 빈 글자로 고치기를 마치면 그 항목은 지운다. 순서는 손잡이를 끌어 바꾸고, 끄는 동안 잡은 항목이 마우스를 따라온다
+ * (useReorder follow, D12·D15). 맨 아래 왼쪽 `항목 추가`, 오른쪽 `체크리스트 삭제`.
  */
 function Checklist({ task }: ChecklistProps) {
-  const { createChecklist, deleteChecklist, addCheckItem, updateCheckItem, deleteCheckItem, moveCheckItem } = usePlan();
+  const { deleteChecklist, addCheckItem, updateCheckItem, deleteCheckItem, moveCheckItem } = usePlan();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const items = task.checklist ?? [];
   const taskId = task.id;
 
   const onMove = useCallback((from: number, to: number) => moveCheckItem(taskId, from, to), [moveCheckItem, taskId]);
-  const reorder = useReorder(items.length, onMove);
+  const reorder = useReorder(items.length, onMove, { follow: true });
 
-  if (task.checklist === null) {
-    return (
-      <div className="task-check__bare">
-        <button type="button" className="task-check__create" onClick={() => createChecklist(taskId)}>
-          <ChecklistIcon size={13} />+ 체크리스트
-        </button>
-      </div>
-    );
-  }
+  const addAt = useCallback(
+    (index: number) => {
+      const id = addCheckItem(taskId, index);
+      if (id) setEditingId(id);
+    },
+    [addCheckItem, taskId],
+  );
 
-  const { done, total } = checklistProgress(task);
-  const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+  // 없던 체크리스트가 방금 만들어졌으면 빈 항목 하나로 시작한다 (R37)
+  const hadChecklist = useRef(task.checklist !== null);
+  useEffect(() => {
+    const has = task.checklist !== null;
+    if (has && !hadChecklist.current && task.checklist?.length === 0) addAt(0);
+    hadChecklist.current = has;
+  }, [task.checklist, addAt]);
 
-  const addAt = (index: number) => {
-    const id = addCheckItem(taskId, index);
-    if (id) setEditingId(id);
-  };
+  if (task.checklist === null) return null;
 
   /** 고치기를 마친다. 빈 글자면 항목을 지우고, 앞뒤 빈칸은 걷어 낸다. */
   const endEdit = (itemId: string, text: string) => {
@@ -58,29 +57,8 @@ function Checklist({ task }: ChecklistProps) {
 
   return (
     <div className="task-check">
-      <div className="task-detail__sec-head">
-        <ChecklistIcon size={15} />
-        체크리스트
-        {total > 0 && (
-          <span className="task-check__count">
-            {done}/{total}
-          </span>
-        )}
-        <button
-          type="button"
-          className="task-detail__txt-btn task-check__remove"
-          onClick={() => (items.length > 0 ? setConfirmingDelete(true) : deleteChecklist(taskId))}
-        >
-          <TrashIcon />
-          체크리스트 삭제
-        </button>
-      </div>
-      <div className="task-check__bar" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}>
-        <i style={{ width: `${percent}%` }} />
-      </div>
-
       {items.map((item, index) => (
-        <div key={item.id}>
+        <div key={item.id} className="task-check__slot">
           {reorder.dropGap === index && <div className="task-check__drop-line" />}
           <ChecklistItemRow
             item={item}
@@ -99,14 +77,24 @@ function Checklist({ task }: ChecklistProps) {
             }}
             onDelete={() => deleteCheckItem(taskId, item.id)}
           />
+          {reorder.dragIndex === index && reorder.dragOffset && <LiftedItem item={item} offset={reorder.dragOffset} />}
         </div>
       ))}
       {reorder.dropGap === items.length && <div className="task-check__drop-line" />}
 
-      <button type="button" className="task-check__add" onClick={() => addAt(items.length)}>
-        <PlusIcon size={15} />
-        항목 추가
-      </button>
+      <div className="task-check__foot">
+        <button type="button" className="task-check__add" onClick={() => addAt(items.length)}>
+          <PlusIcon size={15} />
+          항목 추가
+        </button>
+        <button
+          type="button"
+          className="task-check__remove"
+          onClick={() => (items.length > 0 ? setConfirmingDelete(true) : deleteChecklist(taskId))}
+        >
+          체크리스트 삭제
+        </button>
+      </div>
 
       {confirmingDelete && (
         <ConfirmDialog
@@ -121,6 +109,23 @@ function Checklist({ task }: ChecklistProps) {
           }}
         />
       )}
+    </div>
+  );
+}
+
+/** 끄는 동안 마우스를 따라오는 항목 (목업 .ck.lift). 원래 자리 위에 겹쳐 그리고 포인터 이동량만큼 옮긴다. */
+function LiftedItem({ item, offset }: { item: ChecklistItem; offset: { x: number; y: number } }) {
+  return (
+    <div
+      className={item.checked ? "task-check__item task-check__item--lift task-check__item--on" : "task-check__item task-check__item--lift"}
+      style={{ transform: `translate(${offset.x}px, ${offset.y}px) rotate(-1.2deg)` }}
+      aria-hidden="true"
+    >
+      <span className="task-check__grip">
+        <GripIcon size={14} />
+      </span>
+      <span className="task-check__box">{item.checked && <SmallCheckIcon size={12} />}</span>
+      <span className="task-check__text">{item.text}</span>
     </div>
   );
 }

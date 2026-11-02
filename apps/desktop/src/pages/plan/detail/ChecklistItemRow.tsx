@@ -6,7 +6,7 @@ interface ChecklistItemRowProps {
   item: ChecklistItem;
   /** 글자를 고치는 중이면 입력칸을 보인다 */
   editing: boolean;
-  /** 끌고 있는 항목이면 흐리게 */
+  /** 끌고 있는 항목이면 내용을 숨기고 원래 자리를 점선 빈칸으로 (잡은 항목은 Checklist가 따로 띄운다) */
   dragging: boolean;
   rowRef: (el: HTMLElement | null) => void;
   /** 손잡이의 onPointerDown (useReorder) */
@@ -42,7 +42,7 @@ function ChecklistItemRow({
     "task-check__item",
     item.checked && "task-check__item--on",
     editing && "task-check__item--edit",
-    dragging && "task-check__item--dragging",
+    dragging && "task-check__item--gap",
   ]
     .filter(Boolean)
     .join(" ");
