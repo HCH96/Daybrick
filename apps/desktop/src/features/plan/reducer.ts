@@ -1,4 +1,4 @@
-import type { Category, PlanData, Task, TaskStatus } from "./types";
+import type { Category, ChecklistItem, PlanData, Task, TaskStatus } from "./types";
 
 /** 데이터 상태: 읽는 중 / 준비됨 / 읽기 실패 */
 export type PlanState =
@@ -11,6 +11,9 @@ export type CategoryPatch = Partial<Pick<Category, "name" | "color">>;
 
 /** 태스크에서 상세 팝업으로 고칠 수 있는 칸 (R35·R36). 기간은 start·end를 같이 보낸다. */
 export type TaskPatch = Partial<Pick<Task, "title" | "categoryId" | "status" | "start" | "end" | "memo">>;
+
+/** 체크리스트 항목에서 고칠 수 있는 칸 (R38) */
+export type CheckItemPatch = Partial<Pick<ChecklistItem, "text" | "checked">>;
 
 /** 최근 쓴 색은 최대 8개까지 둔다 */
 const RECENT_COLOR_LIMIT = 8;
@@ -31,6 +34,12 @@ export type PlanAction =
   | { type: "update-task"; id: string; patch: TaskPatch; now: string }
   | { type: "delete-task"; id: string }
   | { type: "cycle-status"; id: string; now: string }
+  | { type: "create-checklist"; id: string; now: string }
+  | { type: "delete-checklist"; id: string; now: string }
+  | { type: "add-check-item"; id: string; item: ChecklistItem; index: number; now: string }
+  | { type: "update-check-item"; id: string; itemId: string; patch: CheckItemPatch; now: string }
+  | { type: "delete-check-item"; id: string; itemId: string; now: string }
+  | { type: "move-check-item"; id: string; from: number; to: number; now: string }
   | { type: "toggle-collapsed"; key: string }
   | { type: "set-show-application-events"; value: boolean };
 
@@ -91,6 +100,15 @@ function dataReducer(data: PlanData, action: PlanAction): PlanData {
           return { ...t, status, completedAt: status === "done" ? action.now : null, updatedAt: action.now };
         }),
       };
+    case "create-checklist":
+    case "delete-checklist":
+    case "add-check-item":
+    case "update-check-item":
+    case "delete-check-item":
+    case "move-check-item": {
+      const tasks = replaceTask(data.tasks, action.id, (t) => applyChecklistAction(t, action));
+      return tasks === data.tasks ? data : { ...data, tasks };
+    }
     case "toggle-collapsed": {
       const { collapsed } = data.view;
       const next = collapsed.includes(action.key)
@@ -120,6 +138,59 @@ function applyTaskPatch(task: Task, patch: TaskPatch, now: string): Task {
     next.completedAt = patch.status === "done" ? now : null;
   }
   return next;
+}
+
+type ChecklistAction = Extract<
+  PlanAction,
+  { type: "create-checklist" | "delete-checklist" | "add-check-item" | "update-check-item" | "delete-check-item" | "move-check-item" }
+>;
+
+/**
+ * 체크리스트 동작 (R37·R38). 만들기는 빈 목록, 삭제는 null로 되돌린다.
+ * 체크리스트가 없는데 항목을 다루려 하거나 바뀐 것이 없으면 그대로 돌려준다 (저장을 건너뛰게).
+ */
+function applyChecklistAction(task: Task, action: ChecklistAction): Task {
+  const list = task.checklist;
+  let next: ChecklistItem[] | null;
+  switch (action.type) {
+    case "create-checklist":
+      if (list !== null) return task;
+      next = [];
+      break;
+    case "delete-checklist":
+      if (list === null) return task;
+      next = null;
+      break;
+    case "add-check-item": {
+      if (list === null) return task;
+      const index = Math.max(0, Math.min(action.index, list.length));
+      next = [...list.slice(0, index), action.item, ...list.slice(index)];
+      break;
+    }
+    case "update-check-item": {
+      if (list === null) return task;
+      const { patch } = action;
+      const keys = Object.keys(patch) as (keyof CheckItemPatch)[];
+      let changed = false;
+      next = list.map((item) => {
+        if (item.id !== action.itemId || keys.every((k) => patch[k] === item[k])) return item;
+        changed = true;
+        return { ...item, ...patch };
+      });
+      if (!changed) return task;
+      break;
+    }
+    case "delete-check-item":
+      if (list === null || !list.some((item) => item.id === action.itemId)) return task;
+      next = list.filter((item) => item.id !== action.itemId);
+      break;
+    case "move-check-item":
+      if (list === null) return task;
+      next = moveItem(list, action.from, action.to);
+      if (next === list) return task;
+      break;
+  }
+  return { ...task, checklist: next, updatedAt: action.now };
 }
 
 /** id가 같은 태스크 하나를 바꾼다. 바뀐 것이 없으면 같은 배열을 돌려준다 (저장을 건너뛰게). */

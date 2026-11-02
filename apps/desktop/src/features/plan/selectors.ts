@@ -68,3 +68,14 @@ export function countOpen(tasks: Task[]): number {
 export function tasksOnDate(data: PlanData, key: string): Task[] {
   return data.tasks.filter((t) => t.start !== null && t.end !== null && t.start <= key && key <= t.end);
 }
+
+/** 체크리스트 진행도 (R14·R24·R38). 체크리스트가 없으면 0/0. */
+export interface ChecklistProgress {
+  done: number;
+  total: number;
+}
+
+export function checklistProgress(task: Task): ChecklistProgress {
+  const list = task.checklist ?? [];
+  return { done: list.filter((item) => item.checked).length, total: list.length };
+}

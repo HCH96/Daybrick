@@ -493,3 +493,10 @@
   opacity: 0.45;
   cursor: default;
 }
+
+/* 체크리스트 진행도 `2/5` (R14, 목업 task-meta .prog) */
+.plan-task__prog {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}

@@ -8,6 +8,7 @@ import type { Task } from "../../../features/plan/types";
 import MarkdownBody from "../../applications/detail/MarkdownBody";
 import SaveStateLabel from "../../applications/detail/SaveStateLabel";
 import TitleInput from "../../applications/detail/TitleInput";
+import Checklist from "./Checklist";
 import PropRows from "./PropRows";
 import "./TaskDetailModal.css";
 
@@ -17,8 +18,8 @@ interface TaskDetailModalProps {
 }
 
 /**
- * 태스크 상세 팝업 (목업 popup, R35–R36·R40–R41).
- * 머리 "태스크" + 휴지통·닫기, 큰 제목, 속성 줄(카테고리·상태·기간), 메모, 아래 자동 저장 표시.
+ * 태스크 상세 팝업 (목업 popup, R35–R38·R40–R41).
+ * 머리 "태스크" + 휴지통·닫기, 큰 제목, 속성 줄(카테고리·상태·기간), 체크리스트, 메모, 아래 자동 저장 표시.
  * 고친 내용은 바로 저장소에 들어가 뒤의 목록에도 바로 보인다. 태스크가 사라지면 닫는다.
  */
 function TaskDetailModal({ taskId, onClose }: TaskDetailModalProps) {
@@ -57,6 +58,7 @@ function TaskDetailModal({ taskId, onClose }: TaskDetailModalProps) {
       <PropRows task={task} categories={state.data.categories} />
 
       <div className="task-detail__body">
+        <Checklist task={task} />
         <div className="task-detail__sec-head">
           <NoteIcon size={15} />
           메모

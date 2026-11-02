@@ -377,3 +377,17 @@
 .plan-switch:focus-visible i {
   box-shadow: 0 0 0 2px var(--accent);
 }
+
+/* 막대 오른쪽 끝 체크리스트 진행도 `2/5` (목업 tbar .meta). 잘린 쪽 › 가 있으면 그 앞에 붙는다 */
+.plan-tbar__meta {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding-left: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.plan-tbar__meta + .plan-tbar__cut--r {
+  margin-left: 0;
+}

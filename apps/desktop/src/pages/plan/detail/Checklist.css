@@ -1,0 +1,211 @@
+/* 상세 팝업 체크리스트 (목업 popup.css의 .sec-head .cnt·.prog-bar·.ck·.box·.ck-add·.bare-add, R37–R38) */
+
+/* 체크리스트가 없을 때: `+ 체크리스트` 버튼만 */
+.task-check__bare {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.task-check__create {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.task-check__create:hover {
+  border-color: var(--border-2);
+  background: var(--surface-2);
+}
+
+/* 머리: 진행도 글자 + 오른쪽 끝 [체크리스트 삭제] */
+.task-check__count {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.task-check__remove {
+  margin-left: auto;
+  font-weight: 400;
+}
+
+.task-check__remove svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* 진행도 막대 */
+.task-check__bar {
+  height: 4px;
+  margin-bottom: 8px;
+  border-radius: 99px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.task-check__bar i {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: var(--green);
+  transition: width 0.15s ease;
+}
+
+/* 항목 한 줄 */
+.task-check__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  padding: 3px 8px 3px 4px;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.task-check__item:hover {
+  background: var(--surface);
+}
+
+.task-check__item--dragging {
+  opacity: 0.4;
+}
+
+.task-check__grip {
+  width: 14px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: transparent;
+  cursor: grab;
+}
+
+.task-check__item:hover .task-check__grip {
+  color: var(--faint);
+}
+
+.task-check__box {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1.6px solid var(--faint);
+  border-radius: 5px;
+  background: none;
+  color: var(--on-accent);
+  cursor: pointer;
+}
+
+.task-check__box svg {
+  stroke-width: 2.6;
+}
+
+.task-check__item--on .task-check__box {
+  border-color: var(--green);
+  background: var(--green);
+}
+
+.task-check__box:focus-visible,
+.task-check__del:focus-visible,
+.task-check__add:focus-visible,
+.task-check__create:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.task-check__text {
+  flex: 1;
+  min-width: 0;
+  min-height: 20px;
+  line-height: 20px;
+  overflow-wrap: anywhere;
+  cursor: text;
+}
+
+.task-check__item--on .task-check__text {
+  color: var(--faint);
+  text-decoration: line-through;
+}
+
+/* 고치는 중: 목업 .ck.edit */
+.task-check__input {
+  flex: 1;
+  min-width: 0;
+  height: 26px;
+  padding: 0 8px;
+  border: none;
+  border-radius: 6px;
+  outline: none;
+  background: var(--surface);
+  box-shadow: 0 0 0 1.5px var(--accent);
+  color: var(--text);
+  font: inherit;
+}
+
+.task-check__input::placeholder {
+  color: var(--faint);
+}
+
+.task-check__del {
+  margin-left: auto;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+  background: none;
+  color: var(--faint);
+  cursor: pointer;
+  opacity: 0;
+}
+
+.task-check__item:hover .task-check__del,
+.task-check__del:focus-visible {
+  opacity: 1;
+}
+
+.task-check__del:hover {
+  color: var(--text);
+}
+
+/* 놓일 자리 줄 */
+.task-check__drop-line {
+  height: 2px;
+  margin: -1px 6px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+/* 아래 `+ 항목 추가` */
+.task-check__add {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 4px 6px 28px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  color: var(--faint);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.task-check__add:hover {
+  color: var(--text);
+}
