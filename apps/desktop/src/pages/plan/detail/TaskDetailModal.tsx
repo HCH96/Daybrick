@@ -3,8 +3,8 @@ import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import Modal from "../../../components/common/Modal";
 import { CloseIcon, MaximizeIcon, RestoreIcon, TrashIcon } from "../../../components/icons/DialogIcons";
 import { TaskIcon } from "../../../components/icons/PlanIcons";
+import { taskDeleteText } from "../../../features/plan/format";
 import { usePlan } from "../../../features/plan/store";
-import type { Task } from "../../../features/plan/types";
 import MarkdownBody from "../../applications/detail/MarkdownBody";
 import SaveStateLabel from "../../applications/detail/SaveStateLabel";
 import TitleInput from "../../applications/detail/TitleInput";
@@ -88,8 +88,7 @@ function TaskDetailModal({ taskId, onClose, onOpenApplication }: TaskDetailModal
 
       {confirmingDelete && (
         <ConfirmDialog
-          title={`"${name}" 태스크를 지울까요?`}
-          message={deleteMessage(task)}
+          {...taskDeleteText(task)}
           confirmLabel="삭제"
           onCancel={() => setConfirmingDelete(false)}
           onConfirm={() => {
@@ -101,14 +100,6 @@ function TaskDetailModal({ taskId, onClose, onOpenApplication }: TaskDetailModal
       )}
     </Modal>
   );
-}
-
-/** 삭제 확인 설명: 함께 지워지는 것 (목업 confirm-task) */
-function deleteMessage(task: Task): string {
-  const count = task.checklist?.length ?? 0;
-  return count > 0
-    ? `Notes와 체크리스트 ${count}개 항목도 함께 지워지고, 되돌릴 수 없어요.`
-    : "Notes와 체크리스트도 함께 지워지고, 되돌릴 수 없어요.";
 }
 
 export default TaskDetailModal;

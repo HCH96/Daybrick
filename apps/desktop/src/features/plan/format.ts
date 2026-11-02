@@ -1,4 +1,5 @@
 import { addDays, diffDays, isoWeekNumber, parseDateKey } from "../../utils/date";
+import type { Task } from "./types";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"] as const;
 
@@ -67,4 +68,18 @@ export function formatDropHint(edge: "start" | "end" | null, start: string, end:
   if (edge === "end") return `끝일 ${shortDayWithWeekday(end)} · ${formatDayCount(start, end)}`;
   if (start === end) return shortDayWithWeekday(start);
   return `${formatShortRange(start, end)} (${formatDayCount(start, end)})`;
+}
+
+/**
+ * 태스크 삭제 확인 창 문구 (R40, R44, 목업 confirm-task). 팝업 삭제와 목록 줄 휴지통이 같이 쓴다.
+ * title: "제목" 태스크를 지울까요?  message: 함께 지워지는 것 (Notes, D26)
+ */
+export function taskDeleteText(task: Task): { title: string; message: string } {
+  const name = task.title || "제목 없음";
+  const count = task.checklist?.length ?? 0;
+  const message =
+    count > 0
+      ? `Notes와 체크리스트 ${count}개 항목도 함께 지워지고, 되돌릴 수 없어요.`
+      : "Notes와 체크리스트도 함께 지워지고, 되돌릴 수 없어요.";
+  return { title: `"${name}" 태스크를 지울까요?`, message };
 }

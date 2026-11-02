@@ -321,6 +321,31 @@
   opacity: 0.6;
 }
 
+/* 줄 오른쪽 휴지통 (목업 row-trash, R44): 마우스를 올린 줄에서만, 그 위에서는 빨갛게 */
+.plan-task__trash {
+  width: 24px;
+  height: 24px;
+  margin: -1px -2px 0 0;
+  display: none;
+  place-items: center;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--faint);
+  cursor: pointer;
+}
+
+.plan-task:hover .plan-task__trash {
+  display: grid;
+}
+
+.plan-task__trash:hover {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
 /* 묶음 안 바로 적기 입력칸 (목업 list-inline, R17) */
 .plan-field--inline {
   width: 100%;
