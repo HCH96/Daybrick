@@ -1,5 +1,13 @@
 /* 플랜 화면: 왼쪽 태스크 목록 + 오른쪽 주간 달력 (plan.html, plan-empty.html, part-list.html, part-calendar.html) */
-.plan { flex: 1; min-height: 0; display: grid; grid-template-columns: 320px 1fr; gap: 16px; }
+/* r2 (R46): 목록:달력 = 2:5 비율로 함께 줄어든다. 목록은 200px 아래로는 줄지 않는다 */
+.plan { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(200px, 2fr) 5fr; gap: 16px; }
+
+/* ===== 페이지 머리 오른쪽: 기간·주 이동·지원 일정 스위치 (r2: 달력 위 줄에서 옮겨 옴, R4·R33) ===== */
+.head-tools { display: flex; align-items: center; gap: 12px; flex-shrink: 0; white-space: nowrap; }
+.period { display: flex; align-items: baseline; gap: 10px; margin-right: 4px; }
+.period b { font-size: 19px; font-weight: 700; letter-spacing: -.2px; }
+.period span { font-size: 12px; color: var(--muted); font-weight: 600; background: var(--surface-2); border-radius: 6px; padding: 1px 8px; }
+.head-tools .switch { padding-left: 14px; border-left: 1px solid var(--border); }
 .panel { min-height: 0; background: var(--sidebar); border: 1px solid var(--border); border-radius: var(--radius); display: flex; flex-direction: column; overflow: hidden; }
 
 /* ===== 빠른 입력 (R16) ===== */
@@ -39,8 +47,13 @@
 .task.hover { background: var(--surface); }
 .task.hover::before { content: ""; position: absolute; left: 10px; top: 7px; width: 10px; height: 14px;
   background: radial-gradient(circle, var(--faint) 1.2px, transparent 1.4px) 0 0 / 5px 5px; }
-.task.done .task-title { color: var(--faint); text-decoration: line-through; }
+.task.done .task-title { color: var(--faint); }
 .task.done .st { opacity: .6; }
+/* 휴지통 (R44): 줄에 마우스를 올렸을 때만 오른쪽에 */
+.task .trash { width: 24px; height: 24px; margin: -1px -2px 0 0; display: none; place-items: center; border-radius: 6px; color: var(--faint); flex-shrink: 0; }
+.task .trash .ico { width: 14px; height: 14px; }
+.task.hover .trash { display: grid; }
+.task .trash.on { background: var(--red-soft); color: var(--red); }
 .done-row { display: flex; align-items: center; gap: 6px; padding: 5px 8px 5px 30px; font-size: 12px; color: var(--faint); }
 .done-row .ico { width: 12px; height: 12px; }
 .done-row.open .ico { transform: rotate(90deg); }
@@ -49,21 +62,19 @@
 
 /* ===== 주간 달력 (R21–R30) ===== */
 .cal { padding: 0; }
-.cal-bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
-.period { font-size: 17px; font-weight: 800; letter-spacing: -.2px; }
-.weeknav { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.weeknav { display: flex; align-items: center; gap: 4px; }
 .weeknav .btn { height: 30px; }
-.cal-bar .switch { margin-left: 12px; padding-left: 16px; border-left: 1px solid var(--border); }
 
 .week { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; }
 .days { display: grid; grid-template-columns: repeat(7, 1fr); border-bottom: 1px solid var(--border); }
-.day-h { display: flex; align-items: center; gap: 8px; padding: 10px 12px; font-size: 12px; color: var(--muted); font-weight: 600; }
+/* 요일 머리 (r2, R21): 영어 요일 + 숫자를 13px·같은 굵기로. 오늘은 둘을 옅은 보라 알약으로 */
+.day-h { display: flex; align-items: center; height: 42px; padding: 0 12px; font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; overflow: hidden; }
 .day-h + .day-h { border-left: 1px solid var(--border); }
-.day-h b { font-size: 16px; color: var(--text); font-weight: 800; }
-.day-h.today { color: var(--accent); }
-.day-h.today b { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--accent); color: var(--on-accent); font-size: 14px; }
-.day-h.sun { color: var(--red); }
-.day-h.sat { color: var(--blue); }
+.day-h b { font-weight: 600; color: var(--text); margin-left: 4px; }
+.day-h.today span { display: inline-flex; align-items: center; height: 24px; padding: 0 9px; margin-left: -6px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+.day-h.today b { color: var(--accent); }
+.day-h.sun, .day-h.sun b { color: var(--red); }
+.day-h.sat, .day-h.sat b { color: var(--blue); }
 .wk-body { flex: 1; min-height: 0; position: relative; overflow: hidden; }
 .cols { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(7, 1fr); }
 .cols i + i { border-left: 1px solid var(--border); }
@@ -91,7 +102,6 @@
 .tbar span { overflow: hidden; text-overflow: ellipsis; }
 .tbar .meta { margin-left: auto; padding-left: 6px; font-size: 11px; color: var(--muted); font-weight: 600; }
 .tbar.done { opacity: .45; }
-.tbar.done span { text-decoration: line-through; }
 .tbar.cut-l { margin-left: 0; border-left: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 6px; }
 .tbar.cut-r { margin-right: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; }
 .tbar .cut { color: var(--c); display: grid; place-items: center; }
@@ -108,6 +118,15 @@
 .s5 { grid-column-start: 5; } .s6 { grid-column-start: 6; } .s7 { grid-column-start: 7; }
 .w1 { grid-column-end: span 1; } .w2 { grid-column-end: span 2; } .w3 { grid-column-end: span 3; } .w4 { grid-column-end: span 4; }
 .cal-hint { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; font-size: 12px; color: var(--faint); }
+
+/* 좁은 창 (plan-narrow.html, R46): 앱 최소 크기 960×640 */
+.frame.small { width: 960px; height: 640px; }
+.frame.small .main { padding: 20px 20px; }
+.frame.small .page-head { gap: 12px; }
+.frame.small .quick .field { min-width: 0; }
+.frame.small .cat-pick { padding: 0 8px; }
+.frame.small .day-h { padding: 0 8px; }
+.frame.small .day-h.today span { margin-left: -3px; padding: 0 7px; }
 
 /* 빈 상태 */
 .empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; padding: 24px; color: var(--muted); font-size: 13px; }

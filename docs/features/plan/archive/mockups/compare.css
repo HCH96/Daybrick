@@ -1,0 +1,58 @@
+/* 비교 목업 r2 (compare-r2.html): 기간 표시·요일 머리·완료 표시 후보. 결정되면 archive/mockups/로 옮긴다 */
+.cmp { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.opt-card { background: var(--sidebar); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.opt-card.pick { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(166,140,255,.14); }
+.opt-name { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; }
+.opt-name .rec { font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: 99px; padding: 1px 8px; }
+.opt-desc { font-size: 12.5px; color: var(--muted); }
+.stage { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.stage .cap { font-size: 11px; color: var(--faint); }
+
+/* ===== A. 기간 표시 ===== */
+.pa1 { display: flex; align-items: baseline; gap: 10px; }
+.pa1 b { font-size: 19px; font-weight: 700; letter-spacing: -.2px; }
+.pa1 span { font-size: 12px; color: var(--muted); font-weight: 600; background: var(--surface-2); border-radius: 6px; padding: 1px 8px; }
+.pa2 { font-size: 18px; font-weight: 600; letter-spacing: -.1px; }
+.pa2 i { font-style: normal; color: var(--faint); font-weight: 400; margin: 0 6px; }
+.pa2 span { color: var(--muted); font-weight: 500; font-size: 14px; margin-left: 6px; }
+.pa3 { display: flex; align-items: baseline; gap: 8px; font-variant-numeric: tabular-nums; }
+.pa3 b { font-size: 18px; font-weight: 600; letter-spacing: .3px; }
+.pa3 i { font-style: normal; color: var(--faint); }
+.pa3 span { font-size: 12px; color: var(--faint); }
+
+/* ===== B. 요일 머리 (7칸 중 4칸만) ===== */
+.mini-days { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.mini-days > div + div { border-left: 1px solid var(--border); }
+/* B1: 위아래 두 줄, 작은 대문자 요일 + 숫자 */
+.hb1 { padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
+.hb1 small { font-size: 10.5px; letter-spacing: .8px; color: var(--muted); font-weight: 600; }
+.hb1 b { font-size: 17px; font-weight: 600; line-height: 1.2; }
+.hb1.today small, .hb1.today b { color: var(--accent); }
+/* B2: 한 줄, 요일·숫자 같은 크기·굵기 */
+.hb2 { padding: 10px 10px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.hb2 b { font-weight: 600; color: var(--text); margin-left: 3px; }
+.hb2.today span { display: inline-flex; align-items: center; height: 24px; padding: 0 9px; margin: -2px 0 -2px -4px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); }
+.hb2.today b { color: var(--accent); }
+/* B3: 가운데 두 줄, 오늘 숫자만 원 */
+.hb3 { padding: 6px 0 8px; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.hb3 small { font-size: 12px; color: var(--muted); font-weight: 600; }
+.hb3 b { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; font-size: 14px; font-weight: 600; }
+.hb3.today small { color: var(--accent); }
+.hb3.today b { background: var(--accent); color: var(--on-accent); }
+
+/* ===== C. 완료 표시 ===== */
+.marks { display: flex; align-items: center; gap: 14px; font-size: 12px; color: var(--muted); }
+.marks span { display: inline-flex; align-items: center; gap: 6px; }
+.st.big { width: 22px; height: 22px; border-width: 2px; }
+.st.big.done { background-size: 14px; }
+/* C2: 꽉 찬 원만 */
+.st.done.c2 { background-image: none; }
+/* C3: 초록 테두리 + 안쪽 점 */
+.st.done.c3 { background: radial-gradient(circle, var(--green) 0 3.2px, transparent 3.6px); }
+.st.big.done.c3 { background: radial-gradient(circle, var(--green) 0 4.5px, transparent 5px); }
+.st.sm.done.c3 { background: radial-gradient(circle, var(--green) 0 2.4px, transparent 2.8px); }
+.mrow { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 8px; font-size: 13px; }
+.mrow.done { color: var(--faint); }
+.mrow.done .st { opacity: .7; }
+.mbar { display: flex; align-items: center; gap: 7px; height: 30px; padding: 0 10px 0 8px; border-radius: 7px; background: var(--c-soft); border-left: 3px solid var(--c);
+  font-size: 12.5px; font-weight: 600; opacity: .45; }

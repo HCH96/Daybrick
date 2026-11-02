@@ -1,0 +1,97 @@
+<!doctype html>
+<!-- 목업: 플랜 / 8. 줄 끌기·지우기 (r2)
+  목차와 다른 화면: index.html
+  CSS: common.css, plan.css, popup.css, parts.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  part-row-actions    8. 줄 끌기·지우기              R38, R44, R45
+    row-trash           8-1. 목록 줄 휴지통           R44
+    row-move-cat        8-2. 다른 카테고리 묶음에 놓기  R45
+    row-move-check      8-3. 체크리스트 항목 끌기      R38
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>플랜 목업 · 8. 줄 끌기·지우기</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="plan.css">
+<link rel="stylesheet" href="popup.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<svg width="0" height="0" style="position:absolute"><symbol id="i-ptr" viewBox="0 0 16 16"><path d="M2 1.5l11 6.2-4.7 1.2-2.2 4.6z" fill="#ededf2" stroke="#17171a" stroke-width="1.2" stroke-linejoin="round"/></symbol></svg>
+<div class="doc">
+  <h1>8. 줄 끌기·지우기</h1>
+  <p class="lead">r1 사용자 테스트에서 나온 목록 줄·체크리스트 조작. 끄는 장면은 손을 뗀 직전 모습을 멈춰 그렸다.</p>
+  <div class="toc"><a href="index.html">← 목업 목차</a><a href="plan.html">1. 플랜 화면</a><a href="part-list.html">4. 목록 부품</a><a href="popup.html">3. 상세 팝업</a><a href="part-confirm.html">6. 확인 창</a></div>
+
+  <section class="screen" id="part-row-actions">
+    <div class="stage">
+      <div class="cell" id="row-trash">
+        <div class="cap"><b>8-1</b>줄에 마우스 → 오른쪽 휴지통 (R44)</div>
+        <div class="box-list">
+          <div class="group c-blue">
+            <div class="g-head"><span class="fold"><svg class="ico"><use href="#i-down"/></svg></span><span class="dot"></span><span class="g-name">C++ 공부</span><span class="g-count">3</span></div>
+            <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">템플릿 특수화 정리</div><div class="task-meta"><span class="none">날짜 없음</span></div></div><span class="trash"><svg class="ico"><use href="#i-trash"/></svg></span></div>
+            <div class="task hover"><span class="st doing"></span><div class="task-main"><div class="task-title">STL 컨테이너 복습</div><div class="task-meta"><span class="when">11/3–11/5</span><span class="prog"><svg class="ico"><use href="#i-list"/></svg>2/5</span></div></div><span class="trash on"><svg class="ico"><use href="#i-trash"/></svg></span></div>
+            <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">C++ 메모리 모델 읽기</div><div class="task-meta"><span class="when">11/6</span></div></div><span class="trash"><svg class="ico"><use href="#i-trash"/></svg></span></div>
+          </div>
+        </div>
+        <div class="cap">휴지통 위에 올리면 빨갛게. 누르면 6. 확인 창의 태스크 삭제 창이 뜬다 (팝업은 열리지 않음)</div>
+      </div>
+
+      <div class="cell" id="row-move-cat">
+        <div class="cap"><b>8-2</b>"CS 네트워크 정리"를 C++ 공부 묶음으로 (R45)</div>
+        <div class="box-list rel">
+          <div class="group c-blue cat-drop">
+            <div class="g-head"><span class="fold"><svg class="ico"><use href="#i-down"/></svg></span><span class="dot"></span><span class="g-name">C++ 공부</span><span class="g-count">3</span><span class="cat-drop-hint">여기로 옮기기</span></div>
+            <div class="task"><span class="st"></span><div class="task-main"><div class="task-title">템플릿 특수화 정리</div><div class="task-meta"><span class="none">날짜 없음</span></div></div></div>
+            <div class="task"><span class="st doing"></span><div class="task-main"><div class="task-title">STL 컨테이너 복습</div><div class="task-meta"><span class="when">11/3–11/5</span></div></div></div>
+          </div>
+          <div class="group c-amber">
+            <div class="g-head"><span class="fold"><svg class="ico"><use href="#i-down"/></svg></span><span class="dot"></span><span class="g-name">취업 준비</span><span class="g-count">2</span></div>
+            <div class="task"><span class="st doing"></span><div class="task-main"><div class="task-title">넥슨 자기소개서 쓰기</div><div class="task-meta"><span class="when">11/2–11/4</span></div></div></div>
+            <div class="task ghost"><span class="st"></span><div class="task-main"><div class="task-title">CS 네트워크 정리</div><div class="task-meta"><span class="when">11/7–11/8</span></div></div></div>
+          </div>
+          <div class="floating fl-cat"><div class="task"><span class="st"></span><div class="task-main"><div class="task-title">CS 네트워크 정리</div><div class="task-meta"><span class="when">11/7–11/8</span></div></div></div></div>
+          <svg class="ptr ptr-cat"><use href="#i-ptr"/></svg>
+        </div>
+        <div class="cap">놓을 묶음 전체를 보라 테두리로, 원래 자리는 점선. 놓으면 날짜순 자리에 들어간다. 접힌 묶음 머리에 놓아도 된다. 묶음 안 순서는 R13대로 정해져서 줄 사이 선은 그리지 않는다</div>
+      </div>
+
+      <div class="cell" id="row-move-check">
+        <div class="cap"><b>8-3</b>체크리스트 "set"을 vector 아래로 (R38)</div>
+        <div class="check-stage">
+          <div class="checklist">
+            <div class="ck on"><span class="grip"></span><span class="box"><svg class="ico"><use href="#i-check"/></svg></span><span class="ck-txt">vector</span></div>
+            <div class="ins-line"></div>
+            <div class="ck on"><span class="grip"></span><span class="box"><svg class="ico"><use href="#i-check"/></svg></span><span class="ck-txt">map</span></div>
+            <div class="ck gap"><span class="grip"></span><span class="box"></span><span class="ck-txt">set</span></div>
+            <div class="ck"><span class="grip"></span><span class="box"></span><span class="ck-txt">unordered_map</span></div>
+            <div class="ck lift fl-ck"><span class="grip"><svg class="ico"><use href="#i-grip"/></svg></span><span class="box"></span><span class="ck-txt">set</span></div>
+            <svg class="ptr ptr-ck"><use href="#i-ptr"/></svg>
+          </div>
+        </div>
+        <div class="cap">잡은 항목이 살짝 기울어 마우스를 따라오고, 원래 자리는 점선 빈칸, 놓일 자리에는 보라 선. r1은 회색으로 칠해지기만 했다</div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>휴지통 (R44)</b><ul>
+        <li>마우스를 올린 줄에만 보인다 (평소엔 숨김)</li>
+        <li>지울 때는 팝업 삭제와 같은 확인 창</li>
+      </ul></div>
+      <div class="note"><b>카테고리 옮기기 (R45)</b><ul>
+        <li>목록 안에서 줄을 끌면 놓을 묶음이 칠해진다</li>
+        <li>미분류 묶음에 놓으면 미분류가 된다</li>
+        <li>같은 묶음에 놓으면 아무것도 바뀌지 않는다</li>
+      </ul></div>
+      <div class="note"><b>체크리스트 끌기 (R38)</b><ul>
+        <li>달력 막대 끌기(들어 올린 막대 + 점선 자리)와 같은 느낌으로 맞춘다</li>
+        <li>Esc를 누르면 원래 자리로 돌아간다</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

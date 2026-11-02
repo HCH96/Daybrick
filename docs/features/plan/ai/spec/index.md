@@ -8,10 +8,11 @@
 |---|---|---|
 | 페이지·공유 (+ 화면 구성) | R1–R5 | [req-page.md](req-page.md) |
 | 카테고리 | R6–R10 | [req-category.md](req-category.md) |
-| 태스크 목록 | R11–R20 | [req-task-list.md](req-task-list.md) |
+| 태스크 목록 | R11–R20, R44–R45 | [req-task-list.md](req-task-list.md) |
 | 주간 달력 | R21–R30 | [req-calendar.md](req-calendar.md) |
 | 지원관리 일정 표시 | R31–R34 | [req-applications.md](req-applications.md) |
-| 태스크 상세 팝업 (+ 화면 구성) | R35–R41 | [req-task-detail.md](req-task-detail.md) |
+| 태스크 상세 팝업 (+ 화면 구성) | R35–R43 | [req-task-detail.md](req-task-detail.md) |
+| 창 크기 대응 | R46 | [req-window.md](req-window.md) |
 
 ## 나머지 파일
 | 파일 | 내용 |
@@ -19,11 +20,12 @@
 | [data.md](data.md) | 다룰 데이터 (카테고리, 태스크, 화면 설정), 저장 위치 |
 | [scope.md](scope.md) | 이번 범위에서 제외하는 것, 나중에 고려할 것 (투데이·타이머·프로젝트) |
 | [extension.md](extension.md) | 확장 구조: 공용 태스크 저장소, 나중 기능이 태스크를 쓰는 방식. **다른 기능을 붙일 때 읽기** |
-| [mockup.md](mockup.md) | 목업 경로(2026-11-02 승인)와 목업에서 정한 것 |
-| [decisions.md](decisions.md) | 결정 사항 D1~ |
+| [mockup.md](mockup.md) | 목업 경로(r1·r2 2026-11-02 승인)와 목업에서 정한 것 (r2: 기간 A1·요일 B2·완료 C1, 지원관리식 팝업) |
+| [decisions.md](decisions.md) | 결정 사항 D1~ (D26–D28: r1 수정) |
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (2026-11-02 승인, 9단계). 저장은 `plan.json` + 화면 설정 같은 파일, 메뉴 id `plan`, 끌기는 포인터 이벤트로 직접 구현 (D10–D17)
-- 테스트 문서: (아직 없음)
+- 테스트 문서: AI 보고서 [../tests/r1/](../tests/r1/), 사용자 체크리스트 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md)
 - 진행 기록: [../logs/index.md](../logs/index.md)
+- 사용자 테스트 r1 반영 수정(L15): R1·R4·R21·R36–R38 변경, R42–R46 추가, 완료 표시·팝업 등 디자인은 목업 r2에서 정함
 - 지원관리 일정 규칙: [지원 관리 명세서 색인](../../../applications/ai/spec/index.md)의 req-schedule.md

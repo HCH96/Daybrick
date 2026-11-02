@@ -12,7 +12,16 @@
 - 8단계: 체크리스트 (자동 진행, 최종 테스트 대기)
 - 9단계: 지원 카드 연결 (자동 진행, 최종 테스트 대기)
 
+- 테스트 r1: AI 통과 18, 사용자 통과 12 (L13, L14)
+
+- 명세 수정: r1 반영 (L15, D26–D28)
+
+- 목업 r2 승인 (L16)
+
 ## 다음 진행
-/test plan
+/plan plan: 수정 계획 (근거 기록 L15, 목업 r2는 L16)
 
 ## 확인할 문서 (경로는 docs/features/plan/ 기준, 파일 통째로 읽기)
+- ai/logs/L15.md, ai/logs/L16.md
+- ai/spec/mockup.md
+- human/mockups/index.html (목차에서 필요한 화면만)

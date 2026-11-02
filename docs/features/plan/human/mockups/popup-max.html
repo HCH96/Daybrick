@@ -1,0 +1,93 @@
+<!doctype html>
+<!-- 목업: 플랜 / 3-6. 상세 팝업 최대화 (r2)
+  목차와 다른 화면: index.html
+  CSS: common.css, popup.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  popup-max           3-6. 최대화한 상세 팝업        R43 (지원관리 R13과 같은 동작)
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>플랜 목업 · 3-6. 최대화</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <h1>3-6. 상세 팝업 최대화</h1>
+  <p class="lead">왼쪽 위 최대화 버튼을 누른 모습. 사이드바가 펼쳐져 있으면 사이드바는 남기고 그 오른쪽 본문 영역만 채운다(접혀 있으면 사이드바 자리까지). 내용은 가운데로 모은다.</p>
+  <div class="toc"><a href="index.html">← 목업 목차</a><a href="popup.html">3. 상세 팝업</a></div>
+
+  <section class="screen" id="popup-max">
+    <div class="screen-head"><h2>최대화</h2><span class="tag">R43</span></div>
+    <div class="scale-note">앱 창 1440×900을 75%로 줄여 보여줌</div>
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav"><span class="tb-btn"><svg class="ico sm"><use href="#i-back"/></svg></span><span class="tb-btn off"><svg class="ico sm"><use href="#i-fwd"/></svg></span></div>
+        <div class="tb-drag"></div>
+        <div class="win"><span><svg class="ico"><use href="#i-min"/></svg></span><span><svg class="ico"><use href="#i-max"/></svg></span><span><svg class="ico"><use href="#i-x"/></svg></span></div>
+      </div>
+      <div class="body" style="position:relative">
+        <nav class="sidebar">
+          <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+          <div class="nav on"><svg class="ico"><use href="#i-plan"/></svg>Plan</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock"/></svg>Scheduler</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag"/></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-timer"/></svg>Timer</div>
+          <div class="spacer"></div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main"></main>
+        <div class="popup max">
+          <div class="popup-top">
+            <div class="top-left"><span class="pbtn hover" title="원래 크기로"><svg class="ico sm"><use href="#i-min"/></svg></span><span class="kind"><svg class="ico"><use href="#i-plan"/></svg>Task</span></div>
+            <div class="popup-right"><span class="save-state"><svg class="ico sm"><use href="#i-check"/></svg>자동 저장됨</span><span class="pbtn"><svg class="ico sm"><use href="#i-trash"/></svg></span><span class="pbtn"><svg class="ico"><use href="#i-x"/></svg></span></div>
+          </div>
+          <div class="popup-scroll"><div class="popup-inner">
+            <h2 class="p-title">STL 컨테이너 복습</h2>
+            <div class="props">
+              <div class="prop"><div class="prop-name"><svg class="ico"><use href="#i-list"/></svg>카테고리</div><div class="prop-val"><span class="cat-opt c-blue"><span class="dot"></span>C++ 공부</span></div></div>
+              <div class="prop"><div class="prop-name"><svg class="ico"><use href="#i-check"/></svg>상태</div><div class="prop-val"><span class="st-val"><span class="st sm doing"></span>진행 중</span></div></div>
+              <div class="prop"><div class="prop-name"><svg class="ico"><use href="#i-cal"/></svg>기간</div><div class="prop-val">11월 3일 (화)<span class="sep">→</span>11월 5일 (목)<span class="sub">3일</span></div></div>
+              <div class="prop"><div class="prop-name"><svg class="ico"><use href="#i-link"/></svg>지원 카드</div><div class="prop-val"><span class="add"><svg class="ico"><use href="#i-plus"/></svg>지원 카드 연결</span></div></div>
+              <div class="prop"><div class="prop-name"><svg class="ico"><use href="#i-list"/></svg>체크리스트</div><div class="prop-val">2/5<span class="mini-prog"><i style="width:40%"></i></span></div></div>
+            </div>
+            <div class="checklist">
+              <div class="ck on"><span class="grip"></span><span class="box"><svg class="ico"><use href="#i-check"/></svg></span><span class="ck-txt">vector</span></div>
+              <div class="ck on"><span class="grip"></span><span class="box"><svg class="ico"><use href="#i-check"/></svg></span><span class="ck-txt">map</span></div>
+              <div class="ck"><span class="grip"></span><span class="box"></span><span class="ck-txt">set</span></div>
+              <div class="ck"><span class="grip"></span><span class="box"></span><span class="ck-txt">unordered_map</span></div>
+              <div class="ck"><span class="grip"></span><span class="box"></span><span class="ck-txt">deque</span></div>
+            </div>
+            <div class="divider-l">Notes</div>
+            <div class="md">
+              <h2>map vs unordered_map</h2>
+              <ul><li><code>std::map</code>: 레드블랙 트리, 순서 유지, 찾기 O(log n)</li><li><code>std::unordered_map</code>: 해시, 평균 O(1), 순서 없음</li></ul>
+              <pre>std::unordered_map&lt;int, std::string&gt; names;
+names.reserve(1024);   // 재해시 줄이기</pre>
+              <h3>헷갈린 점</h3>
+              <p><code>operator[]</code>는 없는 키를 만들어 버린다 → 읽기만 할 땐 <code>find</code>나 <code>contains</code> (C++20).</p>
+            </div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><b>최대화</b><ul>
+        <li>왼쪽 위 버튼이 "원래 크기로" 모양으로 바뀐다</li>
+        <li>사이드바는 그대로 보이고, 팝업이 그 오른쪽을 꽉 채운다 (어두운 막 없음)</li>
+      </ul></div>
+      <div class="note"><b>내용</b><ul>
+        <li>내용 폭은 820px까지만 넓어지고 가운데로 모인다</li>
+        <li>Notes를 길게 정리할 때 쓰는 모습</li>
+      </ul></div>
+      <div class="note"><b>지원관리와 같은 점</b><ul>
+        <li>버튼 위치·저장 표시·제목·속성 칸 폭이 지원관리 팝업 최대화와 같다</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>
