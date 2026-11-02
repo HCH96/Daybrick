@@ -1,8 +1,14 @@
 import { CheckIcon } from "../../../components/icons/DialogIcons";
 import type { SaveStatus } from "../../../features/applications/useAutoSave";
 
+interface SaveStateLabelProps {
+  status: SaveStatus;
+  /** 저장이 끝났을 때 글자 (기본 "저장됨", 플랜 상세 팝업은 "자동 저장됨") */
+  savedLabel?: string;
+}
+
 /** 팝업 오른쪽 위 자동 저장 표시: "저장 중… / 저장됨 / 저장 실패" (R15) */
-function SaveStateLabel({ status }: { status: SaveStatus }) {
+function SaveStateLabel({ status, savedLabel = "저장됨" }: SaveStateLabelProps) {
   if (status === "saving") {
     return <span className="detail-modal__save">저장 중…</span>;
   }
@@ -17,7 +23,7 @@ function SaveStateLabel({ status }: { status: SaveStatus }) {
   return (
     <span className="detail-modal__save">
       <CheckIcon />
-      저장됨
+      {savedLabel}
     </span>
   );
 }

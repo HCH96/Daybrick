@@ -7,6 +7,9 @@ export interface Hsv {
   v: number;
 }
 
+/** 미분류 점 색 (TaskList.css의 plan-group--none과 같은 값) */
+export const NONE_CATEGORY_COLOR = "#8a8a96";
+
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 
 /** "#RRGGBB" 모양인지 */

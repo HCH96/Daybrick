@@ -15,7 +15,8 @@ import "./TaskList.css";
  * 왼쪽 영역: 빠른 입력, 카테고리별 묶음, 미분류, `+ 카테고리 추가` (R2, R6–R19).
  * 카테고리 머리를 끌어 순서를 바꾼다 (R8). 미분류는 맨 아래 고정이고 태스크가 없으면 숨긴다 (R10).
  */
-function TaskListPanel() {
+/** onOpenTask: 태스크 줄을 누르면 상세 팝업을 연다 (R20) */
+function TaskListPanel({ onOpenTask }: { onOpenTask: (id: string) => void }) {
   const { state, moveCategory } = usePlan();
   const [addAnchor, setAddAnchor] = useState<HTMLElement | null>(null);
   const data = state.kind === "ready" ? state.data : null;
@@ -42,12 +43,15 @@ function TaskListPanel() {
               dragging={reorder.dragIndex === index}
               onDragStart={reorder.startDrag(index)}
               groupRef={reorder.itemRef(index)}
+              onOpenTask={onOpenTask}
             />
           </Fragment>
         ))}
         {reorder.dropGap === categories.length && <div className="plan-list__drop-line" />}
 
-        {noneGroup && <UncategorizedGroup group={noneGroup} collapsed={collapsed.includes(NONE_GROUP_KEY)} />}
+        {noneGroup && (
+          <UncategorizedGroup group={noneGroup} collapsed={collapsed.includes(NONE_GROUP_KEY)} onOpenTask={onOpenTask} />
+        )}
 
         <button
           type="button"
@@ -65,7 +69,13 @@ function TaskListPanel() {
 }
 
 /** 미분류 묶음: 고치기·지우기·끌기 없이 접기와 `+`만 (R10) */
-function UncategorizedGroup({ group, collapsed }: { group: TaskGroup; collapsed: boolean }) {
+interface UncategorizedGroupProps {
+  group: TaskGroup;
+  collapsed: boolean;
+  onOpenTask: (id: string) => void;
+}
+
+function UncategorizedGroup({ group, collapsed, onOpenTask }: UncategorizedGroupProps) {
   const { toggleCollapsed } = usePlan();
   const [adding, setAdding] = useState(false);
 
@@ -83,7 +93,13 @@ function UncategorizedGroup({ group, collapsed }: { group: TaskGroup; collapsed:
         }}
         adding={adding}
       />
-      <GroupTasks group={group} collapsed={collapsed} adding={adding} onCloseAdd={() => setAdding(false)} />
+      <GroupTasks
+        group={group}
+        collapsed={collapsed}
+        adding={adding}
+        onCloseAdd={() => setAdding(false)}
+        onOpenTask={onOpenTask}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from "react";
 import { loadPlanData } from "./storage";
-import { reducer, type CategoryPatch, type PlanState } from "./reducer";
+import { reducer, type CategoryPatch, type PlanState, type TaskPatch } from "./reducer";
 import { usePlanAutoSave, type SaveStatus } from "./useAutoSave";
 
 export interface PlanStore {
@@ -21,6 +21,10 @@ export interface PlanStore {
    * range를 주지 않으면 날짜 없는 태스크. 데이터가 준비되지 않았거나 제목이 비면 null.
    */
   addTask: (title: string, categoryId: string | null, range?: TaskRange) => string | null;
+  /** 상세 팝업에서 제목·카테고리·상태·기간·메모를 고친다 (R35·R36). 완료로/완료에서 바뀌면 완료한 때도 맞춘다. */
+  updateTask: (id: string, patch: TaskPatch) => void;
+  /** 태스크를 지운다 (R40). 확인 창은 부르는 쪽에서 띄운다. */
+  deleteTask: (id: string) => void;
   /** 상태를 시작 전 → 진행 중 → 완료 → 시작 전으로 돌린다 (R18, D13) */
   cycleStatus: (id: string) => void;
   /** 묶음 접기·펴기 (R12). key는 카테고리 id, 미분류는 "none" */
@@ -104,6 +108,12 @@ export function PlanProvider({ children }: { children: ReactNode }) {
           },
         });
         return id;
+      },
+      updateTask: (id, patch) => {
+        dispatch({ type: "update-task", id, patch, now: new Date().toISOString() });
+      },
+      deleteTask: (id) => {
+        dispatch({ type: "delete-task", id });
       },
       cycleStatus: (id) => {
         dispatch({ type: "cycle-status", id, now: new Date().toISOString() });

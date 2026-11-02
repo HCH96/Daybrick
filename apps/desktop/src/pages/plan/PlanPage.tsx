@@ -1,7 +1,8 @@
-import { useState, type ReactNode } from "react";
+import { useCallback, useState, type ReactNode } from "react";
 import { PAGE_LABELS } from "../../app/pageLabels";
 import { usePlan } from "../../features/plan/store";
 import { addDays, startOfWeek } from "../../utils/date";
+import TaskDetailModal from "./detail/TaskDetailModal";
 import TaskListPanel from "./list/TaskListPanel";
 import WeekNav from "./WeekNav";
 import "./PlanPage.css";
@@ -13,6 +14,9 @@ import "./PlanPage.css";
 function PlanPage() {
   const { state } = usePlan();
   const [weekStart, setWeekStart] = useState(() => startOfWeek(new Date()));
+  // 상세 팝업으로 연 태스크 (R20). 목록 줄과 (6단계부터) 달력 막대가 같이 쓴다.
+  const [openTaskId, setOpenTaskId] = useState<string | null>(null);
+  const closeTask = useCallback(() => setOpenTaskId(null), []);
 
   return (
     <div className="plan-page">
@@ -22,7 +26,7 @@ function PlanPage() {
       <div className="plan-page__body">
         <section className="plan-panel" aria-label="태스크 목록">
           <PlanPanelContent state={state.kind} message={state.kind === "error" ? state.message : ""}>
-            <TaskListPanel />
+            <TaskListPanel onOpenTask={setOpenTaskId} />
           </PlanPanelContent>
         </section>
         <section className="plan-panel plan-panel--cal" aria-label="주간 달력">
@@ -37,6 +41,7 @@ function PlanPage() {
           </PlanPanelContent>
         </section>
       </div>
+      {openTaskId && <TaskDetailModal taskId={openTaskId} onClose={closeTask} />}
     </div>
   );
 }

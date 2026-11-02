@@ -9,6 +9,9 @@ export type PlanState =
 /** 카테고리에서 고칠 수 있는 칸 */
 export type CategoryPatch = Partial<Pick<Category, "name" | "color">>;
 
+/** 태스크에서 상세 팝업으로 고칠 수 있는 칸 (R35·R36). 기간은 start·end를 같이 보낸다. */
+export type TaskPatch = Partial<Pick<Task, "title" | "categoryId" | "status" | "start" | "end" | "memo">>;
+
 /** 최근 쓴 색은 최대 8개까지 둔다 */
 const RECENT_COLOR_LIMIT = 8;
 
@@ -25,6 +28,8 @@ export type PlanAction =
   | { type: "delete-category"; id: string; now: string }
   | { type: "push-recent-color"; color: string }
   | { type: "add-task"; task: Task }
+  | { type: "update-task"; id: string; patch: TaskPatch; now: string }
+  | { type: "delete-task"; id: string }
   | { type: "cycle-status"; id: string; now: string }
   | { type: "toggle-collapsed"; key: string };
 
@@ -69,6 +74,12 @@ function dataReducer(data: PlanData, action: PlanAction): PlanData {
     }
     case "add-task":
       return { ...data, tasks: [...data.tasks, action.task] };
+    case "update-task": {
+      const tasks = replaceTask(data.tasks, action.id, (t) => applyTaskPatch(t, action.patch, action.now));
+      return tasks === data.tasks ? data : { ...data, tasks };
+    }
+    case "delete-task":
+      return { ...data, tasks: data.tasks.filter((t) => t.id !== action.id) };
     case "cycle-status":
       // 시작 전 → 진행 중 → 완료 → 시작 전. 완료가 되면 완료한 때를 적고, 벗어나면 지운다 (R18, D13)
       return {
@@ -89,6 +100,32 @@ function dataReducer(data: PlanData, action: PlanAction): PlanData {
     default:
       return data;
   }
+}
+
+/**
+ * 태스크에 고친 칸을 넣는다. 상태가 완료로 바뀌면 완료한 때를 적고, 완료에서 벗어나면 지운다 (D13과 같게).
+ * 이미 완료인 태스크를 다시 완료로 고르면 완료한 때를 그대로 둔다.
+ */
+function applyTaskPatch(task: Task, patch: TaskPatch, now: string): Task {
+  // 바뀐 칸이 없으면 그대로 둔다 (편집기가 열릴 때 같은 메모를 다시 보내도 저장하지 않게)
+  const keys = Object.keys(patch) as (keyof TaskPatch)[];
+  if (keys.every((k) => patch[k] === task[k])) return task;
+  const next: Task = { ...task, ...patch, updatedAt: now };
+  if (patch.status !== undefined && patch.status !== task.status) {
+    next.completedAt = patch.status === "done" ? now : null;
+  }
+  return next;
+}
+
+/** id가 같은 태스크 하나를 바꾼다. 바뀐 것이 없으면 같은 배열을 돌려준다 (저장을 건너뛰게). */
+function replaceTask(tasks: Task[], id: string, change: (task: Task) => Task): Task[] {
+  const index = tasks.findIndex((t) => t.id === id);
+  if (index < 0) return tasks;
+  const changed = change(tasks[index]);
+  if (changed === tasks[index]) return tasks;
+  const next = [...tasks];
+  next[index] = changed;
+  return next;
 }
 
 const NEXT_STATUS: Record<TaskStatus, TaskStatus> = { todo: "doing", doing: "done", done: "todo" };

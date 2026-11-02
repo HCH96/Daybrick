@@ -19,3 +19,4 @@
 - D17. 기간을 고쳐 시작일이 끝일보다 뒤가 되면 방금 고르지 않은 쪽을 고른 날로 맞춘다. 날짜 없는 태스크에서 시작일을 고르면 끝일도 같은 날이 된다. (적용: 4단계 / 이후 전체) (기록: L03)
 - D18. `NavIcons.tsx`의 `CalendarIcon`은 구직 관리 일정 제안 창이 쓰므로 남겨 두고, 플랜 메뉴는 따로 만든 `PlanIcon`을 쓴다. (적용: 이후 전체) (기록: L04)
 - D19. 묶음 머리 아래(바로 적기 입력칸·태스크 줄·"완료 N개")는 `list/GroupTasks.tsx` 하나를 카테고리 묶음과 미분류 묶음이 같이 쓰고, 상태 표시 CSS는 `pages/plan/StatusDot.css`에 둔다(목록·막대·팝업 공용). 미분류 키 `"none"`은 `selectors.ts`의 `NONE_GROUP_KEY`를 쓴다. (적용: 이후 전체) (기록: L06)
+- D20. 플랜 상세 팝업은 공용 `Modal`의 `className`으로 크기를 정하고(`.modal.task-detail`), 저장 표시는 `SaveStateLabel`의 `savedLabel="자동 저장됨"`을 쓴다. 카테고리 고르기 줄은 `pages/plan/CategoryOption.tsx`, 미분류 점 색은 `features/plan/color.ts`의 `NONE_CATEGORY_COLOR`를 같이 쓴다. 팝업 속성 줄 모양은 `detail/TaskDetailModal.css`의 `task-detail__` 클래스(칩 `task-detail__chip`, 글자 버튼 `task-detail__txt-btn`)를 쓴다. (적용: 이후 전체) (기록: L07)

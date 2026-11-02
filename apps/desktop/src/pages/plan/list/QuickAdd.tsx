@@ -1,11 +1,10 @@
 import { useRef, useState, type CSSProperties } from "react";
 import Popover from "../../../components/common/Popover";
-import { ChevronDownIcon, PlusIcon, SmallCheckIcon } from "../../../components/icons/CommonIcons";
+import { ChevronDownIcon, PlusIcon } from "../../../components/icons/CommonIcons";
+import { NONE_CATEGORY_COLOR as NONE_COLOR } from "../../../features/plan/color";
 import { usePlan } from "../../../features/plan/store";
 import type { Category } from "../../../features/plan/types";
-
-/** 미분류 점 색 (TaskList.css의 plan-group--none과 같은 값) */
-const NONE_COLOR = "#8a8a96";
+import CategoryOption from "../CategoryOption";
 
 /**
  * 목록 맨 위 빠른 입력 (목업 plan-quick·list-quickcat, R16).
@@ -85,34 +84,6 @@ function QuickAdd() {
         </Popover>
       )}
     </div>
-  );
-}
-
-interface CategoryOptionProps {
-  name: string;
-  color: string;
-  ring?: boolean;
-  selected: boolean;
-  onPick: () => void;
-}
-
-function CategoryOption({ name, color, ring, selected, onPick }: CategoryOptionProps) {
-  return (
-    <button
-      type="button"
-      className={selected ? "pop-row cat-menu__row pop-row--active" : "pop-row cat-menu__row"}
-      style={{ "--cat": color } as CSSProperties}
-      onClick={onPick}
-      autoFocus={selected}
-    >
-      <span className={ring ? "plan-cat-dot plan-cat-dot--ring" : "plan-cat-dot"} />
-      <span className="plan-quick__opt-name">{name}</span>
-      {selected && (
-        <span className="pop-row__check">
-          <SmallCheckIcon size={14} />
-        </span>
-      )}
-    </button>
   );
 }
 

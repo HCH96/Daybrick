@@ -10,6 +10,8 @@ interface ModalProps {
   /** true면 어두운 막 없이 본문 영역을 꽉 채운다 (사이드바가 펼쳐져 있으면 사이드바는 남긴다) */
   maximized?: boolean;
   ariaLabel: string;
+  /** 상자(.modal)에 더할 클래스 (크기를 바꿀 때) */
+  className?: string;
   children: ReactNode;
 }
 
@@ -18,7 +20,7 @@ interface ModalProps {
  * 기본: 사이드바·본문 전체를 어둡게 덮고 가운데 상자. 바깥 클릭·Esc로 닫힌다.
  * 최대화: 본문 영역을 꽉 채운다. Esc로 닫힌다.
  */
-function Modal({ onClose, maximized = false, ariaLabel, children }: ModalProps) {
+function Modal({ onClose, maximized = false, ariaLabel, className, children }: ModalProps) {
   const root = useOverlayRoot();
   const boxRef = useRef<HTMLDivElement>(null);
   // 바깥에서 누르고 바깥에서 뗐을 때만 닫는다 (제목을 드래그하다 바깥에서 떼면 닫히지 않게)
@@ -56,7 +58,14 @@ function Modal({ onClose, maximized = false, ariaLabel, children }: ModalProps) 
   if (!root) return null;
   return createPortal(
     <div className={layerClass(maximized, followSidebar)} onMouseDown={onMouseDown} onClick={onClick}>
-      <div ref={boxRef} className="modal" role="dialog" aria-modal="true" aria-label={ariaLabel} tabIndex={-1}>
+      <div
+        ref={boxRef}
+        className={className ? `modal ${className}` : "modal"}
+        role="dialog"
+        aria-modal="true"
+        aria-label={ariaLabel}
+        tabIndex={-1}
+      >
         {children}
       </div>
     </div>,

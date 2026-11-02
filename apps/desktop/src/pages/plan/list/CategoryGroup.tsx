@@ -17,6 +17,8 @@ interface CategoryGroupProps {
   /** 끌어서 순서 바꾸기를 시작하는 머리의 onPointerDown (useReorder) */
   onDragStart: (e: ReactPointerEvent<HTMLElement>) => void;
   groupRef: (el: HTMLElement | null) => void;
+  /** 태스크 줄을 누르면 상세 팝업을 연다 (R20) */
+  onOpenTask: (id: string) => void;
 }
 
 /** 열려 있는 작은 창: `…` 메뉴 / 이름·색 고치기 / 삭제 확인 */
@@ -26,7 +28,7 @@ type Open = { kind: "menu" | "edit"; anchor: HTMLElement } | { kind: "confirm" }
  * 카테고리 묶음 하나: 머리 + 그 안의 태스크 줄.
  * 머리 `…`로 이름·색을 고치거나 확인을 받고 지운다 (R8·R9). `+`로 바로 적는다 (R17).
  */
-function CategoryGroup({ category, group, collapsed, dragging, onDragStart, groupRef }: CategoryGroupProps) {
+function CategoryGroup({ category, group, collapsed, dragging, onDragStart, groupRef, onOpenTask }: CategoryGroupProps) {
   const { deleteCategory, toggleCollapsed } = usePlan();
   const [open, setOpen] = useState<Open>(null);
   const [adding, setAdding] = useState(false);
@@ -51,7 +53,7 @@ function CategoryGroup({ category, group, collapsed, dragging, onDragStart, grou
         onPointerDown={onDragStart}
         onMenu={(button) => setOpen({ kind: "menu", anchor: button })}
       />
-      <GroupTasks group={group} collapsed={collapsed} adding={adding} onCloseAdd={() => setAdding(false)} />
+      <GroupTasks group={group} collapsed={collapsed} adding={adding} onCloseAdd={() => setAdding(false)} onOpenTask={onOpenTask} />
 
       {open?.kind === "menu" && (
         <CategoryMenu

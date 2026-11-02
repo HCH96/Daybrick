@@ -1,4 +1,6 @@
-import { addDays, parseDateKey } from "../../utils/date";
+import { addDays, diffDays, parseDateKey } from "../../utils/date";
+
+const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"] as const;
 
 /**
  * 주 기간 글자 (R4). weekStart는 월요일 "YYYY-MM-DD".
@@ -27,4 +29,15 @@ function shortDay(key: string): string {
 /** 목록 줄 기간 (R14): "11/3–11/5", 하루면 "11/6" */
 export function formatShortRange(start: string, end: string): string {
   return start === end ? shortDay(start) : `${shortDay(start)}–${shortDay(end)}`;
+}
+
+/** 상세 팝업 날짜 칩 (R35): "YYYY-MM-DD" → "11월 2일 (월)" */
+export function formatChipDay(key: string): string {
+  const d = parseDateKey(key);
+  return `${d.getMonth() + 1}월 ${d.getDate()}일 (${WEEKDAYS[d.getDay()]})`;
+}
+
+/** 기간 일수 (R35): 시작일·끝일을 모두 세어 "3일", 하루면 "1일" */
+export function formatDayCount(start: string, end: string): string {
+  return `${diffDays(start, end) + 1}일`;
 }

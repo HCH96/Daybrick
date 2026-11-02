@@ -5,7 +5,7 @@ import StatusDot from "../StatusDot";
 
 interface TaskRowProps {
   task: Task;
-  /** 줄을 누르면 상세 팝업을 연다 (R20, 4단계에서 연결) */
+  /** 줄을 누르면 상세 팝업을 연다 (R20). 주지 않으면 누를 수 없는 줄 */
   onOpen?: (id: string) => void;
 }
 
