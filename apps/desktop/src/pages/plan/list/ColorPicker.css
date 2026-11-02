@@ -1,0 +1,97 @@
+/* 색 선택기 (목업 part-list.html의 list-catform 구역: sv·hue·hex·recent) */
+.color-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 색 평면: 가로 채도, 세로 밝기 */
+.color-picker__plane {
+  position: relative;
+  height: 150px;
+  border-radius: 8px;
+  background: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, var(--hue));
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.color-picker__plane i {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* 색상 막대 */
+.color-picker__hue {
+  position: relative;
+  height: 12px;
+  margin: 0 9px;
+  border-radius: 99px;
+  background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+  cursor: pointer;
+  touch-action: none;
+}
+
+/* 막대 끝까지 손잡이가 닿도록 바깥에 넉넉한 누름 자리를 둔다 */
+.color-picker__hue::before {
+  content: "";
+  position: absolute;
+  inset: -6px -9px;
+}
+
+.color-picker__hue i {
+  position: absolute;
+  top: -3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--hue);
+  border: 2px solid #fff;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.color-picker__hex {
+  font-family: Consolas, monospace;
+  text-transform: uppercase;
+}
+
+.color-picker__hex--invalid,
+.color-picker__hex--invalid:focus {
+  border-color: var(--red);
+}
+
+/* 최근 쓴 색 */
+.color-picker__recent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.color-picker__chip {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+}
+
+.color-picker__chip--on {
+  outline: 2px solid var(--text);
+  outline-offset: 1px;
+}
+
+.color-picker__chip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}

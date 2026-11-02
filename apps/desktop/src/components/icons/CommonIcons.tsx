@@ -34,6 +34,29 @@ export function PlusIcon({ size = 15 }: { size?: number }) {
   );
 }
 
+/** 고치기: 연필 (플랜 목업) */
+export function PenIcon({ size = 15 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <path d="M4 20h4L19 9l-4-4L4 16z" />
+    </LineIcon>
+  );
+}
+
+/** 끌어 옮기기 손잡이: 점 여섯 개 (플랜 목업) */
+export function GripIcon({ size = 15 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <circle cx="9" cy="6" r="1" />
+      <circle cx="15" cy="6" r="1" />
+      <circle cx="9" cy="12" r="1" />
+      <circle cx="15" cy="12" r="1" />
+      <circle cx="9" cy="18" r="1" />
+      <circle cx="15" cy="18" r="1" />
+    </LineIcon>
+  );
+}
+
 export function SmallCheckIcon({ size = 15 }: { size?: number }) {
   return (
     <LineIcon size={size}>

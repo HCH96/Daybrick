@@ -1,11 +1,21 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from "react";
 import { loadPlanData } from "./storage";
-import { reducer, type PlanState } from "./reducer";
+import { reducer, type CategoryPatch, type PlanState } from "./reducer";
 import { usePlanAutoSave, type SaveStatus } from "./useAutoSave";
 
 export interface PlanStore {
   state: PlanState;
   saveStatus: SaveStatus;
+  /** 카테고리를 목록 맨 끝에 만들고 그 id를 돌려준다 (R7). 데이터가 준비되지 않았으면 null. */
+  addCategory: (name: string, color: string) => string | null;
+  /** 카테고리 이름·색을 고친다 (R8) */
+  updateCategory: (id: string, patch: CategoryPatch) => void;
+  /** 카테고리 순서를 바꾼다. from·to는 카테고리 배열 자리 (R8, D15) */
+  moveCategory: (from: number, to: number) => void;
+  /** 카테고리를 지우고 그 안의 태스크는 미분류로 옮긴다 (R9, D5). 확인 창은 부르는 쪽에서 띄운다. */
+  deleteCategory: (id: string) => void;
+  /** 최근 쓴 색 맨 앞에 넣는다 (중복 제거, 최대 8개) */
+  pushRecentColor: (color: string) => void;
 }
 
 const PlanContext = createContext<PlanStore | null>(null);
@@ -33,7 +43,32 @@ export function PlanProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const store = useMemo<PlanStore>(() => ({ state, saveStatus }), [state, saveStatus]);
+  const ready = state.kind === "ready";
+  const store = useMemo<PlanStore>(
+    () => ({
+      state,
+      saveStatus,
+      addCategory: (name, color) => {
+        if (!ready) return null;
+        const id = crypto.randomUUID();
+        dispatch({ type: "add-category", category: { id, name, color } });
+        return id;
+      },
+      updateCategory: (id, patch) => {
+        dispatch({ type: "update-category", id, patch });
+      },
+      moveCategory: (from, to) => {
+        dispatch({ type: "move-category", from, to });
+      },
+      deleteCategory: (id) => {
+        dispatch({ type: "delete-category", id, now: new Date().toISOString() });
+      },
+      pushRecentColor: (color) => {
+        dispatch({ type: "push-recent-color", color });
+      },
+    }),
+    [state, saveStatus, ready],
+  );
 
   return <PlanContext.Provider value={store}>{children}</PlanContext.Provider>;
 }
