@@ -21,7 +21,7 @@ function PlanPage() {
   // 상세 팝업으로 연 태스크 (R20·R30). 목록 줄과 달력 막대가 같이 쓴다.
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
   const closeTask = useCallback(() => setOpenTaskId(null), []);
-  // 지원 일정 알약으로 연 지원 카드 (R32, D16). 페이지를 옮기지 않고 플랜 위에 띄운다.
+  // 지원 일정 알약·태스크 팝업의 연결 카드로 연 지원 카드 (R32·R39, D16). 페이지를 옮기지 않고 플랜 위에 띄운다.
   const [openApplicationId, setOpenApplicationId] = useState<string | null>(null);
   const closeApplication = useCallback(() => setOpenApplicationId(null), []);
 
@@ -50,7 +50,7 @@ function PlanPage() {
           </section>
         </div>
       </PlanDragProvider>
-      {openTaskId && <TaskDetailModal taskId={openTaskId} onClose={closeTask} />}
+      {openTaskId && <TaskDetailModal taskId={openTaskId} onClose={closeTask} onOpenApplication={setOpenApplicationId} />}
       {openApplicationId && <ApplicationDetailModal applicationId={openApplicationId} onClose={closeApplication} />}
     </div>
   );

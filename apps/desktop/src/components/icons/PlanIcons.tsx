@@ -80,3 +80,22 @@ export function NoteIcon({ size = 15 }: { size?: number }) {
     </LineIcon>
   );
 }
+
+/** 지원 카드 연결 (상세 팝업 속성 줄·목록 줄 연결 회사, 목업 i-link) */
+export function LinkIcon({ size = 15 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" />
+    </LineIcon>
+  );
+}
+
+/** 찾기 (지원 카드 고르기 찾기칸, 목업 i-search) */
+export function SearchIcon({ size = 15 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </LineIcon>
+  );
+}

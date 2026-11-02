@@ -15,14 +15,16 @@ import "./TaskDetailModal.css";
 interface TaskDetailModalProps {
   taskId: string;
   onClose: () => void;
+  /** 연결된 지원 카드 이름을 누르면 이 팝업 위에 지원관리 상세 팝업을 연다 (R39, D16) */
+  onOpenApplication: (applicationId: string) => void;
 }
 
 /**
- * 태스크 상세 팝업 (목업 popup, R35–R38·R40–R41).
- * 머리 "태스크" + 휴지통·닫기, 큰 제목, 속성 줄(카테고리·상태·기간), 체크리스트, 메모, 아래 자동 저장 표시.
+ * 태스크 상세 팝업 (목업 popup, R35–R41).
+ * 머리 "태스크" + 휴지통·닫기, 큰 제목, 속성 줄(카테고리·상태·기간·지원 카드), 체크리스트, 메모, 아래 자동 저장 표시.
  * 고친 내용은 바로 저장소에 들어가 뒤의 목록에도 바로 보인다. 태스크가 사라지면 닫는다.
  */
-function TaskDetailModal({ taskId, onClose }: TaskDetailModalProps) {
+function TaskDetailModal({ taskId, onClose, onOpenApplication }: TaskDetailModalProps) {
   const { state, saveStatus, updateTask, deleteTask } = usePlan();
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
@@ -55,7 +57,7 @@ function TaskDetailModal({ taskId, onClose }: TaskDetailModalProps) {
       <div className="task-detail__title">
         <TitleInput value={task.title} onChange={(title) => updateTask(task.id, { title })} />
       </div>
-      <PropRows task={task} categories={state.data.categories} />
+      <PropRows task={task} categories={state.data.categories} onOpenApplication={onOpenApplication} />
 
       <div className="task-detail__body">
         <Checklist task={task} />

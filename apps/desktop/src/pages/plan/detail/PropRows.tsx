@@ -7,6 +7,7 @@ import { usePlan } from "../../../features/plan/store";
 import type { Category, Task, TaskStatus } from "../../../features/plan/types";
 import CategoryOption from "../CategoryOption";
 import StatusDot from "../StatusDot";
+import LinkedCardRow from "./LinkedCardRow";
 import PeriodField from "./PeriodField";
 
 const STATUS_OPTIONS: { status: TaskStatus; label: string }[] = [
@@ -17,11 +18,18 @@ const STATUS_OPTIONS: { status: TaskStatus; label: string }[] = [
 
 type OpenMenu = { kind: "category" | "status"; anchor: HTMLElement } | null;
 
+interface PropRowsProps {
+  task: Task;
+  categories: Category[];
+  /** 지원 카드 줄의 카드 이름을 누르면 지원관리 상세 팝업을 연다 (D16) */
+  onOpenApplication: (applicationId: string) => void;
+}
+
 /**
- * 상세 팝업 속성 줄 (목업 popup-props, R35): 카테고리, 상태, 기간.
- * 칩을 누르면 고르기 목록이 열린다. 지원 카드 줄은 9단계에서 더한다.
+ * 상세 팝업 속성 줄 (목업 popup-props, R35·R39): 카테고리, 상태, 기간, 지원 카드.
+ * 칩을 누르면 고르기 목록이 열린다.
  */
-function PropRows({ task, categories }: { task: Task; categories: Category[] }) {
+function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
   const { updateTask } = usePlan();
   const [open, setOpen] = useState<OpenMenu>(null);
 
@@ -82,6 +90,8 @@ function PropRows({ task, categories }: { task: Task; categories: Category[] }) 
           onChange={(range) => updateTask(task.id, { start: range?.start ?? null, end: range?.end ?? null })}
         />
       </div>
+
+      <LinkedCardRow task={task} onOpenApplication={onOpenApplication} />
 
       {open?.kind === "category" && (
         <Popover anchor={open.anchor} onClose={() => setOpen(null)} width={210} ariaLabel="카테고리 고르기" className="cat-menu">

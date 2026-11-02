@@ -40,6 +40,8 @@ export type PlanAction =
   | { type: "update-check-item"; id: string; itemId: string; patch: CheckItemPatch; now: string }
   | { type: "delete-check-item"; id: string; itemId: string; now: string }
   | { type: "move-check-item"; id: string; from: number; to: number; now: string }
+  | { type: "link-application"; id: string; applicationId: string | null; now: string }
+  | { type: "clear-missing-links"; existingIds: string[]; now: string }
   | { type: "toggle-collapsed"; key: string }
   | { type: "set-show-application-events"; value: boolean };
 
@@ -108,6 +110,23 @@ function dataReducer(data: PlanData, action: PlanAction): PlanData {
     case "move-check-item": {
       const tasks = replaceTask(data.tasks, action.id, (t) => applyChecklistAction(t, action));
       return tasks === data.tasks ? data : { ...data, tasks };
+    }
+    case "link-application": {
+      // 지원 카드 연결·끊기 (R39). 태스크 하나에 카드는 하나만.
+      const tasks = replaceTask(data.tasks, action.id, (t) =>
+        t.applicationId === action.applicationId ? t : { ...t, applicationId: action.applicationId, updatedAt: action.now },
+      );
+      return tasks === data.tasks ? data : { ...data, tasks };
+    }
+    case "clear-missing-links": {
+      // 남아 있는 카드 목록에 없는 연결을 끊는다 (R39, D14). 끊을 것이 없으면 그대로 (저장을 건너뛰게).
+      const existing = new Set(action.existingIds);
+      const missing = (t: Task) => t.applicationId !== null && !existing.has(t.applicationId);
+      if (!data.tasks.some(missing)) return data;
+      return {
+        ...data,
+        tasks: data.tasks.map((t) => (missing(t) ? { ...t, applicationId: null, updatedAt: action.now } : t)),
+      };
     }
     case "toggle-collapsed": {
       const { collapsed } = data.view;

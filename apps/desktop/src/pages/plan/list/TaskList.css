@@ -500,3 +500,19 @@
   align-items: center;
   gap: 4px;
 }
+
+/* 연결된 지원 카드의 회사 (R39, 목업 task-meta .lnk) */
+.plan-task__lnk {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plan-task__lnk svg {
+  flex-shrink: 0;
+}

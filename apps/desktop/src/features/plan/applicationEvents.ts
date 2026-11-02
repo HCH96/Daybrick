@@ -17,7 +17,7 @@ export interface SchedPillData {
 const UNTITLED = "제목 없음";
 
 /** 카드의 회사 이름: 역할이 "company"인 속성에서 고른 항목 이름. 없으면 "" */
-function companyName(data: ApplicationsData, values: Record<string, unknown>): string {
+export function companyName(data: ApplicationsData, values: Record<string, unknown>): string {
   const prop = data.properties.find((p) => p.role === "company");
   if (!prop) return "";
   const value = values[prop.id];

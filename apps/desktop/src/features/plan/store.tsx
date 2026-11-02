@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNo
 import { loadPlanData } from "./storage";
 import { reducer, type CategoryPatch, type CheckItemPatch, type PlanState, type TaskPatch } from "./reducer";
 import { usePlanAutoSave, type SaveStatus } from "./useAutoSave";
+import { useLinkCleanup } from "./useLinkCleanup";
 
 export interface PlanStore {
   state: PlanState;
@@ -39,6 +40,8 @@ export interface PlanStore {
   deleteCheckItem: (taskId: string, itemId: string) => void;
   /** 항목 순서를 바꾼다. from·to는 항목 배열 자리 (R38, D15) */
   moveCheckItem: (taskId: string, from: number, to: number) => void;
+  /** 지원 카드를 연결한다. null이면 연결을 끊는다 (R39) */
+  linkApplication: (taskId: string, applicationId: string | null) => void;
   /** 묶음 접기·펴기 (R12). key는 카테고리 id, 미분류는 "none" */
   toggleCollapsed: (key: string) => void;
   /** 달력의 지원 일정 보이기·숨기기 (R33). plan.json view 칸에 저장된다 (D10). */
@@ -161,6 +164,9 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       moveCheckItem: (taskId, from, to) => {
         dispatch({ type: "move-check-item", id: taskId, from, to, now: new Date().toISOString() });
       },
+      linkApplication: (taskId, applicationId) => {
+        dispatch({ type: "link-application", id: taskId, applicationId, now: new Date().toISOString() });
+      },
       toggleCollapsed: (key) => {
         dispatch({ type: "toggle-collapsed", key });
       },
@@ -170,6 +176,9 @@ export function PlanProvider({ children }: { children: ReactNode }) {
     }),
     [state, saveStatus, ready],
   );
+
+  // 없어진 지원 카드를 가리키는 연결을 끊는다 (R39, D14)
+  useLinkCleanup(state, dispatch);
 
   return <PlanContext.Provider value={store}>{children}</PlanContext.Provider>;
 }
