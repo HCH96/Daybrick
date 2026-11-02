@@ -1,8 +1,17 @@
-import type { PointerEvent as ReactPointerEvent } from "react";
+import type { MouseEvent as ReactMouseEvent, PointerEvent as ReactPointerEvent } from "react";
 import { ChevronDownIcon, DotsIcon, GripIcon, PlusIcon } from "../../../components/icons/CommonIcons";
 
 interface GroupHeadProps {
   name: string;
+  /** 끝나지 않은 태스크 수 (R12) */
+  count: number;
+  collapsed: boolean;
+  /** 머리를 누르면 접기·펴기 (R12). 도구 버튼을 누른 것은 제외. */
+  onToggle: () => void;
+  /** `+`: 이 묶음 안에 바로 적기 (R17) */
+  onAdd: () => void;
+  /** 바로 적는 입력칸이 열려 있는지 (`+`를 눌린 모양으로) */
+  adding?: boolean;
   /** 미분류면 true: 테두리만 있는 점, `…` 없음, 끌 수 없음 (R10) */
   fixed?: boolean;
   /** 지금 끌고 있는 머리인지 */
@@ -15,32 +24,66 @@ interface GroupHeadProps {
 }
 
 /**
- * 카테고리 묶음 머리 (목업 plan-list의 g-head): 접기 화살표 자리, 색 점, 이름, 개수 자리, 도구.
+ * 카테고리 묶음 머리 (목업 plan-list의 g-head): 접기 화살표, 색 점, 이름, 안 끝난 개수, 도구.
  * 색은 부모 요소의 `--cat` 변수를 따른다. `…`·`+`는 마우스를 올렸을 때만 보인다.
- * 접기·개수·`+` 동작은 3단계에서 채운다.
  */
-function GroupHead({ name, fixed, dragging, active, onPointerDown, onMenu }: GroupHeadProps) {
-  const className = ["plan-ghead", fixed && "plan-ghead--fixed", dragging && "plan-ghead--drag", active && "plan-ghead--active"]
+function GroupHead(props: GroupHeadProps) {
+  const { name, count, collapsed, onToggle, onAdd, adding, fixed, dragging, active, onPointerDown, onMenu } = props;
+  const className = [
+    "plan-ghead",
+    fixed && "plan-ghead--fixed",
+    collapsed && "plan-ghead--closed",
+    dragging && "plan-ghead--drag",
+    (active || adding) && "plan-ghead--active",
+  ]
     .filter(Boolean)
     .join(" ");
 
+  const onClick = (e: ReactMouseEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLElement).closest(".plan-ghead__tools")) return;
+    onToggle();
+  };
+
   return (
-    <div className={className} onPointerDown={onPointerDown}>
+    <div
+      className={className}
+      onPointerDown={onPointerDown}
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      aria-expanded={!collapsed}
+      aria-label={`${name} 묶음 ${collapsed ? "펴기" : "접기"}`}
+      onKeyDown={(e) => {
+        if (e.target !== e.currentTarget) return;
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onToggle();
+        }
+      }}
+    >
       <span className="plan-ghead__fold">{dragging ? <GripIcon size={14} /> : <ChevronDownIcon size={14} />}</span>
       <span className={fixed ? "plan-ghead__dot plan-ghead__dot--ring" : "plan-ghead__dot"} />
       <span className="plan-ghead__name">{name}</span>
+      <span className="plan-ghead__count">{count}</span>
       <span className="plan-ghead__tools">
         {!fixed && (
           <button
             type="button"
-            className="plan-ghead__tool"
+            className={active ? "plan-ghead__tool plan-ghead__tool--on" : "plan-ghead__tool"}
             aria-label={`${name} 메뉴`}
             onClick={(e) => onMenu?.(e.currentTarget)}
           >
             <DotsIcon size={14} />
           </button>
         )}
-        <button type="button" className="plan-ghead__tool" aria-label={`${name}에 태스크 추가`} disabled>
+        <button
+          type="button"
+          className={adding ? "plan-ghead__tool plan-ghead__tool--on" : "plan-ghead__tool"}
+          aria-label={`${name}에 태스크 추가`}
+          // 입력칸이 열린 채 다시 누르면, 입력칸이 포커스를 잃어 닫혔다가 다시 열리지 않게 한다
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={onAdd}
+        >
           <PlusIcon size={14} />
         </button>
       </span>

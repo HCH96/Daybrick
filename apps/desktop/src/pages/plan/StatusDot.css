@@ -1,0 +1,60 @@
+/* 태스크 상태 표시 ○ ◐ ● (목업 common.css의 .st) — 목록·달력 막대·팝업 공용 */
+.plan-st {
+  position: relative;
+  display: block;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.8px solid var(--faint);
+  background: none;
+}
+
+.plan-st--doing {
+  border-color: var(--amber);
+  background: linear-gradient(90deg, var(--amber) 50%, transparent 50%);
+}
+
+.plan-st--done {
+  border-color: var(--green);
+  background: var(--green);
+}
+
+.plan-st--done::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid var(--on-accent);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.plan-st--sm {
+  width: 13px;
+  height: 13px;
+  border-width: 1.6px;
+}
+
+.plan-st--sm.plan-st--done::after {
+  left: 3px;
+  top: 0;
+  width: 3px;
+  height: 7px;
+}
+
+.plan-st--btn {
+  cursor: pointer;
+}
+
+.plan-st--btn:hover {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+
+.plan-st--btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

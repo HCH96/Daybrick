@@ -17,3 +17,14 @@ export function formatWeekPeriod(weekStart: string): string {
   }
   return `${head} – ${end.getDate()}일`;
 }
+
+/** "YYYY-MM-DD" → "11/3" */
+function shortDay(key: string): string {
+  const [, month, day] = key.split("-");
+  return `${Number(month)}/${Number(day)}`;
+}
+
+/** 목록 줄 기간 (R14): "11/3–11/5", 하루면 "11/6" */
+export function formatShortRange(start: string, end: string): string {
+  return start === end ? shortDay(start) : `${shortDay(start)}–${shortDay(end)}`;
+}

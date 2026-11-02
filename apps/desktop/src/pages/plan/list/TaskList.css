@@ -82,6 +82,26 @@
   color: var(--muted);
 }
 
+.plan-ghead:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.plan-ghead__fold svg {
+  transition: transform 0.12s;
+}
+
+.plan-ghead--closed .plan-ghead__fold svg {
+  transform: rotate(-90deg);
+}
+
+.plan-ghead__count {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--faint);
+}
+
 /* `…`·`+`는 마우스를 올렸을 때(또는 메뉴가 열려 있을 때)만 */
 .plan-ghead__tools {
   margin-left: auto;
@@ -117,7 +137,7 @@
   color: var(--text);
 }
 
-.plan-ghead--active .plan-ghead__tool:first-child {
+.plan-ghead__tool--on {
   background: var(--surface-2);
   color: var(--text);
 }
@@ -125,6 +145,241 @@
 .plan-ghead__tool:disabled {
   cursor: default;
   opacity: 0.5;
+}
+
+/* ===== 빠른 입력 (목업 plan-quick·list-quickcat, R16) ===== */
+.plan-quick {
+  display: flex;
+  gap: 6px;
+  padding: 12px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.plan-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--faint);
+  font-size: 13px;
+}
+
+.plan-quick__field {
+  flex: 1;
+  min-width: 0;
+  cursor: text;
+}
+
+.plan-quick__field:focus-within,
+.plan-field--inline:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(166, 140, 255, 0.18);
+}
+
+.plan-quick__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  outline: none;
+}
+
+.plan-quick__input::placeholder,
+.plan-field--inline::placeholder {
+  color: var(--faint);
+}
+
+.plan-kbd {
+  flex-shrink: 0;
+  padding: 0 5px;
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.plan-quick__cat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 120px;
+  height: 36px;
+  padding: 0 10px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.plan-quick__cat:hover,
+.plan-quick__cat--on {
+  color: var(--text);
+  border-color: var(--border-2);
+}
+
+.plan-quick__cat-name,
+.plan-quick__opt-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plan-quick__opt-name {
+  flex: 1;
+}
+
+.plan-cat-dot {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--cat);
+}
+
+.plan-cat-dot--ring {
+  background: transparent;
+  border: 2px solid var(--cat);
+}
+
+/* ===== 태스크 줄 (목업 list-rows, R14) ===== */
+.plan-task {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 5px 8px 5px 30px;
+  border-radius: 8px;
+}
+
+.plan-task .plan-st {
+  margin-top: 2px;
+}
+
+.plan-task--clickable {
+  cursor: pointer;
+}
+
+.plan-task:not(.plan-task--input):hover {
+  background: var(--surface);
+}
+
+.plan-task__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.plan-task__title {
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.plan-task__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+  font-size: 11.5px;
+  color: var(--faint);
+}
+
+.plan-task__when {
+  color: var(--muted);
+}
+
+.plan-task--done .plan-task__title {
+  color: var(--faint);
+  text-decoration: line-through;
+}
+
+.plan-task--done .plan-st {
+  opacity: 0.6;
+}
+
+/* 묶음 안 바로 적기 입력칸 (목업 list-inline, R17) */
+.plan-field--inline {
+  width: 100%;
+  height: 30px;
+  padding: 0 10px;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.plan-task--input .plan-st {
+  margin-top: 7px;
+}
+
+/* "완료 N개" 접힌 줄 (R15) */
+.plan-done-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px 5px 30px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: var(--faint);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.plan-done-row:hover {
+  color: var(--muted);
+}
+
+.plan-done-row svg {
+  transition: transform 0.12s;
+}
+
+.plan-done-row--open svg {
+  transform: rotate(90deg);
+}
+
+/* ===== 빈 목록 안내 (목업 plan-empty-list) ===== */
+.plan-list-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.plan-list-empty b {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.plan-list-empty__icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--neutral-soft);
+  color: var(--muted);
 }
 
 /* 놓일 자리 줄 (R8) */

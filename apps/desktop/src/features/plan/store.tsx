@@ -16,6 +16,21 @@ export interface PlanStore {
   deleteCategory: (id: string) => void;
   /** 최근 쓴 색 맨 앞에 넣는다 (중복 제거, 최대 8개) */
   pushRecentColor: (color: string) => void;
+  /**
+   * 태스크를 만들고 그 id를 돌려준다. 상태는 "시작 전" (R16·R17·R19).
+   * range를 주지 않으면 날짜 없는 태스크. 데이터가 준비되지 않았거나 제목이 비면 null.
+   */
+  addTask: (title: string, categoryId: string | null, range?: TaskRange) => string | null;
+  /** 상태를 시작 전 → 진행 중 → 완료 → 시작 전으로 돌린다 (R18, D13) */
+  cycleStatus: (id: string) => void;
+  /** 묶음 접기·펴기 (R12). key는 카테고리 id, 미분류는 "none" */
+  toggleCollapsed: (key: string) => void;
+}
+
+/** 태스크 기간 (둘 다 "YYYY-MM-DD") */
+export interface TaskRange {
+  start: string;
+  end: string;
 }
 
 const PlanContext = createContext<PlanStore | null>(null);
@@ -65,6 +80,36 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       },
       pushRecentColor: (color) => {
         dispatch({ type: "push-recent-color", color });
+      },
+      addTask: (title, categoryId, range) => {
+        const trimmed = title.trim();
+        if (!ready || !trimmed) return null;
+        const id = crypto.randomUUID();
+        const now = new Date().toISOString();
+        dispatch({
+          type: "add-task",
+          task: {
+            id,
+            title: trimmed,
+            categoryId,
+            status: "todo",
+            start: range?.start ?? null,
+            end: range?.end ?? null,
+            memo: "",
+            checklist: null,
+            applicationId: null,
+            createdAt: now,
+            updatedAt: now,
+            completedAt: null,
+          },
+        });
+        return id;
+      },
+      cycleStatus: (id) => {
+        dispatch({ type: "cycle-status", id, now: new Date().toISOString() });
+      },
+      toggleCollapsed: (key) => {
+        dispatch({ type: "toggle-collapsed", key });
       },
     }),
     [state, saveStatus, ready],
