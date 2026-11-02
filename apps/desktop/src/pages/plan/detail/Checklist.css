@@ -132,9 +132,9 @@
   cursor: text;
 }
 
+/* 체크한 항목은 취소선 없이 흐리게만 (L15) */
 .task-check__item--on .task-check__text {
   color: var(--faint);
-  text-decoration: line-through;
 }
 
 /* 고치는 중: 목업 .ck.edit */

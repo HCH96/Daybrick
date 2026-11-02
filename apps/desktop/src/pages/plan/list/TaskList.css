@@ -315,7 +315,6 @@
 
 .plan-task--done .plan-task__title {
   color: var(--faint);
-  text-decoration: line-through;
 }
 
 .plan-task--done .plan-st {

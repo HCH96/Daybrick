@@ -16,43 +16,49 @@
 .plan-day-h {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  font-size: 12px;
-  color: var(--muted);
+  height: 42px;
+  padding: 0 12px;
+  font-size: 13px;
   font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .plan-day-h + .plan-day-h {
   border-left: 1px solid var(--border);
 }
 
+/* 요일과 날짜 숫자는 같은 크기·굵기, 숫자만 밝게 (목업 B2) */
 .plan-day-h b {
-  font-size: 16px;
+  margin-left: 4px;
+  font-weight: 600;
   color: var(--text);
-  font-weight: 800;
 }
 
-.plan-day-h--today {
+/* 오늘: 요일+숫자를 옅은 보라 알약으로 감싼다 (칸 몸통의 옅은 보라는 .plan-cols__today) */
+.plan-day-h--today span {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 9px;
+  margin-left: -6px;
+  border-radius: 99px;
+  background: var(--accent-soft);
   color: var(--accent);
 }
 
 .plan-day-h--today b {
-  width: 28px;
-  height: 28px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--on-accent);
-  font-size: 14px;
+  color: var(--accent);
 }
 
-.plan-day-h--sat {
+.plan-day-h--sat,
+.plan-day-h--sat b {
   color: var(--blue);
 }
 
-.plan-day-h--sun {
+.plan-day-h--sun,
+.plan-day-h--sun b {
   color: var(--red);
 }
 
@@ -134,10 +140,6 @@
 /* 완료는 흐리게 남긴다 (R24) */
 .plan-tbar--done {
   opacity: 0.45;
-}
-
-.plan-tbar--done .plan-tbar__title {
-  text-decoration: line-through;
 }
 
 /* 주 경계에서 잘린 쪽: 모서리 각지게 + ‹ › (R23) */
@@ -397,8 +399,12 @@
 /* 좁은 달력 (R46, 앱 최소 960×640 창에서 달력 폭 약 500px): 요일 칸 여백을 줄이고 지원 일정 알약은 시간부터 숨긴다 */
 @container plan-week (max-width: 620px) {
   .plan-day-h {
-    gap: 6px;
-    padding: 10px 8px;
+    padding: 0 8px;
+  }
+
+  .plan-day-h--today span {
+    margin-left: -3px;
+    padding: 0 7px;
   }
 
   .plan-ev em {

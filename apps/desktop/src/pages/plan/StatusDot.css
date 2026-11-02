@@ -16,21 +16,12 @@
   background: linear-gradient(90deg, var(--amber) 50%, transparent 50%);
 }
 
+/* 완료 (목업 r2 C1): 초록 채운 원 + 정가운데 SVG 체크. 테두리 꺾기 체크는 한쪽으로 치우쳐 보여서 바꿈 */
 .plan-st--done {
   border-color: var(--green);
-  background: var(--green);
-}
-
-.plan-st--done::after {
-  content: "";
-  position: absolute;
-  left: 4px;
-  top: 1px;
-  width: 4px;
-  height: 8px;
-  border: solid var(--on-accent);
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+  background: var(--green)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.6 6.2l2.2 2.2 4.6-4.8' fill='none' stroke='%2317171a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / 10px no-repeat;
 }
 
 .plan-st--sm {
@@ -39,11 +30,8 @@
   border-width: 1.6px;
 }
 
-.plan-st--sm.plan-st--done::after {
-  left: 3px;
-  top: 0;
-  width: 3px;
-  height: 7px;
+.plan-st--sm.plan-st--done {
+  background-size: 8px;
 }
 
 .plan-st--btn {

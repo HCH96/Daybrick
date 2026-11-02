@@ -11,7 +11,7 @@ interface StatusDotProps {
   onCycle?: () => void;
 }
 
-/** 태스크 상태 표시: 시작 전 회색 빈 원, 진행 중 주황 반쪽 원, 완료 초록 채운 원 + 체크 */
+/** 태스크 상태 표시: 시작 전 회색 빈 원, 진행 중 주황 반쪽 원, 완료 초록 채운 원 + 가운데 체크(SVG 그림, CSS 배경) */
 function StatusDot({ status, size = "md", onCycle }: StatusDotProps) {
   const className = ["plan-st", `plan-st--${status}`, size === "sm" && "plan-st--sm"].filter(Boolean).join(" ");
 

@@ -24,8 +24,6 @@ function SchedTooltip({ pill, anchor }: SchedTooltipProps) {
     <div className="plan-ev-tip" role="tooltip" style={style}>
       <b>{pill.heading}</b>
       {pill.kindLabel} · {when}
-      <br />
-      누르면 지원관리 카드가 열려요
     </div>,
     document.body,
   );
