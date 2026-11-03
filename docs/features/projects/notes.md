@@ -14,7 +14,6 @@
 - 10단계: 마무리·전체 빌드 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 모든 단계 완료
+- `/test projects`
 
 ## 확인할 문서 (경로는 docs/features/projects/ 기준, 파일 통째로 읽기)
-- ai/logs/L13.md
