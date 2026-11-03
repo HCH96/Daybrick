@@ -214,3 +214,53 @@
   margin-top: 2px;
   color: var(--muted);
 }
+
+/* ── 끌기 (R13, 목업 part-drag의 col.drop·card.ghost·card.lifted) ── */
+.kanban-card {
+  user-select: none;
+  touch-action: none;
+}
+
+body.kanban-dragging,
+body.kanban-dragging * {
+  cursor: grabbing !important;
+}
+
+/* 놓을 열: 열 전체를 보라 점선 + 옅은 보라 바탕. 열 크기는 그대로 두고 바깥으로 넓혀 칠한다 */
+.kanban-col--drop {
+  border-radius: 10px;
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 5px var(--accent-soft);
+  outline: 1.5px dashed var(--accent);
+  outline-offset: 5px;
+}
+
+/* 원래 자리: 흐린 점선 자리표시 */
+.kanban-card--placeholder {
+  opacity: 0.35;
+  border-style: dashed;
+}
+
+/* 포인터를 따라오는 카드 */
+.kanban-ghost {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.kanban-card--lifted {
+  transform: rotate(-2deg);
+  border-color: var(--border-2);
+  box-shadow: inset 3px 0 0 var(--cat), 0 12px 28px rgba(0, 0, 0, 0.5);
+}
+
+.kanban-card--lifted.kanban-card--running {
+  border-color: var(--accent);
+}
+
+.kanban-ghost__tip {
+  margin-top: 6px;
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
