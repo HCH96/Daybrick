@@ -52,6 +52,25 @@ export function LockIcon({ size = 13 }: { size?: number }) {
   );
 }
 
+/** 스트릭 불꽃 (오늘 요약 스트릭 타일, 목업 i-flame) */
+export function FlameIcon({ size = 13 }: { size?: number }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.2 1-3.6 2-4.5.2 1.6 1 2.6 2 3 0-3 .3-5.5 1-8.5z" />
+    </svg>
+  );
+}
+
 /** 타이머 버튼 아이콘 (목업 timer-running·timer-paused의 tm-btn 그림, 14px) */
 export function TimerPauseIcon() {
   return (

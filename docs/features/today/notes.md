@@ -7,15 +7,17 @@
 - 3단계: 타이머 동작·카드 글자 (자동 진행, 최종 테스트 대기)
 - 4단계: 종료·강제 종료 복구, 태스크 감시 (자동 진행, 최종 테스트 대기)
 - 5단계: 달리기 트랙·애니메이션 (자동 진행, 최종 테스트 대기)
+- 6단계: 오늘 요약 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 6단계: 오늘 요약 (집중·완료·스트릭 타일, 목표 고치기, 카테고리별 막대, 타임라인)
+- 7단계: 칸반 끌기 (카드를 다른 열로 끌어 상태 바꾸기, 실행 중 카드 처리)
 - 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D12, D13 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 하루 목표는 `state.data.settings.dailyGoalMinutes`이고, 트랙(`pages/today/timer/RunTrack.tsx`)이 이 값을 바로 읽으므로 reducer `set-goal`만 더하면 트랙 진행률도 같이 바뀐다. `dayTotal`·`collectSlices`·`splitByDay`는 `features/today/stats.ts`에 이미 있다(grep으로 export만 확인)
+- 주의: step 파일의 "플랜 D12"는 플랜 기능의 결정이다. docs/features/plan/ai/spec/decisions.md에서 `D12.` 줄만 grep으로 읽는다. 칸반은 `pages/today/kanban/`(Kanban → KanbanColumn → KanbanCard, running props), 타이머 완료·중단은 `useToday()`의 `complete`·`stop`
+- 주의: 오늘 요약(`pages/today/summary/`)은 플랜 데이터에서 바로 계산하므로 끌기로 상태가 바뀌면 완료 타일도 같이 바뀐다. 따로 손댈 것 없음
 
 ## 확인할 문서 (경로는 docs/features/today/ 기준, 파일 통째로 읽기)
-- ai/plan/step-06.md
-- ai/spec/req-summary.md
-- ai/logs/L09.md
-- human/mockups/part-summary.html의 summary-focus·summary-goal·summary-done·summary-category·summary-streak·summary-timeline·summary-streak-mid 구역, today.html의 today-summary·today-streak 구역 (CSS: today.css·parts.css에서 클래스 검색)
-- ai/plan/structure.md의 summary/ 줄 (새 파일 위치를 정할 때만)
+- ai/plan/step-07.md
+- ai/spec/req-kanban.md
+- ai/logs/L10.md
+- human/mockups/part-drag.html의 drag-kanban 구역 (CSS: today.css에서 lifted·ghost·drop 등 그 구역에 쓰인 클래스 검색)
+- ai/plan/structure.md의 useKanbanDrag·DragCardGhost 줄 (새 파일 위치를 정할 때만)

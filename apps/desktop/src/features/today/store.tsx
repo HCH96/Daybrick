@@ -20,6 +20,8 @@ export interface TodayStore {
   complete: () => void;
   /** 중단: 기록하고 태스크를 시작 전으로 (R20) */
   stop: () => void;
+  /** 하루 목표(분)를 바꾼다. 오늘 요약의 집중 시간 타일에서만 부른다 (R27, D4) */
+  setGoal: (minutes: number) => void;
 }
 
 const TodayContext = createContext<TodayStore | null>(null);
@@ -120,6 +122,7 @@ export function TodayProvider({ children }: { children: ReactNode }) {
       resume: () => dispatch({ type: "resume", now: new Date().toISOString() }),
       complete: () => finish("done"),
       stop: () => finish("todo"),
+      setGoal: (minutes) => dispatch({ type: "set-goal", minutes }),
     };
   }, [state, saveStatus, updateTask]);
 

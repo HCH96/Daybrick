@@ -9,6 +9,7 @@ import { formatKoreanDate, parseDateKey } from "../../utils/date";
 import ApplicationDetailModal from "../applications/detail/ApplicationDetailModal";
 import TaskDetailModal from "../plan/detail/TaskDetailModal";
 import Kanban from "./kanban/Kanban";
+import TodaySummary from "./summary/TodaySummary";
 import TimerCard from "./timer/TimerCard";
 import TimerEmpty from "./timer/TimerEmpty";
 import WeekProgress from "./WeekProgress";
@@ -19,7 +20,7 @@ import "./TodayPage.css";
  * 아래 왼쪽 약 60% 칸반 · 오른쪽 약 40%(위 타이머, 아래 오늘 요약).
  * 오늘 날짜는 자정·창 포커스 때 다시 계산한다 (R4).
  * 카드를 누르면 플랜 태스크 상세 팝업, 그 안 지원 카드는 지원 상세 팝업 (R14, PlanPage와 같은 방식).
- * 오른쪽 위는 도는 타이머 카드, 없으면 빈 상태 카드 (R16, R21). 오늘 요약 칸은 다음 단계에서 채운다.
+ * 오른쪽 위는 도는 타이머 카드, 없으면 빈 상태 카드 (R16, R21). 아래는 오늘 요약 (R27–R31).
  */
 function TodayPage() {
   const todayKey = useTodayKey();
@@ -53,7 +54,9 @@ function TodayPage() {
               <section className="today-panel today-page__timer" aria-label="타이머">
                 <TimerSlot plan={plan.data} today={today.data} todayKey={todayKey} />
               </section>
-              <section className="today-panel today-page__summary" aria-label="오늘 요약" />
+              <section className="today-panel today-page__summary" aria-label="오늘 요약">
+                <TodaySummary plan={plan.data} today={today.data} todayKey={todayKey} />
+              </section>
             </div>
           </div>
         </>

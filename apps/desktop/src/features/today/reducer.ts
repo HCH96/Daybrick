@@ -30,7 +30,13 @@ export type TodayAction =
    * 지난 실행에서 남은 타이머를 마지막 확인 시각(lastSeenAt)에서 닫아 기록으로 옮기고 비운다 (R24, R25, D9).
    * 열린 구간이 lastSeenAt보다 늦게 시작했으면 0초 이하라 버려진다.
    */
-  | { type: "recover"; recordIds: string[] };
+  | { type: "recover"; recordIds: string[] }
+  /** 하루 목표(분)를 바꾼다. 1~1440으로 맞춘다 (R27, D4) */
+  | { type: "set-goal"; minutes: number };
+
+/** 하루 목표 범위 (1분~24시간) */
+export const GOAL_MIN_MINUTES = 1;
+export const GOAL_MAX_MINUTES = 1440;
 
 export function reducer(state: TodayState, action: TodayAction): TodayState {
   switch (action.type) {
@@ -38,6 +44,12 @@ export function reducer(state: TodayState, action: TodayAction): TodayState {
       return { kind: "ready", data: action.data };
     case "load-failed":
       return { kind: "error", message: action.message };
+    case "set-goal": {
+      if (state.kind !== "ready" || !Number.isFinite(action.minutes)) return state;
+      const minutes = Math.min(GOAL_MAX_MINUTES, Math.max(GOAL_MIN_MINUTES, Math.round(action.minutes)));
+      if (minutes === state.data.settings.dailyGoalMinutes) return state;
+      return { kind: "ready", data: { ...state.data, settings: { ...state.data.settings, dailyGoalMinutes: minutes } } };
+    }
     default: {
       if (state.kind !== "ready") return state;
       const data = timerReducer(state.data, action);
