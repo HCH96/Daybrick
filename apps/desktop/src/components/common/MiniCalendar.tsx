@@ -4,7 +4,8 @@ import { parseDateKey, toDateKey } from "../../utils/date";
 import { ChevronLeftIcon, ChevronRightIcon } from "../icons/CommonIcons";
 import "./MiniCalendar.css";
 
-const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"] as const;
+const WEEKDAYS_SUN = ["일", "월", "화", "수", "목", "금", "토"] as const;
+const WEEKDAYS_MON = ["월", "화", "수", "목", "금", "토", "일"] as const;
 
 interface MiniCalendarProps {
   /** 고른 날짜 "YYYY-MM-DD". 없으면 null */
@@ -12,19 +13,26 @@ interface MiniCalendarProps {
   onSelect: (key: string) => void;
   /** 작은 점을 찍을 날짜들 (예: 일정이 있는 날, 6단계) */
   marked?: ReadonlySet<string>;
+  /** 주의 첫날: 0 일요일(기본), 1 월요일 (투데이 미루기 달력) */
+  weekStartsOn?: 0 | 1;
+  /** true를 돌려주는 날은 흐리게 두고 고를 수 없다 (예: 오늘까지) */
+  isDisabled?: (key: string) => boolean;
+  /** 옅은 보라로 칠할 날짜들 (예: 고른 날부터 이어지는 기간) */
+  highlighted?: ReadonlySet<string>;
 }
 
 /**
  * 날짜를 클릭해서 고르는 작은 달력 (R22·R25·R32). 직접 타이핑하지 않는다.
  * 처음에는 고른 날짜의 달(없으면 이번 달)을 보여준다.
  */
-function MiniCalendar({ value, onSelect, marked }: MiniCalendarProps) {
+function MiniCalendar({ value, onSelect, marked, weekStartsOn = 0, isDisabled, highlighted }: MiniCalendarProps) {
   const [month, setMonth] = useState(() => {
     const base = value ? parseDateKey(value) : new Date();
     return { year: base.getFullYear(), month: base.getMonth() };
   });
   const todayKey = toDateKey(new Date());
-  const weeks = getMonthGrid(month.year, month.month);
+  const weeks = getMonthGrid(month.year, month.month, weekStartsOn);
+  const weekdays = weekStartsOn === 1 ? WEEKDAYS_MON : WEEKDAYS_SUN;
 
   const move = (delta: number) => {
     const next = new Date(month.year, month.month + delta, 1);
@@ -47,15 +55,18 @@ function MiniCalendar({ value, onSelect, marked }: MiniCalendarProps) {
         </span>
       </div>
       <div className="mini-cal__grid" role="grid" aria-label={`${month.year}년 ${month.month + 1}월`}>
-        {WEEKDAYS.map((w) => (
+        {weekdays.map((w) => (
           <div key={w} className="mini-cal__weekday" role="columnheader">
             {w}
           </div>
         ))}
         {weeks.flat().map((cell) => {
+          const disabled = isDisabled?.(cell.key) ?? false;
           const classes = ["mini-cal__day"];
           if (!cell.inMonth) classes.push("mini-cal__day--out");
           if (cell.key === todayKey) classes.push("mini-cal__day--today");
+          if (disabled) classes.push("mini-cal__day--disabled");
+          if (highlighted?.has(cell.key) && cell.key !== value) classes.push("mini-cal__day--span");
           if (cell.key === value) classes.push("mini-cal__day--selected");
           if (marked?.has(cell.key)) classes.push("mini-cal__day--marked");
           return (
@@ -66,6 +77,7 @@ function MiniCalendar({ value, onSelect, marked }: MiniCalendarProps) {
               className={classes.join(" ")}
               aria-selected={cell.key === value}
               aria-label={`${cell.date.getMonth() + 1}월 ${cell.date.getDate()}일`}
+              disabled={disabled}
               onClick={() => onSelect(cell.key)}
             >
               {cell.date.getDate()}

@@ -103,3 +103,22 @@ export function TimerStopIcon() {
     </svg>
   );
 }
+
+/** 오늘로 가져오기 (미완료 팝업, 목업 i-in) */
+export function BringInIcon({ size = 13 }: { size?: number }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M4 12h11M11 7l5 5-5 5M20 4v16" />
+    </svg>
+  );
+}

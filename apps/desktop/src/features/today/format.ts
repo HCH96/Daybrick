@@ -8,9 +8,19 @@ function monthDay(key: string): string {
   return `${d.getMonth() + 1}/${d.getDate()}`;
 }
 
+/** 기간 글자 "10/28 – 10/30" (미완료 팝업 원래 기간·바뀔 기간, R35–R37) */
+export function formatDateRange(start: string, end: string): string {
+  return `${monthDay(start)} – ${monthDay(end)}`;
+}
+
 /** 이번 주 기간 글자 "11/2 – 11/8" (R5) */
 export function formatWeekRange(start: string, end: string): string {
-  return `${monthDay(start)} – ${monthDay(end)}`;
+  return formatDateRange(start, end);
+}
+
+/** 끝일이 지난 날수 "4일 지남" (R35) */
+export function formatOverdueDays(end: string, todayKey: string): string {
+  return `${diffDays(end, todayKey)}일 지남`;
 }
 
 /** 남은 기간 칩 (R10) */

@@ -1,8 +1,12 @@
+import { useCallback, useState } from "react";
 import { tasksInRange } from "../../features/plan/selectors";
 import type { PlanData } from "../../features/plan/types";
 import { formatWeekRange } from "../../features/today/format";
+import { listOverdue } from "../../features/today/overdue";
 import { addDays, startOfWeek } from "../../utils/date";
 import { AlertIcon } from "../../components/icons/TodayIcons";
+import OverduePopup from "./overdue/OverduePopup";
+import "./WeekProgress.css";
 
 interface WeekProgressProps {
   data: PlanData;
@@ -13,16 +17,20 @@ interface WeekProgressProps {
 /**
  * 이번 주 진행 바 (R5–R7): "이번 주 11/2 – 11/8" + 초록 막대 + "완료 N / M".
  * 이번 주(월~일, 플랜과 같은 주 계산)에 하루라도 걸린 태스크를 1개씩 센다 (R6).
- * 오른쪽 끝 "미완료 N"은 끝일이 오늘보다 앞이고 완료 아닌 태스크 수, 0이면 숨긴다. 누르는 동작은 8단계.
+ * 오른쪽 끝 "미완료 N"은 끝일이 오늘보다 앞이고 완료 아닌 태스크 수, 0이면 숨긴다.
+ * 누르면 끝내지 못한 태스크 팝업을 연다 (R34–R39).
  */
 function WeekProgress({ data, todayKey }: WeekProgressProps) {
+  const [overdueOpen, setOverdueOpen] = useState(false);
+  const closeOverdue = useCallback(() => setOverdueOpen(false), []);
+
   const weekStart = startOfWeek(todayKey);
   const weekEnd = addDays(weekStart, 6);
   const weekTasks = tasksInRange(data, weekStart, weekEnd);
   const total = weekTasks.length;
   const done = weekTasks.filter((t) => t.status === "done").length;
   const percent = total === 0 ? 0 : (done / total) * 100;
-  const overdue = data.tasks.filter((t) => t.end !== null && t.end < todayKey && t.status !== "done").length;
+  const overdue = listOverdue(data.tasks, todayKey);
 
   return (
     <>
@@ -35,12 +43,13 @@ function WeekProgress({ data, todayKey }: WeekProgressProps) {
       <div className="week-progress__count">
         완료 <b>{done}</b> / {total}
       </div>
-      {overdue > 0 && (
-        <button type="button" className="week-progress__overdue">
+      {overdue.length > 0 && (
+        <button type="button" className="week-progress__overdue" onClick={() => setOverdueOpen(true)}>
           <AlertIcon />
-          미완료 <b>{overdue}</b>
+          미완료 <b>{overdue.length}</b>
         </button>
       )}
+      {overdueOpen && <OverduePopup tasks={overdue} categories={data.categories} todayKey={todayKey} onClose={closeOverdue} />}
     </>
   );
 }

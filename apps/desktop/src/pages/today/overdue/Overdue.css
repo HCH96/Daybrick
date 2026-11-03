@@ -1,0 +1,251 @@
+/* 끝내지 못한 태스크 팝업 (R35–R39, 목업 part-overdue.html의 popup·od-*·picker) */
+
+/* Modal 기본 크기(760×760) 대신 폭 720, 높이는 내용만큼 */
+.modal.overdue-modal {
+  width: min(720px, 100%);
+  height: auto;
+  max-height: 100%;
+}
+
+.overdue__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 20px 6px;
+}
+
+.overdue__title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.overdue__count {
+  padding: 1px 9px;
+  border-radius: 99px;
+  background: var(--red-soft);
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.overdue__close {
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.overdue__close:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text);
+}
+
+.overdue__desc {
+  padding: 0 20px 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.overdue__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  border-top: 1px solid var(--border);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-2) transparent;
+}
+
+.overdue__foot {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 20px 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* ===== 한 줄 ===== */
+.overdue-row {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.overdue-row:last-child {
+  border-bottom: 0;
+}
+
+.overdue-row__top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.overdue-row__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--cat);
+  flex-shrink: 0;
+}
+
+.overdue-row__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.overdue-row__late {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--red);
+}
+
+.overdue-row__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 5px 0 10px 20px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.overdue-row__sep {
+  color: var(--border-2);
+}
+
+.overdue-row__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.overdue-row__acts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 20px;
+}
+
+.overdue-row__preview {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+.overdue-row__preview b {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ===== 버튼 (목업 .btn.sm) ===== */
+.overdue-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border-2);
+  border-radius: 7px;
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.overdue-btn:hover:not(:disabled),
+.overdue-btn--open {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.overdue-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.overdue-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.overdue-btn--good,
+.overdue-btn--good:hover:not(:disabled) {
+  border-color: transparent;
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.overdue-btn--good:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.overdue-btn--ghost,
+.overdue-btn--ghost:hover:not(:disabled) {
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted);
+}
+
+.overdue-btn--ghost:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.overdue-btn--primary,
+.overdue-btn--primary:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+}
+
+/* ===== 날짜 고르기 (R37, 목업 picker) ===== */
+.overdue-picker {
+  padding: 14px;
+  background: #26262c;
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+.overdue-picker .mini-cal__head {
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.overdue-picker .mini-cal__day {
+  height: 32px;
+  border-radius: 7px;
+  font-size: 12.5px;
+}
+
+.overdue-picker__note {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.overdue-picker__note b {
+  color: var(--accent);
+}
+
+.overdue-picker__btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 10px;
+}

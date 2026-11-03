@@ -30,6 +30,6 @@
 | 서버 연결 | 완료 (AI·사용자 테스트 r1 통과, 일시정지 재개 U31만 미확인) (notifications·job-search의 선행) | docs/features/server-setup/index.md |
 | 알림 | 완료 (r1 사용자 테스트 통과, 수정1은 AI 테스트 r2 통과·사용자 테스트 보류) (선행: server-setup, job-search의 선행) | docs/features/notifications/index.md |
 | 구직 관리 | 수정 구현 완료 (테스트 대기) (수정2, 수정1 사용자 테스트 r2는 수정2 뒤 함께) (선행: server-setup, notifications) | docs/features/job-search/index.md |
-| 투데이 (집중 타이머 합침) | 구현 중 (7/8단계 완료) | docs/features/today/index.md |
+| 투데이 (집중 타이머 합침) | 구현 중 (8/8단계 완료) | docs/features/today/index.md |
 | 집중 모드 | 시작 전 | - |
 | 공유 웹 | 시작 전 | - |
