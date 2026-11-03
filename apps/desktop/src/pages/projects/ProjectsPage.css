@@ -42,6 +42,83 @@
   min-height: 0;
   overflow-y: auto;
   padding-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 목록 윗줄 (R2): 왼쪽 60% 잔디, 오른쪽 40% 버블. 판 틀은 잔디·버블이 같이 쓴다 */
+.proj-top {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 16px;
+  height: 262px;
+  flex-shrink: 0;
+}
+
+.proj-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.proj-panel__head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.proj-panel__head > b {
+  font-size: 15px;
+}
+
+.proj-panel__head > span {
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.proj-panel__right {
+  margin-left: auto;
+}
+
+/* 실제 타이머 진행 중 표시 (R44): 빨간 점 6px, 1.4초 깜빡임 */
+.proj-panel__head > .proj-live {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.proj-live::before {
+  content: "";
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff5f5f;
+  animation: proj-live-blink 1.4s infinite;
+}
+
+.proj-live b {
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+@keyframes proj-live-blink {
+  50% {
+    opacity: 0.2;
+  }
 }
 
 /* 모닥불 그림 (common/Campfire.tsx, 목업 .fire). 크기는 컴포넌트가 정한다 */

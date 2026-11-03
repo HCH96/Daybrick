@@ -1,0 +1,75 @@
+/* 주간 투입 버블 (목업 projects.html의 projects-bubble, part-bubble-empty.html의 bubble-empty) */
+.proj-bubble__field {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.proj-bubble__svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: visible;
+  user-select: none;
+}
+
+.proj-bubble__node {
+  cursor: grab;
+  touch-action: none;
+}
+
+.proj-bubble__node:active {
+  cursor: grabbing;
+}
+
+.proj-bubble__pct {
+  fill: #fff;
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+.proj-bubble__row {
+  transition: transform 600ms cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.proj-bubble__name {
+  fill: var(--text);
+  font-size: 12px;
+}
+
+.proj-bubble__name--on {
+  font-weight: 700;
+}
+
+.proj-bubble__time {
+  fill: var(--muted);
+  font-size: 11px;
+  text-anchor: end;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 빈 상태 (R42) */
+.proj-bubble__empty {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.proj-bubble__ring {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px dashed var(--border-2);
+  margin-bottom: 4px;
+}
+
+.proj-bubble__empty small {
+  color: var(--faint);
+  font-size: 12px;
+}
