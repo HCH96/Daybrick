@@ -12,12 +12,14 @@ export type DragKind = "list-task" | "bar-move" | "bar-start" | "bar-end";
 
 /**
  * 놓을 곳: 달력의 날짜 칸, 왼쪽 목록 영역(`data-drop="list"`, 막대 옮기기만),
- * 카테고리 묶음(`data-drop-group="<id|none>"`, 목록 줄 끌기만). 미분류 묶음은 categoryId가 null (D22·D31)
+ * 카테고리 묶음(`data-drop-group="<id|none>"`, 목록 줄 끌기만). 미분류 묶음은 categoryId가 null (D22·D31),
+ * 프로젝트 단계 묶음(`data-drop-stage="<단계 id>"`, 목록 줄 끌기만, 프로젝트 R50)
  */
 export type DropTarget =
   | { kind: "day"; day: string }
   | { kind: "list" }
-  | { kind: "group"; categoryId: string | null };
+  | { kind: "group"; categoryId: string | null }
+  | { kind: "stage"; stageId: string };
 
 /** 묶음 요소의 `data-drop-group` 값 (미분류는 `NONE_GROUP_KEY`) */
 export function dropGroupValue(categoryId: string | null): string {
@@ -61,6 +63,12 @@ export function usePlanDrag(): PlanDragApi {
 export function useGroupDropHere(categoryId: string | null): boolean {
   const { drag } = usePlanDrag();
   return drag?.kind === "list-task" && drag.target?.kind === "group" && drag.target.categoryId === categoryId;
+}
+
+/** 끌고 있는 목록 줄을 이 프로젝트 단계 묶음에 놓으려는 중인지 (프로젝트 R50) */
+export function useStageDropHere(stageId: string): boolean {
+  const { drag } = usePlanDrag();
+  return drag?.kind === "list-task" && drag.target?.kind === "stage" && drag.target.stageId === stageId;
 }
 
 /** 이 태스크 줄을 목록에서 끌고 있는지 (원래 자리를 점선으로, R45) */

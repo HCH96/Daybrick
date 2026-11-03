@@ -28,7 +28,6 @@ function WeekCalendar({ weekStart, onOpenTask, onOpenApplication }: WeekCalendar
   const { state, addTask } = usePlan();
   const data = state.kind === "ready" ? state.data : null;
   const tasks = useMemo(() => data?.tasks ?? [], [data]);
-  const categories = data?.categories ?? [];
   const showSchedule = data?.view.showApplicationEvents ?? false;
   const { state: appState } = useApplications();
   const appData = appState.kind === "ready" ? appState.data : null;
@@ -101,7 +100,7 @@ function WeekCalendar({ weekStart, onOpenTask, onOpenApplication }: WeekCalendar
           <BarLayer
             bars={bars}
             tasks={tasks}
-            categories={categories}
+            plan={data}
             onOpenTask={onOpenTask}
             draftCol={draftCol}
             onSubmitDraft={submitDraft}

@@ -34,11 +34,14 @@ function findTarget(x: number, y: number, kind: DragKind, task: Task): DropTarge
   if (!el) return null;
   if (kind === "bar-move" && el.closest('[data-drop="list"]')) return { kind: "list" };
   if (kind === "list-task") {
+    const stageId = el.closest<HTMLElement>("[data-drop-stage]")?.dataset.dropStage;
+    if (stageId) return stageId === task.stageId ? null : { kind: "stage", stageId };
     const group = el.closest<HTMLElement>("[data-drop-group]");
     if (group) {
       const value = group.dataset.dropGroup;
       const categoryId = value === undefined || value === NONE_GROUP_KEY ? null : value;
-      return categoryId === task.categoryId ? null : { kind: "group", categoryId };
+      // 단계 태스크는 어느 카테고리 묶음(미분류 포함)에 놓아도 프로젝트에서 빠진다 (프로젝트 R50)
+      return categoryId === task.categoryId && task.stageId === null ? null : { kind: "group", categoryId };
     }
   }
   const calendar = el.closest('[data-drop="calendar"]');
@@ -71,6 +74,8 @@ function sameTarget(a: DropTarget | null, b: DropTarget | null): boolean {
       return b.kind === "day" && a.day === b.day;
     case "group":
       return b.kind === "group" && a.categoryId === b.categoryId;
+    case "stage":
+      return b.kind === "stage" && a.stageId === b.stageId;
   }
 }
 
@@ -81,7 +86,7 @@ function sameDrag(a: PlanDrag | null, b: PlanDrag): boolean {
 }
 
 /**
- * 플랜 화면 끌어 놓기 (D12): 목록 태스크 → 달력·다른 묶음(카테고리 바꾸기), 막대 옮기기·끝 끌기, 막대 → 목록(날짜 지우기).
+ * 플랜 화면 끌어 놓기 (D12): 목록 태스크 → 달력·다른 묶음(카테고리·프로젝트 단계 바꾸기), 막대 옮기기·끝 끌기, 막대 → 목록(날짜 지우기).
  * 포인터를 누르고 4px 넘게 움직이면 끌기를 시작하고, 놓으면 기간 또는 카테고리만 바꾼다. Esc는 취소.
  */
 function PlanDragProvider({ children }: { children: ReactNode }) {
@@ -157,8 +162,11 @@ function PlanDragProvider({ children }: { children: ReactNode }) {
           // 목록에 놓으면 날짜 지우기. 이미 날짜 없음이면 아무것도 안 함 (R27)
           if (task.start !== null) updateTask(taskId, { start: null, end: null });
         } else if (current.target?.kind === "group") {
-          // 다른 묶음에 놓으면 카테고리만 바꾼다. 묶음 안 자리는 R13 순서로 정해진다 (R45)
-          if (current.target.categoryId !== task.categoryId) updateTask(taskId, { categoryId: current.target.categoryId });
+          // 다른 묶음에 놓으면 카테고리만 바꾼다(단계는 비워짐, 프로젝트 D2). 묶음 안 자리는 R13 순서로 정해진다 (R45)
+          updateTask(taskId, { categoryId: current.target.categoryId });
+        } else if (current.target?.kind === "stage") {
+          // 단계 묶음에 놓으면 그 단계로 옮긴다. 카테고리는 비워진다 (프로젝트 R50)
+          updateTask(taskId, { stageId: current.target.stageId });
         } else if (current.preview && !samePeriod(current.preview, task)) {
           updateTask(taskId, current.preview);
         }

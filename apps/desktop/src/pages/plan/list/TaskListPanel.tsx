@@ -2,6 +2,9 @@ import { Fragment, useMemo, useState } from "react";
 import { PlusIcon, SmallCloseIcon } from "../../../components/icons/CommonIcons";
 import { groupTasksByCategory, NONE_GROUP_KEY, type TaskGroup } from "../../../features/plan/selectors";
 import { usePlan } from "../../../features/plan/store";
+import { projectFoldKey } from "../../../features/projects/group";
+import { activeProjects } from "../../../features/projects/progress";
+import { useTodayKey } from "../../../features/today/useTodayKey";
 import { dropGroupValue, useGroupDropHere, usePlanDrag } from "../drag/usePlanDrag";
 import { useReorder } from "../useReorder";
 import CategoryForm from "./CategoryForm";
@@ -9,11 +12,13 @@ import CategoryGroup from "./CategoryGroup";
 import GroupHead from "./GroupHead";
 import GroupTasks from "./GroupTasks";
 import ListEmpty from "./ListEmpty";
+import ProjectGroup from "./ProjectGroup";
 import QuickAdd from "./QuickAdd";
 import "./TaskList.css";
 
 /**
  * 왼쪽 영역: 빠른 입력, 카테고리별 묶음, 미분류, `+ 카테고리 추가` (R2, R6–R19).
+ * 카테고리 다음, 미분류 앞에 진행 중 프로젝트 › 단계 묶음을 프로젝트 순서대로 둔다 (프로젝트 R45–R47).
  * 카테고리 머리를 끌어 순서를 바꾼다 (R8). 미분류는 맨 아래 고정이고 태스크가 없으면 숨긴다 (R10).
  * 달력 막대를 이 영역에 끌어 놓으면 날짜가 지워진다 (R27, `data-drop="list"`).
  */
@@ -25,12 +30,14 @@ function TaskListPanel({ onOpenTask }: { onOpenTask: (id: string) => void }) {
   const categories = data?.categories ?? [];
   const collapsed = data?.view.collapsed ?? [];
   const groups = useMemo(() => (data ? groupTasksByCategory(data) : []), [data]);
+  const projects = useMemo(() => (data ? activeProjects(data) : []), [data]);
+  const todayKey = useTodayKey();
   const reorder = useReorder(categories.length, moveCategory);
   const { drag } = usePlanDrag();
   const dropHere = drag?.target?.kind === "list";
 
   const noneGroup = groups.find((g) => g.key === NONE_GROUP_KEY);
-  const isEmpty = categories.length === 0 && (data?.tasks.length ?? 0) === 0;
+  const isEmpty = categories.length === 0 && projects.length === 0 && (data?.tasks.length ?? 0) === 0;
 
   return (
     <div className={dropHere ? "plan-list plan-list--drop" : "plan-list"} data-drop="list">
@@ -58,6 +65,19 @@ function TaskListPanel({ onOpenTask }: { onOpenTask: (id: string) => void }) {
           </Fragment>
         ))}
         {reorder.dropGap === categories.length && <div className="plan-list__drop-line" />}
+
+        {data &&
+          projects.map((project) => (
+            <ProjectGroup
+              key={project.id}
+              project={project}
+              tasks={data.tasks}
+              collapsed={collapsed.includes(projectFoldKey(project.id))}
+              stageFold={data.view.stageFold}
+              todayKey={todayKey}
+              onOpenTask={onOpenTask}
+            />
+          ))}
 
         {noneGroup && (
           <UncategorizedGroup group={noneGroup} collapsed={collapsed.includes(NONE_GROUP_KEY)} onOpenTask={onOpenTask} />

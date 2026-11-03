@@ -1,8 +1,8 @@
 import type { CSSProperties } from "react";
 import { createPortal } from "react-dom";
-import { NONE_CATEGORY_COLOR } from "../../../features/plan/color";
 import { formatShortRange } from "../../../features/plan/format";
 import { usePlan } from "../../../features/plan/store";
+import { taskGroupInfo } from "../../../features/projects/group";
 import StatusDot from "../StatusDot";
 import type { DragPointer, PlanDrag } from "./usePlanDrag";
 
@@ -20,10 +20,9 @@ function DragGhost({ drag, pointer }: DragGhostProps) {
   if (state.kind !== "ready" || drag.kind === "bar-start" || drag.kind === "bar-end") return null;
   const task = state.data.tasks.find((t) => t.id === drag.taskId);
   if (!task) return null;
-  const category = task.categoryId ? state.data.categories.find((c) => c.id === task.categoryId) : undefined;
-
+  // 카테고리 색, 프로젝트 단계 태스크는 프로젝트 색 (프로젝트 R49)
   const style = {
-    "--cat": category?.color ?? NONE_CATEGORY_COLOR,
+    "--cat": taskGroupInfo(state.data, task).color,
     left: pointer.x - pointer.offsetX,
     top: pointer.y - pointer.offsetY,
     width: drag.kind === "list-task" ? Math.min(pointer.width, 260) : pointer.width,

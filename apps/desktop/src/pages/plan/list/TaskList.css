@@ -568,3 +568,36 @@
 .plan-ghead--drop .plan-ghead__tools {
   display: none;
 }
+
+/* ===== 프로젝트 › 단계 묶음 (프로젝트 R45–R48). 카테고리 묶음 모양에 한 층 들인다 ===== */
+.plan-pgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.plan-ghead--stage {
+  height: 30px;
+  padding-left: 22px;
+}
+
+.plan-ghead--stage .plan-ghead__name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.plan-ghead--stage:not(.plan-ghead--closed) .plan-ghead__name {
+  color: var(--text);
+}
+
+.plan-sgroup__range {
+  flex-shrink: 0;
+  font-size: 11.5px;
+  color: var(--faint);
+}
+
+.plan-sgroup .plan-task,
+.plan-sgroup .plan-done-row {
+  padding-left: 48px;
+}

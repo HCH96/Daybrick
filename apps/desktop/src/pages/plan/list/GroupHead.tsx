@@ -8,8 +8,8 @@ interface GroupHeadProps {
   collapsed: boolean;
   /** 머리를 누르면 접기·펴기 (R12). 도구 버튼을 누른 것은 제외. */
   onToggle: () => void;
-  /** `+`: 이 묶음 안에 바로 적기 (R17) */
-  onAdd: () => void;
+  /** `+`: 이 묶음 안에 바로 적기 (R17). 주지 않으면 `+`가 없다 (프로젝트 묶음) */
+  onAdd?: () => void;
   /** 바로 적는 입력칸이 열려 있는지 (`+`를 눌린 모양으로) */
   adding?: boolean;
   /** 미분류면 true: 테두리만 있는 점, `…` 없음, 끌 수 없음 (R10) */
@@ -21,7 +21,7 @@ interface GroupHeadProps {
   /** 끌고 있는 태스크 줄을 이 묶음에 놓을 수 있을 때 true: 도구 대신 "여기로 옮기기" 알약 (R45) */
   dropHint?: boolean;
   onPointerDown?: (e: ReactPointerEvent<HTMLDivElement>) => void;
-  /** `…` 버튼을 누르면 그 버튼 요소를 넘긴다 (메뉴를 그 옆에 띄우려고) */
+  /** `…` 버튼을 누르면 그 버튼 요소를 넘긴다 (메뉴를 그 옆에 띄우려고). 주지 않으면 `…`가 없다 */
   onMenu?: (button: HTMLElement) => void;
 }
 
@@ -70,26 +70,28 @@ function GroupHead(props: GroupHeadProps) {
       <span className="plan-ghead__count">{count}</span>
       {dropHint && <span className="plan-ghead__drop-hint">여기로 옮기기</span>}
       <span className="plan-ghead__tools">
-        {!fixed && (
+        {!fixed && onMenu && (
           <button
             type="button"
             className={active ? "plan-ghead__tool plan-ghead__tool--on" : "plan-ghead__tool"}
             aria-label={`${name} 메뉴`}
-            onClick={(e) => onMenu?.(e.currentTarget)}
+            onClick={(e) => onMenu(e.currentTarget)}
           >
             <DotsIcon size={14} />
           </button>
         )}
-        <button
-          type="button"
-          className={adding ? "plan-ghead__tool plan-ghead__tool--on" : "plan-ghead__tool"}
-          aria-label={`${name}에 태스크 추가`}
-          // 입력칸이 열린 채 다시 누르면, 입력칸이 포커스를 잃어 닫혔다가 다시 열리지 않게 한다
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={onAdd}
-        >
-          <PlusIcon size={14} />
-        </button>
+        {onAdd && (
+          <button
+            type="button"
+            className={adding ? "plan-ghead__tool plan-ghead__tool--on" : "plan-ghead__tool"}
+            aria-label={`${name}에 태스크 추가`}
+            // 입력칸이 열린 채 다시 누르면, 입력칸이 포커스를 잃어 닫혔다가 다시 열리지 않게 한다
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={onAdd}
+          >
+            <PlusIcon size={14} />
+          </button>
+        )}
       </span>
     </div>
   );

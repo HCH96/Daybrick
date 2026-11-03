@@ -6,6 +6,8 @@ import { NONE_CATEGORY_COLOR } from "../../../features/plan/color";
 import { checklistProgress } from "../../../features/plan/selectors";
 import { usePlan } from "../../../features/plan/store";
 import type { Category, Task, TaskStatus } from "../../../features/plan/types";
+import { NONE_GROUP_INFO, projectStageName, taskGroupInfo } from "../../../features/projects/group";
+import { activeProjects } from "../../../features/projects/progress";
 import CategoryOption from "../CategoryOption";
 import StatusDot from "../StatusDot";
 import LinkedCardRow from "./LinkedCardRow";
@@ -32,11 +34,14 @@ interface PropRowsProps {
  * 값을 누르면 고르기 목록이 열린다. 카테고리는 카테고리 색 옅은 칩, 상태는 표시 + 글자.
  */
 function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
-  const { updateTask, createChecklist } = usePlan();
+  const { state, updateTask, createChecklist } = usePlan();
   const [open, setOpen] = useState<OpenMenu>(null);
+  const data = state.kind === "ready" ? state.data : null;
 
-  // 없는 카테고리를 가리키면 미분류로 보여준다 (목록 묶음과 같게)
-  const category = categories.find((c) => c.id === task.categoryId) ?? null;
+  // 없는 카테고리·단계를 가리키면 미분류로 보여준다 (목록 묶음과 같게). 단계면 프로젝트 색·"프로젝트 › 단계" (프로젝트 R52)
+  const info = data ? taskGroupInfo(data, task) : NONE_GROUP_INFO;
+  const category = info.kind === "category" ? (categories.find((c) => c.id === task.categoryId) ?? null) : null;
+  const projects = data ? activeProjects(data) : [];
   const statusLabel = STATUS_OPTIONS.find((o) => o.status === task.status)?.label ?? "";
 
   const toggle = (kind: "category" | "status", anchor: HTMLElement) =>
@@ -44,6 +49,10 @@ function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
 
   const pickCategory = (id: string | null) => {
     updateTask(task.id, { categoryId: id });
+    setOpen(null);
+  };
+  const pickStage = (stageId: string) => {
+    updateTask(task.id, { stageId });
     setOpen(null);
   };
   const pickStatus = (status: TaskStatus) => {
@@ -57,13 +66,13 @@ function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
         <button
           type="button"
           className={open?.kind === "category" ? "task-detail__cat task-detail__cat--on" : "task-detail__cat"}
-          style={{ "--cat": category?.color ?? NONE_CATEGORY_COLOR } as CSSProperties}
+          style={{ "--cat": info.color } as CSSProperties}
           aria-haspopup="menu"
           aria-expanded={open?.kind === "category"}
           onClick={(e) => toggle("category", e.currentTarget)}
         >
-          <span className={category ? "plan-cat-dot" : "plan-cat-dot plan-cat-dot--ring"} />
-          {category?.name ?? "미분류"}
+          <span className={info.kind === "none" ? "plan-cat-dot plan-cat-dot--ring" : "plan-cat-dot"} />
+          {info.name}
         </button>
       </PropRow>
 
@@ -103,10 +112,23 @@ function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
 
       {open?.kind === "category" && (
         <Popover anchor={open.anchor} onClose={() => setOpen(null)} width={210} ariaLabel="카테고리 고르기" className="cat-menu">
-          <CategoryOption name="미분류" color={NONE_CATEGORY_COLOR} ring selected={category === null} onPick={() => pickCategory(null)} />
+          <CategoryOption name="미분류" color={NONE_CATEGORY_COLOR} ring selected={info.kind === "none"} onPick={() => pickCategory(null)} />
           {categories.map((c) => (
             <CategoryOption key={c.id} name={c.name} color={c.color} selected={category?.id === c.id} onPick={() => pickCategory(c.id)} />
           ))}
+          {/* 진행 중 프로젝트의 단계 (프로젝트 R52). 고르면 카테고리는 비워진다 (프로젝트 D2) */}
+          {projects.some((p) => p.stages.length > 0) && <div className="pop-sep" />}
+          {projects.map((p) =>
+            p.stages.map((s, index) => (
+              <CategoryOption
+                key={s.id}
+                name={projectStageName(p, index)}
+                color={p.color}
+                selected={info.kind === "stage" && task.stageId === s.id}
+                onPick={() => pickStage(s.id)}
+              />
+            )),
+          )}
         </Popover>
       )}
       {open?.kind === "status" && (
