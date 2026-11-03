@@ -8,7 +8,7 @@ import {
   PlanIcon,
   SchedulerIcon,
   SettingsIcon,
-  TimerIcon,
+  TodayIcon,
 } from "../components/icons/NavIcons";
 import { makePlaceholderPage } from "../pages/PlaceholderPage";
 import HomePage from "../pages/home/HomePage";
@@ -16,6 +16,7 @@ import PlanPage from "../pages/plan/PlanPage";
 import ApplicationsPage from "../pages/applications/ApplicationsPage";
 import JobSearchPage from "../pages/job-search/JobSearchPage";
 import SettingsPage from "../pages/settings/SettingsPage";
+import TodayPage from "../pages/today/TodayPage";
 
 export interface PageDef {
   id: PageId;
@@ -67,11 +68,11 @@ export const pages: PageDef[] = [
     component: JobSearchPage,
   },
   {
-    id: "timer",
-    label: PAGE_LABELS.timer,
-    navLabel: NAV_LABELS.timer,
-    icon: TimerIcon,
-    component: makePlaceholderPage("타이머", "집중 타이머"),
+    id: "today",
+    label: PAGE_LABELS.today,
+    navLabel: NAV_LABELS.today,
+    icon: TodayIcon,
+    component: TodayPage,
   },
   {
     id: "settings",

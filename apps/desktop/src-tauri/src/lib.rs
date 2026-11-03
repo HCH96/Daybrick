@@ -3,6 +3,7 @@ mod notifications;
 mod plan;
 mod server;
 mod storage;
+mod today;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -19,6 +20,8 @@ pub fn run() {
             notifications::save_notifications,
             plan::load_plan,
             plan::save_plan,
+            today::load_today,
+            today::save_today,
             server::config::load_server_config,
             server::config::save_server_config,
             server::config::clear_server_connection,

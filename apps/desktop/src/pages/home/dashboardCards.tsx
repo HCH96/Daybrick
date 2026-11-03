@@ -50,10 +50,10 @@ export const dashboardCards: DashboardCardDef[] = [
   {
     id: "focus-time",
     title: "오늘 집중 시간",
-    linkTo: "timer",
+    linkTo: "today",
     size: "narrow",
     body: () => (
-      <EmptyState linkTo="timer" description="타이머 기능을 만들면 여기에 오늘 집중한 시간이 보여요" />
+      <EmptyState linkTo="today" description="타이머 기능을 만들면 여기에 오늘 집중한 시간이 보여요" />
     ),
   },
   {
@@ -66,7 +66,7 @@ export const dashboardCards: DashboardCardDef[] = [
   {
     id: "weekly-focus",
     title: "이번 주 집중",
-    linkTo: "timer",
+    linkTo: "today",
     size: "narrow",
     body: WeeklyFocusEmpty,
   },

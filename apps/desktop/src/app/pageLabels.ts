@@ -10,7 +10,7 @@ export const PAGE_LABELS: Record<PageId, string> = {
   scheduler: "스케줄러",
   applications: "지원 현황",
   "job-search": "구직 관리",
-  timer: "타이머",
+  today: "투데이",
   settings: "설정",
 };
 
@@ -25,6 +25,6 @@ export const NAV_LABELS: Record<PageId, string> = {
   scheduler: "Scheduler",
   applications: "Applications",
   "job-search": "Job Search",
-  timer: "Timer",
+  today: "Today",
   settings: "Settings",
 };
