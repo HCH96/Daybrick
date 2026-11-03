@@ -1,18 +1,30 @@
+import { useNavigation } from "../../app/navigation";
 import { PAGE_LABELS } from "../../app/pageLabels";
 import { activeProjects } from "../../features/projects/progress";
 import { useProjectClock } from "../../features/projects/useProjectClock";
 import { usePlan } from "../../features/plan/store";
+import ProjectDetail from "./detail/ProjectDetail";
 import ProjectList from "./list/ProjectList";
 import "./ProjectsPage.css";
 
 /**
  * 프로젝트 화면 (R1): 제목 "프로젝트" + 진행 중 개수, 아래에 카드 목록 (R3, R5–R8).
- * 윗줄 잔디·버블은 6·7단계, 상세 전환은 3단계에서 붙인다.
+ * 방문 기록의 sub가 있는 프로젝트 id면 그 프로젝트 상세를 연다 (R4, D7). 없거나 지워진 프로젝트면 목록.
+ * 윗줄 잔디·버블은 6·7단계에서 붙인다.
  */
 function ProjectsPage() {
   const plan = usePlan().state;
+  const { currentSub } = useNavigation();
   const clock = useProjectClock();
   const activeCount = plan.kind === "ready" ? activeProjects(plan.data).length : 0;
+  const opened =
+    plan.kind === "ready" && currentSub !== undefined
+      ? plan.data.projects.find((p) => p.id === currentSub)
+      : undefined;
+
+  if (plan.kind === "ready" && opened) {
+    return <ProjectDetail key={opened.id} project={opened} data={plan.data} clock={clock} />;
+  }
 
   return (
     <div className="projects-page">

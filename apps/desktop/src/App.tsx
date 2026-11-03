@@ -78,11 +78,12 @@ function AppMain() {
   const { updateOpen, closeUpdate } = useServer();
 
   // 다른 메뉴로 가면(뒤로·앞으로 포함) 서버 업데이트 화면을 닫는다
-  const { currentPage, navigate: go, goBack: back, goForward: forward, canGoBack, canGoForward } = history;
+  const { currentPage, currentSub, navigate: go, goBack: back, goForward: forward, canGoBack, canGoForward } =
+    history;
   const navigate = useCallback(
-    (id: PageId) => {
+    (id: PageId, sub?: string) => {
       closeUpdate();
-      go(id);
+      go(id, sub);
     },
     [closeUpdate, go],
   );
@@ -102,8 +103,8 @@ function AppMain() {
   });
 
   const navigation = useMemo<Navigation>(
-    () => ({ currentPage, navigate, goBack, goForward, canGoBack, canGoForward }),
-    [currentPage, navigate, goBack, goForward, canGoBack, canGoForward],
+    () => ({ currentPage, currentSub, navigate, goBack, goForward, canGoBack, canGoForward }),
+    [currentPage, currentSub, navigate, goBack, goForward, canGoBack, canGoForward],
   );
   const Page = findPage(currentPage).component;
 

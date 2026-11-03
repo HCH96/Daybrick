@@ -3,7 +3,10 @@ import type { PageId } from "./types";
 
 export interface Navigation {
   currentPage: PageId;
-  navigate: (page: PageId) => void;
+  /** 화면 안의 하위 위치 (예: 프로젝트 상세의 프로젝트 id). 없으면 그 화면의 첫 모습 */
+  currentSub?: string;
+  /** sub 없이 부르면 그 화면의 첫 모습(목록 등)으로 간다 */
+  navigate: (page: PageId, sub?: string) => void;
   goBack: () => void;
   goForward: () => void;
   canGoBack: boolean;

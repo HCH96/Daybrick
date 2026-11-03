@@ -20,7 +20,7 @@
 | [visual.md](visual.md) | 버블 시안 값, 모닥불 단계, 잔디 연출 값, 목업에서 보고 정할 후보 |
 | [extension.md](extension.md) | 확장 구조: 공용 저장소, 주 계산, 시간 합계 계산 |
 | [mockup.md](mockup.md) | 목업 경로(2026-11-04 승인)와 목업에서 정한 것 |
-| [decisions.md](decisions.md) | 결정 사항 D1–D11 |
+| [decisions.md](decisions.md) | 결정 사항 D1–D14 |
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (2026-11-04 승인). 프로젝트·단계는 plan.json에 함께 두고 파일은 옮기지 않으며(D5–D6), 앱 뒤로가기가 상세도 기억하고 버블은 d3-force를 쓴다(D7–D8)

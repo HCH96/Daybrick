@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import { useNavigation } from "../../../app/navigation";
 import { PlusIcon } from "../../../components/icons/CommonIcons";
 import { activeProjects, doneProjects } from "../../../features/projects/progress";
 import { EMPTY_TIME, type ProjectClock } from "../../../features/projects/useProjectClock";
@@ -22,6 +23,8 @@ interface ProjectListProps {
  */
 function ProjectList({ data, clock }: ProjectListProps) {
   const { moveProject, setProjectsDoneOpen } = usePlan();
+  const { navigate } = useNavigation();
+  const openProject = useCallback((id: string) => navigate("projects", id), [navigate]);
   const [creating, setCreating] = useState(false);
   const active = useMemo(() => activeProjects(data), [data]);
   const done = useMemo(() => doneProjects(data), [data]);
@@ -52,6 +55,7 @@ function ProjectList({ data, clock }: ProjectListProps) {
               dropAfter={reorder.dropGap === active.length && i === active.length - 1}
               cardRef={reorder.itemRef(i)}
               onPointerDown={reorder.startDrag(i)}
+              onOpen={openProject}
             />
           ))}
         </div>
@@ -70,6 +74,7 @@ function ProjectList({ data, clock }: ProjectListProps) {
             time={clock.byProject.get(project.id) ?? EMPTY_TIME}
             todayKey={clock.todayKey}
             finished
+            onOpen={openProject}
           />
         ))}
       </DoneFold>

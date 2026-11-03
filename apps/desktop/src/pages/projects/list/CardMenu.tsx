@@ -14,6 +14,8 @@ interface CardMenuProps {
   /** 이 프로젝트 단계에 든 태스크 수 (삭제 확인 문구) */
   taskCount: number;
   onClose: () => void;
+  /** 삭제한 뒤 할 일 (상세에서는 목록으로 돌아간다) */
+  onDeleted?: () => void;
 }
 
 type Phase = "menu" | "edit" | "confirm";
@@ -22,7 +24,7 @@ type Phase = "menu" | "edit" | "confirm";
  * 카드 `…` 메뉴 (프로젝트 R8·R19, 목업 projects-cards의 .menu).
  * 이름·색 바꾸기 → 작은 팝업 / (단계 편집은 5단계에서) / 빨간 프로젝트 삭제 → 확인 창 → 태스크는 미분류로.
  */
-function CardMenu({ anchor, project, taskCount, onClose }: CardMenuProps) {
+function CardMenu({ anchor, project, taskCount, onClose, onDeleted }: CardMenuProps) {
   const { deleteProject } = usePlan();
   const [phase, setPhase] = useState<Phase>("menu");
 
@@ -37,6 +39,7 @@ function CardMenu({ anchor, project, taskCount, onClose }: CardMenuProps) {
         onConfirm={() => {
           onClose();
           deleteProject(project.id);
+          onDeleted?.();
         }}
       />
     );

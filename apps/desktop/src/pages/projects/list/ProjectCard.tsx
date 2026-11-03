@@ -23,6 +23,8 @@ interface ProjectCardProps {
   dropAfter?: boolean;
   cardRef?: (el: HTMLElement | null) => void;
   onPointerDown?: (e: ReactPointerEvent<HTMLElement>) => void;
+  /** 카드를 누르면 상세 열기 (프로젝트 R4). `…` 버튼과 메뉴·팝업 안 클릭은 빼고 부른다 */
+  onOpen?: (projectId: string) => void;
 }
 
 /** 이만큼 지난 카드는 글자를 흐리게 (잉걸불부터) */
@@ -31,7 +33,7 @@ const COLD_DAYS_FIRES = new Set(["ember", "out", "wood"]);
 /**
  * 프로젝트 카드 한 줄 (프로젝트 R3, 목업 projects-cards의 .pcard, 높이 72px).
  * 끌기 손잡이 · 색 띠 · 이름 + 종류 + 현재 단계 · 작은 트랙 · 모닥불 + 마지막 작업 · 누적 · `…`.
- * 카드를 누르는 동작(상세 열기)은 3단계에서 붙인다.
+ * 카드를 누르면 상세가 열린다 (끈 뒤의 클릭은 useReorder가 막는다, D13).
  */
 function ProjectCard({
   project,
@@ -44,6 +46,7 @@ function ProjectCard({
   dropAfter = false,
   cardRef,
   onPointerDown,
+  onOpen,
 }: ProjectCardProps) {
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
   const fire = fireByLastDay(time.lastDay, todayKey);
@@ -62,6 +65,11 @@ function ProjectCard({
       onPointerDown={(e) => {
         // 메뉴·팝업은 겹침 층에 그려져도 React 이벤트가 카드까지 올라오므로, 카드 안에서 누른 것만 끌기로 본다
         if (onPointerDown && e.currentTarget.contains(e.target as Node)) onPointerDown(e);
+      }}
+      onClick={(e) => {
+        const target = e.target as Element;
+        if (!onOpen || !e.currentTarget.contains(target) || target.closest(".proj-card__more")) return;
+        onOpen(project.id);
       }}
     >
       <span className="proj-card__grip" aria-hidden="true">

@@ -13,3 +13,4 @@
 - D11. 프로젝트 만들기 입력은 종류별 유니온 `NewProject`(단계형 `stageNames` / 주차형 `startWeek`·`weekCount`·`weekNames?`)로 store `addProject`에 넘긴다. 시간 계산 값은 투데이와 같이 밀리초다 (적용: 2단계 이후) (기록: L04)
 - D12. 프로젝트 색 고르기(기본 색 7개 + `직접 고르기` = 플랜 ColorPicker)는 `pages/projects/create/ColorChoice.tsx` 하나를 만들기 창·이름·색 바꾸기·단계 편집 창이 같이 쓴다. 프로젝트 창의 버튼·입력칸·단계 줄 클래스(`proj-btn`·`proj-input`·`proj-step` 등)는 `create/Create.css`에 있다 (적용: 2단계 이후) (기록: L05)
 - D13. 진행 중 카드는 카드 전체를 눌러 끈다(useReorder, 4px 넘게 움직여야 끌기, 끈 뒤 클릭은 막힘). 카드 클릭(상세 열기)은 카드 onClick으로 붙인다. 겹침 층 팝업에서 올라온 React 이벤트는 카드 DOM 안이 아니면 끌기로 보지 않는다 (적용: 2단계 이후) (기록: L05)
+- D14. 상세 화면 CSS(머리 `proj-detail__*`, 진행 판 `proj-progress*`, 깃발 트랙 `proj-track*`·`proj-flag*`)는 `pages/projects/detail/Detail.css` 하나에 둔다. 상세의 `…` 메뉴는 `list/CardMenu`를 그대로 쓰고 `onDeleted`로 삭제 뒤 목록으로 간다. 프로젝트 색 `--c`는 `ProjectDetail` 맨 바깥에서 내려준다 (적용: 3단계 이후) (기록: L06)
