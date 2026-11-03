@@ -2,7 +2,6 @@
  * 프로젝트별 시간 합계 (순수 함수, 프로젝트 R26·R28·R35·R54). 투데이 시간 기록을 읽기만 한다.
  * 태스크 id → 단계 → 프로젝트로 묶는다. 시간 값은 모두 밀리초.
  */
-import { addDays } from "../../utils/date";
 import type { PlanData } from "../plan/types";
 import { collectSlices, splitByDay, type Slice } from "../today/stats";
 import type { TodayData } from "../today/types";
@@ -50,23 +49,6 @@ export function dayTotalsByProject(plan: PlanData, today: TodayData, now: number
     const days = new Map<string, number>();
     for (const [day, parts] of splitByDay(slices)) days.set(day, projectTotal(parts));
     result.set(projectId, days);
-  }
-  return result;
-}
-
-/** weekStart(월요일)부터 7일 동안의 프로젝트별 합 (주간 투입 버블, 프로젝트 R35) */
-export function weekTotalsByProject(
-  plan: PlanData,
-  today: TodayData,
-  now: number,
-  weekStart: string,
-): Map<string, number> {
-  const weekEnd = addDays(weekStart, 6);
-  const result = new Map<string, number>();
-  for (const [projectId, days] of dayTotalsByProject(plan, today, now)) {
-    let total = 0;
-    for (const [day, ms] of days) if (weekStart <= day && day <= weekEnd) total += ms;
-    if (total > 0) result.set(projectId, total);
   }
   return result;
 }

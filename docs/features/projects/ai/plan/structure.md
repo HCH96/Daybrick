@@ -19,7 +19,7 @@
 |---|---|---|
 | 새 `progress.ts` | `stageTasks`, `isStageDone`, `currentStage`, `runnerPosition`, `isProjectDone`, `activeProjects`, `doneProjects` | 1 |
 | 새 `weeks.ts` | `weekRange(project, index)`, `currentWeekIndex`, `stageLabel` | 1 |
-| 새 `time.ts` | `projectSlices`, `projectTotal`, `weekTotalsByProject`, `lastWorkDay`, `dayTotalsByProject` (today `collectSlices`·`splitByDay` 사용) | 1 |
+| 새 `time.ts` | `projectSlices`, `projectTotal`, `lastWorkDay`, `dayTotalsByProject` (today `collectSlices`·`splitByDay` 사용) | 1 |
 | 새 `campfire.ts` | `fireByLastDay`(6단계), `fireByStreak`(4단계), `formatLastWork` | 1 |
 | 새 `useProjectClock.ts` | 플랜 + 투데이 + 지금 시각 → 프로젝트별 시간 값, 실행 중 프로젝트 (D9) | 2 |
 | 새 `useGoalReset.ts` | 완료가 아니게 된 프로젝트의 `goalSeenAt` 비우기 | 5 |
