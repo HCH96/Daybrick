@@ -3,6 +3,7 @@ import { EMPTY_TIME, type ProjectClock } from "../../../features/projects/usePro
 import type { PlanData, Project } from "../../../features/plan/types";
 import DetailHead from "./DetailHead";
 import ProgressPanel from "./ProgressPanel";
+import StageBoard from "./StageBoard";
 import "./Detail.css";
 
 interface ProjectDetailProps {
@@ -12,8 +13,8 @@ interface ProjectDetailProps {
 }
 
 /**
- * 프로젝트 상세 (프로젝트 R21–R28): 머리 + 진행 상황 판.
- * 아래 단계 영역(R29–R34)은 4단계에서 붙인다. 프로젝트 색은 `--c`로 아래에 내려준다.
+ * 프로젝트 상세 (프로젝트 R21–R34): 머리 + 진행 상황 판 + 아래 단계 칸(남은 높이를 차지).
+ * 프로젝트 색은 `--c`로 아래에 내려준다 (D14).
  */
 function ProjectDetail({ project, data, clock }: ProjectDetailProps) {
   return (
@@ -26,6 +27,7 @@ function ProjectDetail({ project, data, clock }: ProjectDetailProps) {
         todayKey={clock.todayKey}
         running={clock.runningProjectId === project.id}
       />
+      <StageBoard project={project} tasks={data.tasks} todayKey={clock.todayKey} />
     </div>
   );
 }
