@@ -1,9 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useReducer, useRef, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import { usePlan } from "../plan/store";
 import { loadTodayData } from "./storage";
 import { reducer, type TodayState } from "./reducer";
 import { runStartFlow } from "./startFlow";
 import { useTodayAutoSave, type SaveStatus } from "./useAutoSave";
+import { useHeartbeat } from "./useHeartbeat";
+import { useTimerGuard } from "./useTimerGuard";
 
 export interface TodayStore {
   state: TodayState;
@@ -29,8 +31,11 @@ const TodayContext = createContext<TodayStore | null>(null);
  */
 export function TodayProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, { kind: "loading" });
-  const saveStatus = useTodayAutoSave(state.kind === "ready" ? state.data : null);
-  const { updateTask } = usePlan();
+  // 지난 실행에서 남은 타이머 복구가 끝났는가. 끝나기 전에는 1분 확인·창 닫기 기록·태스크 감시를 하지 않는다
+  // (남은 타이머의 lastSeenAt을 지금으로 덮어쓰면 꺼져 있던 시간까지 기록되므로).
+  const [recovered, setRecovered] = useState(false);
+  const saveStatus = useTodayAutoSave(state.kind === "ready" ? state.data : null, recovered);
+  const { state: planState, updateTask } = usePlan();
 
   // 비동기 시작 흐름 뒤에도 최신 상태를 보도록 담아 둔다
   const stateRef = useRef(state);
@@ -52,6 +57,38 @@ export function TodayProvider({ children }: { children: ReactNode }) {
       alive = false;
     };
   }, []);
+
+  // 시작 때 복구 (R24, R25, D9): 투데이 데이터가 준비되고 플랜이 읽기를 마치면 한 번.
+  // 남은 타이머를 lastSeenAt에서 닫아 기록하고, 태스크가 아직 있고 완료가 아니면 시작 전으로 되돌린다.
+  // 플랜 읽기가 실패했으면 기록만 하고 상태 바꾸기는 건너뛴다.
+  useEffect(() => {
+    if (recovered || state.kind !== "ready" || planState.kind === "loading") return;
+    const running = state.data.running;
+    if (running !== null) {
+      dispatch({ type: "recover", recordIds: running.segments.map(() => crypto.randomUUID()) });
+      if (planState.kind === "ready") {
+        const task = planState.data.tasks.find((t) => t.id === running.taskId);
+        if (task !== undefined && task.status !== "done") updateTask(task.id, { status: "todo" });
+      }
+    }
+    setRecovered(true);
+  }, [recovered, state, planState, updateTask]);
+
+  const running = state.kind === "ready" ? state.data.running : null;
+
+  // 1분 확인 (R25): 타이머가 있는 동안 lastSeenAt을 지금으로 (자동 저장이 파일에 쓴다)
+  useHeartbeat(recovered && running !== null, () => dispatch({ type: "touch", now: new Date().toISOString() }));
+
+  // 태스크 감시 (D10): 다른 화면에서 완료·시작 전으로 바뀌거나 지워지면 기록만 하고 타이머를 끈다
+  useTimerGuard(recovered, running, planState, () => {
+    const current = stateRef.current;
+    if (current.kind !== "ready" || current.data.running === null) return;
+    dispatch({
+      type: "finish",
+      now: new Date().toISOString(),
+      recordIds: current.data.running.segments.map(() => crypto.randomUUID()),
+    });
+  });
 
   const store = useMemo<TodayStore>(() => {
     const canStart = () => stateRef.current.kind === "ready" && stateRef.current.data.running === null;

@@ -13,3 +13,4 @@
 - D10. 실행 중 태스크를 다른 화면에서 완료로 바꾸면 타이머 완료, 시작 전으로 바꾸면 중단과 같이 기록한다. 태스크를 지우면 그때까지 기록하고 타이머를 끈다 (적용: 4단계 이후 전체) (기록: L04)
 - D11. 메뉴 id `timer`를 `today`로 바꾸고, 홈 카드는 이동할 곳만 고친다 (적용: 1단계) (기록: L04)
 - D12. 매초 바뀌는 시계 글자는 `features/today/useNow.ts`의 `useNow(active)`로 그 글자 컴포넌트(ElapsedClock·보조 문구) 안에서만 1초마다 다시 그린다. 칸반은 실행 중 타이머를 TodayPage → Kanban → KanbanColumn → KanbanCard props로 받는다 (적용: 이후 전체) (기록: L07)
+- D13. 시작 때 남은 타이머 복구(`recover`)가 끝나기 전에는 1분 확인·창 닫기 lastSeenAt 기록·태스크 감시를 하지 않는다(store의 `recovered`). 태스크 감시(`useTimerGuard`)는 실행 중 태스크가 "진행 중"이었다가 바뀐 때와 지워진 때만 타이머를 끝낸다 (적용: 4단계 이후 전체) (기록: L08)
