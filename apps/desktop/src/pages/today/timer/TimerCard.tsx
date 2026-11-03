@@ -7,6 +7,7 @@ import { taskTotalOn } from "../../../features/today/stats";
 import type { RunningTimer, TodayData } from "../../../features/today/types";
 import { useNow } from "../../../features/today/useNow";
 import ElapsedClock from "./ElapsedClock";
+import RunTrack from "./RunTrack";
 import TimerButtons from "./TimerButtons";
 import "./TimerCard.css";
 
@@ -21,7 +22,7 @@ interface TimerCardProps {
 
 /**
  * 도는 타이머 카드 (R16, R18, R40, R41): 카테고리 색 점·이름·기간 → 제목 → 큰 숫자 → 보조 문구, 아래 버튼 세 개.
- * 오른쪽 하루 목표 트랙 자리(160×130)는 5단계에서 채운다.
+ * 오른쪽은 하루 목표 달리기 트랙 (R42–R45), 색은 카테고리 색 `--c` (D7).
  */
 function TimerCard({ data, running, task, category, todayKey }: TimerCardProps) {
   const paused = running.state === "paused";
@@ -43,7 +44,9 @@ function TimerCard({ data, running, task, category, todayKey }: TimerCardProps) 
           </div>
           <TimerSubText data={data} running={running} todayKey={todayKey} />
         </div>
-        <div className="timer-card__side" aria-hidden="true" />
+        <div className="timer-card__side">
+          <RunTrack data={data} todayKey={todayKey} running={running} />
+        </div>
       </div>
       <TimerButtons paused={paused} />
     </div>

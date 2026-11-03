@@ -72,6 +72,13 @@
   animation: none;
 }
 
+/* 애니메이션 줄이기 (R47): 콜론 깜빡임도 끈다 */
+@media (prefers-reduced-motion: reduce) {
+  .timer-card__time .elapsed-clock__colon {
+    animation: none;
+  }
+}
+
 .timer-card__sub {
   margin-top: 10px;
   font-size: 13px;
@@ -79,11 +86,13 @@
   color: var(--muted);
 }
 
-/* 오른쪽 하루 목표 트랙 자리 (5단계) */
+/* 오른쪽 하루 목표 트랙 (RunTrack, track.css) */
 .timer-card__side {
   width: 160px;
-  height: 130px;
   flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .timer-card__guide {

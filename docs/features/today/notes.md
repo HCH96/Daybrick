@@ -6,16 +6,16 @@
 - 2단계: 이번 주 진행 바·칸반 보기 (자동 진행, 최종 테스트 대기)
 - 3단계: 타이머 동작·카드 글자 (자동 진행, 최종 테스트 대기)
 - 4단계: 종료·강제 종료 복구, 태스크 감시 (자동 진행, 최종 테스트 대기)
+- 5단계: 달리기 트랙·애니메이션 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 5단계: 달리기 트랙·애니메이션 (타이머 카드 오른쪽 하루 목표 트랙·캐릭터·골인·일시정지 장면, 애니메이션 줄이기)
+- 6단계: 오늘 요약 (집중·완료·스트릭 타일, 목표 고치기, 카테고리별 막대, 타임라인)
 - 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D12, D13 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 오늘 전체 기록 시간·태스크 누적은 3단계 `features/today/stats.ts`의 함수를 grep으로 찾아 쓴다. 타이머 카드 테두리·바탕은 `today-panel`이 그리고 `TimerCard.css`는 안쪽만 그린다(L07). 실행 중 타이머는 store `state.data.running`에서 본다
+- 주의: 하루 목표는 `state.data.settings.dailyGoalMinutes`이고, 트랙(`pages/today/timer/RunTrack.tsx`)이 이 값을 바로 읽으므로 reducer `set-goal`만 더하면 트랙 진행률도 같이 바뀐다. `dayTotal`·`collectSlices`·`splitByDay`는 `features/today/stats.ts`에 이미 있다(grep으로 export만 확인)
 
 ## 확인할 문서 (경로는 docs/features/today/ 기준, 파일 통째로 읽기)
-- ai/plan/step-05.md
-- ai/spec/req-timer.md
-- ai/spec/timer-visual.md
-- ai/logs/L08.md
-- human/mockups/part-timer.html의 timer-running·timer-paused·timer-empty 구역, part-timer-goal.html의 timer-goal·timer-goal-paused 구역, today-idle.html의 idle-timer 구역 (CSS: timer.css에서 클래스 검색, 캐릭터: sprites.js에서 run1·run2·sit·cheer·stand 검색)
-- ai/plan/structure.md의 "timer/RunTrack.tsx" 줄 (새 파일 위치를 정할 때만)
+- ai/plan/step-06.md
+- ai/spec/req-summary.md
+- ai/logs/L09.md
+- human/mockups/part-summary.html의 summary-focus·summary-goal·summary-done·summary-category·summary-streak·summary-timeline·summary-streak-mid 구역, today.html의 today-summary·today-streak 구역 (CSS: today.css·parts.css에서 클래스 검색)
+- ai/plan/structure.md의 summary/ 줄 (새 파일 위치를 정할 때만)

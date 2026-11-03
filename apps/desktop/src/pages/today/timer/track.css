@@ -1,0 +1,110 @@
+/* 하루 목표 달리기 트랙 (목업 timer.css의 tm-scene·tm-*·keyframes db*, D5). 색은 앱 토큰, --c는 카테고리 색 (D7). */
+.track-scene {
+  position: relative;
+  width: 160px;
+  height: 130px;
+}
+
+.track-scene > svg,
+.track-scene > span,
+.track-scene > div {
+  position: absolute;
+}
+
+.track-scene__layer {
+  left: 0;
+  top: 0;
+}
+
+.track-scene__cloud rect { fill: #26272d; }
+.track-scene__rest { stroke: var(--border-2); stroke-width: 3; stroke-dasharray: 4 4; }
+.track-scene__passed { stroke: var(--c); stroke-width: 3; stroke-linecap: round; }
+.track-scene__tick { fill: var(--border-2); }
+.track-scene__pole { fill: #5e5f66; }
+.track-scene__cap { fill: #6b6c74; }
+.track-scene__flag { fill: var(--border-2); }
+
+.track-scene--paused .track-scene__passed,
+.track-scene--idle .track-scene__passed { opacity: 0.6; }
+
+.track-scene--goal .track-scene__tick { fill: var(--c); opacity: 0.5; }
+.track-scene--goal .track-scene__pole { fill: var(--muted); }
+.track-scene--goal .track-scene__cap { fill: #f2c94c; }
+.track-scene--goal .track-scene__flag { fill: var(--c); }
+
+.track-scene__char { width: 42px; height: 48px; top: 64px; }
+.track-scene__sprite { position: absolute; left: 0; top: 0; width: 42px; height: 48px; shape-rendering: crispEdges; }
+.track-scene__dust { width: 4px; height: 4px; background: #5e5f66; }
+.track-scene__dust--s { width: 3px; height: 3px; }
+.track-scene__z { font-family: var(--mono); color: var(--muted); }
+.track-scene__shadow { top: 112px; width: 26px; height: 4px; border-radius: 2px; background: #000; }
+.track-scene__conf { width: 4px; height: 4px; }
+
+/* 툴팁: 평소 숨김, 마우스 올림·포커스 때만 "오늘 기록 / 목표" (R43) */
+.track-scene__tip {
+  top: 34px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.18s, transform 0.18s;
+  pointer-events: none;
+}
+
+.track-scene:hover .track-scene__tip,
+.track-scene:focus-visible .track-scene__tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.track-scene:focus { outline: none; }
+.track-scene:focus-visible { outline: 2px solid #6b6c74; outline-offset: 4px; border-radius: 10px; }
+
+/* ===== 움직임 (keyframes 이름은 시안과 같다) ===== */
+.track-scene--run .track-scene__cloud { animation: dbCloud 9s linear infinite alternate; }
+.track-scene--run .track-scene__char { animation: dbBob 0.36s infinite; }
+.track-scene--run .track-scene__sprite--f1 { animation: dbRunA 0.36s infinite; }
+.track-scene--run .track-scene__sprite--f2 { animation: dbRunB 0.36s infinite; }
+.track-scene--run .track-scene__dust { animation: dbDust 0.72s linear infinite; }
+.track-scene--run .track-scene__dust--s { animation-delay: 0.36s; }
+
+.track-scene--paused .track-scene__char { transform-origin: 50% 100%; animation: dbBreath 3s ease-in-out infinite; }
+.track-scene--paused .track-scene__z { animation: dbZ 3s ease-out infinite; }
+.track-scene--paused .track-scene__z--2 { animation-delay: 1s; }
+.track-scene--paused .track-scene__z--3 { animation-delay: 2s; }
+
+.track-scene--goal .track-scene__char { animation: dbJump 0.9s cubic-bezier(0.3, 0.7, 0.4, 1) infinite; }
+.track-scene--goal .track-scene__shadow { animation: dbShadow 0.9s cubic-bezier(0.3, 0.7, 0.4, 1) infinite; }
+.track-scene--goal .track-scene__flag-wave { transform-origin: 0 50%; animation: dbWave 0.8s ease-in-out infinite; }
+.track-scene--goal .track-scene__conf { animation: dbConf 1.8s linear infinite; }
+
+/* 골인 + 일시정지: 깃발은 멈추고 캐릭터는 깃발 앞에서 존다 (색종이 없음) */
+.track-scene--goal.track-scene--paused .track-scene__flag-wave { animation: none; }
+.track-scene--goal.track-scene--paused .track-scene__char { animation: dbBreath 3s ease-in-out infinite; }
+
+/* 운영체제의 "애니메이션 줄이기" (R47): 반복 움직임을 끄고 상태별 자세만 보인다 */
+@media (prefers-reduced-motion: reduce) {
+  .track-scene * { animation: none !important; }
+  .track-scene--run .track-scene__sprite--f2,
+  .track-scene--run .track-scene__dust,
+  .track-scene--paused .track-scene__z,
+  .track-scene--goal .track-scene__conf { opacity: 0; }
+}
+
+@keyframes dbRunA { 0%, 49.9% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes dbRunB { 0%, 49.9% { opacity: 0; } 50%, 100% { opacity: 1; } }
+@keyframes dbBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes dbDust { 0% { opacity: 0.7; transform: translateX(0); } 100% { opacity: 0; transform: translateX(-12px); } }
+@keyframes dbCloud { 0% { transform: translateX(0); } 100% { transform: translateX(-20px); } }
+@keyframes dbBreath { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.04); } }
+@keyframes dbZ { 0% { transform: translate(0, 0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(10px, -26px); opacity: 0; } }
+@keyframes dbJump { 0%, 100% { transform: translateY(0); } 35%, 55% { transform: translateY(-16px); } }
+@keyframes dbShadow { 0%, 100% { transform: scaleX(1); opacity: 0.5; } 35%, 55% { transform: scaleX(0.55); opacity: 0.25; } }
+@keyframes dbWave { 0%, 100% { transform: skewY(0) scaleX(1); } 50% { transform: skewY(7deg) scaleX(0.9); } }
+@keyframes dbConf { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(80px) rotate(200deg); opacity: 0; } }
