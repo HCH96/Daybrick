@@ -28,11 +28,16 @@ function shortRange(monday: string): string {
 
 /**
  * 주차형 입력 (프로젝트 R11, 목업 create-weekly): 시작 주(월요일 기준) · 주 수 −/+ · 주차별 기간과 이름 칸.
- * 이름을 비우면 "N주차"로 보인다.
+ * 이름을 비우면 "N주차"로 보인다. 만들기 창과 단계 편집 창(R13)이 같이 쓴다.
  */
 function WeeklyEditor({ thisWeek, startWeek, weekCount, weekNames, onStartWeek, onWeekCount, onWeekName }: WeeklyEditorProps) {
   const options: string[] = [];
   for (let i = -WEEKS_BEFORE; i <= WEEKS_AFTER; i++) options.push(addDays(thisWeek, i * 7));
+  // 단계 편집에서는 오래전에 시작한 주도 고른 값으로 보여야 하므로 범위 밖이면 끼워 넣는다 (프로젝트 R13)
+  if (!options.includes(startWeek)) {
+    options.push(startWeek);
+    options.sort();
+  }
   const weeks = Array.from({ length: weekCount }, (_, i) => addDays(startWeek, i * 7));
 
   return (

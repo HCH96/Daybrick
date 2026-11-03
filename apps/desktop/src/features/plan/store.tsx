@@ -6,6 +6,7 @@ import {
   type CheckItemPatch,
   type PlanState,
   type ProjectPatch,
+  type StageEdit,
   type TaskPatch,
 } from "./reducer";
 import type { Project, Task } from "./types";
@@ -65,6 +66,10 @@ export interface PlanStore {
   moveProject: (from: number, to: number) => void;
   /** 프로젝트를 지우고 그 태스크는 미분류로 옮긴다 (프로젝트 R19). 확인 창은 부르는 쪽에서 띄운다. */
   deleteProject: (id: string) => void;
+  /** 단계 목록·이름·순서(주차형은 시작 주도)를 바꾸고, 없어지는 단계의 태스크를 옮기거나 지운다 (프로젝트 R13·R14, D5) */
+  editStages: (projectId: string, edit: StageEdit) => void;
+  /** 골인 연출을 본 시각을 적는다. null이면 비운다 (프로젝트 R18·R25) */
+  setGoalSeen: (projectId: string, at: string | null) => void;
   /** 플랜 트리의 단계 접기·펴기를 기억한다 (프로젝트 R47) */
   toggleStageFold: (stageId: string, open: boolean) => void;
   /** 프로젝트 목록의 완료 묶음 펼침 (프로젝트 R6) */
@@ -244,6 +249,14 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       },
       deleteProject: (id) => {
         dispatch({ type: "delete-project", id, now: new Date().toISOString() });
+      },
+      editStages: (projectId, edit) => {
+        // 주차는 월요일 기준이라 시작 주를 그 주 월요일로 맞춘다 (프로젝트 R11)
+        const startWeek = edit.startWeek ? startOfWeek(edit.startWeek) : undefined;
+        dispatch({ type: "edit-stages", projectId, edit: { ...edit, startWeek }, now: new Date().toISOString() });
+      },
+      setGoalSeen: (projectId, at) => {
+        dispatch({ type: "set-goal-seen", projectId, at });
       },
       toggleStageFold: (stageId, open) => {
         dispatch({ type: "toggle-stage-fold", stageId, open });

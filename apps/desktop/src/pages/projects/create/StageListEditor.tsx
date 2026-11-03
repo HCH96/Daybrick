@@ -3,7 +3,7 @@ import { GripIcon, PlusIcon, SmallCloseIcon } from "../../../components/icons/Co
 import { moveItem } from "../../../features/plan/reducer";
 import { useReorder } from "../../plan/useReorder";
 
-/** 편집 중인 단계 한 줄. key는 화면에서만 쓰는 id */
+/** 편집 중인 단계 한 줄. key는 화면에서 쓰는 id (단계 편집 창에서는 있던 단계의 id를 그대로 넣는다, R13) */
 export interface StageDraft {
   key: string;
   name: string;

@@ -1,4 +1,4 @@
-import type { Category, ChecklistItem, PlanData, Project, Task, TaskStatus } from "./types";
+import type { Category, ChecklistItem, PlanData, Project, Stage, Task, TaskStatus } from "./types";
 
 /** 데이터 상태: 읽는 중 / 준비됨 / 읽기 실패 */
 export type PlanState =
@@ -18,6 +18,16 @@ export type TaskPatch = Partial<Pick<Task, "title" | "categoryId" | "stageId" | 
 
 /** 프로젝트에서 이름·색을 고치는 칸 (프로젝트 R8) */
 export type ProjectPatch = Partial<Pick<Project, "name" | "color">>;
+
+/**
+ * 단계 편집 입력 (프로젝트 R13·R14). stages는 편집 뒤 단계 목록 전체(순서 = 배열 순서, 남는 단계는 id 그대로).
+ * 주차형은 startWeek(월요일)도 바꾼다. removed는 없어지는 단계의 태스크를 어디로 보낼지 (moveTo null = 함께 지우기).
+ */
+export interface StageEdit {
+  stages: Stage[];
+  startWeek?: string;
+  removed: { stageId: string; moveTo: string | null }[];
+}
 
 /** 체크리스트 항목에서 고칠 수 있는 칸 (R38) */
 export type CheckItemPatch = Partial<Pick<ChecklistItem, "text" | "checked">>;
@@ -55,6 +65,8 @@ export type PlanAction =
   | { type: "update-project"; id: string; patch: ProjectPatch }
   | { type: "move-project"; from: number; to: number }
   | { type: "delete-project"; id: string; now: string }
+  | { type: "edit-stages"; projectId: string; edit: StageEdit; now: string }
+  | { type: "set-goal-seen"; projectId: string; at: string | null }
   | { type: "toggle-stage-fold"; stageId: string; open: boolean }
   | { type: "set-projects-done-open"; open: boolean };
 
@@ -188,6 +200,17 @@ function dataReducer(data: PlanData, action: PlanAction): PlanData {
         view: { ...data.view, stageFold },
       };
     }
+    case "edit-stages":
+      return applyStageEdit(data, action.projectId, action.edit, action.now);
+    case "set-goal-seen": {
+      // 골인 연출을 본 시각 (프로젝트 R25). 다시 진행 중이 되면 null로 비운다 (R18). 같은 값이면 그대로.
+      const project = data.projects.find((p) => p.id === action.projectId);
+      if (!project || project.goalSeenAt === action.at) return data;
+      return {
+        ...data,
+        projects: data.projects.map((p) => (p.id === action.projectId ? { ...p, goalSeenAt: action.at } : p)),
+      };
+    }
     case "toggle-stage-fold":
       // 플랜 트리에서 직접 접고 편 단계를 기억한다 (프로젝트 R47)
       if (data.view.stageFold[action.stageId] === action.open) return data;
@@ -199,6 +222,50 @@ function dataReducer(data: PlanData, action: PlanAction): PlanData {
     default:
       return data;
   }
+}
+
+/**
+ * 단계 편집을 한 번에 적용한다 (프로젝트 R13·R14, D5).
+ * 없어지는 단계의 태스크는 moveTo 단계로 옮기거나(moveTo null이면) 함께 지운다. moveTo가 남는 단계가 아니면 미분류로 보낸다.
+ * removed에 없는 없어진 단계(태스크가 없던 단계)는 그냥 빠진다. 없어진 단계의 접기 기억도 지운다.
+ */
+function applyStageEdit(data: PlanData, projectId: string, edit: StageEdit, now: string): PlanData {
+  const project = data.projects.find((p) => p.id === projectId);
+  if (!project || edit.stages.length === 0) return data;
+  const kept = new Set(edit.stages.map((s) => s.id));
+  const gone = new Set(project.stages.filter((s) => !kept.has(s.id)).map((s) => s.id));
+  // 없어지는 단계 id → 옮길 단계 id (null = 미분류), 함께 지울 단계 id
+  const moveTo = new Map<string, string | null>();
+  const deleted = new Set<string>();
+  for (const r of edit.removed) {
+    if (!gone.has(r.stageId)) continue;
+    if (r.moveTo === null) deleted.add(r.stageId);
+    else moveTo.set(r.stageId, kept.has(r.moveTo) ? r.moveTo : null);
+  }
+
+  const tasks: Task[] = [];
+  for (const t of data.tasks) {
+    if (t.stageId !== null && deleted.has(t.stageId)) continue;
+    if (t.stageId !== null && moveTo.has(t.stageId)) {
+      tasks.push({ ...t, stageId: moveTo.get(t.stageId) ?? null, categoryId: null, updatedAt: now });
+      continue;
+    }
+    tasks.push(t);
+  }
+
+  const stageFold = { ...data.view.stageFold };
+  for (const id of gone) delete stageFold[id];
+  const next: Project = {
+    ...project,
+    stages: edit.stages.map((s) => ({ id: s.id, name: s.name })),
+    startWeek: project.kind === "weekly" && edit.startWeek ? edit.startWeek : project.startWeek,
+  };
+  return {
+    ...data,
+    projects: data.projects.map((p) => (p.id === projectId ? next : p)),
+    tasks,
+    view: { ...data.view, stageFold },
+  };
 }
 
 /**

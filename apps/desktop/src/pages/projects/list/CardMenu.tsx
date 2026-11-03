@@ -3,9 +3,11 @@ import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import Popover from "../../../components/common/Popover";
 import { PenIcon } from "../../../components/icons/CommonIcons";
 import { TrashIcon } from "../../../components/icons/DialogIcons";
+import { DateIcon, FlagIcon } from "../../../components/icons/PlanIcons";
 import { usePlan } from "../../../features/plan/store";
 import type { Project } from "../../../features/plan/types";
 import ColorChoice from "../create/ColorChoice";
+import EditStagesDialog from "../edit/EditStagesDialog";
 import "../create/Create.css";
 
 interface CardMenuProps {
@@ -18,17 +20,18 @@ interface CardMenuProps {
   onDeleted?: () => void;
 }
 
-type Phase = "menu" | "edit" | "confirm";
+type Phase = "menu" | "edit" | "stages" | "confirm";
 
 /**
- * 카드 `…` 메뉴 (프로젝트 R8·R19, 목업 projects-cards의 .menu).
- * 이름·색 바꾸기 → 작은 팝업 / (단계 편집은 5단계에서) / 빨간 프로젝트 삭제 → 확인 창 → 태스크는 미분류로.
+ * 카드 `…` 메뉴 (프로젝트 R8·R13·R19, 목업 projects-cards의 .menu).
+ * 이름·색 바꾸기 → 작은 팝업 / 단계 편집(주차형은 주차 편집) → 편집 창 / 빨간 프로젝트 삭제 → 확인 창 → 태스크는 미분류로.
  */
 function CardMenu({ anchor, project, taskCount, onClose, onDeleted }: CardMenuProps) {
   const { deleteProject } = usePlan();
   const [phase, setPhase] = useState<Phase>("menu");
 
   if (phase === "edit") return <EditPopover anchor={anchor} project={project} onClose={onClose} />;
+  if (phase === "stages") return <EditStagesDialog project={project} onClose={onClose} />;
   if (phase === "confirm") {
     return (
       <ConfirmDialog
@@ -49,6 +52,10 @@ function CardMenu({ anchor, project, taskCount, onClose, onDeleted }: CardMenuPr
       <button type="button" className="pop-row proj-menu__row" onClick={() => setPhase("edit")} autoFocus>
         <PenIcon />
         이름·색 바꾸기
+      </button>
+      <button type="button" className="pop-row proj-menu__row" onClick={() => setPhase("stages")}>
+        {project.kind === "weekly" ? <DateIcon size={13} /> : <FlagIcon size={13} />}
+        {project.kind === "weekly" ? "주차 편집" : "단계 편집"}
       </button>
       <div className="pop-sep" />
       <button type="button" className="pop-row pop-row--danger proj-menu__row" onClick={() => setPhase("confirm")}>

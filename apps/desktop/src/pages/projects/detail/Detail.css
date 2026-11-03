@@ -84,8 +84,74 @@
 }
 
 .proj-progress__track {
+  position: relative;
   padding: 14px 18px 6px;
   min-width: 0;
+}
+
+/* ===== 골인 연출 (R25): 결승 깃발 펄럭 + 색종이 1.6초 + "골인!" 배지 ===== */
+.proj-progress__track--goal .proj-track__finish svg {
+  transform-origin: 2px 50%;
+  animation: projFinishWave 0.32s ease-in-out infinite alternate;
+}
+
+@keyframes projFinishWave {
+  from { transform: skewY(-6deg) scaleX(0.94); }
+  to { transform: skewY(6deg) scaleX(1.04); }
+}
+
+.proj-goal {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+/* 터지는 자리 = 결승 깃발 위 (트랙 오른쪽 끝) */
+.proj-goal__burst {
+  position: absolute;
+  right: 40px;
+  top: 36px;
+  width: 0;
+  height: 0;
+}
+
+.proj-goal__burst i {
+  position: absolute;
+  width: 6px;
+  height: 9px;
+  border-radius: 1px;
+  opacity: 0;
+  animation: projConfetti 1.6s cubic-bezier(0.2, 0.7, 0.4, 1) var(--d) forwards;
+}
+
+@keyframes projConfetti {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  35% { opacity: 1; transform: translate(calc(var(--x) * 0.7), calc(var(--y) * -0.6)) rotate(calc(var(--r) * 0.5)); }
+  100% { opacity: 0; transform: translate(var(--x), var(--y)) rotate(var(--r)); }
+}
+
+.proj-goal__badge {
+  position: absolute;
+  right: 18px;
+  top: 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--c);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  animation: projGoalBadge 1.6s ease-out forwards;
+}
+
+@keyframes projGoalBadge {
+  0% { opacity: 0; transform: translateY(6px) scale(0.6); }
+  15% { opacity: 1; transform: translateY(0) scale(1.12); }
+  25% { transform: scale(1); }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .proj-progress__cap {

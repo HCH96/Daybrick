@@ -1,0 +1,15 @@
+/* 단계·주차 편집 창과 단계 삭제 확인 창 (프로젝트 R13·R14). 창 틀·칸 클래스는 create/Create.css를 그대로 쓴다. */
+
+/* 종류는 보여주기만 한다 (R10): 한 칸만, 누를 수 없음 */
+.proj-kind--fixed {
+  cursor: default;
+}
+
+.proj-hint--warn {
+  color: var(--red);
+}
+
+/* 확인 창 안 "옮길 단계" 칸: 메시지와 버튼 사이 */
+.proj-remove__field {
+  margin: 4px 0 16px;
+}

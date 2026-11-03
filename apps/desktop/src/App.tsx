@@ -15,6 +15,7 @@ import ServerUpdateScreen from "./components/server/ServerUpdateScreen";
 import { ApplicationsProvider } from "./features/applications/store";
 import { useJobStatusSync } from "./features/job-search/statusSync";
 import { PlanProvider } from "./features/plan/store";
+import { useGoalReset } from "./features/projects/useGoalReset";
 import { TodayProvider } from "./features/today/store";
 import { NotificationsProvider } from "./features/notifications/NotificationsProvider";
 import { ServerProvider } from "./features/server/ServerProvider";
@@ -44,6 +45,12 @@ function FullScreen({ children }: { children?: ReactNode }) {
 /** 구직 관리가 만든 지원 카드의 상태를 서버 지원 건에 맞춘다 (구직 관리 R58·R59). 화면은 없다 */
 function JobStatusSync() {
   useJobStatusSync();
+  return null;
+}
+
+/** 다시 진행 중이 된 프로젝트의 골인 본 시각을 비운다 (프로젝트 R18). 화면은 없다 */
+function GoalReset() {
+  useGoalReset();
   return null;
 }
 
@@ -114,6 +121,7 @@ function AppMain() {
         <PlanProvider>
           <TodayProvider>
             <JobStatusSync />
+            <GoalReset />
             <AppScreens
               main={
                 // 갈 곳 이동은 평소 화면에서만 한다. 전체 화면(FullScreen)에는 Provider가 없어 이동할 수 없는 상태다 (D10)

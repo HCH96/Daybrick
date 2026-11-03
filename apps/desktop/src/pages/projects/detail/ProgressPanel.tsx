@@ -6,6 +6,7 @@ import type { Project, Task } from "../../../features/plan/types";
 import { formatDateRange, formatDuration } from "../../../features/today/format";
 import Campfire from "../common/Campfire";
 import FlagTrack from "../common/FlagTrack";
+import GoalCelebration, { useGoalCelebration } from "./GoalCelebration";
 
 interface ProgressPanelProps {
   project: Project;
@@ -18,16 +19,18 @@ interface ProgressPanelProps {
 
 /**
  * 진행 상황 판 (프로젝트 R21–R28, 목업 detail-progress·weekly-progress).
- * 왼쪽: 한 줄 요약 + 깃발 트랙. 오른쪽 250px: 큰 모닥불 + 마지막 작업 / 누적 투입 시간(숫자만) / 타이머 진행 중.
+ * 왼쪽: 한 줄 요약 + 깃발 트랙(골인하면 결승 깃발 펄럭 + 색종이 + "골인!", R25). 오른쪽 250px: 큰 모닥불 + 마지막 작업 / 누적 투입 시간(숫자만) / 타이머 진행 중.
  */
 function ProgressPanel({ project, tasks, time, todayKey, running }: ProgressPanelProps) {
   const current = currentStage(project, tasks, todayKey);
+  const celebrating = useGoalCelebration(project, isProjectDone(project, tasks));
 
   return (
     <section className="proj-progress" aria-label="진행 상황">
-      <div className="proj-progress__track">
+      <div className={celebrating ? "proj-progress__track proj-progress__track--goal" : "proj-progress__track"}>
         <TrackCaption project={project} tasks={tasks} todayKey={todayKey} current={current} />
         <FlagTrack project={project} tasks={tasks} currentIndex={current} />
+        {celebrating && <GoalCelebration />}
       </div>
       <div className="proj-progress__stats">
         <div className="proj-progress__fire">

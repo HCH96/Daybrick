@@ -10,8 +10,8 @@ import "../create/Create.css";
 interface DetailHeadProps {
   project: Project;
   tasks: Task[];
-  /** 단계·주차 편집 창 열기 (5단계에서 연결, 없으면 버튼을 막아 둔다) */
-  onEditStages?: () => void;
+  /** 단계·주차 편집 창 열기 (R13) */
+  onEditStages: () => void;
 }
 
 /**
@@ -41,7 +41,7 @@ function DetailHead({ project, tasks, onEditStages }: DetailHeadProps) {
       </h1>
       <span className="proj-detail__kind">{weekly ? "주차형" : "단계형"}</span>
       <span className="proj-detail__spacer" />
-      <button type="button" className="proj-btn proj-btn--ghost proj-detail__edit" disabled={!onEditStages} onClick={onEditStages}>
+      <button type="button" className="proj-btn proj-btn--ghost proj-detail__edit" onClick={onEditStages}>
         {weekly ? <DateIcon size={13} /> : <FlagIcon size={13} />}
         {weekly ? "주차 편집" : "단계 편집"}
       </button>
