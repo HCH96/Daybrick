@@ -1,6 +1,15 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from "react";
 import { loadPlanData } from "./storage";
-import { reducer, type CategoryPatch, type CheckItemPatch, type PlanState, type TaskPatch } from "./reducer";
+import {
+  reducer,
+  type CategoryPatch,
+  type CheckItemPatch,
+  type PlanState,
+  type ProjectPatch,
+  type TaskPatch,
+} from "./reducer";
+import type { Project, Task } from "./types";
+import { startOfWeek } from "../../utils/date";
 import { usePlanAutoSave, type SaveStatus } from "./useAutoSave";
 import { useLinkCleanup } from "./useLinkCleanup";
 
@@ -46,12 +55,69 @@ export interface PlanStore {
   toggleCollapsed: (key: string) => void;
   /** 달력의 지원 일정 보이기·숨기기 (R33). plan.json view 칸에 저장된다 (D10). */
   setShowApplicationEvents: (value: boolean) => void;
+  /** 단계에 날짜 없는 "시작 전" 태스크를 만들고 그 id를 돌려준다 (프로젝트 R32). 준비 전이거나 제목이 비면 null. */
+  addStageTask: (title: string, stageId: string) => string | null;
+  /** 프로젝트를 목록 맨 끝에 만들고 그 id를 돌려준다 (프로젝트 R9–R12). 준비 전이면 null. */
+  addProject: (input: NewProject) => string | null;
+  /** 프로젝트 이름·색을 고친다 (프로젝트 R8) */
+  updateProject: (id: string, patch: ProjectPatch) => void;
+  /** 프로젝트 순서를 바꾼다. from·to는 프로젝트 배열 자리 (프로젝트 R7) */
+  moveProject: (from: number, to: number) => void;
+  /** 프로젝트를 지우고 그 태스크는 미분류로 옮긴다 (프로젝트 R19). 확인 창은 부르는 쪽에서 띄운다. */
+  deleteProject: (id: string) => void;
+  /** 플랜 트리의 단계 접기·펴기를 기억한다 (프로젝트 R47) */
+  toggleStageFold: (stageId: string, open: boolean) => void;
+  /** 프로젝트 목록의 완료 묶음 펼침 (프로젝트 R6) */
+  setProjectsDoneOpen: (open: boolean) => void;
 }
 
 /** 태스크 기간 (둘 다 "YYYY-MM-DD") */
 export interface TaskRange {
   start: string;
   end: string;
+}
+
+/** 프로젝트 만들기 입력 (프로젝트 R9–R12). 단계형은 단계 이름들, 주차형은 시작 주·주 수·주차 이름("" = "N주차"). */
+export type NewProject =
+  | { kind: "stage"; name: string; color: string; stageNames: string[] }
+  | { kind: "weekly"; name: string; color: string; startWeek: string; weekCount: number; weekNames?: string[] };
+
+function buildProject(id: string, input: NewProject): Project {
+  const base = { id, name: input.name.trim(), color: input.color, goalSeenAt: null };
+  if (input.kind === "stage") {
+    const stages = input.stageNames.map((name) => ({ id: crypto.randomUUID(), name: name.trim() }));
+    return { ...base, kind: "stage", startWeek: null, stages };
+  }
+  const count = Math.max(1, Math.floor(input.weekCount));
+  const stages = Array.from({ length: count }, (_, i) => ({
+    id: crypto.randomUUID(),
+    name: (input.weekNames?.[i] ?? "").trim(),
+  }));
+  // 주차는 월요일 기준이라 시작 주를 그 주 월요일로 맞춘다 (프로젝트 R11)
+  return { ...base, kind: "weekly", startWeek: startOfWeek(input.startWeek), stages };
+}
+
+function newTask(
+  id: string,
+  title: string,
+  group: Pick<Task, "categoryId" | "stageId">,
+  now: string,
+  range?: TaskRange,
+): Task {
+  return {
+    id,
+    title,
+    ...group,
+    status: "todo",
+    start: range?.start ?? null,
+    end: range?.end ?? null,
+    memo: "",
+    checklist: null,
+    applicationId: null,
+    createdAt: now,
+    updatedAt: now,
+    completedAt: null,
+  };
 }
 
 const PlanContext = createContext<PlanStore | null>(null);
@@ -107,23 +173,14 @@ export function PlanProvider({ children }: { children: ReactNode }) {
         if (!ready || !trimmed) return null;
         const id = crypto.randomUUID();
         const now = new Date().toISOString();
-        dispatch({
-          type: "add-task",
-          task: {
-            id,
-            title: trimmed,
-            categoryId,
-            status: "todo",
-            start: range?.start ?? null,
-            end: range?.end ?? null,
-            memo: "",
-            checklist: null,
-            applicationId: null,
-            createdAt: now,
-            updatedAt: now,
-            completedAt: null,
-          },
-        });
+        dispatch({ type: "add-task", task: newTask(id, trimmed, { categoryId, stageId: null }, now, range) });
+        return id;
+      },
+      addStageTask: (title, stageId) => {
+        const trimmed = title.trim();
+        if (!ready || !trimmed) return null;
+        const id = crypto.randomUUID();
+        dispatch({ type: "add-task", task: newTask(id, trimmed, { categoryId: null, stageId }, new Date().toISOString()) });
         return id;
       },
       updateTask: (id, patch) => {
@@ -172,6 +229,27 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       },
       setShowApplicationEvents: (value) => {
         dispatch({ type: "set-show-application-events", value });
+      },
+      addProject: (input) => {
+        if (!ready) return null;
+        const id = crypto.randomUUID();
+        dispatch({ type: "add-project", project: buildProject(id, input) });
+        return id;
+      },
+      updateProject: (id, patch) => {
+        dispatch({ type: "update-project", id, patch });
+      },
+      moveProject: (from, to) => {
+        dispatch({ type: "move-project", from, to });
+      },
+      deleteProject: (id) => {
+        dispatch({ type: "delete-project", id, now: new Date().toISOString() });
+      },
+      toggleStageFold: (stageId, open) => {
+        dispatch({ type: "toggle-stage-fold", stageId, open });
+      },
+      setProjectsDoneOpen: (open) => {
+        dispatch({ type: "set-projects-done-open", open });
       },
     }),
     [state, saveStatus, ready],

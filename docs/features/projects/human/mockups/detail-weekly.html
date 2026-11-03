@@ -1,0 +1,152 @@
+<!doctype html>
+<!-- 목업: 프로젝트 / 3. 상세 화면 (주차형)
+  목차와 다른 화면: index.html
+  CSS: common.css(앱 틀·트랙·깃발·모닥불), detail.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  weekly              3. 상세 화면 (주차형)         R11, R17, R21–R34
+    weekly-progress     3-1. 진행 상황 판 (주차 깃발) R17, R21–R24
+    weekly-stages       3-2. 주차 칸 (기간·이번 주)  R29–R31
+  머리(뒤로·이름·종류)는 detail.html의 detail-head와 같다.
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 프로젝트 / 3. 상세 화면 (주차형)</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="detail.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="weekly">
+    <div class="screen-head"><h2>3. 상세 화면 (주차형)</h2><span class="tag">R11, R17, R21–R34</span></div>
+    <p class="screen-desc">"토익 스피킹 8주" (10/12 시작, 8주). 오늘(11/4)은 4주차. 3주차에 태스크 1개가 남아 캐릭터는 3주차 안에 있지만, 4주차는 먼저 다 끝나 깃발이 바뀌었다.</p>
+    <div class="scale-note">앱 창 1440×900을 75%로 줄여 보여줌</div>
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav"><span class="tb-btn"><svg class="ico sm"><use href="#i-back"/></svg></span><span class="tb-btn off"><svg class="ico sm"><use href="#i-fwd"/></svg></span></div>
+        <div class="tb-drag"></div>
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg></span>
+        <div class="win"><span><svg class="ico"><use href="#i-min"/></svg></span><span><svg class="ico"><use href="#i-max"/></svg></span><span><svg class="ico"><use href="#i-x"/></svg></span></div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-plan"/></svg>Plan</div>
+          <div class="nav on"><svg class="ico"><use href="#i-flag"/></svg>Projects</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock"/></svg>Scheduler</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag"/></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+          <div class="nav"><svg class="ico"><use href="#i-sun"/></svg>Today</div>
+          <div class="spacer"></div>
+          <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main c-blue">
+          <div class="detail-head">
+            <span class="icon-btn"><svg class="ico"><use href="#i-back"/></svg></span>
+            <span class="dot"></span><h1 class="page-title">토익 스피킹 8주</h1><span class="kind">주차형</span>
+            <span class="spacer"></span>
+            <span class="btn sm ghost"><svg class="ico xs"><use href="#i-cal"/></svg>주차 편집</span>
+            <span class="icon-btn"><svg class="ico sm"><use href="#i-more"/></svg></span>
+          </div>
+
+          <div class="progress" id="weekly-progress">
+            <div class="track-box">
+              <div class="track-cap"><b>4주차</b> 이번 주 11/2–11/8 · 전체 태스크 16/32 완료 · 3주차 1개 남음</div>
+              <div class="track" style="--p:.35">
+                <div class="rail"><i></i></div>
+                <span class="flag done" style="left:0"><svg><use href="#flag-done"/></svg><span class="fl-name">1주차<small>10/12</small></span></span>
+                <span class="flag done" style="left:12.5%"><svg><use href="#flag-done"/></svg><span class="fl-name">2주차<small>10/19</small></span></span>
+                <span class="flag" style="left:25%"><svg><use href="#flag-todo"/></svg><span class="fl-name">3주차<small>10/26</small></span></span>
+                <span class="flag done now" style="left:37.5%"><svg><use href="#flag-done"/></svg><span class="fl-name">4주차<small>11/2</small></span></span>
+                <span class="flag" style="left:50%"><svg><use href="#flag-todo"/></svg><span class="fl-name">5주차<small>11/9</small></span></span>
+                <span class="flag" style="left:62.5%"><svg><use href="#flag-todo"/></svg><span class="fl-name">6주차<small>11/16</small></span></span>
+                <span class="flag" style="left:75%"><svg><use href="#flag-todo"/></svg><span class="fl-name">7주차<small>11/23</small></span></span>
+                <span class="flag" style="left:87.5%"><svg><use href="#flag-todo"/></svg><span class="fl-name">8주차<small>11/30</small></span></span>
+                <span class="finish"><svg><use href="#finish"/></svg></span>
+                <span class="runner"><svg><use href="#runner"/></svg></span>
+              </div>
+            </div>
+            <div class="stats">
+              <div class="stat-fire"><span class="fire"><svg><use href="#fire-mid"/></svg></span>
+                <div class="stat"><small>마지막 작업</small><b>어제</b></div></div>
+              <div class="stat"><small>누적 투입 시간</small><b>23시간 30분</b></div>
+            </div>
+          </div>
+
+          <div class="stages scroll" id="weekly-stages">
+            <div class="stage">
+              <div class="stage-head"><b>2주차</b><span class="when">10/19–10/25</span><span class="cnt full">4/4</span><span class="icon-btn"><svg class="ico sm"><use href="#i-plus"/></svg></span></div>
+              <div class="stage-body">
+                <div class="stage-sep">완료 4</div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">Part 1 문장 읽기 연습</span><div class="t-meta"><span>10/19–10/21</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">Part 2 사진 묘사 표현 30개</span><div class="t-meta"><span>10/20</span><span><svg class="ico"><use href="#i-check"/></svg>30/30</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">발음 교정 영상 시청</span><div class="t-meta"><span>10/22</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">주간 모의고사 1회</span><div class="t-meta"><span>10/25</span></div></div></div>
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-head"><b>3주차 · 답변 템플릿</b><span class="when">10/26–11/1</span><span class="cnt">4/5</span><span class="icon-btn"><svg class="ico sm"><use href="#i-plus"/></svg></span></div>
+              <div class="stage-body">
+                <div class="task hover"><span class="st doing"></span><div class="t-main"><span class="t-title">Part 3 답변 녹음 3회</span><div class="t-meta"><span>10/30–11/1</span><span><svg class="ico"><use href="#i-check"/></svg>2/3</span></div></div><span class="icon-btn trash"><svg class="ico sm"><use href="#i-trash"/></svg></span></div>
+                <div class="stage-sep">완료 4</div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">Part 3 답변 틀 외우기</span><div class="t-meta"><span>10/26–10/27</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">Part 4 표 읽기 연습</span><div class="t-meta"><span>10/28</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">연결 표현 정리</span><div class="t-meta"><span class="none">날짜 없음</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">주간 모의고사 2회</span><div class="t-meta"><span>11/1</span></div></div></div>
+              </div>
+            </div>
+
+            <div class="stage now">
+              <div class="stage-head"><b>4주차</b><span class="when">11/2–11/8</span><span class="badge">이번 주</span><span class="cnt full">3/3</span><span class="icon-btn"><svg class="ico sm"><use href="#i-plus"/></svg></span></div>
+              <div class="stage-body">
+                <div class="stage-sep">완료 3</div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">Part 5 해결책 제시 틀</span><div class="t-meta"><span>11/2</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">Part 5 예시 답변 5개</span><div class="t-meta"><span>11/2–11/3</span><span><svg class="ico"><use href="#i-check"/></svg>5/5</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">스터디 답변 피드백</span><div class="t-meta"><span>11/3</span></div></div></div>
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-head"><b>5주차</b><span class="when">11/9–11/15</span><span class="cnt">0/4</span><span class="icon-btn"><svg class="ico sm"><use href="#i-plus"/></svg></span></div>
+              <div class="stage-body">
+                <div class="task"><span class="st"></span><div class="t-main"><span class="t-title">Part 6 의견 말하기 주제 20개</span><div class="t-meta"><span>11/9–11/11</span><span><svg class="ico"><use href="#i-check"/></svg>0/20</span></div></div></div>
+                <div class="task"><span class="st"></span><div class="t-main"><span class="t-title">이유·예시 표현 정리</span><div class="t-meta"><span class="none">날짜 없음</span></div></div></div>
+                <div class="task"><span class="st"></span><div class="t-main"><span class="t-title">실전 모의고사 1회</span><div class="t-meta"><span>11/14</span></div></div></div>
+                <div class="task"><span class="st"></span><div class="t-main"><span class="t-title">약점 파트 다시 녹음</span><div class="t-meta"><span>11/15</span></div></div></div>
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-head"><b>6주차</b><span class="when">11/16–11/22</span><span class="cnt">0/4</span></div>
+              <div class="stage-body"></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>주차 깃발</b><ul>
+        <li>깃발 이름 아래에 그 주의 시작일. 이번 주(4주차) 깃발 이름은 프로젝트 색 (R17).</li>
+        <li>깃발 모양은 날짜와 상관없이 태스크 완료로만 바뀐다 (R16, R24).</li>
+      </ul></div>
+      <div class="note"><b>주차 칸</b><ul>
+        <li>머리: "N주차"(이름이 있으면 "· 이름") · 기간 · 완료/전체 · + (R29–R30).</li>
+        <li>이번 주 칸에 색 테두리와 "이번 주" 표시.</li>
+        <li>8주는 한 화면에 다 못 들어가서 칸 너비를 고정하고 가로로 넘긴다. 처음 열면 이번 주 앞 칸부터 보이게.</li>
+      </ul></div>
+      <div class="note"><b>나머지</b><ul>
+        <li>머리의 "주차 편집"은 시작 주·주 수·주차 이름 고치기 (R13). 단계형은 "단계 편집".</li>
+        <li>타이머가 돌지 않으면 누적 시간 밑 "타이머 진행 중"이 없다.</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

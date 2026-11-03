@@ -1,0 +1,46 @@
+<!doctype html>
+<!-- 목업: 프로젝트 / 4-1. 모닥불 단계
+  목차와 다른 화면: index.html
+  CSS: common.css(.fire, 모닥불 크기), parts.css(.fire-grid, .fire-row). 그림은 icons.js의 fire-* 심볼
+  ID                  화면                         요구사항
+  campfire            4-1. 모닥불 단계             R26–R27
+    campfire-levels     큰 그림 6단계 (상세 화면 크기 비교용)
+    campfire-small      카드 크기 (26px)
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 프로젝트 / 4-1. 모닥불 단계</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="campfire">
+    <div class="screen-head"><h2>4-1. 모닥불 단계</h2><span class="tag">R26–R27</span></div>
+    <p class="screen-desc">마지막 작업일에 따라 불이 사그라든다 (visual.md 기본안). 실제 앱에서는 불꽃이 살짝 일렁이는 움직임을 더한다 (목업은 정지 그림).</p>
+    <div class="part-stage">
+      <div class="fire-grid" id="campfire-levels">
+        <div class="fire-tile"><span class="fire"><svg><use href="#fire-blaze"/></svg></span><b>활활</b><span>오늘</span></div>
+        <div class="fire-tile"><span class="fire"><svg><use href="#fire-mid"/></svg></span><b>보통</b><span>어제</span></div>
+        <div class="fire-tile"><span class="fire"><svg><use href="#fire-small"/></svg></span><b>작은 불</b><span>2–3일 전</span></div>
+        <div class="fire-tile"><span class="fire"><svg><use href="#fire-ember"/></svg></span><b>잉걸불</b><span>4–6일 전</span></div>
+        <div class="fire-tile"><span class="fire"><svg><use href="#fire-out"/></svg></span><b>꺼짐 (연기)</b><span>7일 이상</span></div>
+        <div class="fire-tile"><span class="fire"><svg><use href="#fire-none"/></svg></span><b>장작만</b><span>기록 없음 → "아직 없음"</span></div>
+      </div>
+      <div class="fire-row" id="campfire-small">
+        <div><span class="fire sm"><svg><use href="#fire-blaze"/></svg></span>오늘</div>
+        <div><span class="fire sm"><svg><use href="#fire-mid"/></svg></span>어제</div>
+        <div><span class="fire sm"><svg><use href="#fire-small"/></svg></span>3일 전</div>
+        <div class="cold"><span class="fire sm"><svg><use href="#fire-ember"/></svg></span>5일 전</div>
+        <div class="cold"><span class="fire sm"><svg><use href="#fire-out"/></svg></span>12일 전</div>
+        <div class="cold"><span class="fire sm"><svg><use href="#fire-none"/></svg></span>아직 없음</div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

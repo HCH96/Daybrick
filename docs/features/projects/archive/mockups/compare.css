@@ -1,0 +1,63 @@
+/* 비교 목업 전용 (보관): 목록 화면 윗줄 (왼쪽 60% 후보 + 오른쪽 40% 버블) (compare-list-top.html) */
+
+/* 앱 본문 너비(1184px)를 75%로 줄인 윗줄 */
+.strip { zoom: .75; width: 1240px; padding: 28px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+.top-row { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; height: 262px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; min-width: 0;
+  display: flex; flex-direction: column; gap: 10px; }
+.card-head { display: flex; align-items: baseline; gap: 10px; }
+.card-head b { font-size: 15px; }
+.card-head span { font-size: 12px; color: var(--faint); }
+.card-head .right { margin-left: auto; }
+.card-head .live { align-self: center; }
+.card-head .live b { font-size: 12px; font-weight: 600; }
+
+/* 오른쪽 버블 (40%) */
+.card .bubble-svg { flex: 1; height: auto; min-height: 0; }
+
+/* 후보 1: 잔디 + 연속 작업일 */
+.heat-wrap { flex: 1; display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: center; }
+.heat { display: grid; grid-template-columns: 22px repeat(16, 16px); grid-template-rows: 14px repeat(7, 16px); gap: 4px; }
+.heat .m { font-size: 11px; color: var(--faint); grid-row: 1; white-space: nowrap; }
+.heat .d { font-size: 10px; color: var(--faint); grid-column: 1; line-height: 16px; }
+.heat i { border-radius: 4px; background: var(--surface-2); }
+.heat i.l1 { background: rgba(166,140,255,.28); }
+.heat i.l2 { background: rgba(166,140,255,.5); }
+.heat i.l3 { background: rgba(166,140,255,.75); }
+.heat i.l4 { background: #a68cff; }
+.heat i.today { outline: 2px solid var(--text); outline-offset: 1px; }
+.heat i.future { background: transparent; }
+.heat-stats { display: flex; flex-direction: column; gap: 14px; }
+.hs small { display: block; font-size: 11px; color: var(--faint); }
+.hs b { font-size: 22px; font-variant-numeric: tabular-nums; }
+.hs b em { font-style: normal; font-size: 13px; color: var(--muted); font-weight: 600; margin-left: 2px; }
+.hs span { font-size: 12px; color: var(--muted); }
+.heat-legend { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--faint); }
+.heat-legend i { width: 11px; height: 11px; border-radius: 3px; }
+
+/* 후보 2: 주간 투입 추이 (쌓은 막대) */
+.trend { flex: 1; min-height: 0; width: 100%; }
+.trend .ax { fill: var(--faint); font-size: 11px; }
+.trend .ax.now { fill: var(--text); font-weight: 700; }
+.trend .grid { stroke: var(--border); stroke-dasharray: 2 4; }
+.trend .val { fill: var(--muted); font-size: 11px; text-anchor: middle; }
+
+/* 후보 3: 이번 주 할 일 */
+.todo { display: flex; flex-direction: column; gap: 2px; }
+.todo-row { display: grid; grid-template-columns: 16px 1fr 150px 90px; align-items: center; gap: 10px; padding: 6px 4px; border-radius: 7px; font-size: 13px; }
+.todo-row .proj { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; }
+.todo-row .proj .dot { width: 8px; height: 8px; }
+.todo-row .when { font-size: 12px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+.todo-row .when.late { color: var(--red); }
+.todo-more { font-size: 12px; color: var(--faint); padding: 2px 4px; }
+
+/* 비교 표 */
+.verdict { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.verdict .note b { color: var(--text); }
+
+/* 보관 당시 projects.css의 버블 스타일 복사 */
+.bubble-svg { display: block; width: 100%; }
+.bubble-svg .pct { fill: #fff; font-weight: 500; text-anchor: middle; dominant-baseline: central; }
+.bubble-svg .lg-name { fill: var(--text); font-size: 13px; }
+.bubble-svg .lg-time { fill: var(--muted); font-size: 12px; text-anchor: end; font-variant-numeric: tabular-nums; }
+.bubble-svg .grow { fill: none; stroke-width: 2; opacity: .35; }

@@ -1,0 +1,80 @@
+<!doctype html>
+<!-- 목업: 프로젝트 / 4-3. 프로젝트 만들기 창
+  목차와 다른 화면: index.html
+  CSS: common.css(버튼), parts.css(.dialog 아래 클래스)
+  ID                  화면                         요구사항
+  create              4-3. 프로젝트 만들기 창       R5, R9–R12
+    create-stage        단계형을 고른 상태           R9–R10, R12
+    create-weekly       주차형을 고른 상태           R9–R11
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 프로젝트 / 4-3. 프로젝트 만들기 창</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="create">
+    <div class="screen-head"><h2>4-3. 프로젝트 만들기 창</h2><span class="tag">R5, R9–R12</span></div>
+    <p class="screen-desc">목록의 "+ 프로젝트 만들기"를 누르면 화면 가운데 뜨는 창. 왼쪽은 단계형, 오른쪽은 주차형을 고른 모습 (실제 크기, 앱 화면을 어둡게 덮고 뜬다).</p>
+    <div class="part-stage">
+      <div class="dialogs">
+        <div class="dialog" id="create-stage">
+          <h3>새 프로젝트</h3>
+          <div class="field"><label>이름</label><div class="input">Daybrick</div></div>
+          <div class="field"><label>색</label>
+            <div class="swatches"><i class="on" style="--sw:#a68cff"></i><i style="--sw:#7aa8ff"></i><i style="--sw:#66cf95"></i><i style="--sw:#f0b860"></i><i style="--sw:#f29ad3"></i><i style="--sw:#ff8a8a"></i><i style="--sw:#5fd0d4"></i><span class="more">직접 고르기</span></div></div>
+          <div class="field"><label>종류</label>
+            <div class="kinds">
+              <div class="kind-opt on"><b><svg class="ico xs"><use href="#i-flag"/></svg>단계형</b><span>단계 이름을 순서대로 적기</span></div>
+              <div class="kind-opt"><b><svg class="ico xs"><use href="#i-cal"/></svg>주차형</b><span>시작 주·주 수로 자동 생성</span></div>
+            </div>
+            <div class="hint">만든 뒤에는 종류를 바꿀 수 없어요.</div></div>
+          <div class="field"><label>단계 (최소 1개)</label>
+            <div class="step-list">
+              <div class="step-row"><svg class="ico sm grip"><use href="#i-grip"/></svg><span class="no">1</span><div class="input">기획</div><span class="icon-btn"><svg class="ico xs"><use href="#i-x"/></svg></span></div>
+              <div class="step-row"><svg class="ico sm grip"><use href="#i-grip"/></svg><span class="no">2</span><div class="input">프로토타입</div><span class="icon-btn"><svg class="ico xs"><use href="#i-x"/></svg></span></div>
+              <div class="step-row"><svg class="ico sm grip"><use href="#i-grip"/></svg><span class="no">3</span><div class="input">폴리싱</div><span class="icon-btn"><svg class="ico xs"><use href="#i-x"/></svg></span></div>
+              <div class="step-row"><svg class="ico sm grip"><use href="#i-grip"/></svg><span class="no">4</span><div class="input focus">출시</div><span class="icon-btn"><svg class="ico xs"><use href="#i-x"/></svg></span></div>
+            </div>
+            <div class="add-step"><svg class="ico xs"><use href="#i-plus"/></svg>단계 추가</div></div>
+          <div class="dialog-foot"><span class="btn ghost">취소</span><span class="btn primary">만들기</span></div>
+        </div>
+
+        <div class="dialog" id="create-weekly">
+          <h3>새 프로젝트</h3>
+          <div class="field"><label>이름</label><div class="input">정보처리기사 실기</div></div>
+          <div class="field"><label>색</label>
+            <div class="swatches"><i style="--sw:#a68cff"></i><i style="--sw:#7aa8ff"></i><i style="--sw:#66cf95"></i><i class="on" style="--sw:#f0b860"></i><i style="--sw:#f29ad3"></i><i style="--sw:#ff8a8a"></i><i style="--sw:#5fd0d4"></i><span class="more">직접 고르기</span></div></div>
+          <div class="field"><label>종류</label>
+            <div class="kinds">
+              <div class="kind-opt"><b><svg class="ico xs"><use href="#i-flag"/></svg>단계형</b><span>단계 이름을 순서대로 적기</span></div>
+              <div class="kind-opt on"><b><svg class="ico xs"><use href="#i-cal"/></svg>주차형</b><span>시작 주·주 수로 자동 생성</span></div>
+            </div>
+            <div class="hint">만든 뒤에는 종류를 바꿀 수 없어요.</div></div>
+          <div class="two">
+            <div class="field"><label>시작 주 (월요일 기준)</label><div class="input select">10/26 – 11/1 주<svg class="ico xs"><use href="#i-chev-d"/></svg></div></div>
+            <div class="field"><label>주 수</label><div class="input stepper"><span class="icon-btn"><svg class="ico xs"><use href="#i-min"/></svg></span><b>6</b><span class="icon-btn"><svg class="ico xs"><use href="#i-plus"/></svg></span></div></div>
+          </div>
+          <div class="field"><label>주차 이름 (선택, 비우면 "N주차")</label>
+            <div class="step-list">
+              <div class="step-row"><span class="no">1</span><span class="when">10/26–11/1</span><div class="input">필답형 기출 훑기</div></div>
+              <div class="step-row"><span class="no">2</span><span class="when">11/2–11/8</span><div class="input"><span class="ph">2주차</span></div></div>
+              <div class="step-row"><span class="no">3</span><span class="when">11/9–11/15</span><div class="input"><span class="ph">3주차</span></div></div>
+              <div class="step-row"><span class="no">4</span><span class="when">11/16–11/22</span><div class="input"><span class="ph">4주차</span></div></div>
+              <div class="step-row"><span class="no">5</span><span class="when">11/23–11/29</span><div class="input"><span class="ph">5주차</span></div></div>
+              <div class="step-row"><span class="no">6</span><span class="when">11/30–12/6</span><div class="input focus">실전 모의고사</div></div>
+            </div></div>
+          <div class="dialog-foot"><span class="btn ghost">취소</span><span class="btn primary">만들기</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

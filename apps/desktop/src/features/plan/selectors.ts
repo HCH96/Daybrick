@@ -22,11 +22,14 @@ export interface TaskGroup {
 /**
  * 카테고리 순서대로 묶음을 만들고, 미분류는 태스크가 있을 때만 맨 끝에 붙인다 (R10·R11).
  * 없는 카테고리를 가리키는 태스크도 미분류로 본다.
+ * 있는 프로젝트 단계에 속한 태스크는 빼고(프로젝트 트리에서 따로 보인다, 프로젝트 D2), 없는 단계를 가리키면 미분류로 본다.
  */
 export function groupTasksByCategory(data: PlanData): TaskGroup[] {
   const known = new Set(data.categories.map((c) => c.id));
+  const stages = knownStageIds(data);
   const byKey = new Map<string, Task[]>();
   for (const task of data.tasks) {
+    if (task.stageId !== null && stages.has(task.stageId)) continue;
     const key = task.categoryId !== null && known.has(task.categoryId) ? task.categoryId : NONE_GROUP_KEY;
     const list = byKey.get(key);
     if (list) list.push(task);
@@ -37,6 +40,11 @@ export function groupTasksByCategory(data: PlanData): TaskGroup[] {
   const none = byKey.get(NONE_GROUP_KEY);
   if (none && none.length > 0) groups.push(makeGroup(NONE_GROUP_KEY, null, none));
   return groups;
+}
+
+/** 지금 있는 모든 프로젝트 단계 id */
+export function knownStageIds(data: PlanData): Set<string> {
+  return new Set(data.projects.flatMap((p) => p.stages.map((s) => s.id)));
 }
 
 function makeGroup(key: string, category: Category | null, tasks: Task[]): TaskGroup {

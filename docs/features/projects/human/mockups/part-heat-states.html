@@ -1,0 +1,111 @@
+<!doctype html>
+<!-- 목업: 프로젝트 / 4-4. 최근 활동 잔디 상태
+  목차와 다른 화면: index.html. 기본 모습(타이머 중)은 projects.html의 projects-heat
+  CSS: common.css, projects.css(.heat, .heat-tip, .streak, .bubble-svg .dim/.ring/.glow, .part-solo)
+  ID                  화면                         요구사항
+  heat-states         4-4. 최근 활동 잔디 상태      새 요구사항 (명세 추가 예정)
+    heat-by-bubble      버블 원에 마우스 → 잔디가 그 프로젝트만
+    heat-by-cell        잔디 칸에 마우스 → 그날 말풍선, 그날 한 프로젝트 원이 반짝
+    heat-risk           오늘 아직 기록 없음 → 약한 불 + "오늘 하면 6일째"
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 프로젝트 / 4-4. 최근 활동 잔디 상태</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="projects.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="heat-states">
+    <div class="screen-head"><h2>4-4. 최근 활동 잔디 상태</h2><span class="tag">새 요구사항</span></div>
+    <p class="screen-desc">목록 화면 윗줄(잔디 60% · 버블 40%)만 떼어 75%로 보여준다. 마우스를 떼면 모두 기본 모습(projects.html)으로 돌아간다.</p>
+
+    <div class="screen-head"><h3>① 버블의 "토익 스피킹" 원에 마우스</h3></div>
+    <p class="screen-desc">잔디가 토익을 한 날만 토익 색으로 남는다. 오른쪽 숫자도 그 프로젝트 기준으로 바뀐다. 나머지 원과 범례는 흐려진다.</p>
+    <div class="part-solo" id="heat-by-bubble">
+      <div class="panel">
+        <div class="panel-head"><b>최근 활동</b><span class="filter-chip c-blue"><span class="dot"></span>토익 스피킹 8주만</span></div>
+        <div class="heat-wrap">
+          <div class="heat-box">
+            <div class="heat-months"><span style="grid-column:2">8월</span><span style="grid-column:7">9월</span><span style="grid-column:11">10월</span><span style="grid-column:15">11월</span></div>
+            <div class="heat-days"><span>월</span><span></span><span>수</span><span></span><span>금</span><span></span><span></span></div>
+            <div class="heat by-proj c-blue"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="l2"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="l1"></i><i></i><i class="l3"></i><i></i><i class="l2"></i><i class="l2"></i><i></i><i></i><i class="l2 today"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></div>
+          </div>
+          <div class="heat-stats">
+            <div class="hs"><small>작업한 날 (16주)</small><b>9<em>일</em></b></div>
+            <div class="hs"><small>이 기간 합계</small><b>13시간 20분</b></div>
+            <div class="hs"><small>마지막 작업</small><b>어제</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><b>이번 주 투입</b><span>11/2–11/8 · 13시간 50분</span></div>
+        <svg class="bubble-svg" viewBox="0 0 440 200">
+          <g class="dim"><circle cx="274" cy="152" r="4" fill="#a68cff"/><text class="lg-name" x="284" y="156">Daybrick</text><text class="lg-time" x="434" y="156">6시간 40분</text></g>
+          <circle cx="274" cy="172" r="4" fill="#7aa8ff"/><text class="lg-name on" x="284" y="176">토익 스피킹</text><text class="lg-time" x="434" y="176">5시간</text>
+          <g class="dim"><circle cx="274" cy="192" r="4" fill="#66cf95"/><text class="lg-name" x="284" y="196">포트폴리오</text><text class="lg-time" x="434" y="196">2시간 10분</text></g>
+          <circle cx="92" cy="116" r="49" class="ring"/>
+          <circle cx="92" cy="116" r="44" fill="#7aa8ff"/><text class="pct" x="92" y="116" font-size="17">36%</text>
+          <g class="dim"><circle cx="206" cy="76" r="50" fill="#a68cff"/><text class="pct" x="206" y="76" font-size="19">48%</text></g>
+          <g class="dim"><circle cx="352" cy="164" r="29" fill="#66cf95"/><text class="pct" x="352" y="164" font-size="12">16%</text></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="screen-head" style="margin-top:28px"><h3>② 잔디의 11월 3일 칸에 마우스</h3></div>
+    <p class="screen-desc">그날 날짜·합계와 프로젝트별 시간을 말풍선으로. 그날 한 프로젝트(Daybrick, 포트폴리오)의 원 테두리가 반짝인다.</p>
+    <div class="part-solo" id="heat-by-cell">
+      <div class="panel">
+        <div class="panel-head"><b>최근 활동</b><span>최근 16주 · 모든 프로젝트</span></div>
+        <div class="heat-wrap">
+          <div class="heat-box">
+            <div class="heat-months"><span style="grid-column:2">8월</span><span style="grid-column:7">9월</span><span style="grid-column:11">10월</span><span style="grid-column:15">11월</span></div>
+            <div class="heat-days"><span>월</span><span></span><span>수</span><span></span><span>금</span><span></span><span></span></div>
+            <div class="heat"><i class="l3"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><i class="l3"></i><i class="l3"></i><i></i><i class="l3"></i><i class="l3"></i><i class="l3"></i><i class="l2"></i><i class="l4"></i><i></i><i class="l2"></i><i></i><i class="l3"></i><i class="l3"></i><i class="l2"></i><i></i><i class="l2"></i><i></i><i class="l2"></i><i></i><i class="l3"></i><i class="l4"></i><i class="l4"></i><i></i><i class="l3"></i><i class="l4"></i><i class="l2"></i><i class="l3"></i><i class="l1"></i><i class="l3"></i><i></i><i></i><i class="l3"></i><i class="l3"></i><i></i><i class="l3"></i><i class="l2"></i><i></i><i class="l2"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="l1"></i><i class="l3"></i><i class="l3"></i><i class="l4"></i><i class="l4"></i><i class="l2"></i><i></i><i class="l2"></i><i></i><i class="l4"></i><i class="l3"></i><i class="l4"></i><i></i><i class="l1"></i><i class="l3"></i><i class="l3"></i><i></i><i class="l4"></i><i class="l1"></i><i class="l1"></i><i></i><i></i><i></i><i class="l3"></i><i class="l2"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l2"></i><i class="l3"></i><i class="l3"></i><i class="l3"></i><i class="l1"></i><i></i><i></i><i class="l3"></i><i class="l3"></i><i class="l4"></i><i class="l3"></i><i class="l3"></i><i></i><i class="l1"></i><i class="l3"></i><i class="l3"></i><i></i><i class="l3"></i><i></i><i></i><i></i><i></i><i class="l4"></i><i></i><i class="l3"></i><i></i><i class="l2"></i><i class="l2"></i><i class="l4"></i><i class="l3 hover"></i><i class="l2 today"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i>
+              <div class="heat-tip"><b>11월 3일 (화)<span>2시간 30분</span></b>
+                <div class="tip-row c-violet"><span class="dot"></span>Daybrick<em>1시간 40분</em><div class="tip-bar"><i style="width:67%"></i></div></div>
+                <div class="tip-row c-green"><span class="dot"></span>포트폴리오 사이트<em>50분</em><div class="tip-bar"><i style="width:33%"></i></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="heat-stats">
+            <div class="streak"><span class="fire"><svg><use href="#fire-mid"/></svg></span>
+              <div class="hs"><small>연속 작업</small><b>5<em>일째</em></b> <span class="sub">최장 10일</span></div></div>
+            <div class="hs"><small>최근 4주 작업한 날</small><b>19<em>/ 28일</em></b></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><b>이번 주 투입</b><span>11/2–11/8 · 13시간 50분</span></div>
+        <svg class="bubble-svg" viewBox="0 0 440 200">
+          <circle cx="274" cy="152" r="4" fill="#a68cff"/><text class="lg-name" x="284" y="156">Daybrick</text><text class="lg-time" x="434" y="156">6시간 40분</text>
+          <circle cx="274" cy="172" r="4" fill="#7aa8ff"/><text class="lg-name" x="284" y="176">토익 스피킹</text><text class="lg-time" x="434" y="176">5시간</text>
+          <circle cx="274" cy="192" r="4" fill="#66cf95"/><text class="lg-name" x="284" y="196">포트폴리오</text><text class="lg-time" x="434" y="196">2시간 10분</text>
+          <circle cx="92" cy="116" r="44" fill="#7aa8ff"/><text class="pct" x="92" y="116" font-size="17">36%</text>
+          <circle cx="206" cy="76" r="56" class="glow" stroke="#a68cff"/>
+          <circle cx="206" cy="76" r="50" fill="#a68cff"/><text class="pct" x="206" y="76" font-size="19">48%</text>
+          <circle cx="352" cy="164" r="35" class="glow" stroke="#66cf95"/>
+          <g opacity=".35"><circle cx="352" cy="164" r="29" fill="#66cf95"/><text class="pct" x="352" y="164" font-size="12">16%</text></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="screen-head" style="margin-top:28px"><h3>③ 오늘 아직 기록이 없을 때 (예: 11월 5일 오전)</h3></div>
+    <p class="screen-desc">어제까지 5일 연속. 불이 약하게 깜빡이고 "오늘 하면 6일째"로 알려 준다. 자정까지 기록이 없으면 연속이 0으로 돌아가고 불은 꺼진다.</p>
+    <div class="part-solo single" id="heat-risk">
+      <div class="panel">
+        <div class="heat-stats">
+          <div class="streak risk"><span class="fire"><svg><use href="#fire-small"/></svg></span>
+            <div class="hs"><small>연속 작업 (어제까지)</small><b>5<em>일</em></b> <span class="sub">오늘 하면 6일째</span></div></div>
+          <div class="hs"><small>오늘</small><b>0분</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

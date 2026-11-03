@@ -30,6 +30,16 @@ export function PlanIcon() {
   );
 }
 
+/** 프로젝트: 깃발 (목업 icons.js의 i-flag) */
+export function ProjectsIcon() {
+  return (
+    <LineIcon>
+      <path d="M5 21V4" />
+      <path d="M5 4h11l-2 4 2 4H5" />
+    </LineIcon>
+  );
+}
+
 export function SchedulerIcon() {
   return (
     <LineIcon>

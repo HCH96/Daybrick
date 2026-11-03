@@ -1,5 +1,5 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
-import type { PlanData } from "./types";
+import type { PlanData, PlanView, Project, Task } from "./types";
 
 const CURRENT_VERSION = 1;
 
@@ -9,7 +9,33 @@ export function createEmptyPlanData(): PlanData {
     version: CURRENT_VERSION,
     categories: [],
     tasks: [],
-    view: { collapsed: [], showApplicationEvents: true, recentColors: [] },
+    projects: [],
+    view: { collapsed: [], showApplicationEvents: true, recentColors: [], stageFold: {}, projectsDoneOpen: false },
+  };
+}
+
+/** 프로젝트 기능 전에 저장된 파일 모양 (새 칸이 없을 수 있다) */
+type OldPlanData = Omit<PlanData, "projects" | "tasks" | "view"> & {
+  projects?: Project[];
+  tasks: (Omit<Task, "stageId"> & { stageId?: string | null })[];
+  view: Omit<PlanView, "stageFold" | "projectsDoneOpen"> & Partial<Pick<PlanView, "stageFold" | "projectsDoneOpen">>;
+};
+
+/**
+ * 프로젝트 기능 전에 저장된 파일에 없는 값을 빈 값으로 채운다 (프로젝트 D6).
+ * 파일은 version 1 그대로 두고 옮기지 않는다. 다음 저장 때 채운 값이 함께 적힌다.
+ */
+function fillMissing(data: OldPlanData): PlanData {
+  const { view } = data;
+  return {
+    ...data,
+    projects: Array.isArray(data.projects) ? data.projects : [],
+    tasks: data.tasks.map((t) => ({ ...t, stageId: t.stageId ?? null })),
+    view: {
+      ...view,
+      stageFold: typeof view.stageFold === "object" && view.stageFold !== null ? view.stageFold : {},
+      projectsDoneOpen: view.projectsDoneOpen === true,
+    },
   };
 }
 
@@ -38,7 +64,7 @@ export async function loadPlanData(): Promise<PlanData> {
   if (parsed.version !== CURRENT_VERSION) {
     throw new Error(`지원하지 않는 파일 버전입니다: ${String(parsed.version)}`);
   }
-  return parsed as PlanData;
+  return fillMissing(parsed as OldPlanData);
 }
 
 export async function savePlanData(data: PlanData): Promise<void> {

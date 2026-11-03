@@ -6,6 +6,7 @@ import {
   HomeIcon,
   JobSearchIcon,
   PlanIcon,
+  ProjectsIcon,
   SchedulerIcon,
   SettingsIcon,
   TodayIcon,
@@ -13,6 +14,7 @@ import {
 import { makePlaceholderPage } from "../pages/PlaceholderPage";
 import HomePage from "../pages/home/HomePage";
 import PlanPage from "../pages/plan/PlanPage";
+import ProjectsPage from "../pages/projects/ProjectsPage";
 import ApplicationsPage from "../pages/applications/ApplicationsPage";
 import JobSearchPage from "../pages/job-search/JobSearchPage";
 import SettingsPage from "../pages/settings/SettingsPage";
@@ -45,6 +47,13 @@ export const pages: PageDef[] = [
     navLabel: NAV_LABELS.plan,
     icon: PlanIcon,
     component: PlanPage,
+  },
+  {
+    id: "projects",
+    label: PAGE_LABELS.projects,
+    navLabel: NAV_LABELS.projects,
+    icon: ProjectsIcon,
+    component: ProjectsPage,
   },
   {
     id: "scheduler",

@@ -1,0 +1,145 @@
+<!doctype html>
+<!-- 목업: 프로젝트 / 2. 상세 화면 (단계형)
+  목차와 다른 화면: index.html
+  CSS: common.css(앱 틀·트랙·깃발·모닥불), detail.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  detail              2. 상세 화면 (단계형)         R21–R34
+    detail-head         2-1. 머리 (뒤로·이름·종류)   R4, R13, R21
+    detail-progress     2-2. 진행 상황 판            R21–R24, R26–R28
+    detail-stages       2-3. 단계 영역·태스크 줄     R29–R34
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 프로젝트 / 2. 상세 화면 (단계형)</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="detail.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="detail">
+    <div class="screen-head"><h2>2. 상세 화면 (단계형)</h2><span class="tag">R21–R34</span></div>
+    <p class="screen-desc">"Daybrick" 카드를 눌러 연 상태. 기획은 끝났고 프로토타입 2/6. "타이머 연동"으로 타이머가 돌고 있고, 폴리싱 칸에서 + 를 눌러 새 태스크를 적는 중.</p>
+    <div class="scale-note">앱 창 1440×900을 75%로 줄여 보여줌</div>
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav"><span class="tb-btn"><svg class="ico sm"><use href="#i-back"/></svg></span><span class="tb-btn off"><svg class="ico sm"><use href="#i-fwd"/></svg></span></div>
+        <div class="tb-drag"></div>
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg></span>
+        <div class="win"><span><svg class="ico"><use href="#i-min"/></svg></span><span><svg class="ico"><use href="#i-max"/></svg></span><span><svg class="ico"><use href="#i-x"/></svg></span></div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-plan"/></svg>Plan</div>
+          <div class="nav on"><svg class="ico"><use href="#i-flag"/></svg>Projects</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock"/></svg>Scheduler</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag"/></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+          <div class="nav"><svg class="ico"><use href="#i-sun"/></svg>Today</div>
+          <div class="spacer"></div>
+          <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main c-violet">
+          <div class="detail-head" id="detail-head">
+            <span class="icon-btn"><svg class="ico"><use href="#i-back"/></svg></span>
+            <span class="dot"></span><h1 class="page-title">Daybrick</h1><span class="kind">단계형</span>
+            <span class="spacer"></span>
+            <span class="btn sm ghost"><svg class="ico xs"><use href="#i-flag"/></svg>단계 편집</span>
+            <span class="icon-btn"><svg class="ico sm"><use href="#i-more"/></svg></span>
+          </div>
+
+          <div class="progress" id="detail-progress">
+            <div class="track-box">
+              <div class="track-cap"><b>프로토타입</b> 진행 중 · 전체 태스크 7/15 완료</div>
+              <div class="track" style="--p:.333">
+                <div class="rail"><i></i></div>
+                <span class="flag done" style="left:0"><svg><use href="#flag-done"/></svg><span class="fl-name">기획</span></span>
+                <span class="flag now" style="left:25%"><svg><use href="#flag-todo"/></svg><span class="fl-name">프로토타입</span></span>
+                <span class="flag" style="left:50%"><svg><use href="#flag-todo"/></svg><span class="fl-name">폴리싱</span></span>
+                <span class="flag" style="left:75%"><svg><use href="#flag-todo"/></svg><span class="fl-name">출시</span></span>
+                <span class="finish"><svg><use href="#finish"/></svg></span>
+                <span class="runner"><svg><use href="#runner"/></svg></span>
+              </div>
+            </div>
+            <div class="stats">
+              <div class="stat-fire"><span class="fire"><svg><use href="#fire-blaze"/></svg></span>
+                <div class="stat"><small>마지막 작업</small><b>오늘</b></div></div>
+              <div class="stat"><small>누적 투입 시간</small><b>42시간 10분</b><div class="live">타이머 진행 중</div></div>
+            </div>
+          </div>
+
+          <div class="stages" id="detail-stages">
+            <div class="stage">
+              <div class="stage-head"><b>기획</b><span class="cnt full">5/5</span><span class="icon-btn"><svg class="ico sm"><use href="#i-plus"/></svg></span></div>
+              <div class="stage-body">
+                <div class="stage-sep">완료 5</div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">기능 목록 정리</span><div class="t-meta"><span>10/5–10/7</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">화면 흐름 스케치</span><div class="t-meta"><span>10/8–10/10</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">기술 스택 고르기</span><div class="t-meta"><span>10/12</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">데이터 구조 설계</span><div class="t-meta"><span>10/13–10/16</span><span><svg class="ico"><use href="#i-check"/></svg>4/4</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">메인 화면 목업 승인</span><div class="t-meta"><span>10/19</span></div></div></div>
+              </div>
+            </div>
+
+            <div class="stage now">
+              <div class="stage-head"><b>프로토타입</b><span class="cnt">2/6</span><span class="badge">현재</span><span class="icon-btn"><svg class="ico sm"><use href="#i-plus"/></svg></span></div>
+              <div class="stage-body">
+                <div class="task hover"><span class="st doing"></span><div class="t-main"><span class="t-title">타이머 연동</span><div class="t-meta"><span>11/2–11/6</span><span><svg class="ico"><use href="#i-check"/></svg>2/4</span></div></div><span class="icon-btn trash"><svg class="ico sm"><use href="#i-trash"/></svg></span></div>
+                <div class="task"><span class="st doing"></span><div class="t-main"><span class="t-title">프로젝트 목록 화면</span><div class="t-meta"><span>11/4–11/7</span></div></div></div>
+                <div class="task"><span class="st"></span><div class="t-main"><span class="t-title">깃발 트랙 애니메이션</span><div class="t-meta"><span>11/9–11/11</span><span><svg class="ico"><use href="#i-check"/></svg>0/3</span></div></div></div>
+                <div class="task"><span class="st"></span><div class="t-main"><span class="t-title">버블 그래프 물리 효과</span><div class="t-meta"><span class="none">날짜 없음</span></div></div></div>
+                <div class="stage-sep">완료 2</div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">저장소 구조 잡기</span><div class="t-meta"><span>10/26–10/28</span></div></div></div>
+                <div class="task done"><span class="st done"></span><div class="t-main"><span class="t-title">사이드바 메뉴 추가</span><div class="t-meta"><span>10/30</span></div></div></div>
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-head"><b>폴리싱</b><span class="cnt">0/4</span><span class="icon-btn hover"><svg class="ico sm"><use href="#i-plus"/></svg></span></div>
+              <div class="stage-body">
+                <div class="task"><span class="st"></span><div class="t-main"><span class="t-title">다크 테마 색 다듬기</span><div class="t-meta"><span class="none">날짜 없음</span></div></div></div>
+                <div class="task"><span class="st"></span><div class="t-main"><span class="t-title">단축키 정리</span><div class="t-meta"><span class="none">날짜 없음</span></div></div></div>
+                <div class="task"><span class="st"></span><div class="t-main"><span class="t-title">빈 화면 안내 문구</span><div class="t-meta"><span>11/16</span></div></div></div>
+                <div class="task"><span class="st"></span><div class="t-main"><span class="t-title">애니메이션 속도 조정</span><div class="t-meta"><span class="none">날짜 없음</span></div></div></div>
+                <div class="task new"><span class="st"></span><span class="t-title">설정 화면 정리</span></div>
+              </div>
+            </div>
+
+            <div class="stage">
+              <div class="stage-head"><b>출시</b><span class="cnt">0/0</span><span class="icon-btn"><svg class="ico sm"><use href="#i-plus"/></svg></span></div>
+              <div class="stage-body">
+                <div class="stage-empty"><span>아직 태스크가 없어요</span><small>+ 를 눌러 추가</small></div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>진행 트랙</b><ul>
+        <li>깃발은 단계 시작점에 같은 간격, 끝에 체크무늬 결승 깃발 (R22).</li>
+        <li>끝난 단계 깃발은 색이 차고 펄럭이며 체크 표시, 나머지는 회색으로 늘어진 깃발 (R24).</li>
+        <li>캐릭터 위치 = 1(기획) + 2/6 = 1.33 → 트랙의 33% (R23).</li>
+      </ul></div>
+      <div class="note"><b>단계 영역</b><ul>
+        <li>가로 칸으로 나란히 두고, 현재 단계 칸에 프로젝트 색 테두리와 "현재" 표시.</li>
+        <li>머리: 이름 · 완료/전체(모두 끝나면 초록) · + 버튼 (R30).</li>
+        <li>완료 태스크는 "완료 N" 줄 아래로 모인다 (R31). 칸 안이 넘치면 칸 안에서 세로로 넘긴다.</li>
+      </ul></div>
+      <div class="note"><b>태스크 줄</b><ul>
+        <li>상태 표시·제목·기간 또는 "날짜 없음"·체크리스트 진행도. 휴지통은 마우스를 올린 줄에만 (R31, R33).</li>
+        <li>폴리싱 칸 맨 아래: + 를 눌러 바로 적는 입력 줄. Enter 뒤에도 새 입력 줄이 이어진다 (R32).</li>
+        <li>태스크를 다른 칸으로 끌면 그 단계로 옮겨진다 (R34, 모양은 플랜 끌기와 같음).</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,131 @@
+/* 목록 화면 전용: 윗줄(최근 활동 잔디 60% + 주간 투입 버블 40%), 프로젝트 카드, 만들기 버튼, 완료 묶음
+   (projects.html, part-heat-states.html, part-bubble-empty.html) */
+
+/* ===== 윗줄 판 ===== */
+.top-row { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; height: 262px; flex-shrink: 0; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px;
+  min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.panel-head { display: flex; align-items: baseline; gap: 10px; }
+.panel-head b { font-size: 15px; }
+.panel-head span { font-size: 12px; color: var(--faint); }
+.panel-head .right { margin-left: auto; }
+.panel-head .live { align-self: center; }
+.panel-head .live b { font-size: 12px; color: var(--text); font-weight: 600; }
+.part-solo { zoom: .75; width: 1184px; display: flex; gap: 16px; align-items: stretch; }
+.part-solo > .panel { flex: 3; }
+.part-solo > .panel + .panel { flex: 2; }
+.part-solo.single > .panel { flex: none; width: 320px; height: auto; }
+.part-solo > .panel { height: 262px; }
+
+/* ===== 최근 활동 잔디 (16주 × 7일). --hc = 칠하는 색, 기본은 강조색, 프로젝트로 거르면 그 색 ===== */
+.heat-wrap { flex: 1; display: grid; grid-template-columns: auto 1fr; gap: 30px; align-items: center; }
+.heat-box { display: grid; grid-template-columns: 22px auto; grid-template-rows: 18px auto; }
+.heat-months { grid-column: 2; display: grid; grid-template-columns: repeat(16, 16px); column-gap: 4px; font-size: 11px; color: var(--faint); }
+.heat-months span { white-space: nowrap; }
+.heat-days { grid-row: 2; grid-column: 1; display: grid; grid-template-rows: repeat(7, 16px); row-gap: 4px; font-size: 10px; line-height: 16px; color: var(--faint); }
+.heat { grid-row: 2; grid-column: 2; --hc: var(--accent); position: relative; display: grid; grid-template-rows: repeat(7, 16px); grid-auto-flow: column;
+  grid-auto-columns: 16px; gap: 4px; }
+.heat i { border-radius: 4px; background: var(--surface-2); }
+.heat i.l1 { background: color-mix(in srgb, var(--hc) 28%, var(--surface-2)); }
+.heat i.l2 { background: color-mix(in srgb, var(--hc) 52%, var(--surface-2)); }
+.heat i.l3 { background: color-mix(in srgb, var(--hc) 78%, var(--surface-2)); }
+.heat i.l4 { background: var(--hc); }
+.heat i.f { background: transparent; }
+.heat i.today { outline: 2px solid var(--text); outline-offset: 1px; }
+.heat i.hover { outline: 2px solid var(--text); outline-offset: 1px; }
+.heat.by-proj { --hc: var(--c); }
+.heat-legend { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--faint); }
+.heat-legend i { width: 11px; height: 11px; border-radius: 3px; background: var(--surface-2); }
+.heat-legend i.l1 { background: color-mix(in srgb, var(--accent) 28%, var(--surface-2)); }
+.heat-legend i.l2 { background: color-mix(in srgb, var(--accent) 52%, var(--surface-2)); }
+.heat-legend i.l3 { background: color-mix(in srgb, var(--accent) 78%, var(--surface-2)); }
+.heat-legend i.l4 { background: var(--accent); }
+.filter-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--c); background: var(--c-soft);
+  border-radius: 99px; padding: 1px 10px; }
+.filter-chip .dot { width: 8px; height: 8px; }
+
+/* 1) 타이머 중: 오늘 칸이 숨 쉬듯 빛나고, 다음 진하기를 넘는 순간 톡 튀며 진해짐 (목업은 6초마다 되풀이) */
+.heat.ticking i.today { animation: breathe 2.4s ease-in-out infinite, step-up 6s infinite; }
+@keyframes breathe { 50% { box-shadow: 0 0 10px 3px color-mix(in srgb, var(--hc) 70%, transparent); } }
+@keyframes step-up {
+  0%, 78% { background: color-mix(in srgb, var(--hc) 52%, var(--surface-2)); transform: none; }
+  82% { background: color-mix(in srgb, var(--hc) 78%, var(--surface-2)); transform: scale(1.5); }
+  88% { transform: scale(.9); } 93% { transform: scale(1.06); }
+  100% { background: color-mix(in srgb, var(--hc) 78%, var(--surface-2)); transform: none; }
+}
+
+/* 2) 잔디 칸에 마우스: 그날 말풍선 */
+.heat-tip { position: absolute; right: -6px; top: 46px; z-index: 3; width: 210px; padding: 10px 12px; background: var(--popup);
+  border: 1px solid var(--border-2); border-radius: 10px; box-shadow: 0 12px 28px rgba(0,0,0,.5); display: flex; flex-direction: column; gap: 6px; }
+.heat-tip b { font-size: 12px; }
+.heat-tip b span { color: var(--muted); font-weight: 400; margin-left: 4px; }
+.tip-row { display: grid; grid-template-columns: 8px 1fr auto; align-items: center; gap: 7px; font-size: 12px; }
+.tip-row .dot { width: 8px; height: 8px; }
+.tip-row em { font-style: normal; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tip-bar { grid-column: 2 / 4; height: 4px; border-radius: 2px; background: var(--surface-2); }
+.tip-bar i { display: block; height: 100%; border-radius: 2px; background: var(--c); }
+
+/* 3) 연속 작업일 + 모닥불 (1–2일 작은 불, 3–6일 보통, 7일 이상 활활) */
+.heat-stats { display: flex; flex-direction: column; gap: 14px; }
+.hs small { display: block; font-size: 11px; color: var(--faint); }
+.hs b { font-size: 22px; font-variant-numeric: tabular-nums; }
+.hs b em { font-style: normal; font-size: 13px; color: var(--muted); font-weight: 600; margin-left: 2px; }
+.hs .sub { font-size: 12px; color: var(--muted); }
+.streak { display: flex; align-items: center; gap: 10px; }
+.streak .fire { width: 40px; height: 40px; }
+.streak .fire svg { animation: flicker-soft 1.8s ease-in-out infinite; transform-origin: 50% 85%; }
+@keyframes flicker-soft { 50% { transform: scale(1.05, .96); } }
+.streak.risk .fire svg { animation: flicker-weak 1.1s steps(2) infinite; }
+@keyframes flicker-weak { 50% { opacity: .45; } }
+.streak.risk .sub { color: var(--amber); font-weight: 600; }
+
+/* ===== 주간 투입 버블 그래프 (40%) ===== */
+.bubble-svg { display: block; width: 100%; flex: 1; min-height: 0; }
+.bubble-svg .pct { fill: #fff; font-weight: 500; text-anchor: middle; dominant-baseline: central; }
+.bubble-svg .lg-name { fill: var(--text); font-size: 12px; }
+.bubble-svg .lg-name.on { font-weight: 700; }
+.bubble-svg .lg-time { fill: var(--muted); font-size: 11px; text-anchor: end; font-variant-numeric: tabular-nums; }
+.bubble-svg .grow { fill: none; stroke-width: 2; opacity: .35; }
+.bubble-svg .dim { opacity: .3; }
+.bubble-svg .ring { fill: none; stroke: #fff; stroke-width: 2.5; }
+.bubble-svg .glow { fill: none; stroke-width: 3; animation: glow 1.4s ease-in-out infinite; }
+@keyframes glow { 50% { opacity: .15; } }
+.bubble-empty { flex: 1; display: grid; place-content: center; justify-items: center; gap: 6px; color: var(--muted); }
+.bubble-empty .ring { width: 52px; height: 52px; border-radius: 50%; border: 2px dashed var(--border-2); margin-bottom: 4px; }
+.bubble-empty small { color: var(--faint); font-size: 12px; }
+
+/* ===== 프로젝트 카드 ===== */
+.proj-list { display: flex; flex-direction: column; gap: 10px; }
+.pcard { position: relative; display: grid; grid-template-columns: 18px 260px 1fr 150px 130px 28px; align-items: center; gap: 14px;
+  height: 72px; padding: 0 14px 0 6px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+.pcard::before { content: ""; position: absolute; left: -1px; top: 12px; bottom: 12px; width: 4px; border-radius: 0 3px 3px 0; background: var(--c); }
+.pcard .grip { color: var(--faint); opacity: .5; }
+.pcard.hover { border-color: var(--border-2); background: var(--surface-2); }
+.pcard.hover .grip { opacity: 1; }
+.p-name { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.p-name .row { display: flex; align-items: center; gap: 8px; }
+.p-name b { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.p-name .cur { font-size: 12px; color: var(--muted); }
+.p-name .cur em { font-style: normal; color: var(--c); font-weight: 600; }
+.p-last { display: flex; align-items: center; gap: 8px; }
+.p-last div { display: flex; flex-direction: column; line-height: 1.3; }
+.p-last small, .p-total small { font-size: 11px; color: var(--faint); }
+.p-last span { font-size: 13px; font-weight: 600; }
+.p-last.cold span { color: var(--muted); }
+.p-total { display: flex; flex-direction: column; line-height: 1.3; }
+.p-total span { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.p-total .live { font-size: 11px; }
+
+/* 카드 … 메뉴 (R8) */
+.menu { position: absolute; right: 10px; top: 54px; z-index: 5; width: 176px; padding: 6px; background: var(--popup);
+  border: 1px solid var(--border-2); border-radius: 10px; box-shadow: 0 12px 32px rgba(0,0,0,.45); }
+.menu div { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 7px; font-size: 13px; }
+.menu div.on { background: var(--surface-2); }
+.menu div.danger { color: var(--red); }
+.menu hr { border: 0; border-top: 1px solid var(--border); margin: 4px 2px; }
+
+/* 만들기 버튼, 완료 묶음 */
+.add-row { display: flex; align-items: center; justify-content: center; gap: 8px; height: 44px; border: 1.5px dashed var(--border-2);
+  border-radius: var(--radius); color: var(--muted); font-size: 13px; font-weight: 600; }
+.done-group { display: flex; align-items: center; gap: 8px; padding: 4px 6px; color: var(--muted); font-size: 13px; font-weight: 600; }
+.done-group .cnt { color: var(--faint); font-weight: 400; }

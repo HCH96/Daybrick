@@ -1,0 +1,178 @@
+<!doctype html>
+<!-- 목업: 프로젝트 / 1. 목록 화면
+  목차와 다른 화면: index.html
+  CSS: common.css(앱 틀·트랙·모닥불), projects.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  projects            1. 목록 화면                  R1–R8
+    projects-top        1-1. 윗줄 (왼쪽 60% · 오른쪽 40%)   R2 (변경 예정)
+    projects-heat       1-1a. 최근 활동 잔디·연속 작업일    새 요구사항 (명세 추가 예정)
+    projects-bubble     1-1b. 주간 투입 버블 그래프   R35–R44
+    projects-cards      1-2. 프로젝트 카드 목록      R3–R4, R7–R8, R26–R28
+    projects-add        1-3. 프로젝트 만들기 버튼    R5
+    projects-done       1-4. 완료 묶음 (접힘)        R6
+  마우스를 올린 상태·연속이 끊기기 직전 상태: part-heat-states.html
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 프로젝트 / 1. 목록 화면</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="projects.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="projects">
+    <div class="screen-head"><h2>1. 목록 화면</h2><span class="tag">R1–R8, R35–R44</span></div>
+    <p class="screen-desc">2026년 11월 4일(수) 오후 3시. "Daybrick"의 태스크 "타이머 연동"으로 타이머가 돌고 있어, 잔디의 오늘 칸이 빛나며 차오르는 중. 포트폴리오 사이트 카드의 … 메뉴를 연 상태.</p>
+    <div class="scale-note">앱 창 1440×900을 75%로 줄여 보여줌</div>
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav"><span class="tb-btn"><svg class="ico sm"><use href="#i-back"/></svg></span><span class="tb-btn off"><svg class="ico sm"><use href="#i-fwd"/></svg></span></div>
+        <div class="tb-drag"></div>
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg></span>
+        <div class="win"><span><svg class="ico"><use href="#i-min"/></svg></span><span><svg class="ico"><use href="#i-max"/></svg></span><span><svg class="ico"><use href="#i-x"/></svg></span></div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-plan"/></svg>Plan</div>
+          <div class="nav on"><svg class="ico"><use href="#i-flag"/></svg>Projects</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock"/></svg>Scheduler</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag"/></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+          <div class="nav"><svg class="ico"><use href="#i-sun"/></svg>Today</div>
+          <div class="spacer"></div>
+          <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main">
+          <div class="page-head"><h1 class="page-title">프로젝트</h1><span class="page-sub">진행 중 4개</span></div>
+
+          <div class="top-row" id="projects-top">
+            <div class="panel" id="projects-heat">
+              <div class="panel-head"><b>최근 활동</b><span>최근 16주 · 모든 프로젝트</span>
+                <span class="heat-legend right">적음 <i></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i> 많음</span></div>
+              <div class="heat-wrap">
+                <div class="heat-box">
+                  <div class="heat-months"><span style="grid-column:2">8월</span><span style="grid-column:7">9월</span><span style="grid-column:11">10월</span><span style="grid-column:15">11월</span></div>
+                  <div class="heat-days"><span>월</span><span></span><span>수</span><span></span><span>금</span><span></span><span></span></div>
+                  <div class="heat ticking"><i class="l3"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><i class="l3"></i><i class="l3"></i><i></i><i class="l3"></i><i class="l3"></i><i class="l3"></i><i class="l2"></i><i class="l4"></i><i></i><i class="l2"></i><i></i><i class="l3"></i><i class="l3"></i><i class="l2"></i><i></i><i class="l2"></i><i></i><i class="l2"></i><i></i><i class="l3"></i><i class="l4"></i><i class="l4"></i><i></i><i class="l3"></i><i class="l4"></i><i class="l2"></i><i class="l3"></i><i class="l1"></i><i class="l3"></i><i></i><i></i><i class="l3"></i><i class="l3"></i><i></i><i class="l3"></i><i class="l2"></i><i></i><i class="l2"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="l1"></i><i class="l3"></i><i class="l3"></i><i class="l4"></i><i class="l4"></i><i class="l2"></i><i></i><i class="l2"></i><i></i><i class="l4"></i><i class="l3"></i><i class="l4"></i><i></i><i class="l1"></i><i class="l3"></i><i class="l3"></i><i></i><i class="l4"></i><i class="l1"></i><i class="l1"></i><i></i><i></i><i></i><i class="l3"></i><i class="l2"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l2"></i><i class="l3"></i><i class="l3"></i><i class="l3"></i><i class="l1"></i><i></i><i></i><i class="l3"></i><i class="l3"></i><i class="l4"></i><i class="l3"></i><i class="l3"></i><i></i><i class="l1"></i><i class="l3"></i><i class="l3"></i><i></i><i class="l3"></i><i></i><i></i><i></i><i></i><i class="l4"></i><i></i><i class="l3"></i><i></i><i class="l2"></i><i class="l2"></i><i class="l4"></i><i class="l3"></i><i class="l2 today"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></div>
+                </div>
+                <div class="heat-stats">
+                  <div class="streak"><span class="fire"><svg><use href="#fire-mid"/></svg></span>
+                    <div class="hs"><small>연속 작업</small><b>5<em>일째</em></b> <span class="sub">최장 10일</span></div></div>
+                  <div class="hs"><small>최근 4주 작업한 날</small><b>19<em>/ 28일</em></b></div>
+                  <div class="hs"><small>오늘</small><b>1시간 40분</b> <span class="live">진행 중</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel" id="projects-bubble">
+              <div class="panel-head"><b>이번 주 투입</b><span>11/2–11/8 · 13시간 50분</span><span class="live right"><b>Daybrick</b> 진행 중</span></div>
+              <svg class="bubble-svg" viewBox="0 0 440 200">
+                <circle cx="274" cy="152" r="4" fill="#a68cff"/><text class="lg-name" x="284" y="156">Daybrick</text><text class="lg-time" x="434" y="156">6시간 40분</text>
+                <circle cx="274" cy="172" r="4" fill="#7aa8ff"/><text class="lg-name" x="284" y="176">토익 스피킹</text><text class="lg-time" x="434" y="176">5시간</text>
+                <circle cx="274" cy="192" r="4" fill="#66cf95"/><text class="lg-name" x="284" y="196">포트폴리오</text><text class="lg-time" x="434" y="196">2시간 10분</text>
+                <circle cx="92" cy="116" r="44" fill="#7aa8ff"/><text class="pct" x="92" y="116" font-size="17">36%</text>
+                <circle cx="206" cy="76" r="55" class="grow" stroke="#a68cff"/>
+                <circle cx="206" cy="76" r="50" fill="#a68cff"/><text class="pct" x="206" y="76" font-size="19">48%</text>
+                <g opacity=".35"><circle cx="352" cy="164" r="29" fill="#66cf95"/><text class="pct" x="352" y="164" font-size="12">16%</text></g>
+              </svg>
+            </div>
+          </div>
+
+          <div class="proj-list" id="projects-cards">
+            <div class="pcard c-violet hover">
+              <svg class="ico sm grip"><use href="#i-grip"/></svg>
+              <div class="p-name"><div class="row"><b>Daybrick</b><span class="kind">단계형</span></div><span class="cur">현재 <em>프로토타입</em> · 2/6</span></div>
+              <div class="track mini" style="--p:.333">
+                <div class="rail"><i></i></div>
+                <span class="pin done" style="left:0"></span><span class="pin" style="left:25%"></span><span class="pin" style="left:50%"></span><span class="pin" style="left:75%"></span>
+                <span class="finish"><svg><use href="#finish"/></svg></span>
+                <span class="runner"><svg><use href="#runner"/></svg></span>
+              </div>
+              <div class="p-last"><span class="fire sm"><svg><use href="#fire-blaze"/></svg></span><div><small>마지막 작업</small><span>오늘</span></div></div>
+              <div class="p-total"><small>누적</small><span>42시간 10분</span></div>
+              <span class="icon-btn"><svg class="ico sm"><use href="#i-more"/></svg></span>
+            </div>
+
+            <div class="pcard c-blue">
+              <svg class="ico sm grip"><use href="#i-grip"/></svg>
+              <div class="p-name"><div class="row"><b>토익 스피킹 8주</b><span class="kind">주차형</span></div><span class="cur">현재 <em>4주차</em> 11/2–11/8 · 3/3</span></div>
+              <div class="track mini" style="--p:.35">
+                <div class="rail"><i></i></div>
+                <span class="pin done" style="left:0"></span><span class="pin done" style="left:12.5%"></span><span class="pin" style="left:25%"></span><span class="pin done" style="left:37.5%"></span>
+                <span class="pin" style="left:50%"></span><span class="pin" style="left:62.5%"></span><span class="pin" style="left:75%"></span><span class="pin" style="left:87.5%"></span>
+                <span class="finish"><svg><use href="#finish"/></svg></span>
+                <span class="runner"><svg><use href="#runner"/></svg></span>
+              </div>
+              <div class="p-last"><span class="fire sm"><svg><use href="#fire-mid"/></svg></span><div><small>마지막 작업</small><span>어제</span></div></div>
+              <div class="p-total"><small>누적</small><span>23시간 30분</span></div>
+              <span class="icon-btn"><svg class="ico sm"><use href="#i-more"/></svg></span>
+            </div>
+
+            <div class="pcard c-green">
+              <svg class="ico sm grip"><use href="#i-grip"/></svg>
+              <div class="p-name"><div class="row"><b>포트폴리오 사이트</b><span class="kind">단계형</span></div><span class="cur">현재 <em>개발</em> · 3/6</span></div>
+              <div class="track mini" style="--p:.5">
+                <div class="rail"><i></i></div>
+                <span class="pin done" style="left:0"></span><span class="pin" style="left:33.3%"></span><span class="pin" style="left:66.6%"></span>
+                <span class="finish"><svg><use href="#finish"/></svg></span>
+                <span class="runner"><svg><use href="#runner"/></svg></span>
+              </div>
+              <div class="p-last"><span class="fire sm"><svg><use href="#fire-small"/></svg></span><div><small>마지막 작업</small><span>3일 전</span></div></div>
+              <div class="p-total"><small>누적</small><span>15시간 20분</span></div>
+              <span class="icon-btn hover"><svg class="ico sm"><use href="#i-more"/></svg></span>
+              <div class="menu">
+                <div class="on"><svg class="ico sm"><use href="#i-edit"/></svg>이름·색 바꾸기</div>
+                <div><svg class="ico sm"><use href="#i-flag"/></svg>단계 편집</div>
+                <hr>
+                <div class="danger"><svg class="ico sm"><use href="#i-trash"/></svg>프로젝트 삭제</div>
+              </div>
+            </div>
+
+            <div class="pcard c-amber">
+              <svg class="ico sm grip"><use href="#i-grip"/></svg>
+              <div class="p-name"><div class="row"><b>정보처리기사 실기</b><span class="kind">주차형</span></div><span class="cur">현재 <em>2주차</em> 11/2–11/8 · 0/4</span></div>
+              <div class="track mini" style="--p:.067">
+                <div class="rail"><i></i></div>
+                <span class="pin" style="left:0"></span><span class="pin" style="left:16.6%"></span><span class="pin" style="left:33.3%"></span><span class="pin" style="left:50%"></span><span class="pin" style="left:66.6%"></span><span class="pin" style="left:83.3%"></span>
+                <span class="finish"><svg><use href="#finish"/></svg></span>
+                <span class="runner"><svg><use href="#runner"/></svg></span>
+              </div>
+              <div class="p-last cold"><span class="fire sm"><svg><use href="#fire-ember"/></svg></span><div><small>마지막 작업</small><span>6일 전</span></div></div>
+              <div class="p-total"><small>누적</small><span>4시간 50분</span></div>
+              <span class="icon-btn"><svg class="ico sm"><use href="#i-more"/></svg></span>
+            </div>
+          </div>
+
+          <div class="add-row" id="projects-add"><svg class="ico sm"><use href="#i-plus"/></svg>프로젝트 만들기</div>
+          <div class="done-group" id="projects-done"><svg class="ico sm"><use href="#i-chev-r"/></svg>완료 <span class="cnt">2개</span></div>
+        </main>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>최근 활동 (왼쪽 60%)</b><ul>
+        <li>16주 × 7일 잔디. 그날 모든 프로젝트 태스크에 쓴 시간으로 진하기 4단계 (1시간·2시간·4시간 경계). 오늘 칸은 흰 테두리.</li>
+        <li>타이머 중이면 오늘 칸이 숨 쉬듯 빛나고, 다음 진하기를 넘는 순간 톡 튀며 진해진다 (목업은 6초마다 되풀이).</li>
+        <li>연속 작업일 옆 모닥불은 연속 1–2일 작은 불, 3–6일 보통, 7일 이상 활활. "오늘" 시간은 실시간으로 는다.</li>
+      </ul></div>
+      <div class="note"><b>버블 그래프 (오른쪽 40%)</b><ul>
+        <li>좁아진 만큼 원 반지름 기준을 줄였다 (6시간 40분 ≈ 반지름 50).</li>
+        <li>이번 주 0분인 "정보처리기사 실기"는 원·범례 모두 없다 (R42). 포트폴리오 원은 범례 위를 지나는 중이라 반투명 (R41).</li>
+        <li>원에 마우스를 올리면 잔디가 그 프로젝트만 보여준다 → part-heat-states.html.</li>
+      </ul></div>
+      <div class="note"><b>카드</b><ul>
+        <li>왼쪽 색 띠가 프로젝트 색. 끌기 손잡이는 마우스를 올리면 진해진다 (R7, 첫 카드).</li>
+        <li>미니 트랙: 단계 시작점마다 점(끝난 단계는 채움). 토익은 4주차가 먼저 끝나 4번째 점이 채워짐 (R24).</li>
+        <li>작은 모닥불 + "오늘 / 어제 / N일 전" (part-campfire.html). 누적 시간은 숫자만 (R28). 완료 묶음은 접힌 상태 (R6).</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

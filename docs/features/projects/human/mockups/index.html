@@ -1,0 +1,38 @@
+<!doctype html>
+<!-- 목업 목차: 프로젝트 (projects)
+  읽는 법: 이 목차에서 필요한 화면 파일만 골라 읽는다. CSS는 그 화면 파일 머리에 적힌 파일에서 필요한 클래스만 검색한다.
+  파일                    화면                         요구사항          부분 ID
+  projects.html           1. 목록 화면                  R1–R8, R35–R44    projects-top(-heat, -bubble), -cards, -add, -done
+  detail.html             2. 상세 화면 (단계형)         R21–R34           detail-head, -progress, -stages
+  detail-weekly.html      3. 상세 화면 (주차형)         R11, R17, R21–R34 weekly-progress, -stages
+  part-campfire.html      4-1. 모닥불 단계              R26–R27           campfire-levels, -small
+  part-bubble-empty.html  4-2. 버블 그래프 빈 상태      R42, R44          bubble-empty
+  part-create.html        4-3. 프로젝트 만들기 창       R5, R9–R12        create-stage, -weekly
+  part-heat-states.html   4-4. 최근 활동 잔디 상태      새 요구사항       heat-by-bubble, heat-by-cell, heat-risk
+  CSS: common.css(색 토큰·앱 틀·프로젝트 색·트랙·깃발·모닥불·타이머 표시), projects.css(윗줄 잔디·버블·카드), detail.css(진행 판·단계 칸·태스크 줄), parts.css(모닥불표·만들기 창)
+  그림: icons.js (선 아이콘 i-*, 깃발 flag-done/flag-todo/finish, 캐릭터 runner, 모닥불 fire-*)
+  색·앱 틀은 today 목업 common.css와 같은 값.
+  보관: ../../archive/mockups/compare-list-top.html (목록 윗줄 왼쪽 후보 비교, 잔디 채택)
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 프로젝트</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<div class="doc">
+  <h1>프로젝트 목업</h1>
+  <p class="lead">끝이 있는 태스크 묶음을 단계·주차로 나눠 관리하는 화면. 기능 없이 배치와 모양만 보여주는 정적 목업이다. 예시 날짜는 2026년 11월 4일(수).</p>
+  <ul class="links">
+    <li><a href="projects.html"><b>1. 목록 화면</b><span>최근 활동 잔디 + 주간 투입 버블, 프로젝트 카드, 만들기, 완료 묶음</span><em>R1–R8, R35–R44</em></a></li>
+    <li><a href="detail.html"><b>2. 상세 화면 (단계형)</b><span>깃발 트랙·캐릭터, 모닥불·누적 시간, 단계 칸과 태스크 줄</span><em>R21–R34</em></a></li>
+    <li><a href="detail-weekly.html"><b>3. 상세 화면 (주차형)</b><span>주차 깃발, 기간·이번 주 표시, 가로로 넘기는 주차 칸</span><em>R11, R17, R21–R34</em></a></li>
+    <li><a href="part-campfire.html"><b>4-1. 모닥불 단계</b><span>마지막 작업일에 따른 불 6단계, 큰 크기·카드 크기</span><em>R26–R27</em></a></li>
+    <li><a href="part-bubble-empty.html"><b>4-2. 버블 그래프 빈 상태</b><span>이번 주 기록이 하나도 없을 때</span><em>R42, R44</em></a></li>
+    <li><a href="part-create.html"><b>4-3. 프로젝트 만들기 창</b><span>단계형·주차형을 고른 두 모습</span><em>R5, R9–R12</em></a></li>
+    <li><a href="part-heat-states.html"><b>4-4. 최근 활동 잔디 상태</b><span>버블·잔디에 마우스를 올린 모습, 연속이 끊기기 직전</span><em>새 요구사항</em></a></li>
+  </ul>
+</div>
+</body>
+</html>

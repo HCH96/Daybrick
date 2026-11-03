@@ -1,4 +1,4 @@
-import type { Category, ChecklistItem, PlanData, Task, TaskStatus } from "./types";
+import type { Category, ChecklistItem, PlanData, Project, Task, TaskStatus } from "./types";
 
 /** 데이터 상태: 읽는 중 / 준비됨 / 읽기 실패 */
 export type PlanState =
@@ -9,8 +9,15 @@ export type PlanState =
 /** 카테고리에서 고칠 수 있는 칸 */
 export type CategoryPatch = Partial<Pick<Category, "name" | "color">>;
 
-/** 태스크에서 상세 팝업으로 고칠 수 있는 칸 (R35·R36). 기간은 start·end를 같이 보낸다. */
-export type TaskPatch = Partial<Pick<Task, "title" | "categoryId" | "status" | "start" | "end" | "memo">>;
+/**
+ * 태스크에서 상세 팝업으로 고칠 수 있는 칸 (R35·R36). 기간은 start·end를 같이 보낸다.
+ * 태스크는 카테고리나 단계 하나에만 속한다 (프로젝트 D2): stageId에 값을 넣으면 categoryId가 비고,
+ * categoryId를 넣으면 stageId가 빈다.
+ */
+export type TaskPatch = Partial<Pick<Task, "title" | "categoryId" | "stageId" | "status" | "start" | "end" | "memo">>;
+
+/** 프로젝트에서 이름·색을 고치는 칸 (프로젝트 R8) */
+export type ProjectPatch = Partial<Pick<Project, "name" | "color">>;
 
 /** 체크리스트 항목에서 고칠 수 있는 칸 (R38) */
 export type CheckItemPatch = Partial<Pick<ChecklistItem, "text" | "checked">>;
@@ -43,7 +50,13 @@ export type PlanAction =
   | { type: "link-application"; id: string; applicationId: string | null; now: string }
   | { type: "clear-missing-links"; existingIds: string[]; now: string }
   | { type: "toggle-collapsed"; key: string }
-  | { type: "set-show-application-events"; value: boolean };
+  | { type: "set-show-application-events"; value: boolean }
+  | { type: "add-project"; project: Project }
+  | { type: "update-project"; id: string; patch: ProjectPatch }
+  | { type: "move-project"; from: number; to: number }
+  | { type: "delete-project"; id: string; now: string }
+  | { type: "toggle-stage-fold"; stageId: string; open: boolean }
+  | { type: "set-projects-done-open"; open: boolean };
 
 export function reducer(state: PlanState, action: PlanAction): PlanState {
   switch (action.type) {
@@ -139,6 +152,50 @@ function dataReducer(data: PlanData, action: PlanAction): PlanData {
       // 지원 일정 보이기·숨기기 (R33). 같은 값이면 저장하지 않게 그대로 둔다.
       if (data.view.showApplicationEvents === action.value) return data;
       return { ...data, view: { ...data.view, showApplicationEvents: action.value } };
+    case "add-project":
+      // 목록 맨 끝에 붙인다 (프로젝트 R7)
+      return { ...data, projects: [...data.projects, action.project] };
+    case "update-project": {
+      const { patch } = action;
+      const keys = Object.keys(patch) as (keyof ProjectPatch)[];
+      let changed = false;
+      const projects = data.projects.map((p) => {
+        if (p.id !== action.id || keys.every((k) => patch[k] === p[k])) return p;
+        changed = true;
+        return { ...p, ...patch };
+      });
+      return changed ? { ...data, projects } : data;
+    }
+    case "move-project": {
+      const projects = moveItem(data.projects, action.from, action.to);
+      return projects === data.projects ? data : { ...data, projects };
+    }
+    case "delete-project": {
+      // 그 단계의 태스크는 지우지 않고 미분류로 옮긴다 (프로젝트 R19, D5: reducer 한 번)
+      const project = data.projects.find((p) => p.id === action.id);
+      if (!project) return data;
+      const stageIds = new Set(project.stages.map((s) => s.id));
+      const stageFold = { ...data.view.stageFold };
+      for (const id of stageIds) delete stageFold[id];
+      return {
+        ...data,
+        projects: data.projects.filter((p) => p.id !== action.id),
+        tasks: data.tasks.map((t) =>
+          t.stageId !== null && stageIds.has(t.stageId)
+            ? { ...t, stageId: null, categoryId: null, updatedAt: action.now }
+            : t,
+        ),
+        view: { ...data.view, stageFold },
+      };
+    }
+    case "toggle-stage-fold":
+      // 플랜 트리에서 직접 접고 편 단계를 기억한다 (프로젝트 R47)
+      if (data.view.stageFold[action.stageId] === action.open) return data;
+      return { ...data, view: { ...data.view, stageFold: { ...data.view.stageFold, [action.stageId]: action.open } } };
+    case "set-projects-done-open":
+      // 완료 묶음 펼침 (프로젝트 R6). 같은 값이면 저장하지 않게 그대로 둔다.
+      if (data.view.projectsDoneOpen === action.open) return data;
+      return { ...data, view: { ...data.view, projectsDoneOpen: action.open } };
     default:
       return data;
   }
@@ -148,7 +205,8 @@ function dataReducer(data: PlanData, action: PlanAction): PlanData {
  * 태스크에 고친 칸을 넣는다. 상태가 완료로 바뀌면 완료한 때를 적고, 완료에서 벗어나면 지운다 (D13과 같게).
  * 이미 완료인 태스크를 다시 완료로 고르면 완료한 때를 그대로 둔다.
  */
-function applyTaskPatch(task: Task, patch: TaskPatch, now: string): Task {
+function applyTaskPatch(task: Task, input: TaskPatch, now: string): Task {
+  const patch = normalizeGroupPatch(input);
   // 바뀐 칸이 없으면 그대로 둔다 (편집기가 열릴 때 같은 메모를 다시 보내도 저장하지 않게)
   const keys = Object.keys(patch) as (keyof TaskPatch)[];
   if (keys.every((k) => patch[k] === task[k])) return task;
@@ -157,6 +215,16 @@ function applyTaskPatch(task: Task, patch: TaskPatch, now: string): Task {
     next.completedAt = patch.status === "done" ? now : null;
   }
   return next;
+}
+
+/**
+ * 카테고리와 단계를 함께 갖지 않게 맞춘다 (프로젝트 D2, R15).
+ * 단계에 값을 넣으면 카테고리를 비우고, 카테고리를 넣으면(미분류 포함) 단계를 비운다. 둘 다 오면 단계가 이긴다.
+ */
+function normalizeGroupPatch(patch: TaskPatch): TaskPatch {
+  if (patch.stageId !== undefined && patch.stageId !== null) return { ...patch, categoryId: null };
+  if (patch.categoryId !== undefined) return { ...patch, stageId: null };
+  return patch;
 }
 
 type ChecklistAction = Extract<

@@ -1,0 +1,139 @@
+/* 공통: 색 토큰, 문서 부분, 앱 창 틀, 페이지 머리, 버튼, 태스크 상태 표시, 프로젝트 색, 진행 트랙·깃발·모닥불 */
+/* 색: 그라파이트 바이올렛 (today·plan 목업 common.css와 같은 값) */
+:root {
+  --bg: #17171a; --sidebar: #1c1c20; --surface: #222227; --surface-2: #28282e; --popup: #1f1f24;
+  --border: #33333b; --border-2: #3d3d46;
+  --text: #ededf2; --muted: #9b9ba8; --faint: #6b6b78;
+  --accent: #a68cff; --accent-soft: #2d2745; --on-accent: #17171a;
+  --neutral: #cdcdd6; --neutral-soft: #2b2b31;
+  --blue: #7aa8ff; --blue-soft: #1e2740;
+  --amber: #f0b860; --amber-soft: #3a2f1c;
+  --green: #66cf95; --green-soft: #1a3428;
+  --red: #ff8a8a; --red-soft: #3a1f22;
+  --radius: 12px;
+  --mono: "Cascadia Mono", "Consolas", monospace;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 40px 32px 80px; background: #0d0d0f; color: var(--text);
+  font-family: "Malgun Gothic", "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5;
+}
+
+/* ===== 문서 부분 ===== */
+.doc { max-width: 1160px; margin: 0 auto; }
+.doc > h1 { margin: 0 0 8px; font-size: 24px; }
+.lead { margin: 0 0 12px; color: var(--muted); }
+.lead a { color: var(--accent); }
+.screen { margin-bottom: 72px; }
+.screen-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+.screen-head h2 { margin: 0; font-size: 20px; }
+.screen-head h3 { margin: 0; font-size: 16px; }
+.tag { font-size: 12px; color: var(--muted); border: 1px solid var(--border); border-radius: 99px; padding: 1px 10px; }
+.screen-desc { margin: 0 0 16px; color: var(--muted); }
+.scale-note { font-size: 12px; color: var(--faint); margin-bottom: 8px; }
+.notes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+.note { background: var(--sidebar); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 13px; }
+.note b { display: block; margin-bottom: 6px; font-size: 13px; }
+.note ul { margin: 0; padding-left: 18px; color: var(--muted); }
+.note li + li { margin-top: 3px; }
+.links { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.links a { display: flex; gap: 14px; align-items: baseline; padding: 14px 18px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--sidebar); color: var(--text); text-decoration: none; }
+.links a b { min-width: 220px; }
+.links a span { color: var(--muted); font-size: 13px; }
+.links a em { margin-left: auto; font-style: normal; font-size: 12px; color: var(--faint); }
+
+/* ===== 앱 창 (1440 x 900, 75%로 축소) ===== */
+.frame {
+  zoom: 0.75; width: 1440px; height: 900px; display: flex; flex-direction: column; overflow: hidden; position: relative;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+}
+.ico { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.ico.xs { width: 13px; height: 13px; }
+.ico.sm { width: 15px; height: 15px; }
+.ico.fill { fill: currentColor; stroke: none; }
+
+.titlebar { height: 40px; flex-shrink: 0; display: flex; align-items: center; background: var(--sidebar); border-bottom: 1px solid var(--border); }
+.tb-nav { display: flex; align-items: center; gap: 2px; padding-left: 8px; }
+.tb-btn { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 6px; color: var(--muted); }
+.tb-btn.off { opacity: .35; }
+.tb-drag { flex: 1; align-self: stretch; }
+.win { display: flex; height: 100%; }
+.win span { width: 46px; display: grid; place-items: center; color: var(--text); }
+.win .ico { width: 12px; height: 12px; stroke-width: 1.4; }
+
+.body { flex: 1; min-height: 0; display: flex; }
+.sidebar { width: 200px; flex-shrink: 0; background: var(--sidebar); border-right: 1px solid var(--border);
+  padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; }
+.logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 800; padding: 0 8px 20px; }
+.brick { width: 26px; height: 26px; border-radius: 6px; background: var(--accent); display: grid;
+  grid-template-columns: 1fr 1fr; gap: 2px; padding: 4px; }
+.brick i { background: rgba(255,255,255,.85); border-radius: 1px; }
+.nav { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: var(--muted); font-size: 14px; }
+.nav.on { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.spacer { flex: 1; }
+.version { font-size: 11px; color: var(--muted); padding: 0 12px; }
+.main { flex: 1; min-width: 0; padding: 24px 28px; overflow: hidden; display: flex; flex-direction: column; gap: 16px; }
+
+/* ===== 페이지 머리 ===== */
+.page-head { display: flex; align-items: center; gap: 14px; }
+.page-title { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -.3px; }
+.page-sub { font-size: 14px; color: var(--muted); }
+
+/* ===== 버튼 ===== */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text); font-size: 13px; font-weight: 600; white-space: nowrap; }
+.btn.ghost { background: transparent; border-color: transparent; color: var(--muted); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+.btn.sm { height: 28px; padding: 0 10px; font-size: 12px; border-radius: 7px; }
+.icon-btn { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 7px; color: var(--muted); }
+.icon-btn.hover { background: var(--surface-2); color: var(--text); }
+
+/* ===== 태스크 상태 표시 (시작 전 ○ / 진행 중 ◐ / 완료 ●) — plan과 같은 모양 ===== */
+.st { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; border: 1.8px solid var(--faint); position: relative; }
+.st.doing { border-color: var(--amber); background: linear-gradient(90deg, var(--amber) 50%, transparent 50%); }
+.st.done { border-color: var(--green);
+  background: var(--green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.6 6.2l2.2 2.2 4.6-4.8' fill='none' stroke='%2317171a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 10px no-repeat; }
+
+/* ===== 프로젝트 색 (색 선택기에서 고른 값의 예시) ===== */
+.c-violet { --c: #a68cff; --c-soft: rgba(166,140,255,.16); }
+.c-blue { --c: #7aa8ff; --c-soft: rgba(122,168,255,.16); }
+.c-green { --c: #66cf95; --c-soft: rgba(102,207,149,.16); }
+.c-amber { --c: #f0b860; --c-soft: rgba(240,184,96,.16); }
+.c-pink { --c: #f29ad3; --c-soft: rgba(242,154,211,.16); }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
+.kind { font-size: 11px; color: var(--muted); background: var(--neutral-soft); border-radius: 5px; padding: 1px 7px; font-weight: 600; }
+
+/* ===== 진행 트랙 (상세: .track, 카드: .track.mini) ===== */
+/* 깃발은 각 단계의 시작점에 같은 간격으로, 끝에 결승선. --p = 캐릭터 위치(0~1) */
+.track { position: relative; height: 96px; margin: 0 26px 0 14px; }
+.track .rail { position: absolute; left: 0; right: 0; top: 62px; height: 6px; border-radius: 3px; background: var(--surface-2); }
+.track .rail i { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--p) * 100%); border-radius: 3px; background: var(--c); }
+.flag { position: absolute; top: 22px; width: 2px; height: 46px; transform: translateX(-1px); }
+.flag svg { position: absolute; left: 0; top: 0; width: 26px; height: 40px; }
+.flag .fl-name { position: absolute; top: 52px; left: 0; transform: translateX(-2px); font-size: 12px; color: var(--muted); white-space: nowrap; }
+.flag .fl-name small { display: block; font-size: 11px; color: var(--faint); }
+.flag.done .fl-name { color: var(--text); }
+.flag.now .fl-name { color: var(--c); font-weight: 700; }
+.runner { position: absolute; top: 24px; left: calc(var(--p) * 100%); width: 34px; height: 36px; transform: translateX(-17px); color: var(--c); }
+.runner svg { width: 100%; height: 100%; }
+.finish { position: absolute; right: -2px; top: 20px; width: 22px; height: 48px; }
+.finish svg { width: 100%; height: 100%; }
+
+.track.mini { height: 30px; margin: 0 10px 0 4px; }
+.track.mini .rail { top: 20px; height: 4px; }
+.track.mini .pin { position: absolute; top: 17px; width: 10px; height: 10px; border-radius: 50%; transform: translateX(-5px);
+  background: var(--bg); border: 2px solid var(--border-2); }
+.track.mini .pin.done { background: var(--c); border-color: var(--c); }
+.track.mini .runner { top: -2px; width: 20px; height: 21px; transform: translateX(-10px); }
+.track.mini .finish { top: 6px; width: 12px; height: 22px; right: -6px; }
+
+/* ===== 모닥불 (단계: blaze 활활 / mid 보통 / small 작은 불 / ember 잉걸불 / out 꺼짐 / none 장작만) ===== */
+.fire { width: 56px; height: 56px; flex-shrink: 0; }
+.fire.sm { width: 26px; height: 26px; }
+.fire svg { width: 100%; height: 100%; overflow: visible; }
+
+/* ===== 실행 중 타이머 표시 (빨간 점 6px, 1.4초 깜빡임) ===== */
+.live { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
+.live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #ff5f5f; animation: blink 1.4s infinite; }
+@keyframes blink { 50% { opacity: .2; } }

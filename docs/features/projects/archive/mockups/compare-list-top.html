@@ -1,0 +1,119 @@
+<!doctype html>
+<!-- 목업: 프로젝트 / 비교. 목록 화면 윗줄 (왼쪽 60% 후보 3개 + 오른쪽 40% 버블)
+  보관: 2026-11-04 후보 1(잔디) 채택, 동적 요소 1+2+3 추가해 projects.html·part-heat-states.html에 반영. 목차: ../../human/mockups/index.html
+  CSS: ../../human/mockups/common.css, compare.css (버블 스타일은 보관 당시 값을 compare.css에 복사)
+  ID                  화면                         요구사항
+  cmp-heat            후보 1. 최근 활동 잔디 + 연속 작업일   R2 변경 예정
+  cmp-trend           후보 2. 주간 투입 추이 (8주 막대)     R2 변경 예정
+  cmp-todo            후보 3. 이번 주 할 일                 R2 변경 예정
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 프로젝트 / 비교. 목록 화면 윗줄</title>
+<link rel="stylesheet" href="../../human/mockups/common.css">
+<link rel="stylesheet" href="compare.css">
+</head>
+<body>
+<div class="doc">
+  <p class="lead"><a href="../../human/mockups/index.html">← 목업 목차</a></p>
+  <h1>비교: 목록 화면 윗줄</h1>
+  <p class="lead">버블 그래프를 오른쪽 40%로 줄이고, 왼쪽 60%에 넣을 것 3가지를 비교한다. 목록 화면 윗줄만 떼어 실제 비율로 보여준다 (앱 본문 너비 1184px을 75%로 축소). 예시 날짜는 11월 4일(수).</p>
+
+  <section class="screen" id="cmp-heat">
+    <div class="screen-head"><h2>후보 1. 최근 활동 잔디 + 연속 작업일</h2><span class="tag">추천</span></div>
+    <p class="screen-desc">최근 16주를 하루 한 칸으로. 그날 프로젝트 태스크에 쓴 시간이 많을수록 진하다. 오늘 칸은 흰 테두리.</p>
+    <div class="strip"><div class="top-row">
+      <div class="card">
+        <div class="card-head"><b>최근 활동</b><span>최근 16주 · 모든 프로젝트</span>
+          <span class="heat-legend right">적음 <i style="background:var(--surface-2)"></i><i class="l1" style="background:rgba(166,140,255,.28)"></i><i style="background:rgba(166,140,255,.5)"></i><i style="background:rgba(166,140,255,.75)"></i><i style="background:#a68cff"></i> 많음</span></div>
+        <div class="heat-wrap">
+          <div class="heat"><span class="m" style="grid-column:2/span 3">7월</span><span class="m" style="grid-column:3/span 3">8월</span><span class="m" style="grid-column:8/span 3">9월</span><span class="m" style="grid-column:12/span 3">10월</span><span class="m" style="grid-column:16/span 3">11월</span><span class="d" style="grid-row:2">월</span><span class="d" style="grid-row:4">수</span><span class="d" style="grid-row:6">금</span><i class="l3" style="grid-area:2/2"></i><i class="l2" style="grid-area:3/2"></i><i class="l3" style="grid-area:4/2"></i><i class="l4" style="grid-area:5/2"></i><i class="l3" style="grid-area:6/2"></i><i class="l3" style="grid-area:7/2"></i><i style="grid-area:8/2"></i><i class="l3" style="grid-area:2/3"></i><i class="l3" style="grid-area:3/3"></i><i class="l3" style="grid-area:4/3"></i><i class="l2" style="grid-area:5/3"></i><i class="l4" style="grid-area:6/3"></i><i style="grid-area:7/3"></i><i class="l2" style="grid-area:8/3"></i><i style="grid-area:2/4"></i><i class="l3" style="grid-area:3/4"></i><i class="l3" style="grid-area:4/4"></i><i class="l2" style="grid-area:5/4"></i><i style="grid-area:6/4"></i><i class="l2" style="grid-area:7/4"></i><i style="grid-area:8/4"></i><i class="l2" style="grid-area:2/5"></i><i style="grid-area:3/5"></i><i class="l3" style="grid-area:4/5"></i><i class="l4" style="grid-area:5/5"></i><i class="l4" style="grid-area:6/5"></i><i style="grid-area:7/5"></i><i class="l3" style="grid-area:8/5"></i><i class="l4" style="grid-area:2/6"></i><i class="l2" style="grid-area:3/6"></i><i class="l3" style="grid-area:4/6"></i><i class="l1" style="grid-area:5/6"></i><i class="l3" style="grid-area:6/6"></i><i style="grid-area:7/6"></i><i style="grid-area:8/6"></i><i class="l3" style="grid-area:2/7"></i><i class="l3" style="grid-area:3/7"></i><i style="grid-area:4/7"></i><i class="l3" style="grid-area:5/7"></i><i class="l2" style="grid-area:6/7"></i><i style="grid-area:7/7"></i><i class="l2" style="grid-area:8/7"></i><i style="grid-area:2/8"></i><i style="grid-area:3/8"></i><i style="grid-area:4/8"></i><i style="grid-area:5/8"></i><i style="grid-area:6/8"></i><i style="grid-area:7/8"></i><i style="grid-area:8/8"></i><i class="l1" style="grid-area:2/9"></i><i class="l3" style="grid-area:3/9"></i><i class="l3" style="grid-area:4/9"></i><i class="l4" style="grid-area:5/9"></i><i class="l4" style="grid-area:6/9"></i><i class="l2" style="grid-area:7/9"></i><i style="grid-area:8/9"></i><i class="l2" style="grid-area:2/10"></i><i style="grid-area:3/10"></i><i class="l4" style="grid-area:4/10"></i><i class="l3" style="grid-area:5/10"></i><i class="l4" style="grid-area:6/10"></i><i style="grid-area:7/10"></i><i class="l1" style="grid-area:8/10"></i><i class="l3" style="grid-area:2/11"></i><i class="l3" style="grid-area:3/11"></i><i style="grid-area:4/11"></i><i class="l4" style="grid-area:5/11"></i><i class="l1" style="grid-area:6/11"></i><i class="l1" style="grid-area:7/11"></i><i style="grid-area:8/11"></i><i style="grid-area:2/12"></i><i style="grid-area:3/12"></i><i class="l3" style="grid-area:4/12"></i><i class="l2" style="grid-area:5/12"></i><i class="l1" style="grid-area:6/12"></i><i class="l2" style="grid-area:7/12"></i><i class="l3" style="grid-area:8/12"></i><i class="l2" style="grid-area:2/13"></i><i class="l3" style="grid-area:3/13"></i><i class="l3" style="grid-area:4/13"></i><i class="l3" style="grid-area:5/13"></i><i class="l1" style="grid-area:6/13"></i><i style="grid-area:7/13"></i><i style="grid-area:8/13"></i><i class="l3" style="grid-area:2/14"></i><i style="grid-area:3/14"></i><i class="l3" style="grid-area:4/14"></i><i class="l3" style="grid-area:5/14"></i><i class="l4" style="grid-area:6/14"></i><i class="l1" style="grid-area:7/14"></i><i class="l2" style="grid-area:8/14"></i><i class="l3" style="grid-area:2/15"></i><i class="l3" style="grid-area:3/15"></i><i class="l4" style="grid-area:4/15"></i><i class="l3" style="grid-area:5/15"></i><i class="l4" style="grid-area:6/15"></i><i style="grid-area:7/15"></i><i style="grid-area:8/15"></i><i style="grid-area:2/16"></i><i class="l3" style="grid-area:3/16"></i><i style="grid-area:4/16"></i><i style="grid-area:5/16"></i><i style="grid-area:6/16"></i><i class="l2" style="grid-area:7/16"></i><i class="l2" style="grid-area:8/16"></i><i class="l2" style="grid-area:2/17"></i><i class="l4" style="grid-area:3/17"></i><i class="l3 today" style="grid-area:4/17"></i><i class="future" style="grid-area:5/17"></i><i class="future" style="grid-area:6/17"></i><i class="future" style="grid-area:7/17"></i><i class="future" style="grid-area:8/17"></i></div>
+          <div class="heat-stats">
+            <div class="hs"><small>연속 작업</small><b>5<em>일째</em></b> <span>최장 10일</span></div>
+            <div class="hs"><small>최근 4주 작업한 날</small><b>19<em>/ 28일</em></b></div>
+            <div class="hs"><small>작업한 날 평균</small><b>2시간 37분</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><b>이번 주 투입</b><span>11/2–11/8 · 13시간 50분</span><span class="live right"><b>Daybrick</b> 진행 중</span></div>
+        <svg class="bubble-svg" viewBox="0 0 440 200">
+          <circle cx="274" cy="152" r="4" fill="#a68cff"/><text class="lg-name" x="284" y="156" font-size="12">Daybrick</text><text class="lg-time" x="434" y="156" font-size="11">6시간 40분</text>
+          <circle cx="274" cy="172" r="4" fill="#7aa8ff"/><text class="lg-name" x="284" y="176" font-size="12">토익 스피킹</text><text class="lg-time" x="434" y="176" font-size="11">5시간</text>
+          <circle cx="274" cy="192" r="4" fill="#66cf95"/><text class="lg-name" x="284" y="196" font-size="12">포트폴리오</text><text class="lg-time" x="434" y="196" font-size="11">2시간 10분</text>
+          <circle cx="92" cy="116" r="44" fill="#7aa8ff"/><text class="pct" x="92" y="116" font-size="17">36%</text>
+          <circle cx="206" cy="76" r="55" class="grow" stroke="#a68cff"/>
+          <circle cx="206" cy="76" r="50" fill="#a68cff"/><text class="pct" x="206" y="76" font-size="19">48%</text>
+          <g opacity=".35"><circle cx="352" cy="164" r="29" fill="#66cf95"/><text class="pct" x="352" y="164" font-size="12">16%</text></g>
+        </svg>
+      </div>
+    </div></div>
+    <div class="verdict">
+      <div class="note"><b>좋은 점</b><ul><li>버블은 "이번 주에 어디에 썼나", 잔디는 "꾸준히 하고 있나". 둘이 겹치지 않는다.</li><li>모닥불과 같은 "불 꺼뜨리지 않기" 느낌. 연속 작업일이 동기 부여가 된다.</li><li>시간 기록만으로 계산할 수 있어 새로 저장할 것이 없다.</li></ul></div>
+      <div class="note"><b>아쉬운 점·정할 것</b><ul><li>프로젝트별 구분이 없다. 칸을 그날 가장 많이 한 프로젝트 색으로 칠하는 안도 가능 (대신 진하기 읽기가 어려워짐).</li><li>"작업한 날"의 기준(1분이라도? 30분 이상?)을 정해야 한다.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="screen" id="cmp-trend">
+    <div class="screen-head"><h2>후보 2. 주간 투입 추이</h2><span class="tag">명세 목업 후보</span></div>
+    <p class="screen-desc">최근 8주를 주마다 막대 하나로, 막대 안을 프로젝트 색으로 쌓는다. 이번 주 막대는 아직 진행 중이라 흐리게.</p>
+    <div class="strip"><div class="top-row">
+      <div class="card">
+        <div class="card-head"><b>주간 투입 추이</b><span>최근 8주</span>
+          <span class="heat-legend right"><i style="background:#a68cff;border-radius:50%"></i>Daybrick&nbsp; <i style="background:#7aa8ff;border-radius:50%"></i>토익&nbsp; <i style="background:#66cf95;border-radius:50%"></i>포트폴리오&nbsp; <i style="background:#f0b860;border-radius:50%"></i>정처기</span></div>
+        <svg class="trend" viewBox="0 0 680 190"><line class="grid" x1="40" x2="676" y1="168.0" y2="168.0"/><text class="ax" x="32" y="172.0" text-anchor="end">0h</text><line class="grid" x1="40" x2="676" y1="106.4" y2="106.4"/><text class="ax" x="32" y="110.4" text-anchor="end">10h</text><line class="grid" x1="40" x2="676" y1="44.8" y2="44.8"/><text class="ax" x="32" y="48.8" text-anchor="end">20h</text><g><rect x="59.8" y="137.2" width="40" height="30.8" fill="#a68cff"/><rect x="59.8" y="112.6" width="40" height="24.6" fill="#66cf95"/></g><text class="val" x="79.8" y="106.6">9h</text><text class="ax" x="79.8" y="186" text-anchor="middle">9/14</text><g><rect x="139.3" y="124.9" width="40" height="43.1" fill="#a68cff"/><rect x="139.3" y="94.1" width="40" height="30.8" fill="#66cf95"/></g><text class="val" x="159.3" y="88.1">12h</text><text class="ax" x="159.3" y="186" text-anchor="middle">9/21</text><g><rect x="218.8" y="129.0" width="40" height="39.0" fill="#a68cff"/><rect x="218.8" y="110.5" width="40" height="18.5" fill="#66cf95"/></g><text class="val" x="238.8" y="104.5">9.3h</text><text class="ax" x="238.8" y="186" text-anchor="middle">9/28</text><g><rect x="298.3" y="114.6" width="40" height="53.4" fill="#a68cff"/><rect x="298.3" y="102.3" width="40" height="12.3" fill="#66cf95"/></g><text class="val" x="318.3" y="96.3">10.7h</text><text class="ax" x="318.3" y="186" text-anchor="middle">10/5</text><g><rect x="377.8" y="120.8" width="40" height="47.2" fill="#a68cff"/><rect x="377.8" y="96.1" width="40" height="24.6" fill="#7aa8ff"/><rect x="377.8" y="90.0" width="40" height="6.2" fill="#66cf95"/></g><text class="val" x="397.8" y="84.0">12.7h</text><text class="ax" x="397.8" y="186" text-anchor="middle">10/12</text><g><rect x="457.3" y="116.7" width="40" height="51.3" fill="#a68cff"/><rect x="457.3" y="82.8" width="40" height="33.9" fill="#7aa8ff"/><rect x="457.3" y="73.5" width="40" height="9.2" fill="#66cf95"/></g><text class="val" x="477.3" y="67.5">15.3h</text><text class="ax" x="477.3" y="186" text-anchor="middle">10/19</text><g><rect x="536.8" y="105.4" width="40" height="62.6" fill="#a68cff"/><rect x="536.8" y="68.4" width="40" height="37.0" fill="#7aa8ff"/><rect x="536.8" y="53.0" width="40" height="15.4" fill="#66cf95"/><rect x="536.8" y="23.2" width="40" height="29.8" fill="#f0b860"/></g><text class="val" x="556.8" y="17.2">23.5h</text><text class="ax" x="556.8" y="186" text-anchor="middle">10/26</text><g opacity=".6"><rect x="616.3" y="126.9" width="40" height="41.1" fill="#a68cff"/><rect x="616.3" y="96.1" width="40" height="30.8" fill="#7aa8ff"/><rect x="616.3" y="82.8" width="40" height="13.3" fill="#66cf95"/></g><text class="val" x="636.3" y="76.8">13.8h</text><text class="ax now" x="636.3" y="186" text-anchor="middle">이번 주</text></svg>
+      </div>
+      <div class="card">
+        <div class="card-head"><b>이번 주 투입</b><span>11/2–11/8 · 13시간 50분</span><span class="live right"><b>Daybrick</b> 진행 중</span></div>
+        <svg class="bubble-svg" viewBox="0 0 440 200">
+          <circle cx="274" cy="152" r="4" fill="#a68cff"/><text class="lg-name" x="284" y="156" font-size="12">Daybrick</text><text class="lg-time" x="434" y="156" font-size="11">6시간 40분</text>
+          <circle cx="274" cy="172" r="4" fill="#7aa8ff"/><text class="lg-name" x="284" y="176" font-size="12">토익 스피킹</text><text class="lg-time" x="434" y="176" font-size="11">5시간</text>
+          <circle cx="274" cy="192" r="4" fill="#66cf95"/><text class="lg-name" x="284" y="196" font-size="12">포트폴리오</text><text class="lg-time" x="434" y="196" font-size="11">2시간 10분</text>
+          <circle cx="92" cy="116" r="44" fill="#7aa8ff"/><text class="pct" x="92" y="116" font-size="17">36%</text>
+          <circle cx="206" cy="76" r="50" fill="#a68cff"/><text class="pct" x="206" y="76" font-size="19">48%</text>
+          <g opacity=".35"><circle cx="352" cy="164" r="29" fill="#66cf95"/><text class="pct" x="352" y="164" font-size="12">16%</text></g>
+        </svg>
+      </div>
+    </div></div>
+    <div class="verdict">
+      <div class="note"><b>좋은 점</b><ul><li>"지난주보다 늘었나", "언제부터 토익을 시작했나"가 한눈에 보인다.</li><li>지난 프로젝트 비중 변화를 볼 수 있다.</li></ul></div>
+      <div class="note"><b>아쉬운 점</b><ul><li>오른쪽 버블도 투입 시간이라 같은 정보가 두 번 나온다 (이번 주 막대 = 버블).</li><li>그래프 두 개가 나란히 있어 윗줄이 무겁다.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="screen" id="cmp-todo">
+    <div class="screen-head"><h2>후보 3. 이번 주 할 일</h2></div>
+    <p class="screen-desc">모든 프로젝트에서 진행 중이거나 기간이 이번 주에 걸친 미완료 태스크. 지난 태스크는 날짜를 빨갛게. 줄을 누르면 플랜 상세 팝업.</p>
+    <div class="strip"><div class="top-row">
+      <div class="card">
+        <div class="card-head"><b>이번 주 할 일</b><span>11/2–11/8 · 남은 8개</span></div>
+        <div class="todo">
+          <div class="todo-row"><span class="st doing"></span><span>Part 3 답변 녹음 3회</span><span class="proj c-blue"><span class="dot"></span>토익 스피킹 8주</span><span class="when late">11/1 지남</span></div>
+          <div class="todo-row"><span class="st doing"></span><span>타이머 연동</span><span class="proj c-violet"><span class="dot"></span>Daybrick</span><span class="when">11/2–11/6</span></div>
+          <div class="todo-row"><span class="st doing"></span><span>프로젝트 목록 화면</span><span class="proj c-violet"><span class="dot"></span>Daybrick</span><span class="when">11/4–11/7</span></div>
+          <div class="todo-row"><span class="st"></span><span>소개 페이지 반응형</span><span class="proj c-green"><span class="dot"></span>포트폴리오 사이트</span><span class="when">11/5–11/6</span></div>
+          <div class="todo-row"><span class="st"></span><span>필답형 2020년 기출</span><span class="proj c-amber"><span class="dot"></span>정보처리기사 실기</span><span class="when">11/7</span></div>
+          <div class="todo-more">외 3개 더 보기</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><b>이번 주 투입</b><span>11/2–11/8 · 13시간 50분</span><span class="live right"><b>Daybrick</b> 진행 중</span></div>
+        <svg class="bubble-svg" viewBox="0 0 440 200">
+          <circle cx="274" cy="152" r="4" fill="#a68cff"/><text class="lg-name" x="284" y="156" font-size="12">Daybrick</text><text class="lg-time" x="434" y="156" font-size="11">6시간 40분</text>
+          <circle cx="274" cy="172" r="4" fill="#7aa8ff"/><text class="lg-name" x="284" y="176" font-size="12">토익 스피킹</text><text class="lg-time" x="434" y="176" font-size="11">5시간</text>
+          <circle cx="274" cy="192" r="4" fill="#66cf95"/><text class="lg-name" x="284" y="196" font-size="12">포트폴리오</text><text class="lg-time" x="434" y="196" font-size="11">2시간 10분</text>
+          <circle cx="92" cy="116" r="44" fill="#7aa8ff"/><text class="pct" x="92" y="116" font-size="17">36%</text>
+          <circle cx="206" cy="76" r="50" fill="#a68cff"/><text class="pct" x="206" y="76" font-size="19">48%</text>
+          <g opacity=".35"><circle cx="352" cy="164" r="29" fill="#66cf95"/><text class="pct" x="352" y="164" font-size="12">16%</text></g>
+        </svg>
+      </div>
+    </div></div>
+    <div class="verdict">
+      <div class="note"><b>좋은 점</b><ul><li>목록 화면에서 바로 무엇을 할지 고를 수 있어 가장 실용적이다.</li><li>밀린 태스크가 눈에 띈다.</li></ul></div>
+      <div class="note"><b>아쉬운 점</b><ul><li>투데이·플랜 화면과 역할이 겹친다.</li><li>"이번 주에 걸친" 기준을 새로 정해야 하고, 날짜 없는 시작 전 태스크는 빠진다.</li></ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

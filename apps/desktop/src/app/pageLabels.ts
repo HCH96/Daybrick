@@ -7,6 +7,7 @@ import type { PageId } from "./types";
 export const PAGE_LABELS: Record<PageId, string> = {
   home: "홈",
   plan: "플랜",
+  projects: "프로젝트",
   scheduler: "스케줄러",
   applications: "지원 현황",
   "job-search": "구직 관리",
@@ -22,6 +23,7 @@ export const PAGE_LABELS: Record<PageId, string> = {
 export const NAV_LABELS: Record<PageId, string> = {
   home: "Home",
   plan: "Plan",
+  projects: "Projects",
   scheduler: "Scheduler",
   applications: "Applications",
   "job-search": "Job Search",

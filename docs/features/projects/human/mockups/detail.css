@@ -1,0 +1,54 @@
+/* 상세 화면 전용: 머리, 진행 상황 판(트랙·모닥불·누적), 단계 영역, 태스크 줄 (detail.html, detail-weekly.html) */
+
+/* ===== 머리 ===== */
+.detail-head { display: flex; align-items: center; gap: 12px; }
+.detail-head .dot { width: 12px; height: 12px; }
+.detail-head .spacer { flex: 1; }
+
+/* ===== 진행 상황 판 ===== */
+.progress { display: grid; grid-template-columns: 1fr 250px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); flex-shrink: 0; }
+.progress .track-box { padding: 14px 18px 6px; min-width: 0; }
+.progress .stats { border-left: 1px solid var(--border); padding: 16px 20px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+.stat-fire { display: flex; align-items: center; gap: 14px; }
+.stat-fire .fire { width: 60px; height: 60px; }
+.stat small { display: block; font-size: 11px; color: var(--faint); }
+.stat b { font-size: 18px; font-variant-numeric: tabular-nums; }
+.stat .live { display: flex; margin-top: 2px; font-size: 11px; }
+.track-cap { display: flex; align-items: baseline; gap: 10px; font-size: 12px; color: var(--muted); }
+.track-cap b { color: var(--text); font-size: 13px; }
+
+/* ===== 단계 영역 (가로 칸. 주차형은 칸이 많아 가로로 넘김) ===== */
+.stages { flex: 1; min-height: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 12px; }
+.stages.scroll { grid-auto-columns: 272px; overflow: hidden; position: relative; }
+.stage { display: flex; flex-direction: column; min-height: 0; background: var(--sidebar); border: 1px solid var(--border); border-radius: var(--radius); }
+.stage.now { border-color: var(--c); box-shadow: 0 0 0 3px var(--c-soft); }
+.stage-head { display: flex; align-items: center; gap: 8px; padding: 12px 10px 10px 14px; border-bottom: 1px solid var(--border); }
+.stage-head b { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.stage-head .cnt { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.stage-head .cnt.full { color: var(--green); }
+.stage-head .when { font-size: 12px; color: var(--faint); white-space: nowrap; }
+.stage-head .badge { font-size: 11px; font-weight: 700; color: var(--c); background: var(--c-soft); border-radius: 5px; padding: 1px 7px; }
+.stage-head .icon-btn { margin-left: auto; }
+.stage-body { flex: 1; min-height: 0; overflow: hidden; padding: 8px; display: flex; flex-direction: column; gap: 2px; }
+.stage-sep { font-size: 11px; color: var(--faint); padding: 10px 8px 4px; display: flex; align-items: center; gap: 8px; }
+.stage-sep::after { content: ""; flex: 1; border-top: 1px solid var(--border); }
+.stage-empty { flex: 1; display: grid; place-content: center; justify-items: center; gap: 4px; color: var(--faint); font-size: 13px; }
+.stage-empty small { font-size: 12px; }
+
+/* ===== 태스크 줄 (플랜 목록과 같은 모양) ===== */
+.task { display: flex; align-items: flex-start; gap: 10px; padding: 8px; border-radius: 8px; }
+.task .st { margin-top: 2px; }
+.task.hover { background: var(--surface-2); }
+.t-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.t-title { font-size: 13px; line-height: 1.4; }
+.t-meta { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--muted); }
+.t-meta span { display: inline-flex; align-items: center; gap: 4px; }
+.t-meta .none { color: var(--faint); }
+.t-meta .ico { width: 12px; height: 12px; }
+.task .trash { color: var(--faint); visibility: hidden; }
+.task.hover .trash { visibility: visible; }
+.task.done .t-title { color: var(--muted); }
+.task.new .t-title { flex: 1; border: 1px solid var(--accent); border-radius: 6px; padding: 3px 8px; margin: -4px 0; background: var(--bg); }
+.task.new .t-title::after { content: ""; display: inline-block; width: 1px; height: 14px; margin-left: 1px; vertical-align: -2px; background: var(--text); }
+.task.ghost { border: 1.5px dashed var(--border-2); opacity: .9; }
