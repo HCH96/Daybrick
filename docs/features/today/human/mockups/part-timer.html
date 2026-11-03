@@ -1,0 +1,140 @@
+<!doctype html>
+<!-- 목업: 투데이 / 4. 타이머 카드 (달리는 중·일시정지·빈 상태)
+  목차와 다른 화면: index.html  (골인은 part-timer-goal.html)
+  CSS: common.css, timer.css(.tcard, .tm-*, keyframes db*), parts.css(.stage, .row)  캐릭터: sprites.js
+  ID                  화면                         요구사항
+  timer               4. 타이머 카드                R16–R21, R40–R46
+    timer-running       4-1. 달리는 중 (툴팁 보임)  R16–R17, R40–R43
+    timer-paused        4-2. 일시정지               R18, R44
+    timer-empty         4-3. 빈 상태 (낮, 중단 뒤)  R21, R46
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>투데이 목업 - 4. 타이머 카드</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="timer.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<script src="sprites.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · <a href="part-timer-goal.html" style="color:var(--accent)">골인 상태 →</a></p>
+
+  <section class="screen" id="timer">
+    <div class="screen-head"><h2>4. 타이머 카드</h2><span class="tag">R16–R21, R40–R46</span></div>
+    <p class="screen-desc">11/3 오후 3시 20분, 오늘 3시간 20분 / 목표 6시간(56%). 실제 크기(440×250)로 그렸고 애니메이션이 움직인다. 트랙에 마우스를 올리면 "오늘 기록 / 목표" 툴팁이 뜬다(4-1은 늘 보이게 그림).</p>
+    <div class="stage">
+      <div class="row c2">
+        <div>
+          <div class="cap">4-1. 달리는 중 <code>timer-running</code></div>
+          <div class="tcard c-green" id="timer-running">
+            <div class="tm-top">
+              <div class="tm-info">
+                <div class="tm-proj"><span class="dot"></span>TrialGround · 11/2 – 11/4</div>
+                <div class="tm-title">매칭 서버 세션 로직 리팩터</div>
+                <div class="tm-time">0<span class="colon">:</span>42</div>
+                <div class="tm-sub">1시간 20분 달리는 중</div>
+              </div>
+              <div class="tm-side">
+                <div class="tm-scene run show-tip" tabindex="0" role="img" aria-label="오늘 목표 6시간 중 3시간 20분, 56% 지점을 달리는 중">
+                  <svg class="layer cloud" width="160" height="60" viewBox="0 0 160 60" shape-rendering="crispEdges"><rect x="104" y="30" width="16" height="4"/><rect x="108" y="26" width="8" height="4"/><rect x="36" y="16" width="12" height="3"/><rect x="39" y="13" width="6" height="3"/></svg>
+                  <svg class="layer" width="160" height="130" viewBox="0 0 160 130">
+                    <line class="rest" x1="79" y1="113.5" x2="142" y2="113.5"/><line class="passed" x1="0" y1="113.5" x2="79" y2="113.5"/>
+                    <g class="tick"><rect x="14" y="119" width="2" height="3"/><rect x="28" y="119" width="2" height="3"/><rect x="43" y="119" width="2" height="3"/><rect x="57" y="119" width="2" height="3"/><rect x="71" y="119" width="2" height="3"/><rect x="85" y="119" width="2" height="3"/><rect x="99" y="119" width="2" height="3"/><rect x="114" y="119" width="2" height="3"/><rect x="128" y="119" width="2" height="3"/></g>
+                    <rect class="pole" x="141" y="62" width="2" height="51"/><rect class="cap" x="140" y="60" width="4" height="3"/><path class="flag" d="M143 64 L159 70 L143 76 Z"/>
+                  </svg>
+                  <span class="tm-dust" style="left:54px;top:106px"></span><span class="tm-dust s" style="left:49px;top:101px"></span>
+                  <div class="tm-char" style="left:58px"><svg class="tm-sprite f1" viewBox="0 0 14 16"><use href="#sp-run1"/></svg><svg class="tm-sprite f2" viewBox="0 0 14 16"><use href="#sp-run2"/></svg></div>
+                  <span class="tm-tip" style="left:80px">3:20 / 6:00</span>
+                </div>
+              </div>
+            </div>
+            <div class="tm-btns">
+              <span class="tm-btn go"><svg viewBox="0 0 14 14"><path d="M4.5 2.5v9M9.5 2.5v9" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>일시정지</span>
+              <span class="tm-btn done"><svg viewBox="0 0 14 14"><path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>완료</span>
+              <span class="tm-btn stop"><svg viewBox="0 0 12 12" style="width:12px"><rect x="1.5" y="1.5" width="9" height="9" rx="1.5" fill="currentColor"/></svg>중단</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="cap">4-2. 일시정지 <code>timer-paused</code></div>
+          <div class="tcard c-green" id="timer-paused">
+            <div class="tm-top">
+              <div class="tm-info">
+                <div class="tm-proj"><span class="dot"></span>TrialGround · 11/2 – 11/4</div>
+                <div class="tm-title">매칭 서버 세션 로직 리팩터</div>
+                <div class="tm-time paused">0<span class="colon">:</span>42</div>
+                <div class="tm-sub">1시간 20분 달리고 쉬는 중</div>
+              </div>
+              <div class="tm-side">
+                <div class="tm-scene paused" tabindex="0" role="img" aria-label="일시정지, 오늘 목표 6시간 중 3시간 20분 지점에서 쉬는 중">
+                  <svg class="layer cloud" width="160" height="60" viewBox="0 0 160 60" shape-rendering="crispEdges"><rect x="104" y="30" width="16" height="4"/><rect x="108" y="26" width="8" height="4"/><rect x="36" y="16" width="12" height="3"/><rect x="39" y="13" width="6" height="3"/></svg>
+                  <svg class="layer" width="160" height="130" viewBox="0 0 160 130">
+                    <line class="rest" x1="79" y1="113.5" x2="142" y2="113.5"/><line class="passed" x1="0" y1="113.5" x2="79" y2="113.5"/>
+                    <g class="tick"><rect x="14" y="119" width="2" height="3"/><rect x="28" y="119" width="2" height="3"/><rect x="43" y="119" width="2" height="3"/><rect x="57" y="119" width="2" height="3"/><rect x="71" y="119" width="2" height="3"/><rect x="85" y="119" width="2" height="3"/><rect x="99" y="119" width="2" height="3"/><rect x="114" y="119" width="2" height="3"/><rect x="128" y="119" width="2" height="3"/></g>
+                    <rect class="pole" x="141" y="62" width="2" height="51"/><rect class="cap" x="140" y="60" width="4" height="3"/><path class="flag" d="M143 64 L159 70 L143 76 Z"/>
+                  </svg>
+                  <div class="tm-char" style="left:58px"><svg class="tm-sprite" viewBox="0 0 14 16"><use href="#sp-sit"/></svg></div>
+                  <span class="tm-z" style="left:88px;top:62px;font-size:9px">z</span><span class="tm-z z2" style="left:90px;top:60px;font-size:11px">z</span><span class="tm-z z3" style="left:92px;top:58px;font-size:13px">Z</span>
+                  <span class="tm-tip" style="left:80px">3:20 / 6:00</span>
+                </div>
+              </div>
+            </div>
+            <div class="tm-btns">
+              <span class="tm-btn go"><svg viewBox="0 0 14 14"><path d="M4 2.5 L11.5 7 L4 11.5 Z" fill="currentColor"/></svg>재개</span>
+              <span class="tm-btn done"><svg viewBox="0 0 14 14"><path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>완료</span>
+              <span class="tm-btn stop"><svg viewBox="0 0 12 12" style="width:12px"><rect x="1.5" y="1.5" width="9" height="9" rx="1.5" fill="currentColor"/></svg>중단</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px">
+        <div class="cap">4-3. 빈 상태 (오후에 중단한 뒤) <code>timer-empty</code></div>
+        <div class="tcard" id="timer-empty" style="--c:var(--accent)">
+          <div class="tm-top">
+            <div class="tm-info">
+              <div class="tm-proj">돌고 있는 타이머 없음</div>
+              <div class="tm-title">칸반 카드에서 시작하세요</div>
+              <div class="tm-sub">오늘 3시간 20분 달렸어요</div>
+            </div>
+            <div class="tm-side">
+              <div class="tm-scene idle" tabindex="0" role="img" aria-label="타이머 없음, 오늘 목표 6시간 중 3시간 20분 지점에 서 있음">
+                <svg class="layer cloud" width="160" height="60" viewBox="0 0 160 60" shape-rendering="crispEdges"><rect x="104" y="30" width="16" height="4"/><rect x="108" y="26" width="8" height="4"/><rect x="36" y="16" width="12" height="3"/><rect x="39" y="13" width="6" height="3"/></svg>
+                <svg class="layer" width="160" height="130" viewBox="0 0 160 130">
+                  <line class="rest" x1="79" y1="113.5" x2="142" y2="113.5"/><line class="passed" x1="0" y1="113.5" x2="79" y2="113.5"/>
+                  <g class="tick"><rect x="14" y="119" width="2" height="3"/><rect x="28" y="119" width="2" height="3"/><rect x="43" y="119" width="2" height="3"/><rect x="57" y="119" width="2" height="3"/><rect x="71" y="119" width="2" height="3"/><rect x="85" y="119" width="2" height="3"/><rect x="99" y="119" width="2" height="3"/><rect x="114" y="119" width="2" height="3"/><rect x="128" y="119" width="2" height="3"/></g>
+                  <rect class="pole" x="141" y="62" width="2" height="51"/><rect class="cap" x="140" y="60" width="4" height="3"/><path class="flag" d="M143 64 L159 70 L143 76 Z"/>
+                </svg>
+                <div class="tm-char" style="left:58px"><svg class="tm-sprite" viewBox="0 0 14 16"><use href="#sp-stand"/></svg></div>
+                <span class="tm-tip" style="left:80px">3:20 / 6:00</span>
+              </div>
+            </div>
+          </div>
+          <div class="tm-guide">시작 전·진행 중 카드의 ▶ 버튼을 누르면 여기서 시간이 흘러요.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>숫자 (R16, R40–R41)</b><ul>
+        <li>큰 숫자: 이번 세션에 흐른 시간 H:MM. 초 없음. 일시정지 시간은 빼고 이어서 센다.</li>
+        <li>달리는 중에는 콜론만 2초마다 은은하게 깜빡인다. 일시정지면 회색으로 멈춘다.</li>
+        <li>보조 문구: 오늘 이 태스크 누적(지금 세션 포함). 1분 미만은 "막 출발했어요".</li>
+      </ul></div>
+      <div class="note"><b>트랙 (R42–R43)</b><ul>
+        <li>하루 전체 기록 / 하루 목표. 캐릭터 가로 위치 = 진행률, 지나온 길·상의 = 지금 태스크의 카테고리 색.</li>
+        <li>숫자는 숨기고, 마우스를 올리거나 포커스하면 "3:20 / 6:00".</li>
+      </ul></div>
+      <div class="note"><b>일시정지 · 빈 상태 (R44, R46)</b><ul>
+        <li>일시정지: 앉아서 눈 감고 숨쉬기, z z Z, 구름 멈춤, 지나온 길 흐리게, 첫 버튼 "재개".</li>
+        <li>빈 상태: 버튼을 숨기고 캐릭터는 오늘 진행 위치에 서 있다. 아침(0%)은 2. 아침 빈 상태.</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

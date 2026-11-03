@@ -1,0 +1,151 @@
+<!doctype html>
+<!-- 목업: 투데이 / 3. 오늘 요약 항목
+  목차와 다른 화면: index.html
+  CSS: common.css, today.css(.stat, .streak-pop, .sgrid, .catbar, .tl, .remain), parts.css(.cand, .goal-input, .streak-stage)
+  ID                  화면                         요구사항
+  summary             3. 오늘 요약 항목             R27–R31, R33 (R32는 r2에서 뺌)
+    summary-focus       3-1. 집중 시간·목표          R27
+    summary-goal        3-2. 목표 고치는 중          R27
+    summary-done        3-3. 완료 개수              R28
+    summary-category    3-4. 카테고리별 시간         R29
+    summary-streak      3-5. 스트릭 + 마우스 올림 달력 R30
+    summary-timeline    3-6. 타임라인               R31
+    summary-streak-mid  3-7. 스트릭 달력, 달 중간 예 R30
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>투데이 목업 - 3. 오늘 요약 항목</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="today.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a></p>
+
+  <section class="screen" id="summary">
+    <div class="screen-head"><h2>3. 오늘 요약 항목</h2><span class="tag">R27–R33</span></div>
+    <p class="screen-desc">R33: 요약 항목을 하나씩 떼어 크게 그렸다. r2에서 R32를 빼고 나머지를 남기기로 했다. 데이터는 1. 투데이 화면과 같은 시점(11/3 15:20).</p>
+    <div class="stage">
+      <div class="row c3">
+        <div>
+          <div class="cap">3-1. 집중 시간·목표 <code>summary-focus</code> R27</div>
+          <div class="panel cand" id="summary-focus">
+            <div class="sum-label">오늘 집중<svg class="ico xs goal-edit"><use href="#i-pen"/></svg></div>
+            <div class="big">3시간 20분 <small>/ 목표 6시간</small></div>
+            <div class="bar"><i style="width:55.6%"></i></div>
+            <div class="sub">56% · 2시간 40분 남음</div>
+          </div>
+        </div>
+        <div>
+          <div class="cap">3-2. 목표 고치는 중 <code>summary-goal</code> R27</div>
+          <div class="panel cand" id="summary-goal">
+            <div class="sum-label">오늘 집중</div>
+            <div class="big">3시간 20분 <small>/ 목표</small></div>
+            <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
+              <span class="goal-input"><span class="num">6</span><span class="unit">시간</span><span class="num">00</span><span class="unit">분</span></span>
+              <span class="btn sm primary" style="margin-left:auto">저장</span><span class="btn sm ghost">취소</span>
+            </div>
+            <div class="sub">연필을 누르면 이 자리에서 바로 고친다(처음 기본값 6시간). 스트릭 기준과 타이머 트랙의 목표도 같이 바뀐다.</div>
+          </div>
+        </div>
+        <div>
+          <div class="cap">3-3. 완료 개수 <code>summary-done</code> R28</div>
+          <div class="panel cand" id="summary-done">
+            <div class="sum-label">오늘 완료</div>
+            <div class="big">2 <small>/ 7개</small></div>
+            <div class="bar"><i style="width:28.6%;background:var(--green)"></i></div>
+            <div class="sub">오늘 칸반의 완료 열 / 전체 카드</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row c3" style="margin-top:24px">
+        <div>
+          <div class="cap">3-4. 카테고리별 시간 <code>summary-category</code> R29</div>
+          <div class="panel cand" id="summary-category">
+            <div class="sum-label">카테고리별</div>
+            <div class="catbar" style="height:14px"><i class="c-blue" style="width:60%"></i><i class="c-green" style="width:40%"></i></div>
+            <div class="remain" style="margin-top:12px">
+              <div class="remain-row c-blue"><span class="dot"></span><span class="t">C++ 공부</span><b>2시간</b><span class="days">60%</span></div>
+              <div class="remain-row c-green"><span class="dot"></span><span class="t">TrialGround</span><b>1시간 20분</b><span class="days">40%</span></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="cap">3-5. 스트릭 <code>summary-streak</code> R30</div>
+          <div class="panel cand streak-stage" id="summary-streak">
+            <div class="stat streak hover">
+              <div class="stat-k"><svg class="ico xs flame"><use href="#i-flame"/></svg>스트릭</div>
+              <div class="stat-v">4<small>일</small></div>
+              <div class="streak-pop">
+                <div class="sgrid">
+                  <span class="on">1</span><span class="on">2</span><span class="today">3</span><span class="later">4</span><span class="later">5</span><span class="later">6</span><span class="later">7</span>
+                  <span class="later">8</span><span class="later">9</span><span class="later">10</span><span class="later">11</span><span class="later">12</span><span class="later">13</span><span class="later">14</span>
+                  <span class="later">15</span><span class="later">16</span><span class="later">17</span><span class="later">18</span><span class="later">19</span><span class="later">20</span><span class="later">21</span>
+                  <span class="later">22</span><span class="later">23</span><span class="later">24</span><span class="later">25</span><span class="later">26</span><span class="later">27</span><span class="later">28</span>
+                  <span class="later">29</span><span class="later">30</span>
+                </div>
+              </div>
+            </div>
+            <div class="sub">11/3 기준. 10월 30·31일도 채웠지만 이번 달만 보이므로 1·2일만 켜져 있다.</div>
+          </div>
+        </div>
+        <div>
+          <div class="cap">3-7. 스트릭 달력, 달 중간 예 <code>summary-streak-mid</code> R30</div>
+          <div class="panel cand streak-stage" id="summary-streak-mid">
+            <div class="stat streak hover">
+              <div class="stat-k"><svg class="ico xs flame"><use href="#i-flame"/></svg>스트릭</div>
+              <div class="stat-v">6<small>일</small></div>
+              <div class="streak-pop">
+                <div class="sgrid">
+                  <span class="on">1</span><span class="on">2</span><span class="on">3</span><span class="on">4</span><span class="off">5</span><span class="on">6</span><span class="on">7</span>
+                  <span class="on">8</span><span class="off">9</span><span class="off">10</span><span class="on">11</span><span class="on">12</span><span class="off">13</span><span class="on">14</span>
+                  <span class="on">15</span><span class="on">16</span><span class="on">17</span><span class="on">18</span><span class="on">19</span><span class="today">20</span><span class="later">21</span>
+                  <span class="later">22</span><span class="later">23</span><span class="later">24</span><span class="later">25</span><span class="later">26</span><span class="later">27</span><span class="later">28</span>
+                  <span class="later">29</span><span class="later">30</span>
+                </div>
+              </div>
+            </div>
+            <div class="sub">11/20 기준 가짜 예. 켜짐 = 목표 채운 날, 꺼짐 = 못 채운 날, 테두리 = 오늘, 흐린 숫자 = 남은 날.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px">
+        <div class="cap">3-6. 타임라인 <code>summary-timeline</code> R31</div>
+        <div class="panel cand tl-big" id="summary-timeline">
+          <div class="sum-label">오늘 시간 구간 (08시–24시)</div>
+          <div class="tl">
+            <i class="c-blue" style="left:7.3%;width:9.4%"></i>
+            <i class="c-blue" style="left:18.75%;width:3.1%"></i>
+            <i class="c-green" style="left:34.4%;width:4%"></i>
+            <i class="c-green now" style="left:41.5%;width:4.4%"></i>
+            <span class="nowline" style="left:45.8%"></span>
+          </div>
+          <div class="tl-axis"><span>08</span><span>10</span><span>12</span><span>14</span><span>16</span><span>18</span><span>20</span><span>22</span><span>24</span></div>
+          <div class="sub">09:10–10:40, 11:00–11:30 C++ 공부 · 13:30–14:08 TrialGround · 14:38– 지금(빗금, 실행 중) · 빨간 줄은 지금 시각</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>정한 것 (r2)</b><ul>
+        <li>남김: R27 집중·목표, R28 완료, R29 카테고리별, R30 스트릭, R31 타임라인.</li>
+        <li>뺌: R32 여러 날 태스크 남은 기간.</li>
+      </ul></div>
+      <div class="note"><b>스트릭 (3-5, 3-7)</b><ul>
+        <li>타일에는 연속 일수만 보인다.</li>
+        <li>마우스를 올린 동안만 타일 아래에 이번 달 숫자 달력이 뜬다. 요일·월 이름 없이 1부터 말일까지 7개씩 줄을 바꾼다.</li>
+        <li>켜짐(주황 빛) = 목표 채운 날, 꺼짐 = 못 채운 날, 테두리 = 오늘, 흐린 숫자 = 아직 안 온 날.</li>
+      </ul></div>
+      <div class="note"><b>요약 칸 배치</b><ul>
+        <li>1. 투데이 화면 1-5: 위에 타일 3개(집중·완료·스트릭), 아래에 카테고리별 막대와 타임라인.</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

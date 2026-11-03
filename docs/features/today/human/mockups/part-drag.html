@@ -1,0 +1,61 @@
+<!doctype html>
+<!-- 목업: 투데이 / 5. 카드 끌기
+  목차와 다른 화면: index.html
+  CSS: common.css, today.css(.kanban, .card.lifted, .card.ghost, .col.drop), parts.css(.stage)
+  ID                  화면                         요구사항
+  drag                5. 카드 끌기                  R13
+    drag-kanban         5-1. 실행 중 카드를 완료 열로 R13, R19
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>투데이 목업 - 5. 카드 끌기</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="today.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a></p>
+
+  <section class="screen" id="drag">
+    <div class="screen-head"><h2>5. 카드 끌기</h2><span class="tag">R13</span></div>
+    <p class="screen-desc">타이머가 도는 "매칭 서버 세션 로직 리팩터" 카드를 완료 열 위로 끌고 있는 순간. 원래 자리는 흐린 점선 카드로 남는다.</p>
+    <div class="stage">
+      <div class="panel kanban" id="drag-kanban" style="width:740px;margin:0 auto">
+        <div class="col">
+          <div class="col-head"><span class="st sm"></span>시작 전<span class="n">3</span></div>
+          <div class="card c-blue"><div class="card-main"><div class="card-title">STL 컨테이너 정리 노트</div><div class="card-meta"><span class="dot"></span>C++ 공부</div></div><span class="play off"><svg class="ico xs"><use href="#i-lock"/></svg></span></div>
+          <div class="card c-amber"><div class="card-main"><div class="card-title">포트폴리오 README 다듬기</div><div class="card-meta"><span class="dot"></span>취업 준비<span class="due">D-2</span></div></div><span class="play off"><svg class="ico xs"><use href="#i-lock"/></svg></span></div>
+        </div>
+        <div class="col">
+          <div class="col-head"><span class="st sm doing"></span>진행 중<span class="n">2</span></div>
+          <div class="card c-green running ghost"><div class="card-main"><div class="card-title">매칭 서버 세션 로직 리팩터</div><div class="card-meta"><span class="dot"></span>TrialGround<span class="due">D-1</span></div><div class="live"><span class="pulse"></span>0:42</div></div></div>
+          <div class="card c-blue"><div class="card-main"><div class="card-title">이펙티브 모던 C++ 5장</div><div class="card-meta"><span class="dot"></span>C++ 공부<span class="due today">오늘 마감</span></div></div><span class="play off"><svg class="ico xs"><use href="#i-lock"/></svg></span></div>
+        </div>
+        <div class="col drop" style="padding:0 6px 8px">
+          <div class="col-head"><span class="st sm done"></span>완료<span class="n">2</span></div>
+          <div class="card c-green running lifted"><div class="card-main"><div class="card-title">매칭 서버 세션 로직 리팩터</div><div class="card-meta"><span class="dot"></span>TrialGround<span class="due">D-1</span></div><div class="live"><span class="pulse"></span>0:42</div></div></div>
+          <div class="tip" style="position:static;width:auto;margin-top:2px">놓으면 타이머 완료<span>42분을 기록하고 태스크를 완료로 바꿔요.</span></div>
+          <div class="card c-blue done"><div class="card-main"><div class="card-title">알고리즘 2문제 (백준)</div><div class="card-meta"><span class="dot"></span>C++ 공부</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>놓을 열 표시</b><ul>
+        <li>놓을 열 전체를 보라 점선과 옅은 배경으로 칠한다.</li>
+      </ul></div>
+      <div class="note"><b>타이머 카드일 때 안내</b><ul>
+        <li>완료 열 위: "놓으면 타이머 완료" (R19와 같음).</li>
+        <li>시작 전 열 위: "놓으면 타이머 중단 — 42분 기록하고 시작 전으로" (R20과 같음).</li>
+      </ul></div>
+      <div class="note"><b>일반 카드</b><ul>
+        <li>타이머가 없는 카드는 안내 말풍선 없이 열 표시만 한다.</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

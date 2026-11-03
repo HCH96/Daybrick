@@ -1,0 +1,232 @@
+<!doctype html>
+<!-- 목업: 투데이 / 1. 투데이 화면 (타이머 진행 중)
+  목차와 다른 화면: index.html
+  CSS: common.css, today.css, timer.css (필요한 클래스만 검색해서 읽기)  캐릭터: sprites.js
+  ID                  화면                         요구사항
+  today               1. 투데이 화면                R1–R31, R40–R48
+    today-week          1-1. 이번 주 진행 바        R5–R7
+    today-kanban        1-2. 칸반                   R8–R15
+    today-blocked       1-3. 시작 막힘 안내          R11
+    today-timer         1-4. 타이머 카드 (달리는 중)  R16–R18, R40–R41
+      today-track         1-4-1. 하루 목표 달리기 트랙 R42–R43 (상태별 모습은 part-timer*.html)
+    today-summary       1-5. 오늘 요약               R27–R31 (R32 삭제)
+      today-streak        1-5-1. 스트릭 마우스 올림 달력 R30
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>투데이 목업 - 1. 투데이 화면</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="today.css">
+<link rel="stylesheet" href="timer.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<script src="sprites.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a></p>
+
+  <section class="screen" id="today">
+    <div class="screen-head"><h2>1. 투데이 화면</h2><span class="tag">R1–R31, R40–R48</span></div>
+    <p class="screen-desc">2026년 11월 3일(화) 오후 3시 20분. "매칭 서버 세션 로직 리팩터" 타이머가 돌고 있어 다른 카드의 시작 버튼은 막혀 있다.</p>
+    <div class="scale-note">앱 창 1440×900을 75%로 줄여 보여줌</div>
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav"><span class="tb-btn"><svg class="ico sm"><use href="#i-back"/></svg></span><span class="tb-btn off"><svg class="ico sm"><use href="#i-fwd"/></svg></span></div>
+        <div class="tb-drag"></div>
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg></span>
+        <div class="win"><span><svg class="ico"><use href="#i-min"/></svg></span><span><svg class="ico"><use href="#i-max"/></svg></span><span><svg class="ico"><use href="#i-x"/></svg></span></div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-plan"/></svg>Plan</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock"/></svg>Scheduler</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag"/></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+          <div class="nav on"><svg class="ico"><use href="#i-sun"/></svg>Today</div>
+          <div class="spacer"></div>
+          <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main">
+          <div class="page-head"><h1 class="page-title">투데이</h1><span class="page-sub">11월 3일 화요일</span></div>
+
+          <div class="panel week" id="today-week">
+            <div class="week-label">이번 주<span>11/2 – 11/8</span></div>
+            <div class="bar"><i style="width:37.5%"></i></div>
+            <div class="week-count">완료 <b>3</b> / 8</div>
+            <span class="overdue-btn"><svg class="ico sm"><use href="#i-alert"/></svg>미완료 <b>2</b></span>
+          </div>
+
+          <div class="today-grid">
+            <div class="panel kanban" id="today-kanban">
+              <div class="col">
+                <div class="col-head"><span class="st sm"></span>시작 전<span class="n">3</span></div>
+                <div class="card c-blue">
+                  <div class="card-main">
+                    <div class="card-title">STL 컨테이너 정리 노트</div>
+                    <div class="card-meta"><span class="dot"></span>C++ 공부</div>
+                  </div>
+                  <span class="play off"><svg class="ico xs"><use href="#i-lock"/></svg></span>
+                </div>
+                <div class="card c-amber">
+                  <div class="card-main">
+                    <div class="card-title">포트폴리오 README 다듬기</div>
+                    <div class="card-meta"><span class="dot"></span>취업 준비<span class="due">D-2</span></div>
+                  </div>
+                  <span class="play off"><svg class="ico xs"><use href="#i-lock"/></svg></span>
+                </div>
+                <div class="card c-pink" id="today-blocked">
+                  <div class="card-main">
+                    <div class="card-title">저녁 러닝 5km</div>
+                    <div class="card-meta"><span class="dot"></span>운동</div>
+                  </div>
+                  <span class="play off"><svg class="ico xs"><use href="#i-lock"/></svg></span>
+                  <div class="tip">다른 타이머가 돌고 있어요<span>"매칭 서버 세션 로직 리팩터"를 끝내거나 중단하면 시작할 수 있어요.</span></div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="col-head"><span class="st sm doing"></span>진행 중<span class="n">2</span></div>
+                <div class="card c-green running">
+                  <div class="card-main">
+                    <div class="card-title">매칭 서버 세션 로직 리팩터</div>
+                    <div class="card-meta"><span class="dot"></span>TrialGround<span class="due">D-1</span></div>
+                    <div class="live"><span class="pulse"></span>0:42</div>
+                  </div>
+                </div>
+                <div class="card c-blue">
+                  <div class="card-main">
+                    <div class="card-title">이펙티브 모던 C++ 5장</div>
+                    <div class="card-meta"><span class="dot"></span>C++ 공부<span class="due today">오늘 마감</span></div>
+                  </div>
+                  <span class="play off"><svg class="ico xs"><use href="#i-lock"/></svg></span>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="col-head"><span class="st sm done"></span>완료<span class="n">2</span></div>
+                <div class="card c-blue done">
+                  <div class="card-main">
+                    <div class="card-title">알고리즘 2문제 (백준)</div>
+                    <div class="card-meta"><span class="dot"></span>C++ 공부<span class="when">· 오늘 11:32 완료</span></div>
+                  </div>
+                </div>
+                <div class="card c-amber done">
+                  <div class="card-main">
+                    <div class="card-title">카카오 자소서 1번 문항</div>
+                    <div class="card-meta"><span class="dot"></span>취업 준비<span class="due">D-1</span><span class="when">· 11/2 완료</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="side">
+              <div class="tcard c-green" id="today-timer">
+                <div class="tm-top">
+                  <div class="tm-info">
+                    <div class="tm-proj"><span class="dot"></span>TrialGround · 11/2 – 11/4</div>
+                    <div class="tm-title">매칭 서버 세션 로직 리팩터</div>
+                    <div class="tm-time">0<span class="colon">:</span>42</div>
+                    <div class="tm-sub">1시간 20분 달리는 중</div>
+                  </div>
+                  <div class="tm-side">
+                <div class="tm-scene run" id="today-track" tabindex="0" role="img" aria-label="오늘 목표 6시간 중 3시간 20분, 56% 지점을 달리는 중">
+                  <svg class="layer cloud" width="160" height="60" viewBox="0 0 160 60" shape-rendering="crispEdges"><rect x="104" y="30" width="16" height="4"/><rect x="108" y="26" width="8" height="4"/><rect x="36" y="16" width="12" height="3"/><rect x="39" y="13" width="6" height="3"/></svg>
+                  <svg class="layer" width="160" height="130" viewBox="0 0 160 130">
+                    <line class="rest" x1="79" y1="113.5" x2="142" y2="113.5"/><line class="passed" x1="0" y1="113.5" x2="79" y2="113.5"/>
+                    <g class="tick"><rect x="14" y="119" width="2" height="3"/><rect x="28" y="119" width="2" height="3"/><rect x="43" y="119" width="2" height="3"/><rect x="57" y="119" width="2" height="3"/><rect x="71" y="119" width="2" height="3"/><rect x="85" y="119" width="2" height="3"/><rect x="99" y="119" width="2" height="3"/><rect x="114" y="119" width="2" height="3"/><rect x="128" y="119" width="2" height="3"/></g>
+                    <rect class="pole" x="141" y="62" width="2" height="51"/><rect class="cap" x="140" y="60" width="4" height="3"/><path class="flag" d="M143 64 L159 70 L143 76 Z"/>
+                  </svg>
+                  <span class="tm-dust" style="left:54px;top:106px"></span><span class="tm-dust s" style="left:49px;top:101px"></span>
+                  <div class="tm-char" style="left:58px"><svg class="tm-sprite f1" viewBox="0 0 14 16"><use href="#sp-run1"/></svg><svg class="tm-sprite f2" viewBox="0 0 14 16"><use href="#sp-run2"/></svg></div>
+                  <span class="tm-tip" style="left:80px">3:20 / 6:00</span>
+                </div>
+                  </div>
+                </div>
+                <div class="tm-btns">
+                  <span class="tm-btn go"><svg viewBox="0 0 14 14"><path d="M4.5 2.5v9M9.5 2.5v9" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>일시정지</span>
+                  <span class="tm-btn done"><svg viewBox="0 0 14 14"><path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>완료</span>
+                  <span class="tm-btn stop"><svg viewBox="0 0 12 12" style="width:12px"><rect x="1.5" y="1.5" width="9" height="9" rx="1.5" fill="currentColor"/></svg>중단</span>
+                </div>
+              </div>
+
+              <div class="panel summary" id="today-summary">
+                <div class="panel-head">오늘 요약</div>
+                <div class="sum-body">
+                  <div class="stats">
+                    <div class="stat">
+                      <div class="stat-k">집중 시간<svg class="ico xs goal-edit"><use href="#i-pen"/></svg></div>
+                      <div class="stat-v">3:20 <small>/ 6:00</small></div>
+                      <div class="bar"><i style="width:55.6%"></i></div>
+                    </div>
+                    <div class="stat">
+                      <div class="stat-k">완료</div>
+                      <div class="stat-v">2 <small>/ 7</small></div>
+                    </div>
+                    <div class="stat streak hover" id="today-streak">
+                      <div class="stat-k"><svg class="ico xs flame"><use href="#i-flame"/></svg>스트릭</div>
+                      <div class="stat-v">4<small>일</small></div>
+                      <div class="streak-pop">
+                        <div class="sgrid">
+                          <span class="on">1</span><span class="on">2</span><span class="today">3</span><span class="later">4</span><span class="later">5</span><span class="later">6</span><span class="later">7</span>
+                          <span class="later">8</span><span class="later">9</span><span class="later">10</span><span class="later">11</span><span class="later">12</span><span class="later">13</span><span class="later">14</span>
+                          <span class="later">15</span><span class="later">16</span><span class="later">17</span><span class="later">18</span><span class="later">19</span><span class="later">20</span><span class="later">21</span>
+                          <span class="later">22</span><span class="later">23</span><span class="later">24</span><span class="later">25</span><span class="later">26</span><span class="later">27</span><span class="later">28</span>
+                          <span class="later">29</span><span class="later">30</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="sum-label">카테고리별<span class="r">R29</span></div>
+                    <div class="catbar"><i class="c-blue" style="width:60%"></i><i class="c-green" style="width:40%"></i></div>
+                    <div class="legend">
+                      <span class="c-blue"><span class="dot"></span>C++ 공부 <b>2시간</b></span>
+                      <span class="c-green"><span class="dot"></span>TrialGround <b>1시간 20분</b></span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="sum-label">타임라인<span class="r">R31</span></div>
+                    <div class="tl">
+                      <i class="c-blue" style="left:7.3%;width:9.4%"></i>
+                      <i class="c-blue" style="left:18.75%;width:3.1%"></i>
+                      <i class="c-green" style="left:34.4%;width:4%"></i>
+                      <i class="c-green now" style="left:41.5%;width:4.4%"></i>
+                      <span class="nowline" style="left:45.8%"></span>
+                    </div>
+                    <div class="tl-axis"><span>08</span><span>12</span><span>16</span><span>20</span><span>24</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>칸반</b><ul>
+        <li>카드 왼쪽 띠와 점이 카테고리 색. 여러 날 태스크만 D-N 칩을 단다.</li>
+        <li>타이머가 도는 카드는 보라 테두리 + 흐른 시간. 다른 카드의 시작 버튼은 자물쇠로 바뀌고, 누르면 이유 말풍선(1-3)이 뜬다.</li>
+        <li>완료 열은 언제 끝냈는지("11/2 완료")를 같이 보여 R9를 확인할 수 있게 했다.</li>
+      </ul></div>
+      <div class="note"><b>타이머</b><ul>
+        <li>r3: 사용자 시안(Bar/Pause/Goal) 반영. 제목·배지·초·시작 시각·원형 시간표를 빼고 H:MM 숫자(콜론만 깜빡임)와 "1시간 20분 달리는 중".</li>
+        <li>오른쪽은 하루 목표 달리기 트랙(1-4-1): 캐릭터 위치 = 오늘 3:20 / 목표 6:00. 마우스를 올리면 툴팁.</li>
+        <li>일시정지·골인·빈 상태는 4. 타이머 카드. 칸반의 실행 중 카드도 초 없이 0:42.</li>
+      </ul></div>
+      <div class="note"><b>오늘 요약</b><ul>
+        <li>R27 집중·목표(연필로 고침), R28 완료, R30 스트릭 타일 + R29 카테고리별 + R31 타임라인. R32 남은 기간은 뺐다.</li>
+        <li>스트릭 타일에는 연속 일수만. 마우스를 올린 동안만 이번 달 숫자 달력(1-5-1)이 뜬다: 목표 채운 날은 불 켜짐(주황), 못 채운 날은 꺼짐, 오늘은 테두리, 남은 날은 흐린 숫자.</li>
+        <li>지금은 마우스를 올린 상태로 그렸다. 4일은 오늘 목표 전이라 어제까지 센 값.</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

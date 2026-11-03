@@ -8,8 +8,8 @@
 |---|---|---|
 | 페이지·이번 주 진행 바 (+ 화면 구성) | R1–R7 | [req-page.md](req-page.md) |
 | 칸반 | R8–R15 | [req-kanban.md](req-kanban.md) |
-| 타이머 | R16–R26 | [req-timer.md](req-timer.md) |
-| 오늘 요약 | R27–R33 | [req-summary.md](req-summary.md) |
+| 타이머 (+ 카드 표시·달리기 트랙) | R16–R26, R40–R48 | [req-timer.md](req-timer.md) |
+| 오늘 요약 (R32 삭제) | R27–R33 | [req-summary.md](req-summary.md) |
 | 끝내지 못한 태스크 | R34–R39 | [req-overdue.md](req-overdue.md) |
 
 ## 나머지 파일
@@ -17,9 +17,10 @@
 |---|---|
 | [data.md](data.md) | 태스크(플랜 것), 시간 기록, 실행 중 타이머, 하루 목표 |
 | [scope.md](scope.md) | 이번 범위에서 제외하는 것, 나중에 고려할 것 (백그라운드 상주·안드로이드 연동) |
+| [timer-visual.md](timer-visual.md) | 타이머 카드·달리기 트랙 모양, 상태별 애니메이션 (사용자 시안 값) |
 | [extension.md](extension.md) | 확장 구조: 공용 타이머 저장소, 시작 흐름, 시간 기록 연결 방식 |
-| mockup.md | (아직 없음) |
-| [decisions.md](decisions.md) | 결정 사항 D1~ |
+| [mockup.md](mockup.md) | 목업 경로(r1–r3 2026-11-03 승인)와 목업에서 정한 것 |
+| [decisions.md](decisions.md) | 결정 사항 D1–D7 |
 
 ## 다른 문서
 - 구현 계획: (아직 없음)

@@ -1,0 +1,119 @@
+<!doctype html>
+<!-- 목업: 투데이 / 4-4. 타이머 카드 골인
+  목차와 다른 화면: index.html  (달리는 중·일시정지·빈 상태는 part-timer.html)
+  CSS: common.css, timer.css(.tcard, .tm-*, .goal, keyframes db*), parts.css(.stage, .row)  캐릭터: sprites.js
+  ID                  화면                         요구사항
+  timer-goal          4-4. 골인 (달리는 중)          R45
+  timer-goal-paused   4-5. 골인 뒤 일시정지          R44–R45
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>투데이 목업 - 4-4. 타이머 골인</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="timer.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="sprites.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · <a href="part-timer.html" style="color:var(--accent)">← 달리는 중·일시정지·빈 상태</a></p>
+
+  <section class="screen" id="goal">
+    <div class="screen-head"><h2>4-4. 타이머 카드 골인</h2><span class="tag">R44–R45</span></div>
+    <p class="screen-desc">11/3 저녁 7시 20분. 오늘 6시간 10분으로 목표 6시간을 넘었다. 골인 장면(점프·깃발·색종이)은 목표를 넘은 뒤 그날 하루 종일 계속 반복되고, 타이머와 기록도 계속된다.</p>
+    <div class="stage">
+      <div class="row c2">
+        <div>
+          <div class="cap">4-4. 골인 <code>timer-goal</code></div>
+          <div class="tcard c-blue" id="timer-goal">
+            <div class="tm-top">
+              <div class="tm-info">
+                <div class="tm-proj"><span class="dot"></span>C++ 공부 · 10/31 – 11/3</div>
+                <div class="tm-title">이펙티브 모던 C++ 5장</div>
+                <div class="tm-time">1<span class="colon">:</span>05</div>
+                <div class="tm-sub">1시간 50분 달리는 중</div>
+              </div>
+              <div class="tm-side">
+                <div class="tm-scene goal" tabindex="0" role="img" aria-label="오늘 목표 6시간 달성, 골인">
+                  <svg class="layer" width="160" height="130" viewBox="0 0 160 130">
+                    <line class="passed" x1="0" y1="113.5" x2="142" y2="113.5"/>
+                    <g class="tick"><rect x="14" y="119" width="2" height="3"/><rect x="28" y="119" width="2" height="3"/><rect x="43" y="119" width="2" height="3"/><rect x="57" y="119" width="2" height="3"/><rect x="71" y="119" width="2" height="3"/><rect x="85" y="119" width="2" height="3"/><rect x="99" y="119" width="2" height="3"/><rect x="114" y="119" width="2" height="3"/><rect x="128" y="119" width="2" height="3"/></g>
+                    <rect class="pole" x="141" y="38" width="2" height="75"/><rect class="cap" x="140" y="35" width="4" height="4"/>
+                  </svg>
+                  <svg class="flag-wave" width="18" height="14" viewBox="0 0 18 14" style="left:143px;top:40px"><path class="flag" d="M0 0 L17 7 L0 14 Z"/></svg>
+                  <span class="tm-shadow" style="left:100px"></span>
+                  <div class="tm-char" style="left:92px"><svg class="tm-sprite" viewBox="0 0 14 16"><use href="#sp-cheer"/></svg></div>
+                  <span class="tm-conf" style="left:96px;top:14px;background:var(--c);animation-duration:1.6s"></span>
+                  <span class="tm-conf" style="left:112px;top:6px;width:3px;height:5px;background:var(--accent);animation-duration:1.9s;animation-delay:.3s"></span>
+                  <span class="tm-conf" style="left:128px;top:18px;height:3px;background:#f2c94c;animation-duration:1.7s;animation-delay:.7s"></span>
+                  <span class="tm-conf" style="left:150px;top:10px;width:3px;height:3px;background:var(--text);animation-duration:2.1s;animation-delay:.15s"></span>
+                  <span class="tm-conf" style="left:84px;top:24px;width:3px;background:#f2c94c;animation-duration:1.8s;animation-delay:.95s"></span>
+                  <span class="tm-conf" style="left:120px;top:2px;background:var(--text);animation-duration:2s;animation-delay:.5s"></span>
+                  <span class="tm-conf" style="left:104px;top:26px;width:3px;height:3px;background:var(--accent);animation-duration:1.5s;animation-delay:1.1s"></span>
+                  <span class="tm-conf" style="left:138px;top:4px;width:3px;background:var(--c);animation-duration:2.2s;animation-delay:.8s"></span>
+                  <span class="tm-tip" style="left:70px">6:10 / 6:00</span>
+                </div>
+              </div>
+            </div>
+            <div class="tm-btns">
+              <span class="tm-btn go"><svg viewBox="0 0 14 14"><path d="M4.5 2.5v9M9.5 2.5v9" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>일시정지</span>
+              <span class="tm-btn done"><svg viewBox="0 0 14 14"><path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>완료</span>
+              <span class="tm-btn stop"><svg viewBox="0 0 12 12" style="width:12px"><rect x="1.5" y="1.5" width="9" height="9" rx="1.5" fill="currentColor"/></svg>중단</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="cap">4-5. 골인 뒤 일시정지 <code>timer-goal-paused</code></div>
+          <div class="tcard c-blue" id="timer-goal-paused">
+            <div class="tm-top">
+              <div class="tm-info">
+                <div class="tm-proj"><span class="dot"></span>C++ 공부 · 10/31 – 11/3</div>
+                <div class="tm-title">이펙티브 모던 C++ 5장</div>
+                <div class="tm-time paused">1<span class="colon">:</span>05</div>
+                <div class="tm-sub">1시간 50분 달리고 쉬는 중</div>
+              </div>
+              <div class="tm-side">
+                <div class="tm-scene goal paused" tabindex="0" role="img" aria-label="일시정지, 오늘 목표 6시간 달성 뒤 깃발 앞에서 쉬는 중">
+                  <svg class="layer" width="160" height="130" viewBox="0 0 160 130">
+                    <line class="passed" x1="0" y1="113.5" x2="142" y2="113.5"/>
+                    <g class="tick"><rect x="14" y="119" width="2" height="3"/><rect x="28" y="119" width="2" height="3"/><rect x="43" y="119" width="2" height="3"/><rect x="57" y="119" width="2" height="3"/><rect x="71" y="119" width="2" height="3"/><rect x="85" y="119" width="2" height="3"/><rect x="99" y="119" width="2" height="3"/><rect x="114" y="119" width="2" height="3"/><rect x="128" y="119" width="2" height="3"/></g>
+                    <rect class="pole" x="141" y="38" width="2" height="75"/><rect class="cap" x="140" y="35" width="4" height="4"/>
+                  </svg>
+                  <svg class="flag-wave" width="18" height="14" viewBox="0 0 18 14" style="left:143px;top:40px"><path class="flag" d="M0 0 L17 7 L0 14 Z"/></svg>
+                  <div class="tm-char" style="left:92px"><svg class="tm-sprite" viewBox="0 0 14 16"><use href="#sp-sit"/></svg></div>
+                  <span class="tm-z" style="left:120px;top:62px;font-size:9px">z</span><span class="tm-z z2" style="left:122px;top:60px;font-size:11px">z</span><span class="tm-z z3" style="left:124px;top:58px;font-size:13px">Z</span>
+                  <span class="tm-tip" style="left:70px">6:10 / 6:00</span>
+                </div>
+              </div>
+            </div>
+            <div class="tm-btns">
+              <span class="tm-btn go"><svg viewBox="0 0 14 14"><path d="M4 2.5 L11.5 7 L4 11.5 Z" fill="currentColor"/></svg>재개</span>
+              <span class="tm-btn done"><svg viewBox="0 0 14 14"><path d="M2.5 7.5l3 3 6-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>완료</span>
+              <span class="tm-btn stop"><svg viewBox="0 0 12 12" style="width:12px"><rect x="1.5" y="1.5" width="9" height="9" rx="1.5" fill="currentColor"/></svg>중단</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>골인 (R45)</b><ul>
+        <li>트랙 전체와 눈금을 카테고리 색으로 채운다. 깃발도 카테고리 색으로 펄럭이고 기둥 꼭지는 금색.</li>
+        <li>캐릭터는 깃발 앞에서 두 팔을 들고 ^ ^ 눈으로 제자리 점프, 발밑 그림자가 줄었다 커진다.</li>
+        <li>색종이 8개가 계속 떨어진다. 그날 하루 종일 반복.</li>
+      </ul></div>
+      <div class="note"><b>넘어선 뒤</b><ul>
+        <li>달리는 중에 100%를 넘으면 그 자리에서 골인 장면으로 바뀐다.</li>
+        <li>캐릭터는 깃발 앞에 머물고, 툴팁은 넘은 값 그대로("6:10 / 6:00").</li>
+      </ul></div>
+      <div class="note"><b>골인 + 일시정지</b><ul>
+        <li>트랙은 채운 채 흐리게, 깃발은 멈춤, 색종이 없음.</li>
+        <li>캐릭터는 깃발 앞에 앉아 z z Z. 첫 버튼은 "재개".</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

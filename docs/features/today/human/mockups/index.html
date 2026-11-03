@@ -1,0 +1,37 @@
+<!doctype html>
+<!-- 목업 목차: 투데이
+  읽는 법: 이 목차에서 필요한 화면 파일만 골라 읽는다. CSS는 그 화면 파일 머리에 적힌 파일에서 필요한 클래스만 검색한다.
+  파일                  화면                         요구사항
+  today.html            1. 투데이 화면 (타이머 진행 중) R1–R31, R40–R48  부분 ID: today-week, -kanban, -blocked, -timer, -track, -summary, -streak
+  today-idle.html       2. 아침 빈 상태               R7, R11, R15, R21, R46  부분 ID: idle-week, -kanban, -timer, -summary
+  part-summary.html     3. 오늘 요약 항목             R27–R31, R33  부분 ID: summary-focus, -goal, -done, -category, -streak, -timeline, -streak-mid
+  part-timer.html       4. 타이머 카드                R16–R21, R40–R47  부분 ID: timer-running, -paused, -empty
+  part-timer-goal.html  4-4. 타이머 카드 골인         R44–R45  부분 ID: timer-goal, timer-goal-paused
+  part-drag.html        5. 카드 끌기                  R13      부분 ID: drag-kanban
+  part-overdue.html     6. 미완료 팝업                R34–R39  부분 ID: overdue-list, -row1, -row2, -picker
+  CSS: common.css(색 토큰·앱 틀·버튼·상태 표시·카테고리 색, plan 목업과 같은 값), today.css(진행 바·칸반·요약·스트릭 달력), timer.css(타이머 카드·달리기 트랙·애니메이션), parts.css(부품 무대·요약 항목), popup.css(미완료 팝업·날짜 고르기)
+  아이콘: icons.js, 캐릭터: sprites.js (사용자 시안 Bar/Pause/Goal.dc.html 좌표)
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>투데이 목업</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<div class="doc">
+  <h1>투데이 목업</h1>
+  <p class="lead">오늘 태스크 칸반, 태스크 타이머, 오늘 요약, 끝내지 못한 태스크 처리. 기능 없이 배치와 스타일만 보여주는 정적 화면이다.</p>
+  <p class="lead">예시 시점은 2026년 11월 3일(화) 오후 3시 20분. 색과 앱 틀은 플랜 목업과 같다.</p>
+  <ul class="links" style="margin-top:28px">
+    <li><a href="today.html"><b>1. 투데이 화면</b><span>타이머 달리는 중, 시작 막힘 안내, 스트릭에 마우스 올린 달력</span><em>R1–R31, R40–R48</em></a></li>
+    <li><a href="today-idle.html"><b>2. 아침 빈 상태</b><span>타이머 없음, 빈 열 문구, 미완료 버튼 숨김</span><em>R7, R11, R15, R21</em></a></li>
+    <li><a href="part-summary.html"><b>3. 오늘 요약 항목</b><span>항목을 하나씩 크게, 목표 고치기, 스트릭 달력 두 시점 (R32는 뺌)</span><em>R27–R31</em></a></li>
+    <li><a href="part-timer.html"><b>4. 타이머 카드</b><span>달리는 중 / 일시정지 / 빈 상태 — 하루 목표 달리기 트랙</span><em>R16–R21, R40–R47</em></a></li>
+    <li><a href="part-timer-goal.html"><b>4-4. 타이머 카드 골인</b><span>목표 달성 뒤 점프·깃발·색종이, 골인 뒤 일시정지</span><em>R44–R45</em></a></li>
+    <li><a href="part-drag.html"><b>5. 카드 끌기</b><span>실행 중 카드를 완료 열로 끄는 순간</span><em>R13</em></a></li>
+    <li><a href="part-overdue.html"><b>6. 미완료 팝업</b><span>목록, 가져오기 미리보기, 다른 날 고르기</span><em>R34–R39</em></a></li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!doctype html>
+<!-- 목업: 투데이 / 2. 아침 빈 상태 (타이머 없음)
+  목차와 다른 화면: index.html
+  CSS: common.css, today.css, timer.css (필요한 클래스만 검색해서 읽기)  캐릭터: sprites.js
+  ID                  화면                         요구사항
+  idle                2. 아침 빈 상태               R7, R11, R15, R21, R46
+    idle-week           2-1. 진행 바 (미완료 없음)   R5–R7
+    idle-kanban         2-2. 칸반 (빈 열 문구)       R11, R15
+    idle-timer          2-3. 타이머 빈 상태 (출발선)  R21, R46
+    idle-summary        2-4. 오늘 요약 (기록 없음)   R27–R31
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>투데이 목업 - 2. 아침 빈 상태</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="today.css">
+<link rel="stylesheet" href="timer.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<script src="sprites.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a></p>
+
+  <section class="screen" id="idle">
+    <div class="screen-head"><h2>2. 아침 빈 상태</h2><span class="tag">R7, R11, R15, R21, R46</span></div>
+    <p class="screen-desc">11월 4일(수) 오전 8시 50분. 아직 아무것도 시작하지 않았고, 끝내지 못한 태스크도 없어 "미완료" 버튼이 숨었다.</p>
+    <div class="scale-note">앱 창 1440×900을 75%로 줄여 보여줌</div>
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav"><span class="tb-btn"><svg class="ico sm"><use href="#i-back"/></svg></span><span class="tb-btn off"><svg class="ico sm"><use href="#i-fwd"/></svg></span></div>
+        <div class="tb-drag"></div>
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg></span>
+        <div class="win"><span><svg class="ico"><use href="#i-min"/></svg></span><span><svg class="ico"><use href="#i-max"/></svg></span><span><svg class="ico"><use href="#i-x"/></svg></span></div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-plan"/></svg>Plan</div>
+          <div class="nav"><svg class="ico"><use href="#i-clock"/></svg>Scheduler</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag"/></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+          <div class="nav on"><svg class="ico"><use href="#i-sun"/></svg>Today</div>
+          <div class="spacer"></div>
+          <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main">
+          <div class="page-head"><h1 class="page-title">투데이</h1><span class="page-sub">11월 4일 수요일</span></div>
+
+          <div class="panel week" id="idle-week">
+            <div class="week-label">이번 주<span>11/2 – 11/8</span></div>
+            <div class="bar"><i style="width:44.4%"></i></div>
+            <div class="week-count">완료 <b>4</b> / 9</div>
+          </div>
+
+          <div class="today-grid">
+            <div class="panel kanban" id="idle-kanban">
+              <div class="col">
+                <div class="col-head"><span class="st sm"></span>시작 전<span class="n">4</span></div>
+                <div class="card c-green">
+                  <div class="card-main">
+                    <div class="card-title">매칭 서버 세션 로직 리팩터</div>
+                    <div class="card-meta"><span class="dot"></span>TrialGround<span class="due today">오늘 마감</span></div>
+                  </div>
+                  <span class="play"><svg class="ico"><use href="#i-play"/></svg></span>
+                </div>
+                <div class="card c-amber">
+                  <div class="card-main">
+                    <div class="card-title">포트폴리오 README 다듬기</div>
+                    <div class="card-meta"><span class="dot"></span>취업 준비<span class="due">D-1</span></div>
+                  </div>
+                  <span class="play"><svg class="ico"><use href="#i-play"/></svg></span>
+                </div>
+                <div class="card c-blue">
+                  <div class="card-main">
+                    <div class="card-title">이동 의미론 예제 직접 짜 보기</div>
+                    <div class="card-meta"><span class="dot"></span>C++ 공부</div>
+                  </div>
+                  <span class="play"><svg class="ico"><use href="#i-play"/></svg></span>
+                </div>
+                <div class="card c-amber">
+                  <div class="card-main">
+                    <div class="card-title">네이버 클라우드 공고 지원서 확인</div>
+                    <div class="card-meta"><span class="dot"></span>취업 준비</div>
+                  </div>
+                  <span class="play"><svg class="ico"><use href="#i-play"/></svg></span>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="col-head"><span class="st sm doing"></span>진행 중<span class="n">0</span></div>
+                <div class="col-empty">진행 중인 태스크가 없어요<br>카드의 ▶로 시작하면 여기로 옮겨져요</div>
+              </div>
+
+              <div class="col">
+                <div class="col-head"><span class="st sm done"></span>완료<span class="n">0</span></div>
+                <div class="col-empty">아직 끝낸 태스크가 없어요</div>
+              </div>
+            </div>
+
+            <div class="side">
+              <div class="tcard" id="idle-timer" style="--c:var(--accent)">
+                <div class="tm-top">
+                  <div class="tm-info">
+                    <div class="tm-proj">돌고 있는 타이머 없음</div>
+                    <div class="tm-title">칸반 카드에서 시작하세요</div>
+                    <div class="tm-sub">오늘 아직 출발 전이에요</div>
+                  </div>
+                  <div class="tm-side">
+                <div class="tm-scene idle" tabindex="0" role="img" aria-label="타이머 없음, 오늘 목표 6시간 중 0분, 출발선에 서 있음">
+                  <svg class="layer cloud" width="160" height="60" viewBox="0 0 160 60" shape-rendering="crispEdges"><rect x="104" y="30" width="16" height="4"/><rect x="108" y="26" width="8" height="4"/><rect x="36" y="16" width="12" height="3"/><rect x="39" y="13" width="6" height="3"/></svg>
+                  <svg class="layer" width="160" height="130" viewBox="0 0 160 130">
+                    <line class="rest" x1="0" y1="113.5" x2="142" y2="113.5"/>
+                    <g class="tick"><rect x="14" y="119" width="2" height="3"/><rect x="28" y="119" width="2" height="3"/><rect x="43" y="119" width="2" height="3"/><rect x="57" y="119" width="2" height="3"/><rect x="71" y="119" width="2" height="3"/><rect x="85" y="119" width="2" height="3"/><rect x="99" y="119" width="2" height="3"/><rect x="114" y="119" width="2" height="3"/><rect x="128" y="119" width="2" height="3"/></g>
+                    <rect class="pole" x="141" y="62" width="2" height="51"/><rect class="cap" x="140" y="60" width="4" height="3"/><path class="flag" d="M143 64 L159 70 L143 76 Z"/>
+                  </svg>
+                  <div class="tm-char" style="left:0"><svg class="tm-sprite" viewBox="0 0 14 16"><use href="#sp-stand"/></svg></div>
+                  <span class="tm-tip" style="left:80px">0:00 / 6:00</span>
+                </div>
+                  </div>
+                </div>
+                <div class="tm-guide">시작 전·진행 중 카드의 ▶ 버튼을 누르면 여기서 시간이 흘러요.</div>
+              </div>
+
+              <div class="panel summary" id="idle-summary">
+                <div class="panel-head">오늘 요약</div>
+                <div class="sum-body">
+                  <div class="stats">
+                    <div class="stat">
+                      <div class="stat-k">집중 시간<svg class="ico xs goal-edit"><use href="#i-pen"/></svg></div>
+                      <div class="stat-v">0:00 <small>/ 6:00</small></div>
+                      <div class="bar"><i style="width:0"></i></div>
+                    </div>
+                    <div class="stat">
+                      <div class="stat-k">완료</div>
+                      <div class="stat-v">0 <small>/ 4</small></div>
+                    </div>
+                    <div class="stat">
+                      <div class="stat-k"><svg class="ico xs flame"><use href="#i-flame"/></svg>스트릭</div>
+                      <div class="stat-v">5<small>일</small></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="sum-label">카테고리별<span class="r">R29</span></div>
+                    <div class="catbar"></div>
+                    <div class="legend"><span>아직 기록이 없어요</span></div>
+                  </div>
+
+                  <div>
+                    <div class="sum-label">타임라인<span class="r">R31</span></div>
+                    <div class="tl"><span class="nowline" style="left:5.2%"></span></div>
+                    <div class="tl-axis"><span>08</span><span>12</span><span>16</span><span>20</span><span>24</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>미완료 버튼 숨김 (R7)</b><ul>
+        <li>미완료가 0개라 진행 바 오른쪽 끝이 비어 있다.</li>
+      </ul></div>
+      <div class="note"><b>빈 열 (R15)</b><ul>
+        <li>점선 상자 안에 한두 줄 문구만 둔다. 끌어 놓을 자리 역할도 한다.</li>
+      </ul></div>
+      <div class="note"><b>스트릭 5일</b><ul>
+        <li>어제(11/3) 목표를 채워 4일 → 5일로 이어진 예.</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

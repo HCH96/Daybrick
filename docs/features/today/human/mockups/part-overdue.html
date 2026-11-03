@@ -1,0 +1,95 @@
+<!doctype html>
+<!-- 목업: 투데이 / 6. 미완료 팝업
+  목차와 다른 화면: index.html
+  CSS: common.css, popup.css(.popup, .od-*, .picker, .cal), parts.css(.stage.dim)
+  ID                  화면                         요구사항
+  overdue             6. 미완료 팝업                R34–R39
+    overdue-list        6-1. 목록                   R35
+    overdue-row1        6-2. 진행 중 줄 (가져오기 미리보기) R36, R38
+    overdue-row2        6-3. 시작 전 줄 (다른 날 고르는 중) R37
+    overdue-picker      6-4. 날짜 고르기             R37
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>투데이 목업 - 6. 미완료 팝업</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="today.css">
+<link rel="stylesheet" href="parts.css">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a></p>
+
+  <section class="screen" id="overdue">
+    <div class="screen-head"><h2>6. 미완료 팝업</h2><span class="tag">R34–R39</span></div>
+    <p class="screen-desc">진행 바의 "미완료 2"를 누른 상태(오늘 11/3). 첫 줄은 "오늘로 가져오기"에 마우스를 올려 결과를 미리 보고, 둘째 줄은 "다른 날로"를 눌러 11/10을 고르는 중이다. 실제 크기로 그렸다.</p>
+    <div class="stage dim">
+      <div class="popup" id="overdue-list">
+        <div class="popup-head">
+          <h3>끝내지 못한 태스크</h3><span class="cnt">2</span>
+          <span class="icon-btn"><svg class="ico sm"><use href="#i-x"/></svg></span>
+        </div>
+        <div class="popup-desc">끝일이 지났는데 완료하지 않은 태스크예요. 하나씩 처리하면 목록에서 빠져요.</div>
+        <div class="od-list">
+          <div class="od-row c-green" id="overdue-row1">
+            <div class="od-top"><span class="dot"></span><span class="od-title">Docker Compose 개발 환경 정리</span><span class="od-late">4일 지남</span></div>
+            <div class="od-meta">TrialGround<span class="sep">|</span>10/28 – 10/30<span class="sep">|</span><span class="od-state"><span class="st sm doing"></span>진행 중</span></div>
+            <div class="od-acts">
+              <span class="btn sm open"><svg class="ico xs"><use href="#i-in"/></svg>오늘로 가져오기</span>
+              <span class="btn sm"><svg class="ico xs"><use href="#i-cal"/></svg>다른 날로</span>
+              <span class="btn sm good"><svg class="ico xs"><use href="#i-check"/></svg>완료</span>
+              <span class="preview">끝일만 늘림 → <b>10/28 – 11/3</b></span>
+            </div>
+          </div>
+          <div class="od-row c-amber" id="overdue-row2">
+            <div class="od-top"><span class="dot"></span><span class="od-title">토익 스피킹 시험 접수·준비물 확인</span><span class="od-late">3일 지남</span></div>
+            <div class="od-meta">취업 준비<span class="sep">|</span>10/30 – 10/31 (2일)<span class="sep">|</span><span class="od-state"><span class="st sm"></span>시작 전</span></div>
+            <div class="od-acts">
+              <span class="btn sm"><svg class="ico xs"><use href="#i-in"/></svg>오늘로 가져오기</span>
+              <span class="btn sm open"><svg class="ico xs"><use href="#i-cal"/></svg>다른 날로</span>
+              <span class="btn sm good"><svg class="ico xs"><use href="#i-check"/></svg>완료</span>
+            </div>
+            <div class="picker" id="overdue-picker">
+              <div class="picker-head"><svg class="ico sm"><use href="#i-back"/></svg>2026년 11월<svg class="ico sm"><use href="#i-fwd"/></svg></div>
+              <div class="cal">
+                <span class="wd">월</span><span class="wd">화</span><span class="wd">수</span><span class="wd">목</span><span class="wd">금</span><span class="wd">토</span><span class="wd">일</span>
+                <span class="out">26</span><span class="out">27</span><span class="out">28</span><span class="out">29</span><span class="out">30</span><span class="out">31</span><span class="past">1</span>
+                <span class="past">2</span><span class="past today">3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+                <span>9</span><span class="pick">10</span><span class="span">11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+                <span>16</span><span>17</span><span>18</span><span>19</span><span>20</span><span>21</span><span>22</span>
+                <span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span>
+                <span>30</span><span class="out">1</span><span class="out">2</span><span class="out">3</span><span class="out">4</span><span class="out">5</span><span class="out">6</span>
+              </div>
+              <div class="picker-note">시작 전이라 2일 길이 그대로 옮겨요 → <b>11/10 – 11/11</b></div>
+              <div class="picker-btns"><span class="btn sm ghost">취소</span><span class="btn sm primary">이 날로 미루기</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="popup-foot"><span class="btn sm ghost">닫기</span></div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>줄 구성 (R35)</b><ul>
+        <li>카테고리 색 점 · 제목 · 며칠 지났는지(빨강).</li>
+        <li>둘째 줄에 카테고리 이름 · 원래 기간 · 상태.</li>
+        <li>정렬: 많이 지난 것부터.</li>
+      </ul></div>
+      <div class="note"><b>미리보기 (R36–R37)</b><ul>
+        <li>버튼에 마우스를 올리면 오른쪽에 바뀔 기간을 보여준다.</li>
+        <li>진행 중은 "끝일만 늘림", 시작 전은 "길이 그대로 옮김".</li>
+        <li>날짜 고르기에서 오늘까지는 흐리게 막고, 고른 날부터 기간 길이만큼 칠한다.</li>
+        <li>날짜 고르기는 팝업 위에 떠서 팝업 밖으로 걸쳐도 된다.</li>
+      </ul></div>
+      <div class="note"><b>처리 후 (R39)</b><ul>
+        <li>처리한 줄은 빠지고 머리 숫자와 진행 바 버튼 숫자가 같이 준다.</li>
+        <li>마지막 줄을 처리하면 팝업이 닫히고 버튼이 숨는다(2. 아침 빈 상태처럼).</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

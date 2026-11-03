@@ -1,0 +1,38 @@
+/* 미완료 팝업과 날짜 고르기 (part-overdue.html) */
+.popup { width: 720px; background: var(--popup); border: 1px solid var(--border-2); border-radius: 14px; box-shadow: 0 24px 60px rgba(0,0,0,.6); }
+.popup-head { display: flex; align-items: center; gap: 10px; padding: 18px 20px 6px; }
+.popup-head h3 { margin: 0; font-size: 17px; font-weight: 800; }
+.popup-head .cnt { font-size: 12px; font-weight: 700; color: var(--red); background: var(--red-soft); border-radius: 99px; padding: 1px 9px; }
+.popup-head .icon-btn { margin-left: auto; }
+.popup-desc { padding: 0 20px 12px; font-size: 12.5px; color: var(--muted); }
+.od-list { border-top: 1px solid var(--border); }
+.od-row { position: relative; padding: 14px 20px; border-bottom: 1px solid var(--border); }
+.od-row:last-child { border-bottom: 0; }
+.od-top { display: flex; align-items: center; gap: 10px; }
+.od-title { font-size: 14.5px; font-weight: 700; flex: 1; min-width: 0; }
+.od-late { font-size: 12px; font-weight: 700; color: var(--red); }
+.od-meta { display: flex; align-items: center; gap: 12px; margin: 5px 0 10px 20px; font-size: 12px; color: var(--muted); }
+.od-meta .sep { color: var(--border-2); }
+.od-state { display: inline-flex; align-items: center; gap: 6px; }
+.od-acts { display: flex; gap: 8px; margin-left: 20px; align-items: center; }
+.od-acts .preview { margin-left: auto; font-size: 12px; color: var(--faint); }
+.od-acts .preview b { color: var(--accent); font-weight: 700; }
+.btn.open { border-color: var(--accent); color: var(--accent); }
+.popup-foot { display: flex; justify-content: flex-end; padding: 12px 20px 16px; border-top: 1px solid var(--border); }
+
+/* 날짜 고르기 (R37) */
+.picker { position: absolute; left: 160px; top: 112px; z-index: 4; width: 320px; padding: 14px; background: #26262c;
+  border: 1px solid var(--border-2); border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,.6); }
+.picker-head { display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 800; margin-bottom: 8px; }
+.picker-head .ico { color: var(--muted); }
+.cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 12.5px; }
+.cal .wd { font-size: 11px; color: var(--faint); padding: 2px 0 4px; }
+.cal span { height: 32px; display: grid; place-items: center; border-radius: 7px; }
+.cal .out { color: var(--border-2); }
+.cal .past { color: var(--faint); opacity: .45; }
+.cal .today { box-shadow: inset 0 0 0 1.5px var(--border-2); }
+.cal .pick { background: var(--accent); color: var(--on-accent); font-weight: 800; }
+.cal .span { background: var(--accent-soft); color: var(--accent); }
+.picker-note { margin-top: 10px; font-size: 12px; color: var(--muted); }
+.picker-note b { color: var(--accent); }
+.picker-btns { display: flex; justify-content: flex-end; gap: 6px; margin-top: 10px; }
