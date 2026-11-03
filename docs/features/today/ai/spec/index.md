@@ -20,10 +20,10 @@
 | [timer-visual.md](timer-visual.md) | 타이머 카드·달리기 트랙 모양, 상태별 애니메이션 (사용자 시안 값) |
 | [extension.md](extension.md) | 확장 구조: 공용 타이머 저장소, 시작 흐름, 시간 기록 연결 방식 |
 | [mockup.md](mockup.md) | 목업 경로(r1–r3 2026-11-03 승인)와 목업에서 정한 것 |
-| [decisions.md](decisions.md) | 결정 사항 D1–D7 |
+| [decisions.md](decisions.md) | 결정 사항 D1–D11 |
 
 ## 다른 문서
-- 구현 계획: (아직 없음)
+- 구현 계획: [../plan/index.md](../plan/index.md) (2026-11-03 승인, 8단계). 시간 기록·실행 중 타이머·목표는 `today.json` 하나에 두고, 앱 종료는 다음 실행 때 강제 종료 복구와 같은 길로 처리한다 (D8–D11)
 - 테스트 문서: (아직 없음)
 - 진행 기록: [../logs/index.md](../logs/index.md)
 - 태스크 데이터·공용 함수: [플랜 명세서 색인](../../../plan/ai/spec/index.md)의 data.md, extension.md
