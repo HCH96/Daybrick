@@ -31,7 +31,44 @@
 }
 
 .proj-bubble__row {
-  transition: transform 600ms cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition:
+    transform 600ms cubic-bezier(0.645, 0.045, 0.355, 1),
+    opacity 150ms;
+}
+
+/* 서로 강조 (R58–R59): 흐림 0.3, 고른 원 흰 테두리, 그날 한 원 테두리 1.4초 반짝임 */
+.proj-bubble__row.is-dim,
+.proj-bubble__node.is-dim > * {
+  opacity: 0.3;
+}
+
+.proj-bubble__hit {
+  fill: transparent;
+}
+
+.proj-bubble__halo {
+  fill: none;
+  stroke-width: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.proj-bubble__halo.is-ring {
+  stroke: #fff;
+  stroke-width: 2.5;
+  opacity: 1;
+}
+
+.proj-bubble__halo.is-glow {
+  stroke-width: 3;
+  opacity: 1;
+  animation: proj-bubble-glow 1.4s ease-in-out infinite;
+}
+
+@keyframes proj-bubble-glow {
+  50% {
+    opacity: 0.15;
+  }
 }
 
 .proj-bubble__name {

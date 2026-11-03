@@ -12,8 +12,8 @@ const FIRE_LABEL: Record<Fire, string> = {
 
 interface CampfireProps {
   fire: Fire;
-  /** 카드 26, 진행 판 60 (목업 .fire.sm / .fire) */
-  size?: 26 | 60;
+  /** 카드 26, 잔디 옆 연속 작업 40, 진행 판 60 (목업 .fire.sm / .streak .fire / .fire) */
+  size?: 26 | 40 | 60;
 }
 
 /** 모닥불 그림 (프로젝트 R27, visual.md 모닥불 단계) */

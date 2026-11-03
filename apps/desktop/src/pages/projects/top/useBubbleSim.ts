@@ -46,6 +46,8 @@ const LEGEND_OPACITY = 0.35;
 const OPACITY_STEP = 0.12;
 /** 던질 때 속도 한도 (픽셀/틱) */
 const THROW_MAX = 14;
+/** 테두리 원은 원보다 5px 크게 (목업 heat-by-bubble·heat-by-cell) */
+const HALO_GAP = 5;
 
 interface Size {
   width: number;
@@ -139,6 +141,9 @@ export function useBubbleSim(targets: BubbleTarget[], size: Size | null, legend:
       const text = g.children[1];
       if (circle) circle.setAttribute("r", String(Math.max(0, n.r)));
       if (text) text.setAttribute("font-size", bubbleFontSize(Math.max(0, n.r)).toFixed(1));
+      // 셋째 요소: 고른 원 흰 테두리·반짝임 테두리 (프로젝트 R58–R59)
+      const halo = g.children[2];
+      if (halo) halo.setAttribute("r", String(Math.max(0, n.r) + HALO_GAP));
     };
 
     simRef.current = sim;

@@ -6,6 +6,9 @@ interface BubbleLegendProps {
   width: number;
   height: number;
   runningId: string | null;
+  /** 마우스가 올라간 원·범례의 프로젝트 (나머지 줄은 흐림, R58) */
+  soloId: string | null;
+  onHover: (projectId: string | null) => void;
 }
 
 /** 이름이 시간 글자와 겹치지 않게 9자까지 */
@@ -19,7 +22,7 @@ function shortName(name: string): string {
  * 줄마다 key를 프로젝트 id로 두고 y 자리를 CSS transform으로 옮겨, 순서가 바뀌면
  * 600ms easeCubicInOut(cubic-bezier)으로 자리를 옮긴다.
  */
-function BubbleLegend({ items, width, height, runningId }: BubbleLegendProps) {
+function BubbleLegend({ items, width, height, runningId, soloId, onHover }: BubbleLegendProps) {
   const dotX = width - LEGEND.margin - LEGEND.width;
   const timeX = width - LEGEND.margin;
   return (
@@ -27,12 +30,22 @@ function BubbleLegend({ items, width, height, runningId }: BubbleLegendProps) {
       {items.map((item, i) => (
         <g
           key={item.id}
-          className="proj-bubble__row"
+          className={`proj-bubble__row${soloId !== null && soloId !== item.id ? " is-dim" : ""}`}
           style={{ transform: `translate(0px, ${legendRowY(i, items.length, height)}px)` }}
+          onPointerEnter={() => onHover(item.id)}
+          onPointerLeave={() => onHover(null)}
         >
+          {/* 줄 전체에 마우스가 닿도록 보이지 않는 칸 */}
+          <rect
+            className="proj-bubble__hit"
+            x={dotX - LEGEND.dotR - 4}
+            y={-LEGEND.rowGap / 2}
+            width={LEGEND.width + LEGEND.dotR + 4}
+            height={LEGEND.rowGap}
+          />
           <circle cx={dotX} cy={0} r={LEGEND.dotR} fill={item.color} />
           <text
-            className={`proj-bubble__name${item.id === runningId ? " proj-bubble__name--on" : ""}`}
+            className={`proj-bubble__name${item.id === runningId || item.id === soloId ? " proj-bubble__name--on" : ""}`}
             x={dotX + LEGEND.nameGap}
             y={4}
           >
