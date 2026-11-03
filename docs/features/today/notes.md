@@ -4,16 +4,15 @@
 ## 완료
 - 1단계: 메뉴·저장소 틀 (자동 진행, 최종 테스트 대기)
 - 2단계: 이번 주 진행 바·칸반 보기 (자동 진행, 최종 테스트 대기)
+- 3단계: 타이머 동작·카드 글자 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 3단계: 타이머 동작·카드 글자 (reducer start·pause·resume·finish, store 동작, 타이머 카드 글자·버튼, 카드 ▶ 동작·막힘 안내)
-- 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 카드 ▶는 `kanban/KanbanCard.tsx`의 `kanban-card__play` 버튼(지금은 stopPropagation만)이다. 칸반은 `Kanban`이 `data`·`todayKey`·`onOpenTask`를 받아 `KanbanColumn` → `KanbanCard`로 내려 준다. 타이머 칸은 `TodayPage.tsx`의 `section.today-page__timer`(높이 250)다. 아이콘은 `components/icons/TodayIcons.tsx`에 더한다
+- 4단계: 종료·강제 종료 복구, 태스크 감시 (1분 확인 시각 저장, 창 닫기 때 lastSeenAt 저장, 시작 때 복구, 실행 중 태스크 감시)
+- 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D12 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: reducer `finish`는 `{ now, recordIds }`로 열린 구간을 now에서 닫는다 — 복구 때는 now에 `lastSeenAt`을 넣으면 된다(구간 시작보다 이르면 0초 이하라 버려짐). store의 `complete`·`stop`은 `finish` 뒤 `updateTask`를 부르므로, 감시 훅은 running이 이미 비었으면 넘어가면 된다. store는 `stateRef`로 최신 상태를 본다. `lastSeenAt`을 고치는 `touch` 동작은 아직 없다
 
 ## 확인할 문서 (경로는 docs/features/today/ 기준, 파일 통째로 읽기)
-- ai/plan/step-03.md
+- ai/plan/step-04.md
 - ai/spec/req-timer.md
-- ai/spec/req-kanban.md
-- ai/logs/L06.md
-- human/mockups/part-timer.html의 timer-running·timer-paused·timer-empty 구역, today.html의 today-timer·today-blocked 구역 (CSS: timer.css·today.css에서 클래스 검색)
-- ai/plan/structure.md의 "화면 (pages/today/)" 표 (새 파일 위치를 정할 때만)
+- ai/logs/L07.md
+- ai/plan/structure.md의 "공용 데이터 (features/today/)" 표 (새 파일 위치를 정할 때만)

@@ -41,3 +41,16 @@ export function formatDoneAt(completedAt: string | null, todayKey: string): stri
   const mm = String(at.getMinutes()).padStart(2, "0");
   return `오늘 ${at.getHours()}:${mm} 완료`;
 }
+
+/** 흐른 시간 "H:MM" (초 없음, R40·R48): 0:42, 1:05 */
+export function formatClock(ms: number): string {
+  const minutes = Math.floor(Math.max(0, ms) / 60000);
+  return `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2, "0")}`;
+}
+
+/** 누적 시간 글자 (R41·R46): 1시간 미만 "N분", 이상 "N시간 M분" */
+export function formatDuration(ms: number): string {
+  const minutes = Math.floor(Math.max(0, ms) / 60000);
+  if (minutes < 60) return `${minutes}분`;
+  return `${Math.floor(minutes / 60)}시간 ${minutes % 60}분`;
+}

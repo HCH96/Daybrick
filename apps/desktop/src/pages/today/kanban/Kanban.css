@@ -127,7 +127,7 @@
   color: var(--faint);
 }
 
-/* ▶ 타이머 시작 (3단계에서 동작) */
+/* ▶ 타이머 시작 (R11). 다른 타이머가 돌면 자물쇠(--off) */
 .kanban-card__play {
   width: 30px;
   height: 30px;
@@ -155,4 +155,62 @@
   font-size: 12.5px;
   line-height: 1.6;
   color: var(--faint);
+}
+
+.kanban-card__play:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.kanban-card__play--off {
+  background: var(--surface-2);
+  color: var(--faint);
+}
+
+.kanban-card__play--off svg {
+  margin-left: 0;
+}
+
+/* 타이머가 도는 카드 (R48, 목업 card.running·live·pulse) */
+.kanban-card--running {
+  border-color: var(--accent);
+  background: #24212f;
+}
+
+.kanban-card--running:hover {
+  border-color: var(--accent);
+}
+
+.kanban-card__live {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.kanban-card__pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(166, 140, 255, 0.25);
+}
+
+/* 막힘 안내 말풍선 (목업 today-blocked의 tip) */
+.kanban-tip {
+  padding: 9px 12px;
+  background: #34343c;
+  font-size: 12px;
+  color: var(--text);
+  overflow: visible;
+}
+
+.kanban-tip span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
 }

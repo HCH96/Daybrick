@@ -39,6 +39,9 @@
   --badge: #f0524f;
   --on-badge: #ffffff;
 
+  /* 숫자 시계 글꼴 (투데이 타이머, 투데이 목업 common.css) */
+  --mono: "Cascadia Mono", "Consolas", monospace;
+
   --radius: 12px;
   --sidebar-width: 200px;
 }

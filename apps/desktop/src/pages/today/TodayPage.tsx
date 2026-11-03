@@ -1,12 +1,16 @@
 import { useCallback, useState } from "react";
 import { PAGE_LABELS } from "../../app/pageLabels";
 import { usePlan } from "../../features/plan/store";
+import type { PlanData } from "../../features/plan/types";
+import type { TodayData } from "../../features/today/types";
 import { useToday } from "../../features/today/store";
 import { useTodayKey } from "../../features/today/useTodayKey";
 import { formatKoreanDate, parseDateKey } from "../../utils/date";
 import ApplicationDetailModal from "../applications/detail/ApplicationDetailModal";
 import TaskDetailModal from "../plan/detail/TaskDetailModal";
 import Kanban from "./kanban/Kanban";
+import TimerCard from "./timer/TimerCard";
+import TimerEmpty from "./timer/TimerEmpty";
 import WeekProgress from "./WeekProgress";
 import "./TodayPage.css";
 
@@ -15,7 +19,7 @@ import "./TodayPage.css";
  * 아래 왼쪽 약 60% 칸반 · 오른쪽 약 40%(위 타이머, 아래 오늘 요약).
  * 오늘 날짜는 자정·창 포커스 때 다시 계산한다 (R4).
  * 카드를 누르면 플랜 태스크 상세 팝업, 그 안 지원 카드는 지원 상세 팝업 (R14, PlanPage와 같은 방식).
- * 타이머·오늘 요약 칸은 다음 단계에서 채운다.
+ * 오른쪽 위는 도는 타이머 카드, 없으면 빈 상태 카드 (R16, R21). 오늘 요약 칸은 다음 단계에서 채운다.
  */
 function TodayPage() {
   const todayKey = useTodayKey();
@@ -36,17 +40,19 @@ function TodayPage() {
         <h1 className="today-page__title">{PAGE_LABELS.today}</h1>
         <span className="today-page__date">{formatKoreanDate(parseDateKey(todayKey))}</span>
       </header>
-      {kind === "ready" && plan.kind === "ready" ? (
+      {kind === "ready" && plan.kind === "ready" && today.kind === "ready" ? (
         <>
           <section className="today-panel today-page__week" aria-label="이번 주 진행">
             <WeekProgress data={plan.data} todayKey={todayKey} />
           </section>
           <div className="today-page__grid">
             <section className="today-panel today-page__kanban" aria-label="칸반">
-              <Kanban data={plan.data} todayKey={todayKey} onOpenTask={setOpenTaskId} />
+              <Kanban data={plan.data} todayKey={todayKey} running={today.data.running} onOpenTask={setOpenTaskId} />
             </section>
             <div className="today-page__side">
-              <section className="today-panel today-page__timer" aria-label="타이머" />
+              <section className="today-panel today-page__timer" aria-label="타이머">
+                <TimerSlot plan={plan.data} today={today.data} todayKey={todayKey} />
+              </section>
               <section className="today-panel today-page__summary" aria-label="오늘 요약" />
             </div>
           </div>
@@ -60,6 +66,15 @@ function TodayPage() {
       {openApplicationId && <ApplicationDetailModal applicationId={openApplicationId} onClose={closeApplication} />}
     </div>
   );
+}
+
+/** 타이머 칸: 도는(또는 일시정지한) 타이머가 있으면 타이머 카드, 없으면 빈 상태 카드 */
+function TimerSlot({ plan, today, todayKey }: { plan: PlanData; today: TodayData; todayKey: string }) {
+  const running = today.running;
+  if (!running) return <TimerEmpty data={today} todayKey={todayKey} />;
+  const task = plan.tasks.find((t) => t.id === running.taskId) ?? null;
+  const category = task?.categoryId ? (plan.categories.find((c) => c.id === task.categoryId) ?? null) : null;
+  return <TimerCard data={today} running={running} task={task} category={category} todayKey={todayKey} />;
 }
 
 /** 읽는 중·읽기 실패 문구 (플랜 화면과 같은 문구) */
