@@ -34,10 +34,14 @@
   border-radius: var(--radius);
 }
 
-/* 이번 주 진행 바 한 줄 (R3, 내용은 2단계) */
+/* 이번 주 진행 바 한 줄 (R3·R5, 목업 week) */
 .today-page__week {
   height: 54px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 12px 0 18px;
 }
 
 /* 칸반 : 오른쪽 = 3 : 2 (약 60 : 40, R3) */
@@ -51,6 +55,7 @@
 
 .today-page__kanban {
   overflow: hidden;
+  display: flex;
 }
 
 /* 오른쪽: 위 타이머 250px, 아래 오늘 요약 (간격 18) */

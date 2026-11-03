@@ -79,3 +79,8 @@ export function checklistProgress(task: Task): ChecklistProgress {
   const list = task.checklist ?? [];
   return { done: list.filter((item) => item.checked).length, total: list.length };
 }
+
+/** 기간("YYYY-MM-DD" start~end)과 하루라도 겹치는 태스크. 날짜 없는 태스크는 뺀다 (투데이 이번 주 진행 바). */
+export function tasksInRange(data: PlanData, start: string, end: string): Task[] {
+  return data.tasks.filter((t) => t.start !== null && t.end !== null && t.start <= end && start <= t.end);
+}

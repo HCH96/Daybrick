@@ -1,0 +1,158 @@
+/* 칸반 세 열·카드·빈 열 (목업 today.html의 kanban·col·card, today-idle.html의 col-empty) */
+.kanban {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 14px;
+}
+
+.kanban-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.kanban-col__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px 8px;
+  font-size: 14px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.kanban-col__count {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--faint);
+  background: var(--surface-2);
+  border-radius: 99px;
+  padding: 0 8px;
+}
+
+.kanban-col__list {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+/* 카드: 왼쪽 카테고리 색 띠는 안쪽 그림자 (--cat) */
+.kanban-card {
+  --cat: #8a8a96;
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 12px 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: inset 3px 0 0 var(--cat);
+  cursor: pointer;
+  text-align: left;
+}
+
+.kanban-card:hover {
+  border-color: var(--border-2);
+}
+
+.kanban-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.kanban-card__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.kanban-card__title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.kanban-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.kanban-card__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cat);
+  flex-shrink: 0;
+}
+
+.kanban-card__due {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0 7px;
+  border-radius: 99px;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.kanban-card__due--today {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+/* 완료 카드: 투명 바탕, 흐린 제목 (취소선 없음, R12) */
+.kanban-card--done {
+  background: transparent;
+}
+
+.kanban-card--done .kanban-card__title {
+  color: var(--muted);
+}
+
+.kanban-card__when {
+  color: var(--faint);
+}
+
+/* ▶ 타이머 시작 (3단계에서 동작) */
+.kanban-card__play {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.kanban-card__play svg {
+  margin-left: 2px;
+}
+
+/* 빈 열 점선 상자 (R15) */
+.kanban-empty {
+  border: 1.5px dashed var(--border);
+  border-radius: 10px;
+  padding: 22px 12px;
+  text-align: center;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--faint);
+}
