@@ -36,3 +36,23 @@
 .projects-page__notice--error {
   color: var(--red);
 }
+
+.projects-page__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 24px;
+}
+
+/* 모닥불 그림 (common/Campfire.tsx, 목업 .fire). 크기는 컴포넌트가 정한다 */
+.proj-fire {
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.proj-fire svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}

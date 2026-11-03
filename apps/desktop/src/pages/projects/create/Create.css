@@ -1,0 +1,341 @@
+/* 프로젝트 만들기 창 (목업 part-create.html의 .dialog 아래, parts.css) */
+.modal.proj-create {
+  width: min(480px, 100%);
+  height: auto;
+  max-height: 100%;
+}
+
+.proj-create__body {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.proj-create__title {
+  margin: 0;
+  font-size: 17px;
+}
+
+.proj-create__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+/* ===== 칸 ===== */
+.proj-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.proj-field__label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.proj-input {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  background: var(--bg);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  min-width: 0;
+}
+
+.proj-input:focus {
+  border-color: var(--accent);
+}
+
+.proj-input::placeholder {
+  color: var(--faint);
+}
+
+.proj-hint {
+  font-size: 11px;
+  color: var(--faint);
+  margin-top: -2px;
+}
+
+/* ===== 버튼 ===== */
+.proj-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.proj-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+}
+
+.proj-btn--ghost:hover {
+  color: var(--text);
+}
+
+.proj-btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.proj-btn--primary:hover {
+  filter: brightness(1.08);
+}
+
+.proj-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+  filter: none;
+}
+
+.proj-icon-btn {
+  width: 26px;
+  height: 26px;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--faint);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.proj-icon-btn:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.proj-icon-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ===== 색 (ColorChoice) ===== */
+.proj-color {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.proj-color__swatches {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.proj-color__sw {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--sw);
+  cursor: pointer;
+}
+
+.proj-color__sw--on {
+  box-shadow: 0 0 0 2px var(--popup), 0 0 0 4px var(--sw);
+}
+
+.proj-color__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 4px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.proj-color__more:hover,
+.proj-color__more--on {
+  color: var(--text);
+}
+
+.proj-color__now {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--popup), 0 0 0 3px var(--text);
+}
+
+/* ===== 종류 ===== */
+.proj-kinds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.proj-kind {
+  border: 1px solid var(--border-2);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.proj-kind b {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+}
+
+.proj-kind span {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.proj-kind--on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.proj-kind--on b {
+  color: var(--accent);
+}
+
+/* ===== 단계·주차 줄 ===== */
+.proj-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.proj-steps--weeks {
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.proj-step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.proj-step__grip {
+  display: inline-grid;
+  place-items: center;
+  color: var(--faint);
+  cursor: grab;
+}
+
+.proj-step__no {
+  width: 18px;
+  font-size: 12px;
+  color: var(--faint);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.proj-step__input {
+  flex: 1;
+  height: 32px;
+}
+
+.proj-step__when {
+  width: 92px;
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.proj-step--dragging {
+  opacity: 0.45;
+}
+
+.proj-step--drop-before::before,
+.proj-step--drop-after::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--accent);
+}
+
+.proj-step--drop-before::before {
+  top: -4px;
+}
+
+.proj-step--drop-after::after {
+  bottom: -4px;
+}
+
+.proj-add-step {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 26px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.proj-add-step:hover {
+  color: var(--text);
+}
+
+/* ===== 주차형 시작 주·주 수 ===== */
+.proj-two {
+  display: grid;
+  grid-template-columns: 1fr 130px;
+  gap: 12px;
+}
+
+.proj-select {
+  cursor: pointer;
+}
+
+.proj-stepper {
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.proj-stepper b {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
