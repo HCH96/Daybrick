@@ -1,7 +1,8 @@
 import type { CSSProperties } from "react";
 import { NONE_CATEGORY_COLOR } from "../../../features/plan/color";
 import { formatShortRange } from "../../../features/plan/format";
-import type { Category, Task } from "../../../features/plan/types";
+import type { Task } from "../../../features/plan/types";
+import type { CardGroup } from "../../../features/projects/group";
 import { formatDuration } from "../../../features/today/format";
 import { taskTotalOn } from "../../../features/today/stats";
 import type { RunningTimer, TodayData } from "../../../features/today/types";
@@ -16,7 +17,7 @@ interface TimerCardProps {
   running: RunningTimer;
   /** 플랜에서 지워졌으면 null */
   task: Task | null;
-  category: Category | null;
+  category: CardGroup | null;
   todayKey: string;
 }
 

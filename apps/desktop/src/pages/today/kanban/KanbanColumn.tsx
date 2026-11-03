@@ -1,5 +1,6 @@
 import type { PointerEvent } from "react";
-import type { Category, Task, TaskStatus } from "../../../features/plan/types";
+import type { PlanData, Task, TaskStatus } from "../../../features/plan/types";
+import { taskCardGroup } from "../../../features/projects/group";
 import type { RunningTimer } from "../../../features/today/types";
 import StatusDot from "../../plan/StatusDot";
 import ColumnEmpty from "./ColumnEmpty";
@@ -10,7 +11,8 @@ const COLUMN_LABEL: Record<TaskStatus, string> = { todo: "시작 전", doing: "�
 interface KanbanColumnProps {
   status: TaskStatus;
   tasks: Task[];
-  categories: Category[];
+  /** 카드 묶음 이름·색을 찾는 플랜 데이터 (카테고리·프로젝트) */
+  data: PlanData;
   todayKey: string;
   running: RunningTimer | null;
   runningTitle: string;
@@ -29,7 +31,7 @@ interface KanbanColumnProps {
 function KanbanColumn({
   status,
   tasks,
-  categories,
+  data,
   todayKey,
   running,
   runningTitle,
@@ -53,7 +55,7 @@ function KanbanColumn({
             <KanbanCard
               key={task.id}
               task={task}
-              category={categories.find((c) => c.id === task.categoryId) ?? null}
+              category={taskCardGroup(data, task)}
               todayKey={todayKey}
               running={running}
               runningTitle={runningTitle}

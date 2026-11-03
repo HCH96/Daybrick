@@ -22,7 +22,7 @@ interface TodaySummaryProps {
 function TodaySummary({ plan, today, todayKey }: TodaySummaryProps) {
   const now = Date.now();
   const goal = today.settings.dailyGoalMinutes;
-  const categories = categoryTotals(daySlices(today, todayKey, now), plan.tasks, plan.categories);
+  const categories = categoryTotals(daySlices(today, todayKey, now), plan);
 
   return (
     <div className="today-summary">

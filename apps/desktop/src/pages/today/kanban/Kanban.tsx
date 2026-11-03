@@ -1,6 +1,7 @@
 import { usePlan } from "../../../features/plan/store";
 import { tasksOnDate } from "../../../features/plan/selectors";
 import type { PlanData, Task, TaskStatus } from "../../../features/plan/types";
+import { findStage, taskCardGroup } from "../../../features/projects/group";
 import { useToday } from "../../../features/today/store";
 import type { RunningTimer } from "../../../features/today/types";
 import DragCardGhost from "./DragCardGhost";
@@ -42,7 +43,6 @@ function Kanban({ data, todayKey, running, onOpenTask }: KanbanProps) {
   const runningTask = running ? data.tasks.find((t) => t.id === running.taskId) : undefined;
   const runningTitle = runningTask ? runningTask.title || "제목 없음" : "지금 도는 태스크";
   const dragTask = drag ? data.tasks.find((t) => t.id === drag.taskId) : undefined;
-  const categoryOf = (task: Task) => data.categories.find((c) => c.id === task.categoryId) ?? null;
 
   return (
     <div className="kanban">
@@ -53,7 +53,7 @@ function Kanban({ data, todayKey, running, onOpenTask }: KanbanProps) {
             key={status}
             status={status}
             tasks={status === "done" ? sortByCompleted(tasks) : tasks}
-            categories={data.categories}
+            data={data}
             todayKey={todayKey}
             running={running}
             runningTitle={runningTitle}
@@ -70,7 +70,7 @@ function Kanban({ data, todayKey, running, onOpenTask }: KanbanProps) {
         <DragCardGhost
           drag={drag}
           task={dragTask}
-          category={categoryOf(dragTask)}
+          category={taskCardGroup(data, dragTask)}
           todayKey={todayKey}
           live={running !== null && running.taskId === dragTask.id ? running : null}
         />
@@ -79,11 +79,20 @@ function Kanban({ data, todayKey, running, onOpenTask }: KanbanProps) {
   );
 }
 
-/** 플랜 목록 순서: 카테고리 순서(미분류·없는 카테고리는 맨 끝) → 태스크 배열 순서 */
+/**
+ * 플랜 목록 순서: 카테고리 순서 → 프로젝트 순서(프로젝트 R53) → 미분류·없는 카테고리·단계 → 태스크 배열 순서.
+ * 단계 태스크는 taskGroupInfo와 같게 단계가 있으면 프로젝트 자리, 없으면 카테고리 규칙을 따른다.
+ */
 function sortLikePlanList(data: PlanData, tasks: Task[]): Task[] {
   const catIndex = new Map(data.categories.map((c, i) => [c.id, i]));
+  const projectIndex = new Map(data.projects.map((p, i) => [p.id, i]));
   const taskIndex = new Map(data.tasks.map((t, i) => [t.id, i]));
-  const rank = (t: Task) => (t.categoryId !== null ? catIndex.get(t.categoryId) : undefined) ?? data.categories.length;
+  const noneRank = data.categories.length + data.projects.length;
+  const rank = (t: Task): number => {
+    const stage = t.stageId !== null ? findStage(data, t.stageId) : undefined;
+    if (stage) return data.categories.length + (projectIndex.get(stage.project.id) ?? data.projects.length);
+    return (t.categoryId !== null ? catIndex.get(t.categoryId) : undefined) ?? noneRank;
+  };
   return [...tasks].sort((a, b) => rank(a) - rank(b) || (taskIndex.get(a.id) ?? 0) - (taskIndex.get(b.id) ?? 0));
 }
 

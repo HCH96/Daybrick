@@ -10,13 +10,14 @@
 - 6단계: 주간 투입 버블 (자동 진행, 최종 테스트 대기)
 - 7단계: 최근 활동 잔디 (자동 진행, 최종 테스트 대기)
 - 8단계: 플랜 트리·달력 연동 (자동 진행, 최종 테스트 대기)
+- 9단계: 투데이 연동 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 9단계: 투데이 연동 (칸반·타이머·미완료 팝업·타임라인의 카테고리 이름·색을 `taskGroupInfo`로, 묶음 합계에 프로젝트를 한 줄로)
-- 관련 결정: D1, D2, D3, D4, D5, D6, D7, D9, D10, D11, D12, D13, D14, D15, D16, D17, D18, D19 (ai/spec/decisions.md에서 이 줄만 읽기, 9단계에 직접 쓰이는 건 D2·D19)
-- 주의: 투데이 카드·타이머 이름은 `info.name`("프로젝트 › 단계")이 아니라 `info.kind === "stage" ? info.projectName : info.name`. `features/projects/group.ts`는 export만 grep(통째로 읽을 필요 없음). 고칠 투데이 파일만 통째로 읽고, 투데이 목업·명세는 읽지 않는다(모양 그대로).
+- 10단계: 마무리·전체 빌드 (쓰지 않는 코드·CSS 정리 확인, `npm run build`·`npm run tauri build`, 상태 "구현 완료 (테스트 대기)")
+- 관련 결정: D1–D20 (ai/spec/decisions.md 전체가 적용 범위. 정리할 때 파일 위치·이름 확인용으로 필요한 줄만 읽기)
+- 주의: 화면을 띄워 목업과 비교하는 확인은 하지 않는다(사용자 테스트로 넘김). 그래서 목업 파일은 읽지 않아도 된다. 요청하지 않은 리팩터링은 하지 않는다.
 
 ## 확인할 문서 (경로는 docs/features/projects/ 기준, 파일 통째로 읽기)
-- ai/plan/step-09.md
-- ai/spec/req-link.md (R53 줄)
-- ai/logs/L11.md
+- ai/plan/step-10.md
+- ai/logs/L12.md
+- ai/plan/structure.md (정리 대상 파일 목록을 볼 때만)

@@ -1,7 +1,8 @@
 /** 시간 기록 계산 (순수 함수, R22·R40·R41). 합계는 저장하지 않고 구간에서 계산한다 (D3). */
 import { addDays, parseDateKey, toDateKey } from "../../utils/date";
 import { NONE_CATEGORY_COLOR } from "../plan/color";
-import type { Category, Task } from "../plan/types";
+import type { PlanData } from "../plan/types";
+import { findStage } from "../projects/group";
 import type { RunningTimer, TodayData } from "./types";
 
 /** 태스크 하나의 시간 구간 (밀리초 시각) */
@@ -87,7 +88,10 @@ export function dayTotals(data: TodayData, now: number): Map<string, number> {
   return totals;
 }
 
-/** 카테고리별 합 한 줄 (R29). 미분류·지운 태스크·없는 카테고리는 id null 한 줄로 모은다 */
+/**
+ * 묶음별 합 한 줄 (R29). 카테고리는 카테고리 id, 프로젝트 태스크는 프로젝트 하나로 묶어 "project:<id>" (프로젝트 R53).
+ * 미분류·지운 태스크·없는 카테고리·단계는 id null 한 줄로 모은다
+ */
 export interface CategoryTotal {
   id: string | null;
   name: string;
@@ -95,17 +99,25 @@ export interface CategoryTotal {
   ms: number;
 }
 
-/** 그날 구간을 카테고리별로 더해 큰 순으로 (R29) */
-export function categoryTotals(day: Slice[], tasks: Task[], categories: Category[]): CategoryTotal[] {
-  const taskCat = new Map(tasks.map((t) => [t.id, t.categoryId]));
-  const catById = new Map(categories.map((c) => [c.id, c]));
+/** 그날 구간을 묶음(카테고리·프로젝트)별로 더해 큰 순으로 (R29, 프로젝트 R53) */
+export function categoryTotals(day: Slice[], data: PlanData): CategoryTotal[] {
+  const taskById = new Map(data.tasks.map((t) => [t.id, t]));
+  const catById = new Map(data.categories.map((c) => [c.id, c]));
   const totals = new Map<string | null, CategoryTotal>();
+  const groupOf = (taskId: string): Omit<CategoryTotal, "ms"> => {
+    const task = taskById.get(taskId);
+    if (!task) return { id: null, name: "미분류", color: NONE_CATEGORY_COLOR };
+    const stage = task.stageId !== null ? findStage(data, task.stageId) : undefined;
+    if (stage) return { id: `project:${stage.project.id}`, name: stage.project.name, color: stage.project.color };
+    const cat = task.categoryId !== null ? catById.get(task.categoryId) : undefined;
+    if (cat) return { id: cat.id, name: cat.name, color: cat.color };
+    return { id: null, name: "미분류", color: NONE_CATEGORY_COLOR };
+  };
   for (const s of day) {
-    const cat = catById.get(taskCat.get(s.taskId) ?? "") ?? null;
-    const id = cat?.id ?? null;
-    const row = totals.get(id) ?? { id, name: cat?.name ?? "미분류", color: cat?.color ?? NONE_CATEGORY_COLOR, ms: 0 };
+    const group = groupOf(s.taskId);
+    const row = totals.get(group.id) ?? { ...group, ms: 0 };
     row.ms += s.end - s.start;
-    totals.set(id, row);
+    totals.set(group.id, row);
   }
   return [...totals.values()].filter((r) => r.ms > 0).sort((a, b) => b.ms - a.ms);
 }

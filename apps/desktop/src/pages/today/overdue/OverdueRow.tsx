@@ -3,7 +3,7 @@ import { SmallCheckIcon } from "../../../components/icons/CommonIcons";
 import { DateIcon } from "../../../components/icons/PlanIcons";
 import { BringInIcon } from "../../../components/icons/TodayIcons";
 import { NONE_CATEGORY_COLOR } from "../../../features/plan/color";
-import type { Category } from "../../../features/plan/types";
+import type { CardGroup } from "../../../features/projects/group";
 import { formatDateRange, formatOverdueDays } from "../../../features/today/format";
 import { bringToToday, periodLength, type DatedTask, type Period } from "../../../features/today/overdue";
 import StatusDot from "../../plan/StatusDot";
@@ -11,7 +11,7 @@ import PostponePicker from "./PostponePicker";
 
 interface OverdueRowProps {
   task: DatedTask;
-  category: Category | null;
+  category: CardGroup | null;
   todayKey: string;
   /** 오늘로 가져오기·다른 날로 미루기 (R36·R37) */
   onMove: (period: Period) => void;

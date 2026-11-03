@@ -61,3 +61,19 @@ export function taskGroupInfo(data: PlanData, task: Task): TaskGroupInfo {
   }
   return NONE_GROUP_INFO;
 }
+
+/** 투데이 카드·타이머·미완료 팝업에 쓰는 묶음 이름·색. 미분류면 null (프로젝트 R53) */
+export interface CardGroup {
+  name: string;
+  color: string;
+}
+
+/**
+ * 투데이용 묶음 이름·색: 단계 태스크는 "프로젝트 › 단계"가 아니라 프로젝트 이름(`projectName`)과 프로젝트 색,
+ * 카테고리 태스크는 카테고리 이름·색, 미분류(없는 단계·카테고리 포함)는 null.
+ */
+export function taskCardGroup(data: PlanData, task: Task): CardGroup | null {
+  const info = taskGroupInfo(data, task);
+  if (info.kind === "none") return null;
+  return { name: info.kind === "stage" ? info.projectName : info.name, color: info.color };
+}

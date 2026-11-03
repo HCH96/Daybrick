@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { createPortal } from "react-dom";
-import type { Category, Task } from "../../../features/plan/types";
+import type { Task } from "../../../features/plan/types";
+import type { CardGroup } from "../../../features/projects/group";
 import { formatDuration } from "../../../features/today/format";
 import { sessionElapsed } from "../../../features/today/stats";
 import type { RunningTimer } from "../../../features/today/types";
@@ -11,7 +12,7 @@ import type { KanbanDrag } from "./useKanbanDrag";
 interface DragCardGhostProps {
   drag: KanbanDrag;
   task: Task;
-  category: Category | null;
+  category: CardGroup | null;
   todayKey: string;
   /** 끄는 카드의 타이머면 그 타이머, 아니면 null */
   live: RunningTimer | null;

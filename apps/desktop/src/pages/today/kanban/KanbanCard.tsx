@@ -1,6 +1,7 @@
 import type { CSSProperties, KeyboardEvent, PointerEvent } from "react";
 import { NONE_CATEGORY_COLOR } from "../../../features/plan/color";
-import type { Category, Task } from "../../../features/plan/types";
+import type { Task } from "../../../features/plan/types";
+import type { CardGroup } from "../../../features/projects/group";
 import { formatDday, formatDoneAt } from "../../../features/today/format";
 import type { RunningTimer } from "../../../features/today/types";
 import ElapsedClock from "../timer/ElapsedClock";
@@ -9,7 +10,7 @@ import StartButton from "./StartButton";
 interface KanbanCardProps {
   task: Task;
   /** 미분류·없는 카테고리면 null */
-  category: Category | null;
+  category: CardGroup | null;
   todayKey: string;
   /** 도는(또는 일시정지한) 타이머, 없으면 null */
   running: RunningTimer | null;
@@ -24,7 +25,7 @@ interface KanbanCardProps {
 }
 
 /** 카드 겉 클래스·색 (끄는 모습 DragCardGhost와 같이 쓴다) */
-export function cardLook(task: Task, category: Category | null, live: boolean): { className: string; style: CSSProperties } {
+export function cardLook(task: Task, category: CardGroup | null, live: boolean): { className: string; style: CSSProperties } {
   let className = "kanban-card";
   if (task.status === "done") className += " kanban-card--done";
   if (live) className += " kanban-card--running";
@@ -33,7 +34,7 @@ export function cardLook(task: Task, category: Category | null, live: boolean): 
 
 interface KanbanCardBodyProps {
   task: Task;
-  category: Category | null;
+  category: CardGroup | null;
   todayKey: string;
   /** 이 카드의 타이머면 그 타이머, 아니면 null */
   live: RunningTimer | null;

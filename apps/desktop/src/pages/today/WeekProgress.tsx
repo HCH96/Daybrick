@@ -49,7 +49,7 @@ function WeekProgress({ data, todayKey }: WeekProgressProps) {
           미완료 <b>{overdue.length}</b>
         </button>
       )}
-      {overdueOpen && <OverduePopup tasks={overdue} categories={data.categories} todayKey={todayKey} onClose={closeOverdue} />}
+      {overdueOpen && <OverduePopup tasks={overdue} plan={data} todayKey={todayKey} onClose={closeOverdue} />}
     </>
   );
 }

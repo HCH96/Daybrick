@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import Modal from "../../../components/common/Modal";
 import { SmallCloseIcon } from "../../../components/icons/CommonIcons";
 import { usePlan } from "../../../features/plan/store";
-import type { Category } from "../../../features/plan/types";
+import type { PlanData } from "../../../features/plan/types";
+import { taskCardGroup } from "../../../features/projects/group";
 import type { DatedTask, Period } from "../../../features/today/overdue";
 import OverdueRow from "./OverdueRow";
 import "./Overdue.css";
@@ -10,7 +11,8 @@ import "./Overdue.css";
 interface OverduePopupProps {
   /** 미완료 태스크 (listOverdue 결과, 많이 지난 순) */
   tasks: DatedTask[];
-  categories: Category[];
+  /** 줄의 묶음 이름·색을 찾는 플랜 데이터 (카테고리·프로젝트) */
+  plan: PlanData;
   todayKey: string;
   onClose: () => void;
 }
@@ -19,7 +21,7 @@ interface OverduePopupProps {
  * 끝내지 못한 태스크 팝업 (R35–R39). 진행 바의 "미완료 N"에서 연다.
  * 줄마다 오늘로 가져오기·다른 날로·완료. 처리한 줄은 목록에서 빠지고, 다 처리하면 닫힌다.
  */
-function OverduePopup({ tasks, categories, todayKey, onClose }: OverduePopupProps) {
+function OverduePopup({ tasks, plan, todayKey, onClose }: OverduePopupProps) {
   const { updateTask } = usePlan();
 
   // R39: 마지막 줄을 처리하면 팝업을 닫는다 (진행 바 버튼은 N이 0이라 저절로 숨는다)
@@ -47,7 +49,7 @@ function OverduePopup({ tasks, categories, todayKey, onClose }: OverduePopupProp
           <OverdueRow
             key={task.id}
             task={task}
-            category={task.categoryId ? (categories.find((c) => c.id === task.categoryId) ?? null) : null}
+            category={taskCardGroup(plan, task)}
             todayKey={todayKey}
             onMove={(period) => move(task.id, period)}
             onComplete={() => complete(task.id)}

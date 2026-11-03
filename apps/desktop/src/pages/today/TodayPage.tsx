@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { PAGE_LABELS } from "../../app/pageLabels";
 import { usePlan } from "../../features/plan/store";
 import type { PlanData } from "../../features/plan/types";
+import { taskCardGroup } from "../../features/projects/group";
 import type { TodayData } from "../../features/today/types";
 import { useToday } from "../../features/today/store";
 import { useTodayKey } from "../../features/today/useTodayKey";
@@ -76,7 +77,7 @@ function TimerSlot({ plan, today, todayKey }: { plan: PlanData; today: TodayData
   const running = today.running;
   if (!running) return <TimerEmpty data={today} todayKey={todayKey} />;
   const task = plan.tasks.find((t) => t.id === running.taskId) ?? null;
-  const category = task?.categoryId ? (plan.categories.find((c) => c.id === task.categoryId) ?? null) : null;
+  const category = task ? taskCardGroup(plan, task) : null;
   return <TimerCard data={today} running={running} task={task} category={category} todayKey={todayKey} />;
 }
 
