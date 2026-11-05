@@ -24,6 +24,6 @@
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (2026-11-03 승인, 8단계). 시간 기록·실행 중 타이머·목표는 `today.json` 하나에 두고, 앱 종료는 다음 실행 때 강제 종료 복구와 같은 길로 처리한다 (D8–D11)
-- 테스트 문서: (아직 없음)
+- 테스트 문서: AI 보고서 [../tests/r1/](../tests/r1/), 사용자 체크리스트 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md)
 - 진행 기록: [../logs/index.md](../logs/index.md)
 - 태스크 데이터·공용 함수: [플랜 명세서 색인](../../../plan/ai/spec/index.md)의 data.md, extension.md

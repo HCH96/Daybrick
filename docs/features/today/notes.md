@@ -12,6 +12,6 @@
 - 8단계: 미완료 팝업 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- /test today
+- r1 사용자 테스트: human/tests/r1-user-test.md 채우기
 
 ## 확인할 문서 (경로는 docs/features/today/ 기준, 파일 통째로 읽기)
