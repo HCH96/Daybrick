@@ -67,12 +67,6 @@ export function CalendarProvider({ children }: { children: ReactNode }) {
     [state, saveStatus],
   );
 
-  // 개발 모드에서만 개발자 도구에서 `__calendar.addEvent(...)`로 불러 볼 수 있게 둔다 (입력 화면은 5단계)
-  useEffect(() => {
-    if (!import.meta.env.DEV) return;
-    (window as unknown as { __calendar?: CalendarStore }).__calendar = store;
-  }, [store]);
-
   return <CalendarContext.Provider value={store}>{children}</CalendarContext.Provider>;
 }
 

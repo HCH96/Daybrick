@@ -86,6 +86,7 @@
 .cal-legend__dot--deadline { border: 1px dashed var(--muted); }
 
 /* ===== 월 달력 ===== */
+/* .cal-week·.cal-day 이름은 캘린더 페이지(pages/calendar)도 쓰므로 .cal-view 안으로 묶는다 */
 .cal {
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -93,12 +94,12 @@
   background: var(--surface);
 }
 
-.cal-week {
+.cal-view .cal-week {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
-.cal-week--head div {
+.cal-view .cal-week--head div {
   padding: 8px 10px;
   font-size: 12px;
   font-weight: 700;
@@ -107,10 +108,10 @@
   background: var(--sidebar);
 }
 
-.cal-week--head div:first-child { color: #e88; }
-.cal-week--head div:last-child { color: #8ab0ff; }
+.cal-view .cal-week--head div:first-child { color: #e88; }
+.cal-view .cal-week--head div:last-child { color: #8ab0ff; }
 
-.cal-day {
+.cal-view .cal-day {
   height: 118px;
   padding: 6px 6px 4px;
   border-right: 1px solid var(--border);
@@ -122,10 +123,10 @@
   box-sizing: border-box;
 }
 
-.cal-week .cal-day:nth-child(7) { border-right: none; }
-.cal-week:last-child .cal-day { border-bottom: none; }
+.cal-view .cal-week .cal-day:nth-child(7) { border-right: none; }
+.cal-view .cal-week:last-child .cal-day { border-bottom: none; }
 
-.cal-day__num {
+.cal-view .cal-day__num {
   height: 22px;
   padding: 0 4px;
   display: flex;
@@ -136,12 +137,12 @@
   flex-shrink: 0;
 }
 
-.cal-day--out { background: #1d1d21; }
-.cal-day--out .cal-day__num { color: var(--faint); opacity: 0.6; }
-.cal-day--past .cal-day__num { color: var(--faint); }
-.cal-day--today { background: #25223a; }
+.cal-view .cal-day--out { background: #1d1d21; }
+.cal-view .cal-day--out .cal-day__num { color: var(--faint); opacity: 0.6; }
+.cal-view .cal-day--past .cal-day__num { color: var(--faint); }
+.cal-view .cal-day--today { background: #25223a; }
 
-.cal-day--today .cal-day__num span {
+.cal-view .cal-day--today .cal-day__num span {
   width: 22px;
   height: 22px;
   margin-left: -4px;

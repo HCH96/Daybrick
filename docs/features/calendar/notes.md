@@ -10,15 +10,11 @@
 - 6단계: 드래그로 옮기기 (자동 진행, 최종 테스트 대기)
 - 7단계: 회고 패널 (자동 진행, 최종 테스트 대기)
 - 8단계: 플랜 연동 (자동 진행, 최종 테스트 대기)
+- 9단계: 마무리·전체 빌드 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 9단계: 마무리·전체 빌드 (목업과 색·간격 차이 고치기, scheduler 잔여 사용처 grep, 전체 빌드 4종, 상태를 "구현 완료 (테스트 대기)"로)
-- 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16, D17, D18 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: D11(`window.__calendar` 개발용 노출)을 남길지 이 단계에서 정한다. 화면 비교는 하지 않고 CSS 값 비교만 한다(화면 확인은 /test).
-- 주의: 순수 함수 Node 확인 결과는 L06·L07·L10 등 기록의 "확인" 줄에서 모은다(기록 목차에서 고른 파일만 읽기).
+- 모든 단계 완료
+- 관련 결정: D1–D19 (ai/spec/decisions.md)
 
 ## 확인할 문서 (경로는 docs/features/calendar/ 기준, 파일 통째로 읽기)
-- ai/plan/step-09.md
-- ai/spec/mockup.md ("목업에서 정한 것")
-- ai/logs/L11.md
-- human/mockups/index.html (목업 목차, 화면 파일별 구역 표를 보고 고칠 곳의 구역만 읽기. CSS: calendar.css·review.css·parts.css·common.css에서 클래스 검색)
+- ai/logs/L12.md
