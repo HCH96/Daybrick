@@ -24,7 +24,7 @@
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (2026-11-04 승인). 프로젝트·단계는 plan.json에 함께 두고 파일은 옮기지 않으며(D5–D6), 앱 뒤로가기가 상세도 기억하고 버블은 d3-force를 쓴다(D7–D8)
-- 테스트 문서: (아직 없음)
+- 테스트 문서: AI 보고서 [../tests/r1/](../tests/r1/), 사용자 체크리스트 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md)
 - 진행 기록: [../logs/index.md](../logs/index.md)
 - 버블 그래프 시안: 사용자 제공 `bubble.html` (값은 visual.md에 옮겨 둠)
 - 태스크 데이터·공용 함수: [플랜 명세서 색인](../../../plan/ai/spec/index.md)의 data.md, extension.md

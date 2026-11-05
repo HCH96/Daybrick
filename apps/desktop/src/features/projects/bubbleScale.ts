@@ -29,15 +29,31 @@ export function bubbleItems(projects: Project[], byProject: Map<string, ProjectT
     .map((p) => ({ project: p, minutes: Math.floor((byProject.get(p.id)?.week ?? 0) / MINUTE) }))
     .filter((x) => x.minutes >= 1);
   const total = list.reduce((sum, x) => sum + x.minutes, 0);
-  return list
-    .map(({ project, minutes }) => ({
-      id: project.id,
-      name: project.name,
-      color: project.color,
-      minutes,
-      percent: total > 0 ? Math.round((minutes / total) * 100) : 0,
-    }))
-    .sort((a, b) => b.minutes - a.minutes);
+  const sorted = list.sort((a, b) => b.minutes - a.minutes);
+  const percents = sumTo100(sorted.map((x) => x.minutes), total);
+  return sorted.map(({ project, minutes }, i) => ({
+    id: project.id,
+    name: project.name,
+    color: project.color,
+    minutes,
+    percent: percents[i],
+  }));
+}
+
+/**
+ * 정수 퍼센트를 합이 100이 되게 나눈다 (최대 나머지 방식, R37).
+ * 모두 내림한 뒤 모자란 만큼을 소수점 아래가 큰 것부터 1씩 더한다. 같으면 앞(시간 많은 쪽) 먼저.
+ */
+export function sumTo100(values: number[], total: number): number[] {
+  if (total <= 0) return values.map(() => 0);
+  const exact = values.map((v) => (v / total) * 100);
+  const result = exact.map((x) => Math.floor(x));
+  const left = 100 - result.reduce((s, x) => s + x, 0);
+  const order = exact
+    .map((x, i) => ({ i, frac: x - Math.floor(x) }))
+    .sort((a, b) => b.frac - a.frac || a.i - b.i);
+  for (let n = 0; n < left; n += 1) result[order[n].i] += 1;
+  return result;
 }
 
 /** 반지름 비율 k (R36). 판 크기가 0이면 기준값 */
