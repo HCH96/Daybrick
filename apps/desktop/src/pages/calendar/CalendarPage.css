@@ -31,6 +31,18 @@
   color: var(--red);
 }
 
+/* 달력 + 회고 패널 (목업 .cal-row): 패널이 열리면 달력이 좁아진다 (R42) */
+.calendar-page__row {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 16px;
+}
+
+.calendar-page__row > .cal-grid {
+  min-width: 0;
+}
+
 /* 머리 오른쪽: [<] 2026년 11월 [>] [오늘] (목업 cal-head, R3) */
 .cal-month-nav {
   margin-left: auto;

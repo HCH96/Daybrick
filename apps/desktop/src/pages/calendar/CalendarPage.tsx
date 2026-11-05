@@ -10,6 +10,7 @@ import TaskDetailModal from "../plan/detail/TaskDetailModal";
 import PersonalEditPopover from "./personal/PersonalEditPopover";
 import MonthHeader from "./head/MonthHeader";
 import MonthGrid, { type FlipDir } from "./grid/MonthGrid";
+import ReviewPanel from "./review/ReviewPanel";
 import "./CalendarPage.css";
 
 interface MonthView {
@@ -22,7 +23,7 @@ interface MonthView {
  * 캘린더 화면 (R1–R4, R41). 머리(달 이동·[오늘])와 월 달력을 그린다.
  * 칩을 누르면 종류별로 플랜 상세·지원 상세 팝업을 열거나 프로젝트 상세로 간다 (R19).
  * 개인 일정 칩은 편집 팝오버를 연다 (R28). 빈 곳 입력은 MonthGrid가 맡는다 (R23·R24).
- * 회고 패널(7단계)은 이어지는 단계에서 채운다. 통계는 넣지 않는다 (R6).
+ * 지난 칸 빈 곳을 누르면 오른쪽에 회고 패널이 붙고 달력은 좁아진다 (R42–R48). 통계는 넣지 않는다 (R6).
  */
 function CalendarPage() {
   const { state } = useCalendar();
@@ -67,6 +68,10 @@ function CalendarPage() {
     [navigate],
   );
 
+  // 회고 패널 (R42–R48): 지난 칸 빈 곳을 누른 날. 다른 지난 칸을 누르면 그 날로 바뀐다
+  const [reviewDay, setReviewDay] = useState<string | null>(null);
+  const closeReview = useCallback(() => setReviewDay(null), []);
+
   return (
     <div className="calendar-page">
       <header className="calendar-page__head">
@@ -88,7 +93,18 @@ function CalendarPage() {
         </div>
       )}
       {state.kind === "ready" && (
-        <MonthGrid year={view.year} month={view.month} dir={view.dir} todayKey={todayKey} onOpen={openItem} />
+        <div className={reviewDay ? "calendar-page__row calendar-page__row--review" : "calendar-page__row"}>
+          <MonthGrid
+            year={view.year}
+            month={view.month}
+            dir={view.dir}
+            todayKey={todayKey}
+            onOpen={openItem}
+            reviewDay={reviewDay}
+            onReview={setReviewDay}
+          />
+          {reviewDay && <ReviewPanel day={reviewDay} onClose={closeReview} onOpen={openItem} />}
+        </div>
       )}
       {openTaskId && <TaskDetailModal taskId={openTaskId} onClose={closeTask} onOpenApplication={setOpenApplicationId} />}
       {openApplicationId && <ApplicationDetailModal applicationId={openApplicationId} onClose={closeApplication} />}

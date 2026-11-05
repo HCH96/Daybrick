@@ -1,0 +1,290 @@
+/* 회고 패널 (목업 review.html·part-review-states.html, review.css, R42–R48) */
+
+/* 패널이 열리면 칸이 좁아지므로 면접 외 지원 종류 아이콘은 숨긴다 (목업 .cal-row .ch.a .k:not(.on)) */
+.calendar-page__row--review .cal-chip__kind:not(.cal-chip__kind--on) {
+  display: none;
+}
+
+/* 회고로 고른 지난 칸: 회색 테두리 (목업 .bg i.s) */
+.cal-day.cal-day--review {
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1.5px var(--muted);
+}
+
+.cal-review {
+  width: 380px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--popup);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.cal-review__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 14px 12px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cal-review__head h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.cal-review__head .cal-icon-btn {
+  margin-left: auto;
+}
+
+/* 가운데만 스크롤 (머리·아래 버튼은 고정) */
+.cal-review__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px 20px 16px;
+}
+
+.cal-review__label {
+  margin: 14px 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--faint);
+}
+
+/* 하루 종일 줄 (R44) */
+.cal-review__allday {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 0 12px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.cal-review__allday-lbl {
+  width: 96px;
+  font-size: 12px;
+  color: var(--faint);
+  line-height: 23px;
+}
+
+.cal-review__allday .cal-chip {
+  margin: 0;
+  max-width: 100%;
+}
+
+/* 타임라인 (R44–R45): 시각 칸 + 세로선 + 항목 */
+.cal-review__tl {
+  position: relative;
+  margin-top: 4px;
+}
+
+.cal-review__tl::before {
+  content: "";
+  position: absolute;
+  left: 103px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: var(--border);
+}
+
+.cal-review__row {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+}
+
+.cal-review__time {
+  width: 96px;
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.cal-review__time small {
+  display: block;
+  font-family: inherit;
+  font-size: 10.5px;
+  color: var(--faint);
+  line-height: 1.2;
+}
+
+.cal-review__pin {
+  width: 15px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.cal-review__pin i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--c, var(--faint));
+  box-shadow: 0 0 0 3px var(--popup);
+}
+
+.cal-review__pin i.cal-review__pin-ev {
+  background: var(--popup);
+  border: 1.5px solid var(--muted);
+}
+
+.cal-review__item {
+  flex: 1;
+  min-width: 0;
+  margin-left: 10px;
+}
+
+/* 타이머 기록 구간: 카테고리 색 막대 (길이는 시간과 무관, 통계 아님) */
+.cal-review__rec {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--c) 17%, transparent);
+  box-shadow: inset 3px 0 0 var(--c);
+  font-size: 13px;
+}
+
+.cal-review__rec span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cal-review__item .cal-chip {
+  margin: 0;
+  height: 26px;
+  font-size: 13px;
+  line-height: 26px;
+}
+
+.cal-review__item .cal-chip--personal {
+  line-height: 24px;
+}
+
+/* 시각은 왼쪽 칸에 있으므로 칩 안 시각은 뺀다 */
+.cal-review__item .cal-chip em {
+  display: none;
+}
+
+/* 완료한 태스크 (R46) */
+.cal-review__done {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cal-review__done-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+  font-size: 13px;
+}
+
+.cal-review__done-row span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cal-review__done-row em {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.cal-review__check {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1.8px solid var(--green);
+  background: var(--green)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.6 6.2l2.2 2.2 4.6-4.8' fill='none' stroke='%2317171a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / 10px no-repeat;
+}
+
+/* 빈 상태 (R47) */
+.cal-review__empty {
+  margin: 36px 0 20px;
+  text-align: center;
+  color: var(--faint);
+  font-size: 13px;
+}
+
+.cal-review__empty svg {
+  margin-bottom: 8px;
+  color: var(--border-2);
+}
+
+/* 아래 [개인 일정 추가] (R48) */
+.cal-review__foot {
+  padding: 12px 20px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.cal-review__add-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px dashed var(--border-2);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cal-review__add-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.cal-review__add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cal-review__add-title {
+  height: 34px;
+  padding: 0 10px;
+  border: 1px dashed var(--accent);
+  border-radius: 6px;
+  background: rgba(166, 140, 255, 0.08);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.cal-review__add-line {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.cal-review__add-acts {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}

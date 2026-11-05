@@ -27,6 +27,7 @@ interface WeekRowProps {
   onDraftCancel: () => void;
   chipDrag?: ChipDrag; // 칩 옮기기 (밀려나는 달 page에는 없음, R35)
   drop?: DaySelection | null; // 끄는 칩이 놓일 기간
+  reviewDay?: string | null; // 회고 패널로 고른 지난 날 (R42)
 }
 
 /** col부터 span칸에서 칩이 하나도 없는 맨 위 칩 줄. 없으면 마지막 줄(입력칸이 덮는다) */
@@ -60,6 +61,7 @@ function WeekRow({
   onDraftCancel,
   chipDrag,
   drop = null,
+  reviewDay = null,
 }: WeekRowProps) {
   const weekStart = week[0].key;
   const weekEnd = week[6].key;
@@ -98,6 +100,7 @@ function WeekRow({
             showMonth={(isFirstWeek && i === 0) || cell.date.getDate() === 1}
             selection={selection}
             drop={drop}
+            reviewed={cell.key === reviewDay}
           />
         ))}
       </div>

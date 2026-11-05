@@ -24,6 +24,8 @@ interface MonthGridProps {
   dir: FlipDir | null; // 마지막으로 넘긴 방향. null이면 처음 그린 것이라 움직이지 않는다
   todayKey: string;
   onOpen: CalOpenHandler; // 칩을 눌렀을 때 (R19)
+  reviewDay: string | null; // 회고 패널로 고른 지난 날 (회색 테두리, R42)
+  onReview: (day: string) => void; // 지난 칸 빈 곳을 눌렀을 때 (R42·R48, D5)
 }
 
 /** 년·월을 하나의 수로 (비교·key용) */
@@ -39,16 +41,23 @@ function monthIndex(year: number, month: number): number {
  * 빈 곳 누르기(오늘·미래) → 하루짜리 입력칸, 드래그 → 기간 입력칸 (R23·R24, D5·D10).
  * 칩 드래그 → 태스크·개인 일정을 다른 날로 옮긴다 (R35–R40). 끌기 시작하면 입력칸을 닫는다.
  */
-function MonthGrid({ year, month, dir, todayKey, onOpen }: MonthGridProps) {
+function MonthGrid({ year, month, dir, todayKey, onOpen, reviewDay, onReview }: MonthGridProps) {
   const current = monthIndex(year, month);
   const [shown, setShown] = useState(current);
   const [leaving, setLeaving] = useState<{ index: number; dir: FlipDir } | null>(null);
   const { addEvent } = useCalendar();
   const [draft, setDraft] = useState<PersonalDraft | null>(null);
 
-  // 지난 날 누르기는 회고 패널을 연다 (7단계에서 연결, D5)
+  // 지난 날 누르기 → 회고 패널 (D5). 패널이 열린 채 오늘·미래를 누르면 패널은 두고 입력칸
   const { selecting, onMouseDown } = useRangeSelect({
-    onClick: (day) => setDraft(day >= todayKey ? { kind: "quick", start: day, end: day } : null),
+    onClick: (day) => {
+      if (day >= todayKey) {
+        setDraft({ kind: "quick", start: day, end: day });
+      } else {
+        setDraft(null);
+        onReview(day);
+      }
+    },
     onRange: (range) => setDraft({ kind: "range", ...range }),
   });
   const { drag, ghostRef, chipDrag } = useCalendarDrag({ onStart: () => setDraft(null) });
@@ -100,6 +109,7 @@ function MonthGrid({ year, month, dir, todayKey, onOpen }: MonthGridProps) {
           onDraftCancel={cancelDraft}
           chipDrag={chipDrag}
           drop={drag?.drop ?? null}
+          reviewDay={reviewDay}
         />
       </div>
       {drag && <DragGhost drag={drag} ghostRef={ghostRef} />}
@@ -122,6 +132,7 @@ interface MonthPageProps {
   onDraftCancel?: () => void;
   chipDrag?: ChipDrag; // 칩 옮기기 (밀려나는 page에는 없음)
   drop?: DaySelection | null; // 끄는 칩이 놓일 기간
+  reviewDay?: string | null; // 회고 패널로 고른 지난 날
 }
 
 /**
@@ -140,6 +151,7 @@ function MonthPage({
   onDraftCancel = noop,
   chipDrag,
   drop = null,
+  reviewDay = null,
 }: MonthPageProps) {
   const weeks = useMemo(() => getMonthGrid(Math.floor(index / 12), index % 12, 1), [index]);
   const plan = usePlan().state;
@@ -177,6 +189,7 @@ function MonthPage({
           onDraftCancel={onDraftCancel}
           chipDrag={chipDrag}
           drop={drop}
+          reviewDay={reviewDay}
         />
       ))}
     </div>
