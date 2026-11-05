@@ -30,3 +30,57 @@
 .calendar-page__notice--error {
   color: var(--red);
 }
+
+/* 머리 오른쪽: [<] 2026년 11월 [>] [오늘] (목업 cal-head, R3) */
+.cal-month-nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cal-month-nav__title {
+  min-width: 132px;
+  overflow: hidden;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+
+.cal-icon-btn {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.cal-icon-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.cal-btn {
+  margin-left: 8px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.cal-btn:hover {
+  background: var(--surface-2);
+}

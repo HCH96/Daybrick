@@ -1,0 +1,190 @@
+/* 월 달력 틀 (목업 calendar.html cal-grid, R2·R4)과 달 넘김 (part-flip.html, R41) */
+.cal-grid {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+/* 요일 머리줄: 넘길 때 움직이지 않는다 */
+.cal-dow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  height: 32px;
+  align-items: center;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--faint);
+}
+
+.cal-dow span {
+  padding-left: 10px;
+}
+
+/* 주 줄 묶음(page)을 겹쳐 놓는 상자. 줄 수(5~6)는 page의 style로 정한다 */
+.cal-pages {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.cal-page {
+  position: absolute;
+  inset: 0;
+  display: grid;
+}
+
+/* 주 줄 하나 = 7열 그리드. 1행은 날짜 숫자 자리, 2~5행은 칩 줄 4개 (3단계부터, D8) */
+.cal-week {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: 28px repeat(4, 21px);
+  row-gap: 3px;
+  align-content: start;
+  min-height: 0;
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.cal-week:first-child {
+  border-top: none;
+}
+
+.cal-week > * {
+  position: relative;
+}
+
+/* 뒤에 깔리는 7칸 배경 (날짜 숫자 포함) */
+.cal-week > .cal-week__bg {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.cal-day {
+  min-width: 0;
+  border-left: 1px solid var(--border);
+}
+
+.cal-day:first-child {
+  border-left: none;
+}
+
+.cal-day--past {
+  background: rgba(0, 0, 0, 0.14); /* 지난 날짜: 살짝 흐림 */
+}
+
+.cal-day--other {
+  background: rgba(0, 0, 0, 0.3); /* 다른 달: 더 흐림 */
+}
+
+.cal-day--today {
+  background: rgba(166, 140, 255, 0.07);
+  box-shadow: inset 0 0 0 1.5px rgba(166, 140, 255, 0.55);
+}
+
+.cal-day__num {
+  display: block;
+  height: 28px;
+  padding: 5px 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.cal-day--past .cal-day__num {
+  color: var(--muted);
+}
+
+.cal-day--other .cal-day__num {
+  color: var(--faint);
+  font-weight: 500;
+}
+
+.cal-day--today .cal-day__num b {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  margin: -2px 0 0 -5px;
+  padding: 0 6px;
+  border-radius: 99px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 800;
+}
+
+/* ===== 달 넘김 (R41): 가로 48px + 투명도, 220ms ease-out ===== */
+.cal-page--in-next {
+  animation: cal-in-next 220ms ease-out;
+}
+.cal-page--in-prev {
+  animation: cal-in-prev 220ms ease-out;
+}
+.cal-page--out-next {
+  animation: cal-out-next 220ms ease-out forwards;
+  pointer-events: none;
+}
+.cal-page--out-prev {
+  animation: cal-out-prev 220ms ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes cal-in-next {
+  from { transform: translateX(48px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes cal-in-prev {
+  from { transform: translateX(-48px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes cal-out-next {
+  from { transform: none; opacity: 1; }
+  to { transform: translateX(-48px); opacity: 0; }
+}
+@keyframes cal-out-prev {
+  from { transform: none; opacity: 1; }
+  to { transform: translateX(48px); opacity: 0; }
+}
+
+/* 머리의 "2026년 11월" 글자도 같은 방향으로 들어온다 */
+.cal-flip-text {
+  display: inline-block;
+}
+.cal-flip-text--next {
+  animation: cal-text-next 220ms ease-out;
+}
+.cal-flip-text--prev {
+  animation: cal-text-prev 220ms ease-out;
+}
+
+@keyframes cal-text-next {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes cal-text-prev {
+  from { transform: translateX(-30px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+/* 움직임 줄이기 설정이면 바로 바꾼다 (밀려나는 page가 animationend로 사라지도록 아주 짧게만 둔다) */
+@media (prefers-reduced-motion: reduce) {
+  .cal-page--in-next,
+  .cal-page--in-prev,
+  .cal-page--out-next,
+  .cal-page--out-prev,
+  .cal-flip-text--next,
+  .cal-flip-text--prev {
+    animation-duration: 1ms;
+  }
+}
