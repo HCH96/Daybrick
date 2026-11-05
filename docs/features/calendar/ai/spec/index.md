@@ -23,7 +23,7 @@
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (2026-11-05 승인). 9단계, 개인 일정은 calendar.json(D7), 칸 배치·+N 규칙(D8)·날짜 입력 검사(D9)·포인터 드래그(D10)를 정함
-- 테스트 문서: (아직 없음)
+- 테스트 문서: AI 테스트 [../tests/r1/index.md](../tests/r1/index.md), 사용자 테스트 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md) (r1)
 - 진행 기록: [../logs/index.md](../logs/index.md)
 - 태스크 데이터: [플랜 명세서 색인](../../../plan/ai/spec/index.md)의 data.md, 주간 달력 R21–R34
 - 지원 일정 규칙: [지원 관리 명세서 색인](../../../applications/ai/spec/index.md)의 req-schedule.md (R23–R27, R39)
