@@ -6,16 +6,19 @@
 - 2단계: 월 달력 틀·달 넘김 (자동 진행, 최종 테스트 대기)
 - 3단계: 칩 4종과 칸 배치 (자동 진행, 최종 테스트 대기)
 - 4단계: +N 목록·칩 누르기 (자동 진행, 최종 테스트 대기)
+- 5단계: 개인 일정 입력·편집 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 5단계: 개인 일정 입력·편집 (빈 곳 누르기·드래그로 입력, 개인 칩 누르면 편집 팝오버·삭제 확인)
-- 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 개인 칩 누르기는 `CalendarPage`의 `openItem`에서 `item.kind === "personal"`만 아직 아무 동작이 없다. 여기서 편집 팝오버를 열면 되고, 팝오버 anchor가 필요하면 `CalOpenHandler`에 누른 칩 요소를 함께 넘기도록 바꾼다(쓰는 곳: CalChip·MoreList·WeekRow·MonthGrid). 칩은 지금 `onClick`만 받으므로 D10의 "칩에서 시작하면 옮기기"는 6단계 몫이고, 빈 곳 판정은 칩·`.cal-week-more`가 아닌 곳으로 한다.
-- 주의: 지원관리 `CalendarView.css`가 `.cal-week`·`.cal-day` 등을 전역으로 정의해 캘린더 칸 모양에 섞일 수 있다(L07 남은 문제). 칸 높이·클릭 영역이 이상하면 이것부터 의심한다.
+- 6단계: 드래그로 옮기기 (태스크·개인 칩을 끌어 다른 날로 옮기고 튀어오름, 지원·깃발은 흔들림)
+- 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: 칩은 지금 `onClick(e)`로 `onOpen(item, e.currentTarget)`을 부른다. 칩 드래그를 붙일 때 4px 넘게 움직였으면 뒤따르는 click을 막아야 편집 팝오버·상세가 열리지 않는다. 빈 곳 드래그(`useRangeSelect`)는 `.cal-chip`에서는 시작하지 않으므로 칩 드래그와 겹치지 않는다.
+- 주의: step-06은 "포인터 아래 칸은 `data-day`로 찾는다"고 하지만, 5단계는 `.cal-week[data-week]` 너비를 7로 나눠 칸을 찾는다(`useRangeSelect`의 `dayAt`, D15). 같은 방식을 가져다 쓰면 DayCell에 속성을 더하지 않아도 된다.
+- 주의: "드래그 중에는 +N 목록·입력칸을 닫는다": 입력칸은 `MonthGrid`의 `draft` 상태(mousedown 때 열린 입력칸 포커스를 놓게 해 취소됨), +N 목록은 `MoreButton` 안 상태다.
+- 주의: 지원관리 `CalendarView.css`가 `.cal-week`·`.cal-day` 등을 전역으로 정의해 캘린더 칸 모양에 섞일 수 있다(L07 남은 문제).
 
 ## 확인할 문서 (경로는 docs/features/calendar/ 기준, 파일 통째로 읽기)
-- ai/plan/step-05.md
-- ai/spec/req-personal.md (R23–R29)
-- ai/logs/L07.md
-- human/mockups/part-personal.html의 personal-quick·personal-range·personal-edit·personal-delete 구역 (CSS: parts.css에서 그 구역에 쓰인 클래스 검색)
-- ai/plan/structure.md의 personal/·grid/useRangeSelect·features/calendar/personalForm 줄 (새 파일 위치를 정할 때만)
+- ai/plan/step-06.md
+- ai/spec/req-interaction.md (R35–R40)
+- ai/logs/L08.md
+- human/mockups/part-drag.html의 drag-move·drag-bounce·drag-locked 구역 (CSS: parts.css에서 그 구역에 쓰인 클래스 검색)
+- ai/plan/structure.md의 drag/ 줄 (새 파일 위치를 정할 때만)

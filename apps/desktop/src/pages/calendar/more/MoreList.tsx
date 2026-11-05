@@ -28,7 +28,7 @@ function shortDate(key: string): string {
 function MoreList({ anchor, date, items, onClose, onOpen }: MoreListProps) {
   const open = (item: CalItem) => {
     onClose();
-    onOpen(item);
+    onOpen(item, anchor); // 목록 안 칩은 사라지므로 "+N" 옆에 띄운다
   };
 
   return (

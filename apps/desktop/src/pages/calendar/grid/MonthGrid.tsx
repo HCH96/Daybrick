@@ -7,7 +7,8 @@ import { usePlan } from "../../../features/plan/store";
 import type { PersonalEvent } from "../../../features/calendar/types";
 import { getMonthGrid } from "../../../utils/calendarGrid";
 import type { CalOpenHandler } from "../chips/CalChip";
-import WeekRow from "./WeekRow";
+import { useRangeSelect, type DaySelection } from "./useRangeSelect";
+import WeekRow, { type PersonalDraft } from "./WeekRow";
 import "./Grid.css";
 
 /** 달을 넘긴 방향. next = 다음 달(왼쪽으로 밀림), prev = 이전 달(오른쪽으로 밀림) */
@@ -33,11 +34,20 @@ function monthIndex(year: number, month: number): number {
  * 요일 머리줄은 고정이고, 주 줄 묶음(page)만 넘어간다. 넘길 때 앞 달 page를 잠깐 겹쳐 그려
  * 밀려나게 하고, 새 달 page는 key가 바뀌어 다시 그려지며 들어온다.
  * 애니메이션 중에 또 넘기면 밀려나던 page를 버리고 바로 새 달로 간다 (쌓이지 않음).
+ * 빈 곳 누르기(오늘·미래) → 하루짜리 입력칸, 드래그 → 기간 입력칸 (R23·R24, D5·D10).
  */
 function MonthGrid({ year, month, dir, todayKey, onOpen }: MonthGridProps) {
   const current = monthIndex(year, month);
   const [shown, setShown] = useState(current);
   const [leaving, setLeaving] = useState<{ index: number; dir: FlipDir } | null>(null);
+  const { addEvent } = useCalendar();
+  const [draft, setDraft] = useState<PersonalDraft | null>(null);
+
+  // 지난 날 누르기는 회고 패널을 연다 (7단계에서 연결, D5)
+  const { selecting, onMouseDown } = useRangeSelect({
+    onClick: (day) => setDraft(day >= todayKey ? { kind: "quick", start: day, end: day } : null),
+    onRange: (range) => setDraft({ kind: "range", ...range }),
+  });
 
   // 그리는 중에 달이 바뀐 것을 알아채 밀려날 page를 정한다 (React의 "props에서 상태 끌어내기" 방식)
   if (shown !== current) {
@@ -49,6 +59,13 @@ function MonthGrid({ year, month, dir, todayKey, onOpen }: MonthGridProps) {
     if (e.target === e.currentTarget) setLeaving(null);
   };
 
+  const submitDraft = (title: string) => {
+    if (draft) addEvent(title, draft.start, draft.end);
+    setDraft(null);
+  };
+  const cancelDraft = () => setDraft(null);
+  const selection: DaySelection | null = selecting ?? (draft?.kind === "range" ? draft : null);
+
   return (
     <div className="cal-grid">
       <div className="cal-dow">
@@ -56,7 +73,7 @@ function MonthGrid({ year, month, dir, todayKey, onOpen }: MonthGridProps) {
           <span key={d}>{d}</span>
         ))}
       </div>
-      <div className="cal-pages">
+      <div className="cal-pages" onMouseDown={onMouseDown}>
         {leaving && (
           <MonthPage
             key={`out-${leaving.index}`}
@@ -73,6 +90,10 @@ function MonthGrid({ year, month, dir, todayKey, onOpen }: MonthGridProps) {
           todayKey={todayKey}
           onOpen={onOpen}
           className={dir ? `cal-page cal-page--in-${dir}` : "cal-page"}
+          selection={selection}
+          draft={draft}
+          onDraftSubmit={submitDraft}
+          onDraftCancel={cancelDraft}
         />
       </div>
     </div>
@@ -80,6 +101,7 @@ function MonthGrid({ year, month, dir, todayKey, onOpen }: MonthGridProps) {
 }
 
 const NO_EVENTS: PersonalEvent[] = [];
+const noop = () => {};
 
 interface MonthPageProps {
   index: number; // monthIndex
@@ -87,13 +109,27 @@ interface MonthPageProps {
   onOpen: CalOpenHandler; // 칩을 눌렀을 때 (R19)
   className: string;
   onAnimationEnd?: (e: AnimationEvent<HTMLDivElement>) => void;
+  selection?: DaySelection | null; // 보라로 묶을 범위 (밀려나는 page에는 없음)
+  draft?: PersonalDraft | null; // 입력 중인 새 개인 일정
+  onDraftSubmit?: (title: string) => void;
+  onDraftCancel?: () => void;
 }
 
 /**
  * 한 달의 주 줄 5~6개 묶음. 보이는 기간(그리드 첫날~끝날)의 칩을 모아 주마다 자리를 계산한다.
  * 플랜·지원관리·캘린더 저장소를 읽기만 하므로 다른 화면에서 고치면 바로 다시 그려진다 (R8).
  */
-function MonthPage({ index, todayKey, onOpen, className, onAnimationEnd }: MonthPageProps) {
+function MonthPage({
+  index,
+  todayKey,
+  onOpen,
+  className,
+  onAnimationEnd,
+  selection = null,
+  draft = null,
+  onDraftSubmit = noop,
+  onDraftCancel = noop,
+}: MonthPageProps) {
   const weeks = useMemo(() => getMonthGrid(Math.floor(index / 12), index % 12, 1), [index]);
   const plan = usePlan().state;
   const applications = useApplications().state;
@@ -116,7 +152,19 @@ function MonthPage({ index, todayKey, onOpen, className, onAnimationEnd }: Month
       onAnimationEnd={onAnimationEnd}
     >
       {weeks.map((week, w) => (
-        <WeekRow key={week[0].key} week={week} todayKey={todayKey} isFirstWeek={w === 0} layout={layouts[w]} onOpen={onOpen} />
+        <WeekRow
+          key={week[0].key}
+          week={week}
+          todayKey={todayKey}
+          isFirstWeek={w === 0}
+          isLastWeek={w === weeks.length - 1}
+          layout={layouts[w]}
+          onOpen={onOpen}
+          selection={selection}
+          draft={draft}
+          onDraftSubmit={onDraftSubmit}
+          onDraftCancel={onDraftCancel}
+        />
       ))}
     </div>
   );

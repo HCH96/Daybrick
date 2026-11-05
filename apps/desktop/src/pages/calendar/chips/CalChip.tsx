@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import type { CalItem } from "../../../features/calendar/items";
 import type { ChipSlot } from "../../../features/calendar/monthLayout";
 import AppChip from "./AppChip";
@@ -7,14 +7,17 @@ import PersonalChip from "./PersonalChip";
 import TaskChip from "./TaskChip";
 import "./Chips.css";
 
-/** 칩을 눌렀을 때 (R19). 종류에 따라 여는 창은 CalendarPage가 정한다 */
-export type CalOpenHandler = (item: CalItem) => void;
+/**
+ * 칩을 눌렀을 때 (R19). 종류에 따라 여는 창은 CalendarPage가 정한다.
+ * anchor = 누른 칩(+N 목록에서 눌렀으면 "+N"). 개인 일정 편집 팝오버가 그 옆에 뜬다 (R28)
+ */
+export type CalOpenHandler = (item: CalItem, anchor: HTMLElement) => void;
 
 /** 칩 4종이 같이 받는 자리·모양 */
 export interface ChipFrameProps {
   className: string; // "cal-chip" + 잘림 표시
   style: CSSProperties; // 주 줄 그리드 안 자리 (+N 목록에서는 비움)
-  onClick: () => void;
+  onClick: (e: MouseEvent<HTMLElement>) => void;
   children?: ReactNode; // 칩 오른쪽 끝에 붙일 것 (+N 목록의 기간)
 }
 
@@ -43,7 +46,7 @@ function CalChip({ slot, onOpen }: { slot: ChipSlot; onOpen: CalOpenHandler }) {
       item={slot.item}
       className={`cal-chip${cut}`}
       style={{ gridColumn: `${slot.col + 1} / span ${slot.span}`, gridRow: slot.row + 2 }}
-      onClick={() => onOpen(slot.item)}
+      onClick={(e) => onOpen(slot.item, e.currentTarget)}
     />
   );
 }

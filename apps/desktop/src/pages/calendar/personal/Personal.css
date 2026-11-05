@@ -1,0 +1,307 @@
+/* 개인 일정 입력·편집 (목업 part-personal.html, parts.css의 .ch.input·.hint·.bg i.sel·.edit-pop·.confirm, R23–R29) */
+
+/* ===== 칩 모양 입력칸 (5-1·5-2): 보라 테두리 + 옅은 보라 고리, 높이 23px ===== */
+.cal-week > .cal-pin {
+  z-index: 3;
+  align-self: center;
+  height: 23px;
+  margin: 0 5px;
+  padding: 0 7px;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  border-radius: 5px;
+  background: var(--surface);
+  border: 1.5px solid var(--accent);
+  box-shadow: 0 0 0 3px rgba(166, 140, 255, 0.18);
+  cursor: text;
+}
+
+.cal-pin__field {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  color: var(--text);
+  caret-color: var(--accent);
+}
+
+.cal-pin__field::placeholder {
+  color: var(--faint);
+}
+
+/* 입력칸 아래 안내 "Enter 저장 · Esc 취소" */
+.cal-pin__hint {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: -2px;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--popup);
+  font-size: 11px;
+  color: var(--faint);
+  white-space: pre;
+  pointer-events: none;
+}
+
+.cal-pin__hint--above {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+
+/* 입력칸이 있는 주 줄은 안내가 아래 주에 걸쳐 보이도록 잘라내지 않고 위로 올린다 */
+.cal-week.cal-week--pin {
+  overflow: visible;
+  z-index: 2;
+}
+
+.cal-pin__kbd {
+  margin-right: 3px;
+  padding: 0 4px;
+  border: 1px solid var(--border-2);
+  border-radius: 4px;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+/* ===== 드래그 범위 (5-2): 지나간 칸을 보라 테두리로 묶는다 ===== */
+.cal-day.cal-day--sel {
+  background: rgba(166, 140, 255, 0.13);
+  box-shadow: inset 0 1.5px 0 var(--accent), inset 0 -1.5px 0 var(--accent);
+}
+
+.cal-day.cal-day--sel.cal-day--sel-first {
+  box-shadow: inset 1.5px 1.5px 0 var(--accent), inset 0 -1.5px 0 var(--accent);
+}
+
+.cal-day.cal-day--sel.cal-day--sel-last {
+  box-shadow: inset -1.5px 1.5px 0 var(--accent), inset 0 -1.5px 0 var(--accent);
+}
+
+.cal-day.cal-day--sel.cal-day--sel-first.cal-day--sel-last {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+}
+
+/* ===== 편집 팝오버 (5-3): 300px ===== */
+.popover.cal-pe {
+  padding: 14px 16px;
+  background: var(--popup);
+}
+
+.cal-pe__title {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  outline: none;
+}
+
+.cal-pe__title:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(166, 140, 255, 0.18);
+}
+
+.cal-pe__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.cal-pe__row > label {
+  width: 34px;
+  flex-shrink: 0;
+}
+
+.cal-pe__fld {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.cal-pe__fld:hover {
+  border-color: var(--border-2);
+}
+
+.cal-pe__fld--focus,
+.cal-pe__time:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(166, 140, 255, 0.18);
+  outline: none;
+}
+
+.cal-pe__fld--bad {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.cal-pe__time {
+  color-scheme: dark;
+  cursor: text;
+}
+
+.cal-pe__error {
+  margin: 6px 0 0 42px;
+  font-size: 11.5px;
+  color: var(--red);
+}
+
+.cal-pe__caption {
+  margin: 6px 0 0 42px;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+/* 없음 / 시각 */
+.cal-pe__seg {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.cal-pe__seg button {
+  padding: 3px 10px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.cal-pe__seg button.cal-pe__seg-on {
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.cal-pe__seg button:disabled {
+  color: var(--faint);
+  cursor: default;
+}
+
+.cal-pe__seg--off {
+  opacity: 0.7;
+}
+
+/* [삭제] [취소] [저장] */
+.cal-pe__foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.cal-pe__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: none;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.cal-pe__btn:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.cal-pe__btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.cal-pe__btn--del {
+  color: var(--red);
+}
+
+.cal-pe__btn--del:hover:not(:disabled) {
+  color: var(--red);
+}
+
+.cal-pe__btn--primary {
+  margin-left: auto;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 700;
+}
+
+.cal-pe__btn--primary:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--on-accent);
+  filter: brightness(1.08);
+}
+
+.cal-pe__btn--primary:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.cal-pe__btn--danger {
+  background: var(--red);
+  color: var(--on-accent);
+  font-weight: 700;
+}
+
+.cal-pe__btn--danger:hover:not(:disabled) {
+  background: var(--red);
+  color: var(--on-accent);
+  filter: brightness(1.08);
+}
+
+/* ===== 삭제 확인 줄 (5-4): 빨간 바탕 ===== */
+.cal-pe__confirm {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 10px 10px 10px 12px;
+  border-radius: 8px;
+  background: var(--red-soft);
+  font-size: 12.5px;
+  color: var(--text);
+}
+
+.cal-pe__confirm > span:first-child {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.popover.cal-pe-date {
+  padding: 10px;
+  background: var(--popup);
+}
