@@ -6,7 +6,7 @@
 }
 
 /* ===== 위쪽 줄: 월 이동·범례 ===== */
-.cal-bar {
+:where(.cal-view) .cal-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -14,13 +14,13 @@
   flex-wrap: wrap;
 }
 
-.cal-bar__nav {
+:where(.cal-view) .cal-bar__nav {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.cal-bar__month {
+:where(.cal-view) .cal-bar__month {
   margin: 0;
   min-width: 120px;
   font-size: 18px;
@@ -28,8 +28,8 @@
   text-align: center;
 }
 
-.cal-bar__icon-btn,
-.cal-bar__today {
+:where(.cal-view) .cal-bar__icon-btn,
+:where(.cal-view) .cal-bar__today {
   height: 32px;
   display: grid;
   place-items: center;
@@ -39,25 +39,25 @@
   cursor: pointer;
 }
 
-.cal-bar__icon-btn {
+:where(.cal-view) .cal-bar__icon-btn {
   width: 32px;
   padding: 0;
   color: var(--muted);
 }
 
-.cal-bar__today {
+:where(.cal-view) .cal-bar__today {
   padding: 0 12px;
   color: var(--text);
   font-size: 13px;
 }
 
-.cal-bar__icon-btn:hover,
-.cal-bar__today:hover {
+:where(.cal-view) .cal-bar__icon-btn:hover,
+:where(.cal-view) .cal-bar__today:hover {
   background: var(--surface-2);
   color: var(--text);
 }
 
-.cal-legend {
+:where(.cal-view) .cal-legend {
   display: flex;
   align-items: center;
   gap: 14px;
@@ -65,13 +65,13 @@
   color: var(--muted);
 }
 
-.cal-legend span {
+:where(.cal-view) .cal-legend span {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.cal-legend__dot {
+:where(.cal-view) .cal-legend__dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -79,15 +79,15 @@
   box-sizing: border-box;
 }
 
-.cal-legend__dot--applied { background: var(--blue); }
-.cal-legend__dot--stage-prep { background: var(--amber); }
-.cal-legend__dot--awaiting { background: var(--green); }
-.cal-legend__dot--closed { background: var(--faint); }
-.cal-legend__dot--deadline { border: 1px dashed var(--muted); }
+:where(.cal-view) .cal-legend__dot--applied { background: var(--blue); }
+:where(.cal-view) .cal-legend__dot--stage-prep { background: var(--amber); }
+:where(.cal-view) .cal-legend__dot--awaiting { background: var(--green); }
+:where(.cal-view) .cal-legend__dot--closed { background: var(--faint); }
+:where(.cal-view) .cal-legend__dot--deadline { border: 1px dashed var(--muted); }
 
 /* ===== 월 달력 ===== */
 /* .cal-week·.cal-day 이름은 캘린더 페이지(pages/calendar)도 쓰므로 .cal-view 안으로 묶는다 */
-.cal {
+:where(.cal-view) .cal {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
@@ -155,7 +155,7 @@
 }
 
 /* ===== 일정 한 줄 ===== */
-.cal-ev {
+:where(.cal-view, .cal-more-pop) .cal-ev {
   width: 100%;
   height: 21px;
   padding: 0 6px;
@@ -175,7 +175,7 @@
   cursor: pointer;
 }
 
-.cal-ev::before {
+:where(.cal-view, .cal-more-pop) .cal-ev::before {
   content: "";
   width: 3px;
   height: 12px;
@@ -184,43 +184,43 @@
   flex-shrink: 0;
 }
 
-.cal-ev__title {
+:where(.cal-view, .cal-more-pop) .cal-ev__title {
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.cal-ev__kind {
+:where(.cal-view, .cal-more-pop) .cal-ev__kind {
   flex-shrink: 0;
   opacity: 0.8;
   font-weight: 500;
 }
 
 /* 상태 색 = 카드의 현재 상태 */
-.cal-ev--preparing { color: var(--neutral); background: var(--neutral-soft); }
-.cal-ev--applied { color: var(--blue); background: var(--blue-soft); }
-.cal-ev--stage-prep { color: var(--amber); background: var(--amber-soft); }
-.cal-ev--awaiting { color: var(--green); background: var(--green-soft); }
-.cal-ev--closed { color: var(--muted); background: var(--neutral-soft); }
+:where(.cal-view, .cal-more-pop) .cal-ev--preparing { color: var(--neutral); background: var(--neutral-soft); }
+:where(.cal-view, .cal-more-pop) .cal-ev--applied { color: var(--blue); background: var(--blue-soft); }
+:where(.cal-view, .cal-more-pop) .cal-ev--stage-prep { color: var(--amber); background: var(--amber-soft); }
+:where(.cal-view, .cal-more-pop) .cal-ev--awaiting { color: var(--green); background: var(--green-soft); }
+:where(.cal-view, .cal-more-pop) .cal-ev--closed { color: var(--muted); background: var(--neutral-soft); }
 
 /* 지원 준비 카드의 지원 마감: 바탕 없이 점선 테두리 + 회색 글자 (R8) */
-.cal-ev--deadline {
+:where(.cal-view, .cal-more-pop) .cal-ev--deadline {
   color: var(--muted);
   background: transparent;
   border: 1px dashed var(--border-2);
 }
 
-.cal-ev--deadline::before { background: var(--faint); }
+:where(.cal-view, .cal-more-pop) .cal-ev--deadline::before { background: var(--faint); }
 
-.cal-ev--past { opacity: 0.55; }
+:where(.cal-view, .cal-more-pop) .cal-ev--past { opacity: 0.55; }
 
-.cal-ev:hover,
-.cal-ev:focus-visible {
+:where(.cal-view, .cal-more-pop) .cal-ev:hover,
+:where(.cal-view, .cal-more-pop) .cal-ev:focus-visible {
   outline: none;
   box-shadow: 0 0 0 1px currentColor inset;
 }
 
 /* ===== +N개 더 ===== */
-.cal-more {
+:where(.cal-view) .cal-more {
   align-self: flex-start;
   padding: 0 6px;
   border: none;
@@ -232,19 +232,19 @@
   cursor: pointer;
 }
 
-.cal-more:hover {
+:where(.cal-view) .cal-more:hover {
   color: var(--text);
   background: var(--surface-2);
 }
 
-.cal-more-pop {
+:where(.popover).cal-more-pop {
   padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
-.cal-more-pop__date {
+:where(.cal-more-pop) .cal-more-pop__date {
   padding: 2px 4px 6px;
   font-size: 12px;
   font-weight: 700;
