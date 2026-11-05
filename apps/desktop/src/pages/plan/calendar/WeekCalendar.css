@@ -324,6 +324,98 @@
   font-size: 13px;
 }
 
+/* 시간 없는 개인 일정이 덮는 날 (캘린더 R32): 칸 배경을 살짝 어둡게. 오늘·놓일 칸 색 위에 겹친다 */
+.plan-cols i.plan-cols__busy {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18));
+}
+
+/* 개인 일정 층 (캘린더 R31): 지원 일정 층 아래, 막대 층 위. 비면 숨긴다 */
+.plan-personal {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-auto-rows: 22px;
+  row-gap: 4px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border-2);
+}
+
+.plan-personal:empty {
+  display: none;
+}
+
+/* 개인 일정 칩·막대: 캘린더 .cal-chip--personal과 같은 점선 테두리 + 회색 글자, 끌 수 없다 */
+.plan-pev {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  margin: 0 6px;
+  padding: 0 7px;
+  border: 1px dashed #55555f;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.plan-pev:hover {
+  border-color: var(--muted);
+  color: var(--text);
+}
+
+.plan-pev:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1.5px var(--muted);
+}
+
+.plan-pev em {
+  flex-shrink: 0;
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.plan-pev__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 주 경계에서 잘린 쪽: 칸 끝까지 붙이고 그쪽 점선·모서리를 없앤 뒤 ‹ › */
+.plan-pev--cut-l {
+  margin-left: 0;
+  padding-left: 4px;
+  border-left: none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.plan-pev--cut-r {
+  margin-right: 0;
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.plan-pev__cut {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: var(--faint);
+}
+
+.plan-pev__cut--r {
+  margin-left: auto;
+  padding-left: 4px;
+}
+
 /* 페이지 머리 오른쪽 `지원 일정` 스위치 (R33). 왼쪽 세로선이 주 이동 버튼과의 구분선이다 */
 .plan-switch {
   display: inline-flex;

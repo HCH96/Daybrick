@@ -31,7 +31,8 @@ export interface WeekLayout {
   more: DayMore[];
 }
 
-interface Bar {
+/** 여러 날 막대 하나의 자리 (플랜 주간 달력의 개인 일정 층도 쓴다) */
+export interface ItemBar {
   item: CalItem;
   col: number;
   span: number;
@@ -57,7 +58,7 @@ function isMultiDay(item: CalItem): boolean {
 }
 
 /** 막대를 플랜 주간 달력(`layoutWeekBars`)과 같은 규칙으로 줄에 놓는다: 시작 칸 → 긴 것 → 만든 순 */
-function layoutBars(items: CalItem[], weekStart: string, weekEnd: string): Bar[] {
+export function layoutBars(items: CalItem[], weekStart: string, weekEnd: string): ItemBar[] {
   const placed = items
     .map((item) => {
       const r = itemRange(item);
@@ -88,7 +89,7 @@ function layoutBars(items: CalItem[], weekStart: string, weekEnd: string): Bar[]
 }
 
 /** 하루짜리 순서: 시간 있는 것(시간순) → 시간 없는 것(태스크 → 지원 → 깃발 → 개인). 같으면 들어온 순서 */
-function compareSingles(a: CalItem, b: CalItem): number {
+export function compareSingles(a: CalItem, b: CalItem): number {
   const ta = itemTime(a);
   const tb = itemTime(b);
   if (ta !== null && tb !== null) return ta.localeCompare(tb) || KIND_RANK[a.kind] - KIND_RANK[b.kind];

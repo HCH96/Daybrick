@@ -1,5 +1,7 @@
 import { useMemo, useState, type MouseEvent } from "react";
 import { useApplications } from "../../../features/applications/store";
+import { buildCalItems, type CalItem } from "../../../features/calendar/items";
+import { useCalendar } from "../../../features/calendar/store";
 import { buildWeekSchedule } from "../../../features/plan/applicationEvents";
 import { usePlan } from "../../../features/plan/store";
 import { formatDropHint } from "../../../features/plan/format";
@@ -8,6 +10,7 @@ import { addDays, diffDays, toDateKey } from "../../../utils/date";
 import { usePlanDrag } from "../drag/usePlanDrag";
 import BarLayer from "./BarLayer";
 import DayHeader from "./DayHeader";
+import PersonalLayer from "./PersonalLayer";
 import SchedLayer from "./SchedLayer";
 import WeekEmptyHint from "./WeekEmptyHint";
 import "./WeekCalendar.css";
@@ -22,6 +25,7 @@ interface WeekCalendarProps {
  * 주간 달력 (R21·R23·R24·R28–R30, D3·D6): 요일 머리 + 7칸 세로줄 배경 위에 태스크 막대 층.
  * 몸통은 막대가 많아지면 세로로 스크롤된다. 막대 층 위에는 지원 일정 층(R31–R34)을 둔다:
  * 지원 데이터를 읽기만 하므로 지원관리에서 바꾸면 바로 반영되고, 스위치가 꺼졌거나 지원 데이터가 아직 준비되지 않았으면 층을 그리지 않는다.
+ * 지원 일정 층 아래에는 개인 일정 층(캘린더 R31–R34)을 스위치와 상관없이 늘 두고, 시간 없는 개인 일정이 덮는 날은 칸을 살짝 어둡게 한다.
  * 끄는 동안(R22·R25·R26) 놓일 칸을 보라로 칠하고 아래에 놓일 날짜 알약을 띄운다. 끝을 끄는 막대는 바뀔 기간으로 바로 다시 그린다.
  */
 function WeekCalendar({ weekStart, onOpenTask, onOpenApplication }: WeekCalendarProps) {
@@ -36,6 +40,26 @@ function WeekCalendar({ weekStart, onOpenTask, onOpenApplication }: WeekCalendar
     [showSchedule, appData, weekStart],
   );
   const hasSchedule = schedule !== null && schedule.some((pills) => pills.length > 0);
+  // 이번 주 개인 일정 (캘린더 R31·R34): `지원 일정` 스위치와 상관없이 늘 그린다
+  const { state: calState } = useCalendar();
+  const calEvents = calState.kind === "ready" ? calState.data.events : null;
+  const personal = useMemo(() => {
+    if (!calEvents) return [];
+    const items = buildCalItems({ plan: null, applications: null, events: calEvents }, weekStart, addDays(weekStart, 6));
+    return items.filter((i): i is Extract<CalItem, { kind: "personal" }> => i.kind === "personal");
+  }, [calEvents, weekStart]);
+  // 시간 없는 개인 일정(기간 포함)이 덮는 날 (캘린더 R32). 칸만 어둡게 하고 태스크 배치는 막지 않는다
+  const busyDays = useMemo(() => {
+    const set = new Set<string>();
+    for (const ev of personal) {
+      if (ev.time !== null) continue;
+      const weekEnd = addDays(weekStart, 6);
+      const from = ev.start < weekStart ? weekStart : ev.start;
+      const to = ev.end > weekEnd ? weekEnd : ev.end;
+      for (let d = from; d <= to; d = addDays(d, 1)) set.add(d);
+    }
+    return set;
+  }, [personal, weekStart]);
   // 더블클릭으로 바로 만들기를 연 날짜 (R28). 다른 주로 가면 보이지 않는다.
   const [draftDay, setDraftDay] = useState<string | null>(null);
 
@@ -69,7 +93,7 @@ function WeekCalendar({ weekStart, onOpenTask, onOpenApplication }: WeekCalendar
   /** 막대·입력칸이 아닌 빈 곳을 더블클릭하면 누른 자리의 날짜에 바로 만들기 칸을 연다 */
   const handleDoubleClick = (e: MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
-    if (target.closest(".plan-tbar, .plan-bars__draft, .plan-ev")) return;
+    if (target.closest(".plan-tbar, .plan-bars__draft, .plan-ev, .plan-pev")) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const col = Math.min(6, Math.max(0, Math.floor(((e.clientX - rect.left) / rect.width) * 7)));
     setDraftDay(days[col]);
@@ -90,13 +114,14 @@ function WeekCalendar({ weekStart, onOpenTask, onOpenApplication }: WeekCalendar
               <i
                 key={key}
                 data-day={key}
-                className={[key === today && "plan-cols__today", isDropDay(key) && "plan-cols__drop"].filter(Boolean).join(" ") || undefined}
+                className={[key === today && "plan-cols__today", busyDays.has(key) && "plan-cols__busy", isDropDay(key) && "plan-cols__drop"].filter(Boolean).join(" ") || undefined}
               />
             ))}
           </div>
           {schedule && hasSchedule && (
             <SchedLayer week={schedule} dragging={drag !== null} onOpenApplication={onOpenApplication} />
           )}
+          <PersonalLayer items={personal} weekStart={weekStart} />
           <BarLayer
             bars={bars}
             tasks={tasks}

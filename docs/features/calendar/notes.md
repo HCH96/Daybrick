@@ -9,16 +9,16 @@
 - 5단계: 개인 일정 입력·편집 (자동 진행, 최종 테스트 대기)
 - 6단계: 드래그로 옮기기 (자동 진행, 최종 테스트 대기)
 - 7단계: 회고 패널 (자동 진행, 최종 테스트 대기)
+- 8단계: 플랜 연동 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 8단계: 플랜 연동 (플랜 주간 달력에 개인 일정 층·점선 막대/칩, 시간 없는 일정 날 칸 어둡게, 누르면 캘린더 편집 팝오버)
-- 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16, D17 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 편집 팝오버는 `pages/calendar/personal/PersonalEditPopover.tsx`(props: eventId·anchor(HTMLElement)·onClose)를 그대로 연다. 개인 일정 항목은 `features/calendar/items.ts`의 `buildCalItems`(kind "personal")로 모을 수 있다.
-- 주의: 플랜 쪽 막대 줄 배치는 `features/calendar/monthLayout.ts`의 막대 규칙을 쓴다(export만 grep). 개인 일정 칩 모양 CSS는 `pages/calendar/chips/Chips.css`의 `.cal-chip--personal`(클래스만 검색).
+- 9단계: 마무리·전체 빌드 (목업과 색·간격 차이 고치기, scheduler 잔여 사용처 grep, 전체 빌드 4종, 상태를 "구현 완료 (테스트 대기)"로)
+- 관련 결정: D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16, D17, D18 (ai/spec/decisions.md에서 이 줄만 읽기)
+- 주의: D11(`window.__calendar` 개발용 노출)을 남길지 이 단계에서 정한다. 화면 비교는 하지 않고 CSS 값 비교만 한다(화면 확인은 /test).
+- 주의: 순수 함수 Node 확인 결과는 L06·L07·L10 등 기록의 "확인" 줄에서 모은다(기록 목차에서 고른 파일만 읽기).
 
 ## 확인할 문서 (경로는 docs/features/calendar/ 기준, 파일 통째로 읽기)
-- ai/plan/step-08.md
-- ai/spec/req-plan-link.md (R31–R34)
-- ai/logs/L10.md
-- human/mockups/part-chips.html의 chips-board 구역 (개인 일정 칩만, CSS: calendar.css에서 `.ch.p` 검색)
-- ai/plan/structure.md의 `pages/plan/calendar/` 줄 (새 파일 위치를 정할 때만)
+- ai/plan/step-09.md
+- ai/spec/mockup.md ("목업에서 정한 것")
+- ai/logs/L11.md
+- human/mockups/index.html (목업 목차, 화면 파일별 구역 표를 보고 고칠 곳의 구역만 읽기. CSS: calendar.css·review.css·parts.css·common.css에서 클래스 검색)
