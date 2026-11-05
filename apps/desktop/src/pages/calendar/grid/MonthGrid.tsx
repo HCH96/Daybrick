@@ -1,4 +1,10 @@
 import { useMemo, useState, type AnimationEvent } from "react";
+import { useApplications } from "../../../features/applications/store";
+import { useCalendar } from "../../../features/calendar/store";
+import { buildCalItems } from "../../../features/calendar/items";
+import { layoutWeek } from "../../../features/calendar/monthLayout";
+import { usePlan } from "../../../features/plan/store";
+import type { PersonalEvent } from "../../../features/calendar/types";
 import { getMonthGrid } from "../../../utils/calendarGrid";
 import WeekRow from "./WeekRow";
 import "./Grid.css";
@@ -69,6 +75,8 @@ function MonthGrid({ year, month, dir, todayKey }: MonthGridProps) {
   );
 }
 
+const NO_EVENTS: PersonalEvent[] = [];
+
 interface MonthPageProps {
   index: number; // monthIndex
   todayKey: string;
@@ -76,9 +84,26 @@ interface MonthPageProps {
   onAnimationEnd?: (e: AnimationEvent<HTMLDivElement>) => void;
 }
 
-/** 한 달의 주 줄 5~6개 묶음 */
+/**
+ * 한 달의 주 줄 5~6개 묶음. 보이는 기간(그리드 첫날~끝날)의 칩을 모아 주마다 자리를 계산한다.
+ * 플랜·지원관리·캘린더 저장소를 읽기만 하므로 다른 화면에서 고치면 바로 다시 그려진다 (R8).
+ */
 function MonthPage({ index, todayKey, className, onAnimationEnd }: MonthPageProps) {
   const weeks = useMemo(() => getMonthGrid(Math.floor(index / 12), index % 12, 1), [index]);
+  const plan = usePlan().state;
+  const applications = useApplications().state;
+  const calendar = useCalendar().state;
+  const planData = plan.kind === "ready" ? plan.data : null;
+  const appData = applications.kind === "ready" ? applications.data : null;
+  const events = calendar.kind === "ready" ? calendar.data.events : NO_EVENTS;
+
+  const layouts = useMemo(() => {
+    const from = weeks[0][0].key;
+    const to = weeks[weeks.length - 1][6].key;
+    const items = buildCalItems({ plan: planData, applications: appData, events }, from, to);
+    return weeks.map((week) => layoutWeek(items, week[0].key));
+  }, [weeks, planData, appData, events]);
+
   return (
     <div
       className={className}
@@ -86,7 +111,7 @@ function MonthPage({ index, todayKey, className, onAnimationEnd }: MonthPageProp
       onAnimationEnd={onAnimationEnd}
     >
       {weeks.map((week, w) => (
-        <WeekRow key={week[0].key} week={week} todayKey={todayKey} isFirstWeek={w === 0} />
+        <WeekRow key={week[0].key} week={week} todayKey={todayKey} isFirstWeek={w === 0} layout={layouts[w]} />
       ))}
     </div>
   );
