@@ -1,0 +1,32 @@
+/* 캘린더 화면 전체 배치 (목업 calendar.html) */
+.calendar-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.calendar-page__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.calendar-page__title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+}
+
+.calendar-page__notice {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.calendar-page__notice--error {
+  color: var(--red);
+}

@@ -41,10 +41,10 @@ export const dashboardCards: DashboardCardDef[] = [
   {
     id: "today-schedule",
     title: "오늘 일정",
-    linkTo: "scheduler",
+    linkTo: "calendar",
     size: "narrow",
     body: () => (
-      <EmptyState linkTo="scheduler" description="스케줄러 기능을 만들면 여기에 오늘 일정이 보여요" />
+      <EmptyState linkTo="calendar" description="스케줄러 기능을 만들면 여기에 오늘 일정이 보여요" />
     ),
   },
   {

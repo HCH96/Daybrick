@@ -3,15 +3,15 @@ import type { PageId } from "./types";
 import { NAV_LABELS, PAGE_LABELS } from "./pageLabels";
 import {
   ApplicationsIcon,
+  CalendarNavIcon,
   HomeIcon,
   JobSearchIcon,
   PlanIcon,
   ProjectsIcon,
-  SchedulerIcon,
   SettingsIcon,
   TodayIcon,
 } from "../components/icons/NavIcons";
-import { makePlaceholderPage } from "../pages/PlaceholderPage";
+import CalendarPage from "../pages/calendar/CalendarPage";
 import HomePage from "../pages/home/HomePage";
 import PlanPage from "../pages/plan/PlanPage";
 import ProjectsPage from "../pages/projects/ProjectsPage";
@@ -56,11 +56,11 @@ export const pages: PageDef[] = [
     component: ProjectsPage,
   },
   {
-    id: "scheduler",
-    label: PAGE_LABELS.scheduler,
-    navLabel: NAV_LABELS.scheduler,
-    icon: SchedulerIcon,
-    component: makePlaceholderPage("스케줄러", "일정 관리"),
+    id: "calendar",
+    label: PAGE_LABELS.calendar,
+    navLabel: NAV_LABELS.calendar,
+    icon: CalendarNavIcon,
+    component: CalendarPage,
   },
   {
     id: "applications",

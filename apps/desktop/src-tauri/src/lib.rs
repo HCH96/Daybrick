@@ -1,3 +1,4 @@
+mod calendar;
 mod job_search;
 mod notifications;
 mod plan;
@@ -20,6 +21,8 @@ pub fn run() {
             notifications::save_notifications,
             plan::load_plan,
             plan::save_plan,
+            calendar::load_calendar,
+            calendar::save_calendar,
             today::load_today,
             today::save_today,
             server::config::load_server_config,
