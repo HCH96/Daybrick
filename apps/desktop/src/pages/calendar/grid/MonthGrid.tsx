@@ -6,6 +6,7 @@ import { layoutWeek } from "../../../features/calendar/monthLayout";
 import { usePlan } from "../../../features/plan/store";
 import type { PersonalEvent } from "../../../features/calendar/types";
 import { getMonthGrid } from "../../../utils/calendarGrid";
+import type { CalOpenHandler } from "../chips/CalChip";
 import WeekRow from "./WeekRow";
 import "./Grid.css";
 
@@ -19,6 +20,7 @@ interface MonthGridProps {
   month: number; // 0부터 (0 = 1월)
   dir: FlipDir | null; // 마지막으로 넘긴 방향. null이면 처음 그린 것이라 움직이지 않는다
   todayKey: string;
+  onOpen: CalOpenHandler; // 칩을 눌렀을 때 (R19)
 }
 
 /** 년·월을 하나의 수로 (비교·key용) */
@@ -32,7 +34,7 @@ function monthIndex(year: number, month: number): number {
  * 밀려나게 하고, 새 달 page는 key가 바뀌어 다시 그려지며 들어온다.
  * 애니메이션 중에 또 넘기면 밀려나던 page를 버리고 바로 새 달로 간다 (쌓이지 않음).
  */
-function MonthGrid({ year, month, dir, todayKey }: MonthGridProps) {
+function MonthGrid({ year, month, dir, todayKey, onOpen }: MonthGridProps) {
   const current = monthIndex(year, month);
   const [shown, setShown] = useState(current);
   const [leaving, setLeaving] = useState<{ index: number; dir: FlipDir } | null>(null);
@@ -60,6 +62,7 @@ function MonthGrid({ year, month, dir, todayKey }: MonthGridProps) {
             key={`out-${leaving.index}`}
             index={leaving.index}
             todayKey={todayKey}
+            onOpen={onOpen}
             className={`cal-page cal-page--out-${leaving.dir}`}
             onAnimationEnd={onLeaveEnd}
           />
@@ -68,6 +71,7 @@ function MonthGrid({ year, month, dir, todayKey }: MonthGridProps) {
           key={current}
           index={current}
           todayKey={todayKey}
+          onOpen={onOpen}
           className={dir ? `cal-page cal-page--in-${dir}` : "cal-page"}
         />
       </div>
@@ -80,6 +84,7 @@ const NO_EVENTS: PersonalEvent[] = [];
 interface MonthPageProps {
   index: number; // monthIndex
   todayKey: string;
+  onOpen: CalOpenHandler; // 칩을 눌렀을 때 (R19)
   className: string;
   onAnimationEnd?: (e: AnimationEvent<HTMLDivElement>) => void;
 }
@@ -88,7 +93,7 @@ interface MonthPageProps {
  * 한 달의 주 줄 5~6개 묶음. 보이는 기간(그리드 첫날~끝날)의 칩을 모아 주마다 자리를 계산한다.
  * 플랜·지원관리·캘린더 저장소를 읽기만 하므로 다른 화면에서 고치면 바로 다시 그려진다 (R8).
  */
-function MonthPage({ index, todayKey, className, onAnimationEnd }: MonthPageProps) {
+function MonthPage({ index, todayKey, onOpen, className, onAnimationEnd }: MonthPageProps) {
   const weeks = useMemo(() => getMonthGrid(Math.floor(index / 12), index % 12, 1), [index]);
   const plan = usePlan().state;
   const applications = useApplications().state;
@@ -111,7 +116,7 @@ function MonthPage({ index, todayKey, className, onAnimationEnd }: MonthPageProp
       onAnimationEnd={onAnimationEnd}
     >
       {weeks.map((week, w) => (
-        <WeekRow key={week[0].key} week={week} todayKey={todayKey} isFirstWeek={w === 0} layout={layouts[w]} />
+        <WeekRow key={week[0].key} week={week} todayKey={todayKey} isFirstWeek={w === 0} layout={layouts[w]} onOpen={onOpen} />
       ))}
     </div>
   );

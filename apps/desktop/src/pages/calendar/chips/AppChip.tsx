@@ -7,14 +7,15 @@ interface AppChipProps extends ChipFrameProps {
 }
 
 /** 지원 일정 칩 (R11–R14): 회색 바탕 + 배지 → 회사 → 시각 → 오른쪽 종류 아이콘 (면접만 보라) */
-function AppChip({ item, className, style }: AppChipProps) {
+function AppChip({ item, className, style, onClick, children }: AppChipProps) {
   const isInterview = item.eventKind === "interview";
   return (
-    <div className={`${className} cal-chip--app`} style={style} title={item.text}>
+    <div className={`${className} cal-chip--app`} style={style} title={item.text} onClick={onClick}>
       <i className={`cal-ini cal-ini--${item.badge}`}>{item.initial}</i>
       <span>{item.text}</span>
       {item.time && <em>{item.time}</em>}
       <AppKindIcon kind={item.eventKind} className={`cal-chip__kind${isInterview ? " cal-chip__kind--on" : ""}`} />
+      {children}
     </div>
   );
 }

@@ -7,11 +7,12 @@ interface TaskChipProps extends ChipFrameProps {
 }
 
 /** 태스크 칩 (R9–R10): 카테고리·프로젝트 색 바탕 + 왼쪽 3px 띠, 완료는 흐리게 */
-function TaskChip({ item, className, style }: TaskChipProps) {
+function TaskChip({ item, className, style, onClick, children }: TaskChipProps) {
   const colored = { ...style, "--c": item.color } as CSSProperties;
   return (
-    <div className={`${className} cal-chip--task${item.done ? " cal-chip--done" : ""}`} style={colored} title={item.title}>
+    <div className={`${className} cal-chip--task${item.done ? " cal-chip--done" : ""}`} style={colored} title={item.title} onClick={onClick}>
       <span>{item.title}</span>
+      {children}
     </div>
   );
 }

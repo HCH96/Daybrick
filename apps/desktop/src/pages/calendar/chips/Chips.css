@@ -173,16 +173,3 @@
 .cal-chip--personal.cal-chip--cut-l {
   border-left: none;
 }
-
-/* ===== +N (넘친 날의 4번째 줄, R5. 목록은 4단계) ===== */
-.cal-more {
-  margin: 0 5px;
-  padding: 0 7px;
-  height: 21px;
-  line-height: 21px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--muted);
-  border-radius: 5px;
-  white-space: nowrap;
-}

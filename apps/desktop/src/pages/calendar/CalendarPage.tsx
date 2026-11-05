@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useNavigation } from "../../app/navigation";
 import { PAGE_LABELS } from "../../app/pageLabels";
+import type { CalItem } from "../../features/calendar/items";
 import { useCalendar } from "../../features/calendar/store";
 import { useTodayKey } from "../../features/today/useTodayKey";
 import { parseDateKey } from "../../utils/date";
+import ApplicationDetailModal from "../applications/detail/ApplicationDetailModal";
+import TaskDetailModal from "../plan/detail/TaskDetailModal";
 import MonthHeader from "./head/MonthHeader";
 import MonthGrid, { type FlipDir } from "./grid/MonthGrid";
 import "./CalendarPage.css";
@@ -15,7 +19,8 @@ interface MonthView {
 
 /**
  * 캘린더 화면 (R1–R4, R41). 머리(달 이동·[오늘])와 월 달력을 그린다.
- * 칩(3단계)·입력(5단계)·회고 패널(7단계)은 이어지는 단계에서 채운다. 통계는 넣지 않는다 (R6).
+ * 칩을 누르면 종류별로 플랜 상세·지원 상세 팝업을 열거나 프로젝트 상세로 간다 (R19).
+ * 입력(5단계)·회고 패널(7단계)은 이어지는 단계에서 채운다. 통계는 넣지 않는다 (R6).
  */
 function CalendarPage() {
   const { state } = useCalendar();
@@ -41,6 +46,22 @@ function CalendarPage() {
     });
   };
 
+  // 칩 누르기 (R19): 태스크 → 플랜 상세, 지원 → 지원 상세, 깃발 → 프로젝트 상세 화면.
+  // 개인 일정은 5단계에서 편집 팝오버를 연다 (지금은 아무 동작 없음)
+  const { navigate } = useNavigation();
+  const [openTaskId, setOpenTaskId] = useState<string | null>(null);
+  const closeTask = useCallback(() => setOpenTaskId(null), []);
+  const [openApplicationId, setOpenApplicationId] = useState<string | null>(null);
+  const closeApplication = useCallback(() => setOpenApplicationId(null), []);
+  const openItem = useCallback(
+    (item: CalItem) => {
+      if (item.kind === "task") setOpenTaskId(item.taskId);
+      else if (item.kind === "app") setOpenApplicationId(item.applicationId);
+      else if (item.kind === "flag") navigate("projects", item.projectId);
+    },
+    [navigate],
+  );
+
   return (
     <div className="calendar-page">
       <header className="calendar-page__head">
@@ -62,8 +83,10 @@ function CalendarPage() {
         </div>
       )}
       {state.kind === "ready" && (
-        <MonthGrid year={view.year} month={view.month} dir={view.dir} todayKey={todayKey} />
+        <MonthGrid year={view.year} month={view.month} dir={view.dir} todayKey={todayKey} onOpen={openItem} />
       )}
+      {openTaskId && <TaskDetailModal taskId={openTaskId} onClose={closeTask} onOpenApplication={setOpenApplicationId} />}
+      {openApplicationId && <ApplicationDetailModal applicationId={openApplicationId} onClose={closeApplication} />}
     </div>
   );
 }
