@@ -7,6 +7,8 @@ import { usePlan } from "../../../features/plan/store";
 import type { PersonalEvent } from "../../../features/calendar/types";
 import { getMonthGrid } from "../../../utils/calendarGrid";
 import type { CalOpenHandler } from "../chips/CalChip";
+import DragGhost from "../drag/DragGhost";
+import { useCalendarDrag, type ChipDrag } from "../drag/useCalendarDrag";
 import { useRangeSelect, type DaySelection } from "./useRangeSelect";
 import WeekRow, { type PersonalDraft } from "./WeekRow";
 import "./Grid.css";
@@ -35,6 +37,7 @@ function monthIndex(year: number, month: number): number {
  * 밀려나게 하고, 새 달 page는 key가 바뀌어 다시 그려지며 들어온다.
  * 애니메이션 중에 또 넘기면 밀려나던 page를 버리고 바로 새 달로 간다 (쌓이지 않음).
  * 빈 곳 누르기(오늘·미래) → 하루짜리 입력칸, 드래그 → 기간 입력칸 (R23·R24, D5·D10).
+ * 칩 드래그 → 태스크·개인 일정을 다른 날로 옮긴다 (R35–R40). 끌기 시작하면 입력칸을 닫는다.
  */
 function MonthGrid({ year, month, dir, todayKey, onOpen }: MonthGridProps) {
   const current = monthIndex(year, month);
@@ -48,6 +51,7 @@ function MonthGrid({ year, month, dir, todayKey, onOpen }: MonthGridProps) {
     onClick: (day) => setDraft(day >= todayKey ? { kind: "quick", start: day, end: day } : null),
     onRange: (range) => setDraft({ kind: "range", ...range }),
   });
+  const { drag, ghostRef, chipDrag } = useCalendarDrag({ onStart: () => setDraft(null) });
 
   // 그리는 중에 달이 바뀐 것을 알아채 밀려날 page를 정한다 (React의 "props에서 상태 끌어내기" 방식)
   if (shown !== current) {
@@ -94,8 +98,11 @@ function MonthGrid({ year, month, dir, todayKey, onOpen }: MonthGridProps) {
           draft={draft}
           onDraftSubmit={submitDraft}
           onDraftCancel={cancelDraft}
+          chipDrag={chipDrag}
+          drop={drag?.drop ?? null}
         />
       </div>
+      {drag && <DragGhost drag={drag} ghostRef={ghostRef} />}
     </div>
   );
 }
@@ -113,6 +120,8 @@ interface MonthPageProps {
   draft?: PersonalDraft | null; // 입력 중인 새 개인 일정
   onDraftSubmit?: (title: string) => void;
   onDraftCancel?: () => void;
+  chipDrag?: ChipDrag; // 칩 옮기기 (밀려나는 page에는 없음)
+  drop?: DaySelection | null; // 끄는 칩이 놓일 기간
 }
 
 /**
@@ -129,6 +138,8 @@ function MonthPage({
   draft = null,
   onDraftSubmit = noop,
   onDraftCancel = noop,
+  chipDrag,
+  drop = null,
 }: MonthPageProps) {
   const weeks = useMemo(() => getMonthGrid(Math.floor(index / 12), index % 12, 1), [index]);
   const plan = usePlan().state;
@@ -164,6 +175,8 @@ function MonthPage({
           draft={draft}
           onDraftSubmit={onDraftSubmit}
           onDraftCancel={onDraftCancel}
+          chipDrag={chipDrag}
+          drop={drop}
         />
       ))}
     </div>

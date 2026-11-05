@@ -20,8 +20,8 @@ const DRAG_THRESHOLD = 4;
 /** 누르기를 시작하지 않는 곳: 칩, "+N", 입력칸 */
 const IGNORE_SELECTOR = ".cal-chip, .cal-week-more, .cal-pin";
 
-/** 화면 좌표 아래의 날짜. 주 줄(`.cal-week[data-week]`)의 너비를 7로 나눠 칸을 고른다 */
-function dayAt(x: number, y: number): string | null {
+/** 화면 좌표 아래의 날짜. 주 줄(`.cal-week[data-week]`)의 너비를 7로 나눠 칸을 고른다 (칩 옮기기도 쓴다) */
+export function dayAt(x: number, y: number): string | null {
   const week = document.elementFromPoint(x, y)?.closest<HTMLElement>(".cal-week[data-week]");
   const weekStart = week?.dataset.week;
   if (!week || !weekStart) return null;

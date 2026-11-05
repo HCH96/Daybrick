@@ -6,6 +6,7 @@ import MoreButton from "../more/MoreButton";
 import QuickInput from "../personal/QuickInput";
 import RangeInput from "../personal/RangeInput";
 import DayCell from "./DayCell";
+import type { ChipDrag } from "../drag/useCalendarDrag";
 import type { DaySelection } from "./useRangeSelect";
 
 /** 입력 중인 새 개인 일정: quick = 빈 곳 누르기(하루짜리), range = 드래그(기간) */
@@ -24,6 +25,8 @@ interface WeekRowProps {
   draft: PersonalDraft | null; // 이 주에서 시작하면 입력칸을 그린다
   onDraftSubmit: (title: string) => void;
   onDraftCancel: () => void;
+  chipDrag?: ChipDrag; // 칩 옮기기 (밀려나는 달 page에는 없음, R35)
+  drop?: DaySelection | null; // 끄는 칩이 놓일 기간
 }
 
 /** col부터 span칸에서 칩이 하나도 없는 맨 위 칩 줄. 없으면 마지막 줄(입력칸이 덮는다) */
@@ -42,8 +45,22 @@ function freeRow(layout: WeekLayout, col: number, span: number): number {
  * 주 줄 하나 (목업 .week). 뒤에 7칸 배경(날짜 숫자 포함)을 깔고,
  * 앞쪽 그리드(열 7, 1행 날짜 자리 + 칩 줄 4)에 칩과 +N을 열·폭·줄 자리로 놓는다 (D12).
  * 새 개인 일정 입력칸은 그 칸(범위면 범위 첫 주 줄)의 빈 줄에 칩 모양으로 놓는다 (R23·R24).
+ * 칩을 끄는 중이면 놓일 기간이 이 주에 걸친 만큼 빈 줄에 보라 점선 자리를 그린다 (R35).
  */
-function WeekRow({ week, todayKey, isFirstWeek, isLastWeek, layout, onOpen, selection, draft, onDraftSubmit, onDraftCancel }: WeekRowProps) {
+function WeekRow({
+  week,
+  todayKey,
+  isFirstWeek,
+  isLastWeek,
+  layout,
+  onOpen,
+  selection,
+  draft,
+  onDraftSubmit,
+  onDraftCancel,
+  chipDrag,
+  drop = null,
+}: WeekRowProps) {
   const weekStart = week[0].key;
   const weekEnd = week[6].key;
   const pin = draft && draft.start >= weekStart && draft.start <= weekEnd ? draft : null;
@@ -61,6 +78,15 @@ function WeekRow({ week, todayKey, isFirstWeek, isLastWeek, layout, onOpen, sele
       );
   }
 
+  let dropSlot = null;
+  if (drop && drop.start <= weekEnd && drop.end >= weekStart) {
+    const col = Math.max(0, diffDays(weekStart, drop.start));
+    const span = Math.min(6, diffDays(weekStart, drop.end)) - col + 1;
+    dropSlot = (
+      <div className="cal-drop-slot" style={{ gridColumn: `${col + 1} / span ${span}`, gridRow: freeRow(layout, col, span) + 2 }} />
+    );
+  }
+
   return (
     <div className={pin ? "cal-week cal-week--pin" : "cal-week"} data-week={weekStart}>
       <div className="cal-week__bg">
@@ -71,12 +97,14 @@ function WeekRow({ week, todayKey, isFirstWeek, isLastWeek, layout, onOpen, sele
             todayKey={todayKey}
             showMonth={(isFirstWeek && i === 0) || cell.date.getDate() === 1}
             selection={selection}
+            drop={drop}
           />
         ))}
       </div>
       {layout.slots.map((slot) => (
-        <CalChip key={`${slot.item.key}@${slot.col}`} slot={slot} onOpen={onOpen} />
+        <CalChip key={`${slot.item.key}@${slot.col}`} slot={slot} onOpen={onOpen} drag={chipDrag} />
       ))}
+      {dropSlot}
       {layout.more.map((m) => (
         <MoreButton key={`more@${m.col}`} more={m} date={week[m.col].date} onOpen={onOpen} />
       ))}
