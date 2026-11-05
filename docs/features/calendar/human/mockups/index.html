@@ -1,0 +1,39 @@
+<!doctype html>
+<!-- 목업 목차: 캘린더
+  읽는 법: 이 목차에서 필요한 화면 파일만 골라 읽는다. CSS는 그 화면 파일 머리에 적힌 파일에서 필요한 클래스만 검색한다.
+  파일                    화면                         요구사항
+  calendar.html           1. 월 달력                    R1–R20    부분 ID: cal-head, cal-grid
+  review.html             2. 회고 패널 (11월 3일)        R42–R48   부분 ID: review-grid, review-panel, review-allday, -timeline, -done, -add
+  part-chips.html         3. 칩 모양 모음               R9–R17, R20   부분 ID: chips-board, chips-app-kinds, chips-badges
+  part-more.html          4. +N 그날 일정 목록          R5, R18–R19
+  part-personal.html      5. 개인 일정 입력·편집         R21–R29   부분 ID: personal-quick, -range, -edit, -delete
+  part-drag.html          6. 드래그로 옮기기             R35–R40   부분 ID: drag-move, drag-bounce, drag-locked
+  part-flip.html          7. 달 넘김 애니메이션          R41
+  part-review-states.html 8. 회고 패널 다른 상태         R30, R47–R48   부분 ID: review-empty, review-adding
+  CSS: common.css(색 토큰·앱 틀·버튼), calendar.css(달력 틀·칩 4종), review.css(회고 패널), parts.css(조각·팝오버·드래그·애니메이션)
+  아이콘: icons.js (i-* 선 아이콘, k-* 지원 일정 종류, f-todo/f-ok 깃발)
+  플랜 연동(R31–R34)은 다른 화면(플랜) 쪽 변화라 이 목업에 없음
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 캘린더</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body>
+<div class="doc">
+  <h1>캘린더 목업</h1>
+  <p class="lead">플랜 태스크·지원 일정·주차 깃발·개인 일정을 한 달 달력에 모아 보고, 지난 날짜는 회고 패널로 돌아보는 페이지. 기준 시각: 2026년 11월 5일(목). 동작 없이 화면 배치와 모양만 보여준다.</p>
+  <ul class="links" style="margin-top:24px">
+    <li><a href="calendar.html"><b>1. 월 달력</b><span>달력 전체 화면, 칩 4종이 섞인 한 달</span><em>R1–R20</em></a></li>
+    <li><a href="review.html"><b>2. 회고 패널</b><span>지난 날짜를 눌러 오른쪽에 패널이 열린 화면</span><em>R42–R48</em></a></li>
+    <li><a href="part-chips.html"><b>3. 칩 모양 모음</b><span>종류 × 상태(올림·완료·잘림), 지원 일정 종류 아이콘, 이니셜 배지 색</span><em>R9–R20</em></a></li>
+    <li><a href="part-more.html"><b>4. +N 그날 일정 목록</b><span>넘친 일정을 보는 작은 목록</span><em>R5</em></a></li>
+    <li><a href="part-personal.html"><b>5. 개인 일정 입력·편집</b><span>칸 눌러 입력, 드래그로 기간 입력, 편집 팝오버, 삭제 확인</span><em>R21–R29</em></a></li>
+    <li><a href="part-drag.html"><b>6. 드래그로 옮기기</b><span>끄는 중, 튀어오름, 드래그 안 되는 칩</span><em>R35–R40</em></a></li>
+    <li><a href="part-flip.html"><b>7. 달 넘김</b><span>다음 달로 넘어가는 애니메이션</span><em>R41</em></a></li>
+    <li><a href="part-review-states.html"><b>8. 회고 패널 다른 상태</b><span>기록 없는 날, 지난 날짜에 일정 추가 중</span><em>R30, R47–R48</em></a></li>
+  </ul>
+</div>
+</body>
+</html>

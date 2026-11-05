@@ -1,0 +1,54 @@
+/* 회고 패널 (R42–R48): 달력 오른쪽에 붙는 패널, 하루 종일 줄, 타임라인, 완료한 태스크, 빈 상태, 개인 일정 추가 */
+.cal-row { flex: 1; min-height: 0; display: flex; gap: 16px; }
+.cal-row .cal { flex: 1; min-width: 0; }
+.cal-row .ch.a .k:not(.on) { display: none; }   /* 칸이 좁아지면 면접 외 종류 아이콘은 숨김 */
+
+.review { width: 380px; flex-shrink: 0; display: flex; flex-direction: column; background: var(--popup);
+  border: 1px solid var(--border); border-radius: var(--radius); box-shadow: -8px 0 24px rgba(0,0,0,.25); overflow: hidden; }
+.rv-head { display: flex; align-items: center; gap: 10px; padding: 16px 14px 12px 20px; border-bottom: 1px solid var(--border); }
+.rv-head h2 { margin: 0; font-size: 18px; font-weight: 800; }
+.rv-head .sub { font-size: 12px; color: var(--faint); }
+.rv-head .icon-btn { margin-left: auto; }
+.rv-body { flex: 1; min-height: 0; overflow: hidden; padding: 6px 20px 16px; }
+.rv-label { margin: 14px 0 8px; font-size: 12px; font-weight: 700; color: var(--faint); }
+
+/* 하루 종일 줄 (R44): 시각 없는 개인·지원 일정 */
+.allday { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 0 12px; border-bottom: 1px dashed var(--border); }
+.allday .lbl { width: 96px; font-size: 12px; color: var(--faint); line-height: 23px; }
+.allday .ch { margin: 0; }
+
+/* 타임라인 (R44–R45): 시각 칸 + 세로선 + 항목 */
+.tl { position: relative; margin-top: 4px; }
+.tl::before { content: ""; position: absolute; left: 103px; top: 8px; bottom: 8px; width: 1px; background: var(--border); }
+.tl-row { display: flex; align-items: center; gap: 0; min-height: 36px; }
+.tl-time { width: 96px; flex-shrink: 0; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.tl-time small { display: block; font-family: inherit; font-size: 10.5px; color: var(--faint); line-height: 1.2; }
+.tl-pin { width: 15px; flex-shrink: 0; display: grid; place-items: center; position: relative; }
+.tl-pin i { width: 9px; height: 9px; border-radius: 50%; background: var(--c, var(--faint)); box-shadow: 0 0 0 3px var(--popup); }
+.tl-pin i.ev { background: var(--popup); border: 1.5px solid var(--muted); }
+.tl-item { flex: 1; min-width: 0; margin-left: 10px; }
+/* 타이머 기록 구간: 카테고리 색 막대 (구간 길이에 비례하지 않음, 통계 아님) */
+.rec { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 7px; background: var(--c-soft);
+  box-shadow: inset 3px 0 0 var(--c); font-size: 13px; }
+.rec span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rec small { margin-left: auto; font-size: 11px; color: var(--muted); white-space: nowrap; }
+.tl-item .ch { margin: 0; height: 26px; font-size: 13px; }
+.tl-item .ch.p { line-height: 24px; }
+
+/* 완료한 태스크 (R46) */
+.done-list { display: flex; flex-direction: column; gap: 2px; }
+.done-row { display: flex; align-items: center; gap: 10px; padding: 6px 4px; font-size: 13px; }
+.done-row span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.done-row em { font-style: normal; font-family: var(--mono); font-size: 11px; color: var(--faint); }
+
+/* 빈 상태 (R47) */
+.rv-empty { margin: 36px 0 20px; text-align: center; color: var(--faint); font-size: 13px; }
+.rv-empty svg { width: 34px; height: 34px; margin-bottom: 8px; color: var(--border-2); }
+
+/* 아래 [개인 일정 추가] (R48) */
+.rv-foot { padding: 12px 20px 16px; border-top: 1px solid var(--border); }
+.add-btn { display: flex; align-items: center; justify-content: center; gap: 6px; height: 36px; border-radius: 8px;
+  border: 1px dashed var(--border-2); color: var(--muted); font-size: 13px; font-weight: 600; }
+.add-form { display: flex; flex-direction: column; gap: 8px; }
+.add-form .line { display: flex; gap: 8px; align-items: center; }
+.add-form .acts { display: flex; justify-content: flex-end; gap: 6px; }

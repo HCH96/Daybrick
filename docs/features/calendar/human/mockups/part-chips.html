@@ -1,0 +1,111 @@
+<!doctype html>
+<!-- 목업: 캘린더 / 3. 칩 모양 모음
+  목차와 다른 화면: index.html
+  CSS: common.css(색), calendar.css(칩 .ch .t .a .f .p .cr .cl .dn .hv, 배지 .ini .h1–.h7), parts.css(.board)
+  ID                  화면                         요구사항
+  chips               3. 칩 모양 모음               R9–R17, R20
+    chips-board         3-1. 종류 × 상태 표           R9–R17, R20
+    chips-app-kinds     3-2. 지원 일정 종류 구분      R11–R14
+    chips-badges        3-3. 이니셜 배지 색           R13
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 캘린더 / 3. 칩 모양 모음</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="calendar.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="chips">
+    <div class="screen-head"><h2>3. 칩 모양 모음</h2><span class="tag">R9–R17, R20</span></div>
+    <p class="screen-desc">달력 칸에 들어가는 칩 4종의 상태별 모양. 칸 너비 170px 기준, 실제 크기(100%).</p>
+
+    <h3 class="cap">3-1. 종류 × 상태</h3>
+    <div class="board" id="chips-board">
+      <div class="hd">종류</div><div class="hd">보통</div><div class="hd">마우스 올림</div><div class="hd">완료 · 끝남</div><div class="hd">긴 제목 (말줄임)</div>
+
+      <div class="kd">태스크</div>
+      <div><div class="ch t c-blue"><span>알고리즘 3문제</span></div></div>
+      <div><div class="ch t c-blue hv"><span>알고리즘 3문제</span></div></div>
+      <div><div class="ch t c-blue dn"><span>알고리즘 3문제</span></div></div>
+      <div><div class="ch t c-violet"><span>Daybrick 알림 설정 화면과 권한 요청 흐름</span></div></div>
+
+      <div class="kd">지원 일정</div>
+      <div><div class="ch a"><i class="ini h1">카</i><span>카카오</span><em>14:00</em><svg class="k on"><use href="#k-int"/></svg></div></div>
+      <div><div class="ch a hv"><i class="ini h1">카</i><span>카카오</span><em>14:00</em><svg class="k on"><use href="#k-int"/></svg></div></div>
+      <div class="na">완료 모양 없음</div>
+      <div><div class="ch a"><i class="ini h6">현</i><span>현대오토에버 SW 신입</span><em>10:00</em><svg class="k"><use href="#k-code"/></svg></div></div>
+
+      <div class="kd">깃발</div>
+      <div><div class="ch f c-violet"><svg class="fi"><use href="#f-todo"/></svg><span>Daybrick · 3주차</span></div></div>
+      <div><div class="ch f c-violet hv"><svg class="fi"><use href="#f-todo"/></svg><span>Daybrick · 3주차</span></div></div>
+      <div><div class="ch f ok c-violet"><svg class="fi"><use href="#f-ok"/></svg><span>Daybrick · 2주차</span></div></div>
+      <div><div class="ch f c-pink"><svg class="fi"><use href="#f-todo"/></svg><span>포트폴리오 사이트 · 반응형 마무리</span></div></div>
+
+      <div class="kd">개인 일정</div>
+      <div><div class="ch p"><em>19:00</em><span>치과</span></div></div>
+      <div><div class="ch p hv"><em>19:00</em><span>치과</span></div></div>
+      <div class="na">완료 모양 없음</div>
+      <div><div class="ch p"><span>사촌 결혼식 (대전, 오후 1시)</span></div></div>
+
+      <div class="kd">잘린 막대</div>
+      <div><div class="ch t c-pink cr"><span>포트폴리오 디자인</span></div></div>
+      <div><div class="ch t c-pink cl"><span>포트폴리오 디자인</span></div></div>
+      <div><div class="ch p cr"><span>제주 여행</span></div></div>
+      <div><div class="ch p cl"><span>제주 여행</span></div></div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>마우스 올림</b><ul>
+        <li>밝기 +22%, 1px 위로, 아래 그림자 (120ms)</li>
+        <li>깃발은 바탕이 없으므로 회색 바탕만 생김</li>
+        <li>드래그되는 칩(태스크·개인)도 올렸을 때 모양은 같음</li>
+      </ul></div>
+      <div class="note"><b>잘린 막대 (주 경계)</b><ul>
+        <li>잘린 쪽은 칸 끝까지 붙이고 모서리를 펌</li>
+        <li>끝 18px에서 옅어져 "이어짐"을 보여줌</li>
+        <li>왼쪽이 잘린 막대는 색 띠 없이 시작</li>
+      </ul></div>
+      <div class="note"><b>완료</b><ul>
+        <li>완료 태스크는 42% 불투명도, 취소선 없음</li>
+        <li>끝난 주차 깃발은 채운 깃발 + 체크, 글자 흐림</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section class="screen" id="chips-app-kinds">
+    <div class="screen-head"><h3>3-2. 지원 일정 종류 구분</h3><span class="tag">R11–R14</span></div>
+    <p class="screen-desc">칩 오른쪽 끝의 작은 아이콘으로 종류를 구분한다. 면접만 보라색으로 눈에 띄게, 나머지는 흐린 회색.</p>
+    <div class="board" style="grid-template-columns: 120px 170px 300px">
+      <div class="hd">종류</div><div class="hd">칩</div><div class="hd">아이콘</div>
+      <div class="kd">면접</div><div><div class="ch a"><i class="ini h3">토</i><span>토스</span><em>15:00</em><svg class="k on"><use href="#k-int"/></svg></div></div><div class="na">사람 (보라)</div>
+      <div class="kd">코딩테스트</div><div><div class="ch a"><i class="ini h5">라</i><span>라인</span><em>10:00</em><svg class="k"><use href="#k-code"/></svg></div></div><div class="na">&lt;/&gt; 괄호</div>
+      <div class="kd">과제 마감</div><div><div class="ch a"><i class="ini h2">네</i><span>네이버</span><em>23:59</em><svg class="k"><use href="#k-doc"/></svg></div></div><div class="na">문서</div>
+      <div class="kd">지원 마감</div><div><div class="ch a"><i class="ini h4">당</i><span>당근</span><em>18:00</em><svg class="k"><use href="#k-send"/></svg></div></div><div class="na">보내기 (지원 준비 카드일 때만 보임)</div>
+      <div class="kd">시각 없음</div><div><div class="ch a"><i class="ini h7">카</i><span>카카오페이</span><svg class="k"><use href="#k-send"/></svg></div></div><div class="na">시각 자리를 비움</div>
+    </div>
+  </section>
+
+  <section class="screen" id="chips-badges">
+    <div class="screen-head"><h3>3-3. 이니셜 배지 색</h3><span class="tag">R13</span></div>
+    <p class="screen-desc">회사 이름 첫 글자 + 이름으로 계산한 색. 같은 회사는 늘 같은 색이고, "카카오"와 "카카오페이"처럼 첫 글자가 같아도 이름이 다르면 색이 다르다. 배지 글자는 늘 어두운 색.</p>
+    <div class="piece-row">
+      <div class="ch a" style="margin:0"><i class="ini h1">카</i><span>카카오</span></div>
+      <div class="ch a" style="margin:0"><i class="ini h7">카</i><span>카카오페이</span></div>
+      <div class="ch a" style="margin:0"><i class="ini h2">네</i><span>네이버</span></div>
+      <div class="ch a" style="margin:0"><i class="ini h3">토</i><span>토스</span></div>
+      <div class="ch a" style="margin:0"><i class="ini h4">당</i><span>당근</span></div>
+      <div class="ch a" style="margin:0"><i class="ini h5">라</i><span>라인</span></div>
+      <div class="ch a" style="margin:0"><i class="ini h6">쿠</i><span>쿠팡</span></div>
+      <div class="ch a" style="margin:0"><i class="ini h5">삼</i><span>삼성 SW 역량테스트</span></div>
+      <span class="cap" style="align-self:center;margin:0">← 회사 이름이 없는 카드: 카드 제목과 그 첫 글자를 씀</span>
+    </div>
+  </section>
+</div>
+</body>
+</html>

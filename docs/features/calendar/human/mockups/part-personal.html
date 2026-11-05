@@ -1,0 +1,100 @@
+<!doctype html>
+<!-- 목업: 캘린더 / 5. 개인 일정 입력·편집
+  목차와 다른 화면: index.html
+  CSS: common.css(색·버튼), calendar.css(달력 틀·칩), parts.css(.mini-cal, .ch.input, .bg i.sel, .hint, .edit-pop, .confirm)
+  ID                  화면                         요구사항
+  personal            5. 개인 일정 입력·편집          R21–R29
+    personal-quick      5-1. 빈 곳 눌러 하루 일정 입력   R23, R25
+    personal-range      5-2. 드래그로 기간 일정 입력     R24, R27
+    personal-edit       5-3. 편집 팝오버               R26, R28
+    personal-delete     5-4. 삭제 확인                 R29
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 캘린더 / 5. 개인 일정 입력·편집</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="calendar.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="personal">
+    <div class="screen-head"><h2>5. 개인 일정 입력·편집</h2><span class="tag">R21–R29</span></div>
+    <p class="screen-desc">오늘·미래 날짜 칸에서 개인 일정을 넣고 고치는 모습. 모두 실제 크기(100%).</p>
+
+    <div class="screen-head" id="personal-quick"><h3>5-1. 빈 곳 눌러 하루 일정 입력</h3><span class="tag">R23, R25</span></div>
+    <p class="screen-desc">11월 12일(목) 칸의 빈 곳을 누른 상태. 칸의 다음 빈 줄에 칩 모양 입력칸이 생기고, 글자를 치는 중. Enter = 하루 종일 일정으로 저장, Esc 또는 빈 제목 = 취소. 시각은 저장한 뒤 편집 팝오버에서 넣는다.</p>
+    <div class="piece" style="margin-bottom:40px">
+      <div class="mini-cal" style="--cols:5">
+        <div class="week">
+          <div class="bg"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="d">10</div><div class="d">11</div><div class="d">12</div><div class="d">13</div><div class="d">14</div>
+          <div class="ch t c-pink x1 w3 cl"><span>포트폴리오 디자인 다듬기</span></div>
+          <div class="ch p x4 w2 cr"><span>제주 여행</span></div>
+          <div class="ch a x1"><i class="ini h5">라</i><span>라인</span><em>10:00</em><svg class="k"><use href="#k-code"/></svg></div>
+          <div class="ch a x2"><i class="ini h3">토</i><span>토스</span><em>15:00</em><svg class="k on"><use href="#k-int"/></svg></div>
+          <div class="ch t c-blue x3"><span>SQL 문제 풀이</span></div>
+          <div class="ch input x3"><span>미용실</span><i class="caret"></i></div>
+        </div>
+      </div>
+      <div class="hint" style="left:330px; top:132px"><span class="kbd">Enter</span>저장 · <span class="kbd">Esc</span>취소</div>
+    </div>
+
+    <div class="screen-head" id="personal-range"><h3>5-2. 드래그로 기간 일정 입력</h3><span class="tag">R24, R27</span></div>
+    <p class="screen-desc">11월 23일–25일을 드래그해서 놓은 상태. 범위가 보라 테두리로 묶이고, 범위 너비의 입력 막대가 맨 위 빈 줄에 생긴다. 주를 넘기는 드래그면 줄마다 막대가 나뉘고 입력칸은 첫 줄에만 둔다.</p>
+    <div class="piece" style="margin-bottom:40px">
+      <div class="mini-cal" style="--cols:5">
+        <div class="week">
+          <div class="bg"><i class="sel first"></i><i class="sel"></i><i class="sel last"></i><i></i><i></i></div>
+          <div class="d">23</div><div class="d">24</div><div class="d">25</div><div class="d">26</div><div class="d">27</div>
+          <div class="ch t c-blue x5 cr"><span>기말 발표 준비</span></div>
+          <div class="ch input x1 w3"><i class="caret" style="margin:0 -3px 0 0"></i><span class="ph">기간 일정 제목</span></div>
+          <div class="ch t c-teal x1"><span>정보처리기사 원서 접수</span></div>
+          <div class="ch a x2"><i class="ini h7">카</i><span>카카오페이</span><em>18:00</em><svg class="k"><use href="#k-send"/></svg></div>
+          <div class="ch p x3"><span>어머니 생신</span></div>
+        </div>
+      </div>
+      <div class="hint" style="left:26px; top:142px">11/23 – 11/25 · 3일 &nbsp;<span class="kbd">Enter</span>저장 · <span class="kbd">Esc</span>취소</div>
+    </div>
+
+    <div class="piece-row">
+      <div>
+        <div class="screen-head" id="personal-edit"><h3>5-3. 편집 팝오버</h3><span class="tag">R26, R28</span></div>
+        <p class="screen-desc" style="max-width:520px">"19:00 치과" 칩을 누른 상태. 고치는 즉시 저장하지 않고 [저장]으로 반영. 시간은 하루짜리일 때만 고를 수 있다.</p>
+        <div class="piece" style="height:340px; width:540px">
+          <div class="ch p hv" style="position:absolute; left:20px; top:20px; width:150px; margin:0"><em>19:00</em><span>치과</span></div>
+          <div class="pop edit-pop" style="left:20px; top:50px">
+            <div class="ttl-in">치과</div>
+            <div class="row"><label>날짜</label><span class="fld">2026-11-05</span>–<span class="fld">2026-11-05</span></div>
+            <div class="row"><label>시간</label><span class="seg"><span>없음</span><span class="on">시각</span></span><span class="fld focus"><svg class="ico xs"><use href="#i-clock"/></svg>19:00</span></div>
+            <div class="foot"><span class="btn sm ghost del"><svg class="ico xs"><use href="#i-trash"/></svg>삭제</span><span class="btn sm ghost">취소</span><span class="btn sm primary">저장</span></div>
+          </div>
+          <div class="pop edit-pop" style="left:330px; top:50px; width:190px; padding:12px 14px; box-shadow:none; border-style:dashed">
+            <div style="font-size:12px; color:var(--muted)">기간 일정이면 시간 칸이 꺼짐:</div>
+            <div class="row" style="margin-top:8px"><span class="seg"><span class="on">없음</span><span>시각</span></span></div>
+            <div class="row" style="margin-top:6px; font-size:11px; color:var(--faint)">하루짜리만 시각을 넣을 수 있어요</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="screen-head" id="personal-delete"><h3>5-4. 삭제 확인</h3><span class="tag">R29</span></div>
+        <p class="screen-desc" style="max-width:420px">[삭제]를 누르면 팝오버 아래가 확인 줄로 바뀐다. 한 번 더 눌러야 지운다.</p>
+        <div class="piece" style="height:340px; width:360px">
+          <div class="ch p hv" style="position:absolute; left:20px; top:20px; width:150px; margin:0"><em>19:00</em><span>치과</span></div>
+          <div class="pop edit-pop" style="left:20px; top:50px">
+            <div class="ttl-in">치과</div>
+            <div class="row"><label>날짜</label><span class="fld">2026-11-05</span>–<span class="fld">2026-11-05</span></div>
+            <div class="row"><label>시간</label><span class="seg"><span>없음</span><span class="on">시각</span></span><span class="fld"><svg class="ico xs"><use href="#i-clock"/></svg>19:00</span></div>
+            <div class="confirm"><span>이 일정을 지울까요?</span><span class="btn sm ghost">취소</span><span class="btn sm danger">삭제</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

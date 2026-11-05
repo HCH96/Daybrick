@@ -1,0 +1,85 @@
+/* 캘린더: 달 머리, 월 달력 틀(주 줄·날짜 칸), 칩 4종(태스크·지원·깃발·개인), +N, 이니셜 배지 색 */
+
+/* ===== 달 머리 (R3) ===== */
+.month-nav { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.month-nav .ttl { min-width: 132px; text-align: center; font-size: 17px; font-weight: 800; letter-spacing: -.2px; }
+.month-nav .btn { margin-left: 8px; }
+
+/* ===== 월 달력 (R2, R4) ===== */
+.cal { flex: 1; min-height: 0; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); overflow: hidden; }
+.dow { display: grid; grid-template-columns: repeat(7, 1fr); height: 32px; align-items: center; flex-shrink: 0;
+  border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--faint); }
+.dow span { padding-left: 10px; }
+.weeks { flex: 1; min-height: 0; display: grid; grid-template-rows: repeat(6, 1fr); }
+
+/* 주 줄 하나 = 7열 그리드. 1행은 날짜 숫자, 2~5행은 칩 자리(레인) 4개. 여러 날 막대를 먼저 놓아 위 레인을 차지한다 (R18) */
+.week { position: relative; display: grid; grid-template-columns: repeat(var(--cols, 7), var(--colw, 1fr));
+  grid-template-rows: 28px repeat(4, 21px); row-gap: 3px; align-content: start; grid-auto-flow: dense;
+  border-top: 1px solid var(--border); overflow: hidden; }
+.week:first-child { border-top: none; }
+.week > .bg { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--cols, 7), var(--colw, 1fr)); }
+.bg i { border-left: 1px solid var(--border); }
+.bg i:first-child { border-left: none; }
+.bg i.p { background: rgba(0,0,0,.14); }                 /* 지난 날짜: 살짝 흐림 */
+.bg i.o { background: rgba(0,0,0,.30); }                 /* 다른 달: 더 흐림 */
+.bg i.t { background: rgba(166,140,255,.07); box-shadow: inset 0 0 0 1.5px rgba(166,140,255,.55); }   /* 오늘 */
+.bg i.s { background: var(--surface-2); box-shadow: inset 0 0 0 1.5px var(--muted); }               /* 회고 패널로 고른 날 */
+.week > * { position: relative; }
+.week > .bg { position: absolute; }
+
+.d { grid-row: 1; padding: 5px 10px 0; font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; }
+.d.p { color: var(--muted); }
+.d.o { color: var(--faint); font-weight: 500; }
+.d.t b { display: inline-grid; place-items: center; min-width: 22px; height: 22px; margin: -2px 0 0 -5px; border-radius: 99px;
+  background: var(--accent); color: var(--on-accent); font-weight: 800; }
+
+/* 칸 위치: x = 시작 열, w = 걸치는 칸 수 */
+.x1 { grid-column-start: 1; } .x2 { grid-column-start: 2; } .x3 { grid-column-start: 3; } .x4 { grid-column-start: 4; }
+.x5 { grid-column-start: 5; } .x6 { grid-column-start: 6; } .x7 { grid-column-start: 7; }
+.w2 { grid-column-end: span 2; } .w3 { grid-column-end: span 3; } .w4 { grid-column-end: span 4; } .w5 { grid-column-end: span 5; }
+
+/* ===== 칩 공통 (R20): 한 줄, 말줄임, 모서리 5px, 올리면 밝아지고 1px 뜸 ===== */
+.ch { display: flex; align-items: center; gap: 5px; height: 21px; min-width: 0; margin: 0 5px; padding: 0 7px; border-radius: 5px;
+  font-size: 12px; line-height: 21px; white-space: nowrap; overflow: hidden; color: var(--text); cursor: pointer;
+  transition: filter .12s, transform .12s, box-shadow .12s; }
+.ch span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.ch em { font-style: normal; font-family: var(--mono); font-size: 11px; color: var(--muted); flex-shrink: 0; }
+.ch.hv { filter: brightness(1.22); transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.35); }
+
+/* 태스크 (R9–R10): 카테고리·프로젝트 색 바탕 + 왼쪽 색 띠, 완료는 흐림 */
+.ch.t { background: var(--c-soft); box-shadow: inset 3px 0 0 var(--c); padding-left: 9px; }
+.ch.t.hv { box-shadow: inset 3px 0 0 var(--c), 0 3px 8px rgba(0,0,0,.35); }
+.ch.dn { opacity: .42; }
+
+/* 주 경계에서 잘린 막대 (R9, R27): 잘린 쪽은 칸 끝까지 붙이고 모서리를 펴며, 끝으로 갈수록 옅어진다 */
+.ch.cr { margin-right: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 18px), rgba(0,0,0,.2)); mask-image: linear-gradient(to right, #000 calc(100% - 18px), rgba(0,0,0,.2)); }
+.ch.cl { margin-left: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 16px; box-shadow: none;
+  -webkit-mask-image: linear-gradient(to left, #000 calc(100% - 18px), rgba(0,0,0,.2)); mask-image: linear-gradient(to left, #000 calc(100% - 18px), rgba(0,0,0,.2)); }
+
+/* 지원 일정 (R11–R14): 회색 바탕 + 이니셜 배지 + 시각, 오른쪽 끝에 종류 아이콘 (면접만 색) */
+.ch.a { background: var(--surface-2); padding-left: 4px; }
+.ch.a .k { width: 12px; height: 12px; margin-left: auto; flex-shrink: 0; fill: none; stroke: var(--faint); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ch.a .k.on { stroke: var(--accent); }
+.ini { display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; flex-shrink: 0;
+  font-size: 9px; font-weight: 800; font-style: normal; line-height: 1; color: #17171a; }
+/* 배지 색: 회사 이름으로 계산한 색상환 위치 (예시 값) */
+.h1 { background: #f2d36b; } .h2 { background: #6fd19a; } .h3 { background: #7fa9ff; } .h4 { background: #f5a46a; }
+.h5 { background: #67d3c8; } .h6 { background: #f58d9c; } .h7 { background: #c4a3ff; }
+
+/* 체크포인트 깃발 (R15–R16): 바탕 없음, 프로젝트 색 깃발. 앞으로 = 테두리 깃발, 끝난 주차 = 채운 깃발 + 체크 */
+.ch.f { background: transparent; color: var(--muted); padding-left: 5px; }
+.ch.f .fi { width: 12px; height: 14px; flex-shrink: 0; color: var(--c); }
+.ch.f.ok { color: var(--faint); }
+.ch.f.hv { background: var(--surface-2); filter: none; }
+
+/* 개인 일정 (R17, R27): 바탕 없음, 점선 테두리, 회색 글자, 시각을 앞에 */
+.ch.p { background: transparent; border: 1px dashed #55555f; color: var(--muted); padding-left: 7px; line-height: 19px; }
+.ch.p em { color: var(--faint); }
+.ch.p.cr { border-right: none; }
+.ch.p.cl { border-left: none; }
+
+/* +N (R5) */
+.more { margin: 0 5px; padding: 0 7px; height: 21px; line-height: 21px; font-size: 12px; font-weight: 700; color: var(--muted); border-radius: 5px; cursor: pointer; }
+.more.hv { background: var(--surface-2); color: var(--text); }

@@ -1,0 +1,68 @@
+<!doctype html>
+<!-- 목업: 캘린더 / 4. +N 그날 일정 목록
+  목차와 다른 화면: index.html
+  CSS: common.css(색), calendar.css(달력 틀·칩·.more), parts.css(.mini-cal, .pop, .day-list)
+  ID                  화면                         요구사항
+  more                4. +N 그날 일정 목록           R5, R18–R19
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 캘린더 / 4. +N 그날 일정 목록</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="calendar.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="more">
+    <div class="screen-head"><h2>4. +N 그날 일정 목록</h2><span class="tag">R5, R18–R19</span></div>
+    <p class="screen-desc">11월 5일 칸의 "+2"를 누른 상태. 칸 바로 아래에 그날 일정 전체가 작은 목록으로 뜬다. 칩은 달력과 같은 모양을 조금 크게(24px) 쓰고, 누르면 칩마다 원래 열리는 창이 열린다. 바깥을 누르거나 Esc로 닫는다. 실제 크기(100%).</p>
+    <div class="piece" style="height:430px">
+      <div class="mini-cal" style="--cols:4">
+        <div class="week">
+          <div class="bg"><i class="p"></i><i class="p"></i><i class="t"></i><i></i></div>
+          <div class="d p">3</div><div class="d p">4</div><div class="d t"><b>5</b></div><div class="d">6</div>
+          <div class="ch t c-teal x1 cl"><span>정보처리기사 실기 정리</span></div>
+          <div class="ch t c-blue x2 w3"><span>알고리즘 3일 집중</span></div>
+          <div class="ch a x1"><i class="ini h1">카</i><span>카카오</span><em>14:00</em><svg class="k on"><use href="#k-int"/></svg></div>
+          <div class="ch p x1"><span>동생 생일</span></div>
+          <div class="ch t c-blue dn x1"><span>알고리즘 3문제</span></div>
+          <div class="ch t c-green dn x2"><span>운동 · 하체</span></div>
+          <div class="ch p x3"><em>19:00</em><span>치과</span></div>
+          <div class="ch a x3"><i class="ini h2">네</i><span>네이버</span><em>23:59</em><svg class="k"><use href="#k-doc"/></svg></div>
+          <div class="more hv x3">+2</div>
+          <div class="ch a x4"><i class="ini h4">당</i><span>당근</span><em>18:00</em><svg class="k"><use href="#k-send"/></svg></div>
+        </div>
+      </div>
+      <div class="pop day-list" style="left:316px; top:142px">
+        <div class="dl-head">11월 5일 (목)<span class="icon-btn"><svg class="ico xs"><use href="#i-x"/></svg></span></div>
+        <div class="ch t c-blue"><span>알고리즘 3일 집중</span><span class="range">11/4–11/6</span></div>
+        <div class="ch p"><em>19:00</em><span>치과</span></div>
+        <div class="ch a"><i class="ini h2">네</i><span>네이버</span><em>23:59</em><svg class="k"><use href="#k-doc"/></svg></div>
+        <div class="ch t c-violet"><span>Daybrick 캘린더 목업</span></div>
+        <div class="ch t c-green dn"><span>운동 · 산책 30분</span></div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>목록 순서</b><ul>
+        <li>칸과 같은 규칙 (R18): 여러 날 → 시각 있는 것 → 없는 것</li>
+        <li>여러 날 태스크는 오른쪽에 기간(11/4–11/6)을 붙임</li>
+      </ul></div>
+      <div class="note"><b>위치</b><ul>
+        <li>"+N" 칸 아래 왼쪽 맞춤, 화면 아래가 모자라면 위로</li>
+        <li>너비 250px 고정, 일정이 많으면 목록 안에서 스크롤</li>
+      </ul></div>
+      <div class="note"><b>"+N"</b><ul>
+        <li>칸의 4번째 줄을 차지, 굵은 회색 글자</li>
+        <li>마우스를 올리면 회색 바탕</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

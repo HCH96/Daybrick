@@ -1,0 +1,85 @@
+<!doctype html>
+<!-- 목업: 캘린더 / 8. 회고 패널 다른 상태
+  목차와 다른 화면: index.html
+  CSS: common.css(색·버튼), calendar.css(칩), review.css(.review, .rv-empty, .add-form), parts.css(.fld, .seg, .ch.input, .caret)
+  ID                  화면                         요구사항
+  review-states       8. 회고 패널 다른 상태          R30, R47–R48
+    review-empty        8-1. 기록 없는 날 (빈 상태)    R47
+    review-adding       8-2. 지난 날짜에 개인 일정 추가 중   R30, R48
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 캘린더 / 8. 회고 패널 다른 상태</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="calendar.css">
+<link rel="stylesheet" href="review.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="review-states">
+    <div class="screen-head"><h2>8. 회고 패널 다른 상태</h2><span class="tag">R30, R47–R48</span></div>
+    <p class="screen-desc">패널만 실제 크기(100%)로 보여준다. 높이는 앱 창에 맞춰 줄였다.</p>
+    <div class="piece-row">
+      <div>
+        <div class="screen-head" id="review-empty"><h3>8-1. 기록 없는 날</h3><span class="tag">R47</span></div>
+        <p class="screen-desc">11월 1일(일). 타이머 기록·일정·완료 태스크가 하나도 없다.</p>
+        <aside class="review" style="height:520px">
+          <div class="rv-head"><h2>11월 1일 (일)</h2><span class="icon-btn"><svg class="ico sm"><use href="#i-x"/></svg></span></div>
+          <div class="rv-body">
+            <div class="rv-empty">
+              <svg class="ico" viewBox="0 0 24 24"><use href="#i-clock"/></svg>
+              <div>이날은 남은 기록이 없어요</div>
+            </div>
+          </div>
+          <div class="rv-foot"><div class="add-btn"><svg class="ico xs"><use href="#i-plus"/></svg>개인 일정 추가</div></div>
+        </aside>
+      </div>
+      <div>
+        <div class="screen-head" id="review-adding"><h3>8-2. 지난 날짜에 일정 추가 중</h3><span class="tag">R30, R48</span></div>
+        <p class="screen-desc">11월 4일(수)에 [개인 일정 추가]를 누른 상태. 아래 칸이 입력 줄로 바뀐다. 하루짜리만 넣는다.</p>
+        <aside class="review" style="height:520px">
+          <div class="rv-head"><h2>11월 4일 (수)</h2><span class="icon-btn"><svg class="ico sm"><use href="#i-x"/></svg></span></div>
+          <div class="rv-body">
+            <div class="tl">
+              <div class="tl-row c-blue"><div class="tl-time">10:00–11:30</div><div class="tl-pin"><i></i></div>
+                <div class="tl-item"><div class="rec"><span>알고리즘 3일 집중</span></div></div></div>
+              <div class="tl-row c-green"><div class="tl-time">18:00–19:00</div><div class="tl-pin"><i></i></div>
+                <div class="tl-item"><div class="rec"><span>운동 · 하체</span></div></div></div>
+            </div>
+            <div class="rv-label">완료한 태스크</div>
+            <div class="done-list"><div class="done-row"><i class="st done"></i><span>운동 · 하체</span><em>19:02</em></div></div>
+          </div>
+          <div class="rv-foot">
+            <div class="add-form">
+              <div class="ch input" style="margin:0; height:34px; font-size:13px"><span>병원 (정형외과)</span><i class="caret"></i></div>
+              <div class="line"><span class="seg"><span>없음</span><span class="on">시각</span></span><span class="fld"><svg class="ico xs"><use href="#i-clock"/></svg>16:30</span></div>
+              <div class="acts"><span class="btn sm ghost">취소</span><span class="btn sm primary">추가</span></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>빈 상태</b><ul>
+        <li>시계 아이콘 + 한 줄 문구, 가운데 정렬</li>
+        <li>[개인 일정 추가]는 빈 상태에서도 그대로</li>
+      </ul></div>
+      <div class="note"><b>추가 입력</b><ul>
+        <li>Enter 또는 [추가] = 저장, Esc 또는 [취소] = 원래 버튼으로</li>
+        <li>저장하면 타임라인(시각 있음) 또는 하루 종일 줄에 바로 들어감</li>
+      </ul></div>
+      <div class="note"><b>패널 높이</b><ul>
+        <li>내용이 길면 가운데(타임라인·완료 목록)만 스크롤</li>
+        <li>머리와 [개인 일정 추가]는 고정</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

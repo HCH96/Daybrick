@@ -1,0 +1,165 @@
+<!doctype html>
+<!-- 목업: 캘린더 / 1. 월 달력
+  목차와 다른 화면: index.html
+  CSS: common.css(앱 틀·색), calendar.css(달력 틀·칩) (필요한 클래스만 검색해서 읽기)
+  ID                  화면                         요구사항
+  cal                 1. 월 달력                    R1–R20
+    cal-head            1-1. 페이지 머리·달 넘김      R1, R3
+    cal-grid            1-2. 월 달력 (주 줄 6개)      R2, R4–R5, R9–R18
+  칩 모양 모음: part-chips.html / +N 목록: part-more.html
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 캘린더 / 1. 월 달력</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="calendar.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="cal">
+    <div class="screen-head"><h2>1. 월 달력</h2><span class="tag">R1–R20</span></div>
+    <p class="screen-desc">2026년 11월 5일(목) 오후. 오늘 칸은 보라 테두리, 11월 1–4일은 살짝 흐리게, 10월·12월 칸은 더 흐리게. "당근" 지원 마감 칩에 마우스를 올린 상태. 11월 5일은 일정이 5개라 "+2"로 줄였다.</p>
+    <div class="scale-note">앱 창 1440×900을 75%로 줄여 보여줌</div>
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav"><span class="tb-btn"><svg class="ico sm"><use href="#i-back"/></svg></span><span class="tb-btn off"><svg class="ico sm"><use href="#i-fwd"/></svg></span></div>
+        <div class="tb-drag"></div>
+        <span class="tb-btn"><svg class="ico sm"><use href="#i-bell"/></svg></span>
+        <div class="win"><span><svg class="ico"><use href="#i-min"/></svg></span><span><svg class="ico"><use href="#i-max"/></svg></span><span><svg class="ico"><use href="#i-x"/></svg></span></div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><span class="brick"><i></i><i></i><i></i><i></i></span>Daybrick</div>
+          <div class="nav"><svg class="ico"><use href="#i-home"/></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#i-plan"/></svg>Plan</div>
+          <div class="nav"><svg class="ico"><use href="#i-flag"/></svg>Projects</div>
+          <div class="nav on"><svg class="ico"><use href="#i-cal"/></svg>Calendar</div>
+          <div class="nav"><svg class="ico"><use href="#i-bag"/></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#i-search"/></svg>Job Search</div>
+          <div class="nav"><svg class="ico"><use href="#i-sun"/></svg>Today</div>
+          <div class="spacer"></div>
+          <div class="nav"><svg class="ico"><use href="#i-gear"/></svg>Settings</div>
+          <div class="version">v0.4.0</div>
+        </nav>
+        <main class="main">
+          <div class="page-head" id="cal-head">
+            <h1 class="page-title">캘린더</h1>
+            <div class="month-nav">
+              <span class="icon-btn"><svg class="ico sm"><use href="#i-back"/></svg></span>
+              <span class="ttl">2026년 11월</span>
+              <span class="icon-btn"><svg class="ico sm"><use href="#i-fwd"/></svg></span>
+              <span class="btn sm">오늘</span>
+            </div>
+          </div>
+
+          <div class="cal" id="cal-grid">
+            <div class="dow"><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span><span>일</span></div>
+            <div class="weeks">
+              <!-- 10/26 – 11/1 -->
+              <div class="week">
+                <div class="bg"><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i><i class="p"></i></div>
+                <div class="d o">10월 26</div><div class="d o">27</div><div class="d o">28</div><div class="d o">29</div><div class="d o">30</div><div class="d o">31</div><div class="d p">11월 1</div>
+                <div class="ch t c-teal x4 w4 cr"><span>정보처리기사 실기 정리</span></div>
+                <div class="ch t c-blue dn x2"><span>알고리즘 스터디</span></div>
+                <div class="ch a x3"><i class="ini h3">토</i><span>토스</span><em>14:00</em><svg class="k"><use href="#k-code"/></svg></div>
+                <div class="ch p x5"><span>가족 모임</span></div>
+                <div class="ch f ok c-violet x7"><svg class="fi"><use href="#f-ok"/></svg><span>Daybrick · 2주차</span></div>
+                <div class="ch f ok c-pink x7"><svg class="fi"><use href="#f-ok"/></svg><span>포트폴리오 · 1주차</span></div>
+              </div>
+              <!-- 11/2 – 11/8 -->
+              <div class="week">
+                <div class="bg"><i class="p"></i><i class="p"></i><i class="p"></i><i class="t"></i><i></i><i></i><i></i></div>
+                <div class="d p">2</div><div class="d p">3</div><div class="d p">4</div><div class="d t"><b>5</b></div><div class="d">6</div><div class="d">7</div><div class="d">8</div>
+                <div class="ch t c-teal x1 w2 cl"><span>정보처리기사 실기 정리</span></div>
+                <div class="ch t c-blue x3 w3"><span>알고리즘 3일 집중</span></div>
+                <div class="ch t c-amber dn x1"><span>이력서 경력란 수정</span></div>
+                <div class="ch a x2"><i class="ini h1">카</i><span>카카오</span><em>14:00</em><svg class="k on"><use href="#k-int"/></svg></div>
+                <div class="ch p x2"><span>동생 생일</span></div>
+                <div class="ch t c-blue dn x2"><span>알고리즘 3문제</span></div>
+                <div class="ch t c-green dn x3"><span>운동 · 하체</span></div>
+                <div class="ch p x4"><em>19:00</em><span>치과</span></div>
+                <div class="ch a x4"><i class="ini h2">네</i><span>네이버</span><em>23:59</em><svg class="k"><use href="#k-doc"/></svg></div>
+                <div class="more x4">+2</div>
+                <div class="ch a hv x5"><i class="ini h4">당</i><span>당근</span><em>18:00</em><svg class="k"><use href="#k-send"/></svg></div>
+                <div class="ch p x6"><em>12:00</em><span>친구 결혼식</span></div>
+                <div class="ch f c-violet x7"><svg class="fi"><use href="#f-todo"/></svg><span>Daybrick · 3주차</span></div>
+                <div class="ch f c-pink x7"><svg class="fi"><use href="#f-todo"/></svg><span>포트폴리오 · 2주차</span></div>
+              </div>
+              <!-- 11/9 – 11/15 -->
+              <div class="week">
+                <div class="bg"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="d">9</div><div class="d">10</div><div class="d">11</div><div class="d">12</div><div class="d">13</div><div class="d">14</div><div class="d">15</div>
+                <div class="ch t c-pink x1 w4"><span>포트폴리오 디자인 다듬기</span></div>
+                <div class="ch p x5 w3"><span>제주 여행</span></div>
+                <div class="ch a x2"><i class="ini h5">라</i><span>라인</span><em>10:00</em><svg class="k"><use href="#k-code"/></svg></div>
+                <div class="ch t c-green x2"><span>운동 · 상체</span></div>
+                <div class="ch a x3"><i class="ini h3">토</i><span>토스</span><em>15:00</em><svg class="k on"><use href="#k-int"/></svg></div>
+                <div class="ch t c-blue x4"><span>SQL 문제 풀이 — 윈도 함수 정리</span></div>
+                <div class="ch f c-violet x7"><svg class="fi"><use href="#f-todo"/></svg><span>Daybrick · 4주차</span></div>
+                <div class="ch f c-pink x7"><svg class="fi"><use href="#f-todo"/></svg><span>포트폴리오 · 3주차</span></div>
+              </div>
+              <!-- 11/16 – 11/22 -->
+              <div class="week">
+                <div class="bg"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="d">16</div><div class="d">17</div><div class="d">18</div><div class="d">19</div><div class="d">20</div><div class="d">21</div><div class="d">22</div>
+                <div class="ch t c-violet x1 w5"><span>Daybrick 알림 기능</span></div>
+                <div class="ch a x2"><i class="ini h6">쿠</i><span>쿠팡</span><em>23:59</em><svg class="k"><use href="#k-doc"/></svg></div>
+                <div class="ch p x3"><em>14:00</em><span>은행 방문</span></div>
+                <div class="ch a x4"><i class="ini h2">네</i><span>네이버</span><em>11:00</em><svg class="k on"><use href="#k-int"/></svg></div>
+                <div class="ch t c-amber x4"><span>면접 예상 질문 정리</span></div>
+                <div class="ch t c-green x6"><span>운동 · 러닝 5km</span></div>
+                <div class="ch f c-violet x7"><svg class="fi"><use href="#f-todo"/></svg><span>Daybrick · 5주차</span></div>
+                <div class="ch f c-pink x7"><svg class="fi"><use href="#f-todo"/></svg><span>포트폴리오 · 4주차</span></div>
+              </div>
+              <!-- 11/23 – 11/29 -->
+              <div class="week">
+                <div class="bg"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="d">23</div><div class="d">24</div><div class="d">25</div><div class="d">26</div><div class="d">27</div><div class="d">28</div><div class="d">29</div>
+                <div class="ch t c-blue x5 w3 cr"><span>기말 발표 준비</span></div>
+                <div class="ch t c-teal x1"><span>정보처리기사 원서 접수</span></div>
+                <div class="ch a x2"><i class="ini h7">카</i><span>카카오페이</span><em>18:00</em><svg class="k"><use href="#k-send"/></svg></div>
+                <div class="ch p x3"><span>어머니 생신</span></div>
+                <div class="ch f c-violet x7"><svg class="fi"><use href="#f-todo"/></svg><span>Daybrick · 6주차</span></div>
+              </div>
+              <!-- 11/30 – 12/6 -->
+              <div class="week">
+                <div class="bg"><i></i><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i><i class="o"></i></div>
+                <div class="d">30</div><div class="d o">12월 1</div><div class="d o">2</div><div class="d o">3</div><div class="d o">4</div><div class="d o">5</div><div class="d o">6</div>
+                <div class="ch t c-blue x1 w2 cl"><span>기말 발표 준비</span></div>
+                <div class="ch a x4"><i class="ini h4">당</i><span>당근</span><em>16:00</em><svg class="k on"><use href="#k-int"/></svg></div>
+                <div class="ch p x5"><em>19:00</em><span>송년회</span></div>
+                <div class="ch f c-violet x7"><svg class="fi"><use href="#f-todo"/></svg><span>Daybrick · 7주차</span></div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>달력 틀</b><ul>
+        <li>머리에는 제목·이전/다음·[오늘]만 (D-day 없음)</li>
+        <li>칸마다 칩 자리 4줄. 넘치면 마지막 줄이 "+N"</li>
+        <li>각 달의 첫 칸에만 "10월 26", "12월 1"처럼 월을 붙임</li>
+        <li>통계·기록 숫자는 넣지 않음 (R6)</li>
+      </ul></div>
+      <div class="note"><b>칸 안 순서 (R18)</b><ul>
+        <li>여러 날 막대가 맨 위 줄</li>
+        <li>그 아래 하루짜리: 시각 있는 것 시간순 → 시각 없는 것</li>
+        <li>일요일 칸의 깃발은 시각 없는 일정으로 취급</li>
+      </ul></div>
+      <div class="note"><b>칩 4종 구분</b><ul>
+        <li>태스크: 색 바탕 + 왼쪽 색 띠 (가장 진함)</li>
+        <li>지원 일정: 회색 바탕 + 이니셜 배지 + 종류 아이콘</li>
+        <li>깃발: 바탕 없이 프로젝트 색 깃발</li>
+        <li>개인 일정: 점선 테두리, 회색 글자 (가장 조용함)</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

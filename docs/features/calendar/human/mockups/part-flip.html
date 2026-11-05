@@ -1,0 +1,65 @@
+<!doctype html>
+<!-- 목업: 캘린더 / 7. 달 넘김
+  목차와 다른 화면: index.html
+  CSS: common.css(색), parts.css(.flip-frames, .stage, .pg, .stage.loop)
+  ID                  화면                         요구사항
+  flip                7. 달 넘김 애니메이션          R41
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 캘린더 / 7. 달 넘김</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="flip">
+    <div class="screen-head"><h2>7. 달 넘김 애니메이션</h2><span class="tag">R41</span></div>
+    <p class="screen-desc">[&gt;](다음 달)를 누른 경우. 지금 달은 왼쪽으로 밀려나며 사라지고, 다음 달이 오른쪽에서 들어온다. 머리의 "2026년 11월" 글자도 같은 방향으로 바뀐다. [&lt;]는 반대 방향. 달력 칸·칩은 회색 블록으로 줄여 그렸다.</p>
+    <div class="piece">
+      <div class="flip-frames">
+        <figure>
+          <div class="stage"><div class="hd"><b>2026년 11월</b></div>
+            <div class="pg"><i></i><i class="b"></i><i class="b"></i><i></i><i class="a"></i><i></i><i class="v"></i><i></i><i></i><i class="a"></i><i class="b"></i><i></i><i></i><i class="v"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i></i><i></i><i class="v"></i><i class="v"></i><i class="v"></i><i class="v"></i><i class="a"></i><i></i><i></i><i class="v"></i><i></i><i class="a"></i><i></i><i></i><i class="b"></i><i class="b"></i><i class="v"></i></div>
+          </div><figcaption>0ms [&gt;] 누름</figcaption>
+        </figure>
+        <figure>
+          <div class="stage"><div class="hd"><b style="transform:translateX(-30px); opacity:.3">2026년 11월</b><b style="transform:translateX(30px); opacity:.5">2026년 12월</b></div>
+            <div class="pg out"><i></i><i class="b"></i><i class="b"></i><i></i><i class="a"></i><i></i><i class="v"></i><i></i><i></i><i class="a"></i><i class="b"></i><i></i><i></i><i class="v"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i></i><i></i><i class="v"></i><i class="v"></i><i class="v"></i><i class="v"></i><i class="a"></i><i></i><i></i><i class="v"></i><i></i><i class="a"></i><i></i><i></i><i class="b"></i><i class="b"></i><i class="v"></i></div>
+            <div class="pg in"><i class="b"></i><i class="b"></i><i></i><i class="a"></i><i></i><i></i><i class="v"></i><i></i><i></i><i></i><i class="b"></i><i></i><i></i><i class="v"></i><i></i><i class="a"></i><i></i><i></i><i></i><i></i><i class="v"></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="v"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div><figcaption>110ms 겹쳐 지나감</figcaption>
+        </figure>
+        <figure>
+          <div class="stage"><div class="hd"><b>2026년 12월</b></div>
+            <div class="pg"><i class="b"></i><i class="b"></i><i></i><i class="a"></i><i></i><i></i><i class="v"></i><i></i><i></i><i></i><i class="b"></i><i></i><i></i><i class="v"></i><i></i><i class="a"></i><i></i><i></i><i></i><i></i><i class="v"></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="v"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div><figcaption>220ms 끝</figcaption>
+        </figure>
+        <figure>
+          <div class="stage loop"><div class="hd"><b class="a1">2026년 11월</b><b class="a2">2026년 12월</b></div>
+            <div class="pg a1"><i></i><i class="b"></i><i class="b"></i><i></i><i class="a"></i><i></i><i class="v"></i><i></i><i></i><i class="a"></i><i class="b"></i><i></i><i></i><i class="v"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i></i><i></i><i class="v"></i><i class="v"></i><i class="v"></i><i class="v"></i><i class="a"></i><i></i><i></i><i class="v"></i><i></i><i class="a"></i><i></i><i></i><i class="b"></i><i class="b"></i><i class="v"></i></div>
+            <div class="pg a2"><i class="b"></i><i class="b"></i><i></i><i class="a"></i><i></i><i></i><i class="v"></i><i></i><i></i><i></i><i class="b"></i><i></i><i></i><i class="v"></i><i></i><i class="a"></i><i></i><i></i><i></i><i></i><i class="v"></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="v"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div><figcaption>되풀이 보기 (천천히)</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>움직임</b><ul>
+        <li>가로 이동 48px + 투명도, 220ms, ease-out</li>
+        <li>요일 머리줄(월~일)은 움직이지 않고 주 줄만 넘어감</li>
+      </ul></div>
+      <div class="note"><b>[오늘] 버튼</b><ul>
+        <li>지금 보는 달보다 앞이면 왼쪽, 뒤면 오른쪽으로 같은 애니메이션</li>
+        <li>이미 이번 달이면 움직이지 않음</li>
+      </ul></div>
+      <div class="note"><b>빠르게 여러 번 누를 때</b><ul>
+        <li>진행 중인 애니메이션을 끝내고 바로 다음 달로 넘어감 (쌓이지 않음)</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

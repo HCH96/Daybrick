@@ -1,0 +1,87 @@
+<!doctype html>
+<!-- 목업: 캘린더 / 6. 드래그로 옮기기
+  목차와 다른 화면: index.html
+  CSS: common.css(색), calendar.css(달력 틀·칩), parts.css(.mini-cal, .ghost-src, .bg i.drop, .drop-slot, .drag-float, .nodrag, .bounce-frames, .live)
+  ID                  화면                         요구사항
+  drag                6. 드래그로 옮기기             R35–R40
+    drag-move           6-1. 여러 날 태스크를 끄는 중   R35, R38, R40
+    drag-bounce         6-2. 놓았을 때 튀어오름        R37
+    drag-locked         6-3. 드래그 안 되는 칩         R36
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>목업: 캘린더 / 6. 드래그로 옮기기</title>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="calendar.css">
+<link rel="stylesheet" href="parts.css">
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="doc">
+  <p class="lead"><a href="index.html">← 목업 목차</a></p>
+
+  <section class="screen" id="drag">
+    <div class="screen-head"><h2>6. 드래그로 옮기기</h2><span class="tag">R35–R40</span></div>
+    <p class="screen-desc">태스크와 개인 일정만 끌어서 다른 날로 옮긴다. 모두 실제 크기(100%).</p>
+
+    <div class="screen-head" id="drag-move"><h3>6-1. 여러 날 태스크를 끄는 중</h3><span class="tag">R35, R38, R40</span></div>
+    <p class="screen-desc">"포트폴리오 디자인 다듬기"(11/9–11/12, 4일)를 오른쪽으로 2칸 끄는 중. 원래 자리는 흐려지고, 놓일 자리는 길이 그대로 4칸이 점선 칸과 칸 테두리로 표시된다. 끄는 칩은 마우스를 따라 살짝 기울어 떠 있다. 놓일 자리가 다음 주로 넘어가면 두 줄에 나눠 표시한다. 다른 달 칸(흐린 칸)에도 놓을 수 있다.</p>
+    <div class="piece" style="margin-bottom:40px">
+      <div class="mini-cal" style="--cols:7; --colw:150px">
+        <div class="week">
+          <div class="bg"><i></i><i></i><i class="drop"></i><i class="drop"></i><i class="drop"></i><i class="drop"></i><i></i></div>
+          <div class="d">9</div><div class="d">10</div><div class="d">11</div><div class="d">12</div><div class="d">13</div><div class="d">14</div><div class="d">15</div>
+          <div class="ch t c-pink ghost-src x1 w4"><span>포트폴리오 디자인 다듬기</span></div>
+          <div class="ch p x5 w3"><span>제주 여행</span></div>
+          <div class="ch a x2"><i class="ini h5">라</i><span>라인</span><em>10:00</em><svg class="k"><use href="#k-code"/></svg></div>
+          <div class="drop-slot x3 w4"></div>
+          <div class="ch t c-green x2"><span>운동 · 상체</span></div>
+          <div class="ch f c-violet x7"><svg class="fi"><use href="#f-todo"/></svg><span>Daybrick · 4주차</span></div>
+          <div class="ch a x3"><i class="ini h3">토</i><span>토스</span><em>15:00</em><svg class="k on"><use href="#k-int"/></svg></div>
+          <div class="ch t c-blue x4"><span>SQL 문제 풀이</span></div>
+        </div>
+      </div>
+      <div class="ch t c-pink drag-float" style="left:332px; top:78px; width:590px"><span>포트폴리오 디자인 다듬기</span></div>
+      <svg class="cursor" style="left:420px; top:92px" viewBox="0 0 16 16"><path d="M2 1l11 6-5 1.2L6 14z" fill="#ededf2" stroke="#17171a" stroke-width="1"/></svg>
+    </div>
+
+    <div class="screen-head" id="drag-bounce"><h3>6-2. 놓았을 때 튀어오름</h3><span class="tag">R37</span></div>
+    <p class="screen-desc">놓은 자리에서 살짝 위로 튀었다가 제자리로 내려앉는다. 전체 280ms. 마지막 칸은 실제 움직임을 되풀이해 보여준다.</p>
+    <div class="piece" style="margin-bottom:40px">
+      <div class="bounce-frames">
+        <figure><div class="ch t c-pink"><span>포트폴리오 디자인</span></div><figcaption>0ms 놓음</figcaption></figure>
+        <figure class="f1"><div class="ch t c-pink"><span>포트폴리오 디자인</span></div><figcaption>140ms 위로 3px, 1.06배</figcaption></figure>
+        <figure class="f2"><div class="ch t c-pink"><span>포트폴리오 디자인</span></div><figcaption>220ms 1px 눌림</figcaption></figure>
+        <figure><div class="ch t c-pink"><span>포트폴리오 디자인</span></div><figcaption>280ms 제자리</figcaption></figure>
+        <figure class="live"><div class="ch p"><em>19:00</em><span>치과</span></div><figcaption>되풀이 보기</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="screen-head" id="drag-locked"><h3>6-3. 드래그 안 되는 칩</h3><span class="tag">R36</span></div>
+    <p class="screen-desc">지원 일정과 깃발은 끌어도 움직이지 않는다. 마우스를 올리면 손가락 커서와 올림 모양만 보이고, 끄는 동작을 하면 칩이 제자리에서 아주 작게 좌우로 흔들려 "옮길 수 없음"을 알린다(누르기는 그대로 됨).</p>
+    <div class="piece">
+      <div class="piece-row">
+        <div class="ch a hv" style="width:170px; margin:0"><i class="ini h3">토</i><span>토스</span><em>15:00</em><svg class="k on"><use href="#k-int"/></svg></div>
+        <div class="ch f c-violet hv" style="width:170px; margin:0"><svg class="fi"><use href="#f-todo"/></svg><span>Daybrick · 4주차</span></div>
+        <span class="cap" style="margin:0; align-self:center">← 마우스 올림 (드래그되는 칩과 같은 모양)</span>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>끄는 동안</b><ul>
+        <li>원래 자리 28% 불투명, 떠 있는 칩은 -1.5° 기울기 + 큰 그림자</li>
+        <li>놓일 칸: 옅은 보라 바탕 + 보라 테두리, 칩 자리는 보라 점선</li>
+      </ul></div>
+      <div class="note"><b>길이</b><ul>
+        <li>여러 날 일정은 길이를 그대로 유지 (R35)</li>
+        <li>막대 끝을 잡아 늘이는 손잡이는 없음 (R38)</li>
+      </ul></div>
+      <div class="note"><b>완료한 태스크</b><ul>
+        <li>흐린 채로 똑같이 끌 수 있음 (R39)</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>
