@@ -1,14 +1,15 @@
 # 메인 페이지 (main-page)
-앱을 켰을 때 처음 보이는 화면. 제목 표시줄·사이드바·홈 대시보드.
+앱을 켰을 때 처음 보이는 화면. 제목 표시줄·사이드바·홈 대시보드(앞으로 일주일·앱 전체 요약).
 
-- 상태: 완료 (B안 배치·제목 표시줄·사이드바 접기·뒤로/앞으로 포함, 2차 AI·사용자 테스트 통과)
+- 상태: 홈 개편 명세 완료 (L34, 다음은 /mockup). 앱 틀·사이드바는 완료 (2차 AI·사용자 테스트 통과)
 - 다른 기능을 붙일 때 주로 읽을 파일: [ai/spec/extension.md](ai/spec/extension.md) (확장 구조), [ai/spec/files.md](ai/spec/files.md) (파일 구조)
 
 ## 문서 색인 (필요한 색인만 열고, 거기서 필요한 파일만 읽기)
 | 종류 | 색인 | 내용 |
 |---|---|---|
-| 명세서 | [ai/spec/index.md](ai/spec/index.md) | 요구사항 묶음별 파일(R1–R21), 확장 구조, 파일 구조, 창 설정, 완료 기준, 결정 사항(D) |
-| 진행 기록 | [ai/logs/index.md](ai/logs/index.md) | L33~ (L01~L32는 보관 파일) |
+| 명세서 | [ai/spec/index.md](ai/spec/index.md) | 요구사항 묶음별 파일(R1–R47, 홈 개편 R22–R47), 확장 구조, 파일 구조, 창 설정, 완료 기준, 결정 사항(D1–D8) |
+| 구현 계획 | (홈 개편 계획 아직 없음) | |
+| 진행 기록 | [ai/logs/index.md](ai/logs/index.md) | L33~ (L01~L32는 보관 파일), L34 홈 개편 명세 |
 | 목업 | [human/mockups/index.html](human/mockups/index.html) | 화면별 파일 (앱 틀, 홈, 지금의 빈 홈) |
 
 ## 보관 문서 (archive/, 평소에는 읽지 않음)
