@@ -25,17 +25,21 @@ interface PageDef {
 홈 카드도 배열로 정의한다. 기능을 만들 때 해당 카드의 본문 컴포넌트만 바꾼다.
 
 ```ts
-type CardSize = "large" | "wide" | "narrow"; // 벤토 그리드 크기 (7칸×2줄 / 7칸 / 5칸)
+type CardSize = "large" | "narrow" | "quarter"; // 벤토 그리드 크기 (7칸×2줄 / 5칸 / 4칸), 1280px 미만이면 모두 6칸
 
 interface DashboardCardDef {
   id: string;
   title: string;
   linkTo: PageId;        // 카드에서 이동할 메뉴
-  size: CardSize;        // B안에서 추가
-  body: ComponentType;   // 지금은 빈 상태 컴포넌트
+  linkLabel: string;     // 오른쪽 위 링크 글자 ("지원 관리 ›")
+  size: CardSize;
+  body: ComponentType;   // 카드 본문
 }
 ```
-- 요약 줄 4칸도 `SummaryStrip.tsx` 안의 배열로 정의한다. 기능을 만들면 각 칸에 값을 연결한다.
+- 2026-11-07 홈 개편(수정1): 카드는 6개다. 다가오는 7일(large) · 지금 하는 것, 이번 주 집중(narrow) · 프로젝트 진행, 지원 현황, 새 추천 공고(quarter). 옛 `wide` 크기와 옛 카드 3개는 없앴다.
+- large 카드는 본문을 카드 안에서 스크롤해 카드 높이를 키우지 않는다. 본문은 데이터 상태에 따라 `CardState`(불러오는 중·못 읽음·비었음)를 먼저 고른다.
+- 카드 본문의 계산은 `features/home/`의 순수 함수에 두고, 본문 컴포넌트는 그 결과만 그린다. 새 카드를 붙일 때도 같은 방식으로 한다.
+- 요약 줄 4칸도 `SummaryStrip.tsx` 안에서 칸마다 정의하고, 누르면 `useOpenTarget`으로 해당 메뉴로 이동한다.
 
 ### 3. 화면 전환 방식
 - 라우터 라이브러리(react-router)를 쓰지 않고, `App`이 "현재 페이지 id"를 상태로 들고
