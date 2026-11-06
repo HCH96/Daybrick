@@ -3,6 +3,7 @@ import type { PageId } from "../../app/types";
 import CardState from "./CardState";
 import ApplicationsSummaryCard from "./ApplicationsSummaryCard";
 import NowCard from "./now/NowCard";
+import ProjectProgressCard from "./projects/ProjectProgressCard";
 import UpcomingCard from "./upcoming/UpcomingCard";
 import WeekFocusCard from "./week/WeekFocusCard";
 
@@ -62,14 +63,7 @@ export const dashboardCards: DashboardCardDef[] = [
     linkTo: "projects",
     linkLabel: "프로젝트",
     size: "quarter",
-    body: () => (
-      <CardState
-        kind="empty"
-        linkTo="projects"
-        message="진행 중인 프로젝트가 없어요"
-        description="프로젝트마다 현재 주차·단계와 진행 막대가 보여요"
-      />
-    ),
+    body: ProjectProgressCard,
   },
   {
     id: "applications",
