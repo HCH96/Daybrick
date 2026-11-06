@@ -28,5 +28,5 @@
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (홈 개편 수정 계획, 2026-11-07 승인, 8단계). 홈 계산은 features/home/ 순수 함수로 두고 다른 기능 함수를 재사용, 추천 공고는 홈에 들어올 때 한 번 읽음 (D9–D11). 끝난 계획 (보관): [처음 계획](../../archive/plans/main-page-plan.md) (2026-10-21 승인, 6단계), [B안 배치](../../archive/plans/main-page-layout-b-plan.md) (2026-10-22 승인, 5단계), [제목 표시줄·사이드바 접기·뒤로/앞으로](../../archive/plans/main-page-titlebar-plan.md) (2026-10-22 승인, T1~T3)
-- 테스트 문서: [../../index.md](../../index.md)의 "보관 문서"
+- 테스트 문서 (r1, 홈 개편 수정1): AI [../tests/r1/](../tests/r1/), 사용자 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md). 이전 1·2차는 [../../index.md](../../index.md)의 "보관 문서"
 - 진행 기록: [../logs/index.md](../logs/index.md)

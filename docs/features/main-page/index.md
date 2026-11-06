@@ -1,7 +1,7 @@
 # 메인 페이지 (main-page)
 앱을 켰을 때 처음 보이는 화면. 제목 표시줄·사이드바·홈 대시보드(앞으로 일주일·앱 전체 요약).
 
-- 상태: 수정 구현 완료 (테스트 대기). 앱 틀·사이드바는 완료 (2차 AI·사용자 테스트 통과)
+- 상태: 수정 r1 AI 테스트 통과 (20개), 사용자 테스트 대기. 앱 틀·사이드바는 완료 (2차 AI·사용자 테스트 통과)
 - 작업 노트: [notes.md](notes.md) (이어서 작업할 때 먼저 읽기)
 - 다른 기능을 붙일 때 주로 읽을 파일: [ai/spec/extension.md](ai/spec/extension.md) (확장 구조), [ai/spec/files.md](ai/spec/files.md) (파일 구조)
 
@@ -12,6 +12,7 @@
 | 구현 계획 | [ai/plan/index.md](ai/plan/index.md) | 홈 개편 수정 계획 (2026-11-07 승인, 8단계, 커밋 접두어 "메인 페이지 수정1") |
 | 진행 기록 | [ai/logs/index.md](ai/logs/index.md) | L33~ (L01~L32는 보관 파일), L34 홈 개편 명세, L35 홈 개편 목업, L36 수정 계획 |
 | 목업 | [human/mockups/index.html](human/mockups/index.html) | 화면별 파일 (앱 틀, 홈 개편 2026-11-07 승인, 이전 홈) |
+| 테스트 (r1) | [ai/tests/r1/](ai/tests/r1/), [human/tests/r1-user-test.md](human/tests/r1-user-test.md) | 홈 개편 수정1: AI 테스트 보고서, 사용자 테스트 체크리스트 (22개) |
 
 ## 보관 문서 (archive/, 평소에는 읽지 않음)
 | 종류 | 파일 |

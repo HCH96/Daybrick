@@ -13,6 +13,6 @@
 - 8단계: 마무리 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- `/test main-page`
+- 사용자 테스트: human/tests/r1-user-test.md 채우기 → 결과 기록 (L45 다음 항목)
 
 ## 확인할 문서 (경로는 docs/features/main-page/ 기준, 파일 통째로 읽기)
