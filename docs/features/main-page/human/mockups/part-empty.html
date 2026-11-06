@@ -1,0 +1,136 @@
+<!doctype html>
+<!-- 목업: 메인 페이지 / 6. 빈 상태 · 불러오는 중 · 못 읽음
+  목차와 다른 화면: index.html (전체 홈은 dash.html)
+  CSS: common.css, dash.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                                        요구사항
+  empty-states        6. 빈 상태·불러오는 중·못 읽음 (실제 크기)    R13, R17, R22, R34, R41, R46
+    empty-head          6-1. 머리(빠른 추가 입력 중) + 요약 줄 빈 값  R12–R13, R22
+    empty-upcoming      6-2. 다가오는 7일 비었음                    R34
+    empty-projects      6-3. 진행 중 프로젝트 없음                  R41
+    empty-jobs-zero     6-4. 새 추천 공고 0개                       R46
+    empty-jobs-off      6-5. 서버 연결 안 됨                        R46
+    empty-loading       6-6. 불러오는 중 (모든 카드 공통)           R17
+    empty-error         6-7. 못 읽음 (모든 카드 공통)               R17
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 메인 페이지 목업 · 6. 빈 상태·불러오는 중·못 읽음</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="dash.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · <a href="dash.html" style="color:var(--accent)">전체 홈(dash.html)</a> · 부분을 실제 크기로 보여줍니다.</p>
+
+  <section class="screen" id="empty-states">
+    <div class="screen-head"><h2>6. 빈 상태 · 불러오는 중 · 못 읽음</h2><span class="tag">R13, R17, R22, R34, R41, R46</span></div>
+    <p class="screen-desc">빈 상태는 "무엇이 보일지 안내 + 이동 버튼", 불러오는 중은 회색 줄, 못 읽음은 빨간 안내 한 줄입니다. 카드 틀(제목·링크)은 상태와 상관없이 그대로 있습니다.</p>
+
+    <p class="cap">6-1. 기록이 아무것도 없는 날 — 빠른 추가에 제목을 쓰는 중 (Enter를 누르면 오늘 하루짜리 태스크가 생기고 칸이 비워짐)</p>
+    <div class="piece" id="empty-head">
+      <div class="head">
+        <div><div class="date">2026년 11월 7일 (토)</div><h1 class="hello">좋은 하루예요</h1></div>
+        <div><div class="quick focus">자료구조 복습<span class="caret"></span><kbd>Enter</kbd></div><div class="quick-hint">플랜에 오늘 할 일로 추가돼요 (미분류)</div></div>
+      </div>
+      <div class="kpis" style="margin-top:20px">
+        <div class="kpi"><div class="l">오늘 집중<i>투데이 ›</i></div><div class="v">0:00<small>/ 6:00</small></div><div class="meter"><div style="width:0"></div></div></div>
+        <div class="kpi"><div class="l">오늘 완료<i>투데이 ›</i></div><div class="v none">오늘 태스크 없음</div></div>
+        <div class="kpi"><div class="l">다음 일정<i>캘린더 ›</i></div><div class="v none">7일 안에 일정 없음</div></div>
+        <div class="kpi"><div class="l">가까운 마감<i>지원 관리 ›</i></div><div class="v none">남은 마감 없음</div></div>
+      </div>
+    </div>
+
+    <div class="piece-row" style="margin-top:28px">
+      <div>
+        <p class="cap">6-2. 다가오는 7일 비었음 (7일 모두 항목 없음)</p>
+        <div class="piece"><section class="card w7" id="empty-upcoming" style="height:300px">
+          <div class="card-head"><div class="card-title">다가오는 7일</div><span class="link">캘린더 ›</span></div>
+          <div class="state">
+            <div class="icon-box"><svg class="ico"><use href="#n-cal" /></svg></div>
+            <div class="msg">앞으로 7일 동안 일정이 없어요</div>
+            <div>태스크 마감, 지원 전형, 개인 일정이 날짜별로 보여요</div>
+            <span class="btn-ghost">캘린더로 가기</span>
+          </div>
+        </section></div>
+      </div>
+      <div>
+        <p class="cap">6-3. 진행 중 프로젝트 없음</p>
+        <div class="piece"><section class="card w4" id="empty-projects">
+          <div class="card-head"><div class="card-title">프로젝트 진행</div><span class="link">프로젝트 ›</span></div>
+          <div class="state">
+            <div class="icon-box"><svg class="ico"><use href="#n-flag" /></svg></div>
+            <div class="msg">진행 중인 프로젝트가 없어요</div>
+            <div>프로젝트마다 현재 주차·단계와 진행 막대가 보여요</div>
+            <span class="btn-ghost">프로젝트로 가기</span>
+          </div>
+        </section></div>
+      </div>
+    </div>
+
+    <div class="piece-row" style="margin-top:28px">
+      <div>
+        <p class="cap">6-4. 새 추천 공고 0개</p>
+        <div class="piece"><section class="card w4" id="empty-jobs-zero">
+          <div class="card-head"><div class="card-title">새 추천 공고</div><span class="link">구직 관리 ›</span></div>
+          <div class="state">
+            <div class="icon-box"><svg class="ico"><use href="#n-search" /></svg></div>
+            <div class="msg">새 추천 공고가 없어요</div>
+            <div>마지막 수집 오늘 09:00</div>
+          </div>
+        </section></div>
+      </div>
+      <div>
+        <p class="cap">6-5. 서버 연결 안 됨 (또는 로그인 안 됨)</p>
+        <div class="piece"><section class="card w4" id="empty-jobs-off">
+          <div class="card-head"><div class="card-title">새 추천 공고</div><span class="link">구직 관리 ›</span></div>
+          <div class="state">
+            <div class="icon-box"><svg class="ico"><use href="#n-search" /></svg></div>
+            <div class="msg">서버를 연결하면 추천 공고가 보여요</div>
+            <span class="btn-ghost">구직 관리로 가기</span>
+          </div>
+        </section></div>
+      </div>
+      <div>
+        <p class="cap">6-6. 불러오는 중 (모든 카드 공통)</p>
+        <div class="piece"><section class="card w4" id="empty-loading">
+          <div class="card-head"><div class="card-title">지원 현황</div><span class="link">지원 관리 ›</span></div>
+          <div class="state">
+            <div class="skel"><i style="width:90%"></i><i style="width:70%"></i><i style="width:80%"></i></div>
+            <div style="margin-top:6px">불러오는 중…</div>
+          </div>
+        </section></div>
+      </div>
+      <div>
+        <p class="cap">6-7. 못 읽음 (모든 카드 공통)</p>
+        <div class="piece"><section class="card w4" id="empty-error">
+          <div class="card-head"><div class="card-title">프로젝트 진행</div><span class="link">프로젝트 ›</span></div>
+          <div class="state err">
+            <div class="icon-box"><svg class="ico"><use href="#k-warn" /></svg></div>
+            <div>프로젝트를 불러오지 못했어요</div>
+          </div>
+        </section></div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>요약 줄 빈 값 (R13)</b><ul>
+        <li>숫자 대신 회색 문장 한 줄, 칸 높이는 그대로</li>
+        <li>오늘 집중은 비어도 0:00 / 6:00과 빈 막대</li>
+      </ul></div>
+      <div class="note"><b>빠른 추가 (R12, R22)</b><ul>
+        <li>입력 중에는 보라 테두리, 아래에 어디로 들어가는지 작게 안내</li>
+        <li>공백만 쓰고 Enter는 아무 일도 없음, 화면 이동 없음</li>
+      </ul></div>
+      <div class="note"><b>카드 상태 (R17)</b><ul>
+        <li>빈 상태 아이콘은 이동할 메뉴의 아이콘</li>
+        <li>못 읽음은 이동 버튼 없이 안내만 (제목 링크로는 이동 가능)</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

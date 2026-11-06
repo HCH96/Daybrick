@@ -23,7 +23,7 @@
 | [files.md](files.md) | 파일 구조 (2026-10-22 구현 기준) |
 | [window.md](window.md) | 창 설정, 알려진 제약 |
 | [done.md](done.md) | 완료 기준 |
-| [mockup.md](mockup.md) | 목업 경로, 보관된 후보 목업 (홈 개편 목업은 아직 없음) |
+| [mockup.md](mockup.md) | 목업 경로와 "목업에서 정한 것" (홈 개편 목업 2026-11-07 승인: 카드 배치·표시 방식), 이전 목업·후보 목업 |
 | [decisions.md](decisions.md) | 결정 사항 D1–D8 |
 
 ## 다른 문서

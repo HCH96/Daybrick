@@ -1,0 +1,210 @@
+<!doctype html>
+<!-- 목업: 메인 페이지 / 4. 홈 개편 (모든 기능이 연결된 모습)
+  목차와 다른 화면: index.html
+  CSS: common.css, dash.css (필요한 클래스만 검색해서 읽기)
+  ID                  화면                                        요구사항
+  dash                4. 홈 개편 (모든 기능이 연결된 모습)          R10–R16, R22–R47
+    dash-head           4-1. 날짜·인사 + 빠른 추가                  R10–R12, R22
+    dash-summary        4-2. 요약 줄 4칸                            R13, R23–R26
+    dash-upcoming       4-3. 다가오는 7일 (7칸 × 2줄)               R29–R34
+    dash-now            4-4. 지금 하는 것 (5칸, 타이머 실행 중)     R35
+    dash-week           4-5. 이번 주 집중 (5칸)                     R38–R39
+    dash-projects       4-6. 프로젝트 진행 (4칸)                    R40–R41
+    dash-apps           4-7. 지원 현황 (4칸)                        R42
+    dash-jobs           4-8. 새 추천 공고 (4칸)                     R43–R45
+    dash-notes          4-9. 설명 메모                              -
+  다른 상태: part-now.html (지금 하는 것 4상태), part-empty.html (빈·불러오는 중·못 읽음)
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daybrick 메인 페이지 목업 · 4. 홈 개편</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="dash.css" />
+</head>
+<body>
+<script src="icons.js"></script>
+
+<div class="doc">
+  <p class="lead"><a href="index.html" style="color:var(--accent)">← 목업 목차</a> · 정적 화면이며 데이터는 모두 예시 값입니다. 2026년 11월 7일(토) 13:10, 타이머가 도는 중인 모습입니다.</p>
+
+  <section class="screen" id="dash">
+    <div class="screen-head"><h2>4. 홈 개편 (모든 기능이 연결된 모습)</h2><span class="tag">R10–R16, R22–R47</span></div>
+    <p class="screen-desc">위에서부터 날짜·인사와 빠른 추가, 요약 줄 4칸, 12칸 벤토 격자입니다. 왼쪽 큰 카드가 다가오는 7일, 오른쪽에 지금 하는 것과 이번 주 집중, 아래 줄에 프로젝트·지원·추천 공고 세 카드를 4칸씩 놓았습니다.</p>
+    <div class="scale-note">1440 × 900 창, 75% 축소 · 아래 줄은 창 높이를 넘으면 본문이 스크롤됩니다 (여기서는 펼쳐서 보여줌)</div>
+
+    <div class="frame">
+      <div class="titlebar">
+        <div class="tb-nav">
+          <span class="tb-btn"><svg class="ico"><use href="#i-side" /></svg></span>
+          <span class="tb-btn"><svg class="ico"><use href="#i-back" /></svg></span>
+          <span class="tb-btn off"><svg class="ico"><use href="#i-fwd" /></svg></span>
+        </div>
+        <div class="tb-drag"></div>
+        <span class="tb-bell"><svg class="ico"><use href="#n-bell" /></svg><b>2</b></span>
+        <div class="win">
+          <span><svg viewBox="0 0 10 10"><path d="M0 5.5h10" /></svg></span>
+          <span><svg viewBox="0 0 10 10"><rect x=".5" y=".5" width="9" height="9" /></svg></span>
+          <span><svg viewBox="0 0 10 10"><path d="M.5.5l9 9M9.5.5l-9 9" /></svg></span>
+        </div>
+      </div>
+      <div class="body">
+        <nav class="sidebar">
+          <div class="logo"><div class="brick"><i></i><i></i><i></i><i></i></div>Daybrick</div>
+          <div class="nav on"><svg class="ico"><use href="#n-home" /></svg>Home</div>
+          <div class="nav"><svg class="ico"><use href="#n-plan" /></svg>Plan</div>
+          <div class="nav"><svg class="ico"><use href="#n-flag" /></svg>Projects</div>
+          <div class="nav"><svg class="ico"><use href="#n-cal" /></svg>Calendar</div>
+          <div class="nav"><svg class="ico"><use href="#n-bag" /></svg>Applications</div>
+          <div class="nav"><svg class="ico"><use href="#n-search" /></svg>Job Search</div>
+          <div class="nav"><svg class="ico"><use href="#n-sun" /></svg>Today</div>
+          <div class="spacer"></div>
+          <div class="nav"><svg class="ico"><use href="#n-gear" /></svg>Settings</div>
+          <div class="version">v0.1.0</div>
+        </nav>
+        <main class="main">
+          <div class="home">
+            <div class="head" id="dash-head">
+              <div><div class="date">2026년 11월 7일 (토)</div><h1 class="hello">좋은 하루예요</h1></div>
+              <div class="quick"><svg class="ico sm"><use href="#i-plus" /></svg>할 일 추가…<kbd>Enter</kbd></div>
+            </div>
+
+            <div class="kpis" id="dash-summary">
+              <div class="kpi"><div class="l">오늘 집중<i>투데이 ›</i></div><div class="v">3:20<small>/ 6:00</small></div><div class="meter"><div style="width:55%"></div></div></div>
+              <div class="kpi"><div class="l">오늘 완료<i>투데이 ›</i></div><div class="v">2<small>/ 5</small></div></div>
+              <div class="kpi hover"><div class="l">다음 일정<i>캘린더 ›</i></div><div class="v"><span class="when">오늘 16:00</span><span class="t">스터디 모임</span></div></div>
+              <div class="kpi"><div class="l">가까운 마감<i>지원 관리 ›</i></div><div class="v"><span class="when">D-2</span><span class="t">넥슨 서류 마감</span></div></div>
+            </div>
+
+            <div class="grid">
+              <!-- 다가오는 7일 -->
+              <section class="card s7x2" id="dash-upcoming">
+                <div class="card-head"><div class="card-title">다가오는 7일 <span class="badge">11개</span></div><span class="link">캘린더 ›</span></div>
+                <div class="up"><div class="up-in">
+                  <div class="day">
+                    <div class="day-h today">오늘 <small>11/7 (토)</small></div>
+                    <div class="it"><span class="tm">16:00</span><span class="mk"><i class="dot"></i></span><span class="t">스터디 모임</span></div>
+                    <div class="it c-violet"><span class="tm"></span><span class="mk"><svg class="fl"><use href="#f-todo" /></svg></span><span class="t">TrialGround <em>· 3주차</em></span></div>
+                    <div class="it c-violet hover"><span class="tm"></span><span class="mk"><i class="dot"></i></span><span class="t">매칭 서버 마무리</span></div>
+                  </div>
+                  <div class="day blank"><div class="day-h">내일 <small>11/8 (일)</small></div></div>
+                  <div class="day">
+                    <div class="day-h">11/9 (월)</div>
+                    <div class="it"><span class="tm">10:00</span><span class="mk"><i class="ini h3">크</i></span><span class="t">크래프톤 <em>· 코딩 테스트</em></span><svg class="k"><use href="#k-code" /></svg></div>
+                    <div class="it"><span class="tm"></span><span class="mk"><i class="ini h1">넥</i></span><span class="t">넥슨 <em>· 서류 마감</em></span><svg class="k"><use href="#k-doc" /></svg></div>
+                    <div class="it c-blue"><span class="tm"></span><span class="mk"><i class="dot"></i></span><span class="t">포트폴리오 README 정리</span></div>
+                  </div>
+                  <div class="day">
+                    <div class="day-h">11/10 (화)</div>
+                    <div class="it c-teal"><span class="tm"></span><span class="mk"><svg class="fl"><use href="#f-todo" /></svg></span><span class="t">C++ 스터디 <em>· 3주차</em></span></div>
+                    <div class="it"><span class="tm"></span><span class="mk"><i class="dot"></i></span><span class="t">학회 참석</span><span class="end">~11/12</span></div>
+                  </div>
+                  <div class="day">
+                    <div class="day-h">11/11 (수)</div>
+                    <div class="it"><span class="tm">14:00</span><span class="mk"><i class="ini h1">넥</i></span><span class="t">넥슨 <em>· 1차 면접</em></span><svg class="k on"><use href="#k-int" /></svg></div>
+                  </div>
+                  <div class="day blank"><div class="day-h">11/12 (목)</div></div>
+                  <div class="day">
+                    <div class="day-h">11/13 (금)</div>
+                    <div class="it"><span class="tm"></span><span class="mk"><i class="ini h6">스</i></span><span class="t">스마일게이트 <em>· 과제 마감</em></span><svg class="k"><use href="#k-doc" /></svg></div>
+                    <div class="it c-amber"><span class="tm"></span><span class="mk"><i class="dot"></i></span><span class="t">자기소개서 2차 수정</span></div>
+                  </div>
+                </div><span class="up-scroll"></span></div>
+              </section>
+
+              <!-- 지금 하는 것: 타이머 실행 중 -->
+              <section class="card s5" id="dash-now">
+                <div class="card-head"><div class="card-title">지금 하는 것</div><span class="link">투데이 ›</span></div>
+                <div class="card-body">
+                  <div class="run-task c-violet"><i class="dot"></i>매칭 서버 마무리</div>
+                  <div class="run-sub">TrialGround · 오늘 이 태스크 1:10</div>
+                  <div class="run-row"><span class="clock">0:42:15</span><span class="pill run">진행 중</span></div>
+                  <div class="acts">
+                    <span class="b"><svg class="ico"><use href="#t-pause" /></svg>일시정지</span>
+                    <span class="b primary"><svg class="ico"><use href="#t-check" /></svg>완료</span>
+                    <span class="b quiet"><svg class="ico"><use href="#t-stop" /></svg>중단</span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 이번 주 집중 -->
+              <section class="card s5" id="dash-week">
+                <div class="card-head"><div class="card-title">이번 주 집중</div><span class="link">투데이 ›</span></div>
+                <div class="wk-total">이번 주 <b>18</b>시간 <b>40</b>분</div>
+                <div class="wk">
+                  <div class="goal" style="bottom:calc(22px + (100% - 22px) * .857)"><span>목표 6시간</span></div>
+                  <div class="col"><i class="on" style="height:55%"></i><span>월</span></div>
+                  <div class="col"><i class="on" style="height:62%"></i><span>화</span></div>
+                  <div class="col"><i class="on" style="height:31%"></i><span>수</span></div>
+                  <div class="col"><div class="tip" style="bottom:calc(57% + 6px)">11/5 (목)<b>4시간</b></div><i class="on" style="height:57%"></i><span>목</span></div>
+                  <div class="col"><i class="on" style="height:14%"></i><span>금</span></div>
+                  <div class="col today"><i class="on" style="height:48%"></i><span>토</span></div>
+                  <div class="col"><i class="empty"></i><span>일</span></div>
+                </div>
+              </section>
+
+              <!-- 프로젝트 진행 -->
+              <section class="card s4" id="dash-projects">
+                <div class="card-head"><div class="card-title">프로젝트 진행 <span class="badge">5개</span></div><span class="link">프로젝트 ›</span></div>
+                <div class="card-body">
+                  <div class="pj c-violet"><div class="pj-1"><i class="dot"></i>TrialGround<span class="tm">12:40</span></div><div class="pj-2"><span class="pos">3주차 / 8</span><div class="pbar"><div style="width:31%"></div></div></div></div>
+                  <div class="pj c-teal"><div class="pj-1"><i class="dot"></i>C++ 공부<span class="tm">8:10</span></div><div class="pj-2"><span class="pos">2단계 · 문법</span><div class="pbar"><div style="width:46%"></div></div></div></div>
+                  <div class="pj c-pink"><div class="pj-1"><i class="dot"></i>알고리즘 매일 풀기<span class="tm">21:05</span></div><div class="pj-2"><span class="pos">5주차 / 12</span><div class="pbar"><div style="width:38%"></div></div></div></div>
+                  <div class="pj c-green"><div class="pj-1"><i class="dot"></i>포트폴리오 사이트<span class="tm">2:30</span></div><div class="pj-2"><span class="pos">1단계 · 기획</span><div class="pbar"><div style="width:15%"></div></div></div></div>
+                  <div class="more">외 1개</div>
+                </div>
+              </section>
+
+              <!-- 지원 현황 -->
+              <section class="card s4" id="dash-apps">
+                <div class="card-head"><div class="card-title">지원 현황</div><span class="link">지원 관리 ›</span></div>
+                <div class="card-body">
+                  <div class="tiles">
+                    <div class="tile st1"><div class="n">2</div><div class="l">지원 준비</div></div>
+                    <div class="tile st2"><div class="n">6</div><div class="l">지원 완료</div></div>
+                    <div class="tile st3"><div class="n">3</div><div class="l">전형 준비</div><div class="sg">과제 1 · 코테 1 · 면접 1</div></div>
+                    <div class="tile st4"><div class="n">2</div><div class="l">결과 대기</div><div class="sg">면접 2</div></div>
+                  </div>
+                  <div class="tiles-total">진행 중 13곳</div>
+                </div>
+              </section>
+
+              <!-- 새 추천 공고 -->
+              <section class="card s4" id="dash-jobs">
+                <div class="card-head"><div class="card-title">새 추천 공고</div><span class="link">구직 관리 ›</span></div>
+                <div class="card-body">
+                  <div class="jb-n">새 공고 <b>5</b>개</div>
+                  <div class="jb"><i class="ini h1">넥</i><div class="tx"><div class="co">넥슨</div><div class="ti">게임 서버 프로그래머 (신입)</div></div><span class="dd">D-12</span><span class="score">87</span></div>
+                  <div class="jb"><i class="ini h3">크</i><div class="tx"><div class="co">크래프톤</div><div class="ti">백엔드 엔지니어 신입 공채</div></div><span class="dd soon">D-5</span><span class="score">82</span></div>
+                  <div class="jb"><i class="ini h5">펄</i><div class="tx"><div class="co">펄어비스</div><div class="ti">클라이언트 프로그래머</div></div><span class="dd">D-20</span><span class="score mid">74</span></div>
+                  <div class="jb-foot">마지막 수집 오늘 09:00</div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div class="notes" id="dash-notes">
+      <div class="note"><b>배치 (R14)</b><ul>
+        <li>다가오는 7일 7칸×2줄, 지금 하는 것·이번 주 집중 5칸, 아래 세 카드 4칸씩</li>
+        <li>창 폭 1280px 미만이면 모두 6칸(2열), 줄 최소 200px</li>
+        <li>다가오는 7일은 카드 안에서 스크롤 (오른쪽 막대, 아래 흐림)</li>
+      </ul></div>
+      <div class="note"><b>요약 줄 (R13, R23–R26)</b><ul>
+        <li>칸 오른쪽 위에 이동할 곳을 흐리게 적고, 마우스를 올리면 칸이 밝아짐 (다음 일정 칸)</li>
+        <li>시간이 급한 값(다음 일정 시각, D-n)만 강조색</li>
+        <li>오늘 집중 아래 가는 막대는 목표 대비 비율</li>
+      </ul></div>
+      <div class="note"><b>카드 표시</b><ul>
+        <li>다가오는 7일: 태스크·개인 일정은 점, 지원은 이니셜 배지 + 종류 아이콘(면접만 강조색), 깃발은 프로젝트 색</li>
+        <li>이번 주 집중: 지난 요일은 어두운 보라, 오늘만 강조색, 점선은 하루 목표, 목 막대는 마우스를 올린 모습</li>
+        <li>추천 공고 점수 80점 이상은 보라, 그 아래는 회색 · D-7 이하는 주황</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

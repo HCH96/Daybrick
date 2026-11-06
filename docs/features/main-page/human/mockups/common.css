@@ -1,4 +1,4 @@
-/* 공통: 색 토큰(그라파이트 바이올렛), 문서 부분, 앱 창 틀, 아이콘 상자 */
+/* 공통: 색 토큰(그라파이트 바이올렛), 문서 부분, 앱 창 틀, 아이콘 상자, 카테고리·프로젝트 색, 이니셜 배지, 조각 화면 */
 /* 색: 그라파이트 바이올렛 (apps/desktop/src/styles/theme.css와 같은 값) */
 :root {
   --bg: #17171a; --sidebar: #1c1c20; --surface: #222227;
@@ -9,6 +9,9 @@
   --blue: #7aa8ff; --blue-soft: #1e2740;
   --amber: #f0b860; --amber-soft: #3a2f1c;
   --green: #66cf95; --green-soft: #1a3428;
+  --red: #ff8a8a; --red-soft: #3a1f22;
+  --surface-2: #28282e;
+  --mono: "Cascadia Mono", "Consolas", monospace;
   --radius: 12px;
 }
 * { box-sizing: border-box; }
@@ -79,3 +82,19 @@ body {
 /* 아이콘 상자 + 안내 (빈 카드, 준비 중 화면 공용) */
 .icon-box { width: 44px; height: 44px; border-radius: 12px; background: var(--neutral-soft); display: grid; place-items: center; color: var(--muted); }
 .msg { color: var(--text); font-size: 14px; font-weight: 600; }
+
+/* ===== 홈 개편(L34)부터 쓰는 공용 부품 — calendar 목업 common.css·calendar.css와 같은 값 ===== */
+/* 카테고리·프로젝트 색 (색 선택기에서 고른 값의 예) */
+.c-violet { --c: #a68cff; } .c-blue { --c: #7aa8ff; } .c-teal { --c: #5fcfcf; }
+.c-green { --c: #66cf95; } .c-amber { --c: #f0b860; } .c-pink { --c: #f29ad3; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c, var(--muted)); flex-shrink: 0; }
+/* 회사 이니셜 배지 (색은 회사 이름으로 계산한 색상환 위치, 예시 값) */
+.ini { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+  font-size: 10px; font-weight: 800; font-style: normal; line-height: 1; color: #17171a; }
+.h1 { background: #f2d36b; } .h2 { background: #6fd19a; } .h3 { background: #7fa9ff; } .h4 { background: #f5a46a; }
+.h5 { background: #67d3c8; } .h6 { background: #f58d9c; } .h7 { background: #c4a3ff; }
+/* 조각 화면: 앱 창의 일부만 실제 크기(100%)로 보여줌 */
+.piece { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+.piece-row { display: flex; flex-wrap: wrap; gap: 20px 24px; align-items: flex-start; }
+.piece-row > div { flex: none; }
+.cap { font-size: 12px; color: var(--faint); margin: 0 0 8px; }
