@@ -24,9 +24,9 @@
 | [window.md](window.md) | 창 설정, 알려진 제약 |
 | [done.md](done.md) | 완료 기준 |
 | [mockup.md](mockup.md) | 목업 경로와 "목업에서 정한 것" (홈 개편 목업 2026-11-07 승인: 카드 배치·표시 방식), 이전 목업·후보 목업 |
-| [decisions.md](decisions.md) | 결정 사항 D1–D8 |
+| [decisions.md](decisions.md) | 결정 사항 D1–D11 |
 
 ## 다른 문서
-- 구현 계획: 홈 개편 계획은 아직 없음. 끝난 계획 (보관): [처음 계획](../../archive/plans/main-page-plan.md) (2026-10-21 승인, 6단계), [B안 배치](../../archive/plans/main-page-layout-b-plan.md) (2026-10-22 승인, 5단계), [제목 표시줄·사이드바 접기·뒤로/앞으로](../../archive/plans/main-page-titlebar-plan.md) (2026-10-22 승인, T1~T3)
+- 구현 계획: [../plan/index.md](../plan/index.md) (홈 개편 수정 계획, 2026-11-07 승인, 8단계). 홈 계산은 features/home/ 순수 함수로 두고 다른 기능 함수를 재사용, 추천 공고는 홈에 들어올 때 한 번 읽음 (D9–D11). 끝난 계획 (보관): [처음 계획](../../archive/plans/main-page-plan.md) (2026-10-21 승인, 6단계), [B안 배치](../../archive/plans/main-page-layout-b-plan.md) (2026-10-22 승인, 5단계), [제목 표시줄·사이드바 접기·뒤로/앞으로](../../archive/plans/main-page-titlebar-plan.md) (2026-10-22 승인, T1~T3)
 - 테스트 문서: [../../index.md](../../index.md)의 "보관 문서"
 - 진행 기록: [../logs/index.md](../logs/index.md)
