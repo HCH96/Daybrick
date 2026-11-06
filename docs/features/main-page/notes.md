@@ -13,11 +13,6 @@
 - 8단계: 마무리 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 모든 단계 완료
-- 수정 계획: 근거 기록 L34, 커밋 접두어 "메인 페이지 수정1"
-- 관련 결정: D1, D3, D4, D9, D10, D11, D12, D13, D14, D15, D16, D17 (ai/spec/decisions.md에서 이 줄만 읽기)
+- `/test main-page`
 
 ## 확인할 문서 (경로는 docs/features/main-page/ 기준, 파일 통째로 읽기)
-- ai/plan/index.md
-- ai/logs/L37.md ~ ai/logs/L44.md (각 단계 테스트 메모)
-- ai/spec/req-home.md, ai/spec/req-home-upcoming.md, ai/spec/req-home-cards.md
