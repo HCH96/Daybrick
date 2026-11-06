@@ -13,3 +13,4 @@
 - D10. 추천 탭을 연 적이 없으면(`recommendOpenedAt` 없음) 새 공고는 0개다. 홈은 구직 관리 `readOpenedAt()`로 기준 시각을 읽기만 한다. (적용: 이후 전체) (기록: L36)
 - D11. 홈 카드 계산은 `features/home/`의 순수 함수에 두고 다른 기능의 함수를 재사용한다. 투데이 칸반 순서 함수는 `features/today/kanbanOrder.ts`로 옮겨 칸반과 홈이 같이 쓴다. (적용: 이후 전체) (기록: L36)
 - D12. 홈 카드 오른쪽 위 링크 글자는 `PAGE_LABELS`가 아니라 카드 정의(`dashboardCards.tsx`)의 `linkLabel`에 메뉴 이름을 적는다 (예: 지원 현황 카드 → "지원 관리 ›"). (적용: 이후 전체) (기록: L37)
+- D13. 다가오는 7일 줄 모양(`UpcomingRow`)은 structure.md의 초안과 조금 다르다: 지원 줄은 `title`(회사 → 카드 제목)·`sub`(전형 종류 이름, 지원관리 `EVENT_KIND_LABELS`)·`initial`·`badge`(캘린더 값 그대로), 깃발 줄은 캘린더 label을 첫 " · "에서 나눈 `title`·`sub`와 `done`. 이니셜 배지 색은 홈 CSS(`upcoming-row__ini--1~7`)에 캘린더와 같은 색으로 따로 둔다. (적용: 이후 전체) (기록: L38)

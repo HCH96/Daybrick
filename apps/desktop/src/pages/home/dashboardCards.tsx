@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import type { PageId } from "../../app/types";
 import CardState from "./CardState";
 import ApplicationsSummaryCard from "./ApplicationsSummaryCard";
+import UpcomingCard from "./upcoming/UpcomingCard";
 
 /**
  * 카드가 벤토 그리드(12칸)에서 차지하는 크기.
@@ -35,14 +36,7 @@ export const dashboardCards: DashboardCardDef[] = [
     linkTo: "calendar",
     linkLabel: "캘린더",
     size: "large",
-    body: () => (
-      <CardState
-        kind="empty"
-        linkTo="calendar"
-        message="앞으로 7일 동안 일정이 없어요"
-        description="태스크 마감, 지원 전형, 개인 일정이 날짜별로 보여요"
-      />
-    ),
+    body: UpcomingCard,
   },
   {
     id: "now",

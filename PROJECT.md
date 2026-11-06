@@ -23,7 +23,7 @@
 ## 기능별 상태
 | 기능 | 상태 | 문서 |
 |---|---|---|
-| 메인 페이지 | 수정 구현 중 (1/8단계 완료). 앱 틀·사이드바는 완료 | docs/features/main-page/index.md |
+| 메인 페이지 | 수정 구현 중 (2/8단계 완료). 앱 틀·사이드바는 완료 | docs/features/main-page/index.md |
 | 캘린더 계획 (플랜) | 수정 구현 완료 (테스트 대기) | docs/features/plan/index.md |
 | 캘린더 (일정 관리, 스케줄러 대체) | 테스트 r1: AI 실패 1(A14 수정함), 사용자 테스트 대기 | docs/features/calendar/index.md |
 | 지원 관리 | 수정1 완료 (테스트 r2 통과) | docs/features/applications/index.md |

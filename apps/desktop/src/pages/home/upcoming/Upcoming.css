@@ -1,0 +1,158 @@
+/* 홈 "다가오는 7일" 카드 본문 (R29–R34, 목업 dash.html dash-upcoming)
+ * 스크롤은 DashboardCard의 dashboard-card__scroll(얇은 스크롤 막대)이 맡는다. 여기서는 목록과 아래 흐림만. */
+.upcoming {
+  display: flex;
+  flex-direction: column;
+  padding-right: 6px;
+}
+
+/* 아래 흐림: 스크롤 칸 바닥에 붙어 넘친 내용이 이어짐을 보인다 (R34) */
+.upcoming__fade {
+  position: sticky;
+  bottom: 0;
+  flex-shrink: 0;
+  height: 36px;
+  margin-top: -12px;
+  background: linear-gradient(transparent, var(--surface));
+  pointer-events: none;
+}
+
+.upcoming-day + .upcoming-day {
+  margin-top: 6px;
+}
+
+.upcoming-day__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 0 4px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.upcoming-day__head--today {
+  color: var(--accent);
+}
+
+.upcoming-day__head small {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--faint);
+}
+
+/* 항목 없는 날: 머리만 흐리게 (R33) */
+.upcoming-day--blank .upcoming-day__head {
+  color: var(--faint);
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.upcoming-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 32px;
+  flex-shrink: 0;
+  padding: 0 8px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.upcoming-row:hover {
+  background: var(--surface-2);
+}
+
+.upcoming-row__time {
+  width: 40px;
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.upcoming-row__mark {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.upcoming-row__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--c, var(--muted));
+}
+
+.upcoming-row__flag {
+  display: grid;
+  color: var(--c);
+}
+
+.upcoming-row__flag svg {
+  width: 12px;
+  height: 14px;
+}
+
+.upcoming-row__title {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.upcoming-row__title em {
+  font-style: normal;
+  color: var(--muted);
+}
+
+.upcoming-row__end {
+  flex-shrink: 0;
+  margin-left: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.upcoming-row__kind {
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--faint);
+}
+
+.upcoming-row__kind--on {
+  color: var(--accent);
+}
+
+/* 회사 이니셜 배지 (캘린더 badge.ts의 색 번호 1~7, Chips.css의 cal-ini와 같은 색) */
+.upcoming-row__ini {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 800;
+  font-style: normal;
+  line-height: 1;
+  color: #17171a;
+}
+
+.upcoming-row__ini--1 { background: #f2d36b; }
+.upcoming-row__ini--2 { background: #6fd19a; }
+.upcoming-row__ini--3 { background: #7fa9ff; }
+.upcoming-row__ini--4 { background: #f5a46a; }
+.upcoming-row__ini--5 { background: #67d3c8; }
+.upcoming-row__ini--6 { background: #f58d9c; }
+.upcoming-row__ini--7 { background: #c4a3ff; }
