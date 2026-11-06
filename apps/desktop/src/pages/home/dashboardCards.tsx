@@ -4,6 +4,7 @@ import CardState from "./CardState";
 import ApplicationsSummaryCard from "./ApplicationsSummaryCard";
 import NowCard from "./now/NowCard";
 import UpcomingCard from "./upcoming/UpcomingCard";
+import WeekFocusCard from "./week/WeekFocusCard";
 
 /**
  * 카드가 벤토 그리드(12칸)에서 차지하는 크기.
@@ -53,14 +54,7 @@ export const dashboardCards: DashboardCardDef[] = [
     linkTo: "today",
     linkLabel: "투데이",
     size: "narrow",
-    body: () => (
-      <CardState
-        kind="empty"
-        linkTo="today"
-        message="이번 주 집중 기록이 없어요"
-        description="요일별 집중 시간이 막대로 보여요"
-      />
-    ),
+    body: WeekFocusCard,
   },
   {
     id: "projects",
