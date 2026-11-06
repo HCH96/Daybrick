@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import type { PageId } from "../../app/types";
 import CardState from "./CardState";
 import ApplicationsSummaryCard from "./ApplicationsSummaryCard";
+import NowCard from "./now/NowCard";
 import UpcomingCard from "./upcoming/UpcomingCard";
 
 /**
@@ -44,14 +45,7 @@ export const dashboardCards: DashboardCardDef[] = [
     linkTo: "today",
     linkLabel: "투데이",
     size: "narrow",
-    body: () => (
-      <CardState
-        kind="empty"
-        linkTo="today"
-        message="오늘 할 태스크가 없어요"
-        description="실행 중인 타이머나 오늘 태스크가 보여요"
-      />
-    ),
+    body: NowCard,
   },
   {
     id: "week-focus",
