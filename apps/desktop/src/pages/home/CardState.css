@@ -1,0 +1,78 @@
+/* 홈 카드 본문의 세 상태 (목업 part-empty.html의 .state) */
+.card-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.card-state__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: var(--neutral-soft);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+.card-state__msg {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.card-state__button {
+  margin-top: 4px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.card-state__button:hover {
+  background: var(--accent-soft);
+}
+
+.card-state__button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* 불러오는 중: 회색 줄 3개 */
+.card-state__skel {
+  width: 100%;
+  display: grid;
+  gap: 10px;
+}
+
+.card-state__skel i {
+  display: block;
+  height: 12px;
+  border-radius: 6px;
+  background: var(--neutral-soft);
+}
+
+.card-state__loading-text {
+  margin-top: 6px;
+}
+
+/* 못 읽음: 빨간 아이콘과 문구 */
+.card-state--error {
+  color: var(--red);
+}
+
+.card-state--error .card-state__icon {
+  background: var(--red-soft);
+  color: var(--red);
+}

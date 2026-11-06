@@ -4,7 +4,7 @@ import DashboardCard from "./DashboardCard";
 import { dashboardCards } from "./dashboardCards";
 import "./HomePage.css";
 
-/** 홈 대시보드: 상단(날짜, 인사, 빠른 추가) + 요약 줄 4칸 + 12칸 벤토 그리드 (목업 main-page.html#home) */
+/** 홈 대시보드: 상단(날짜, 인사, 빠른 추가) + 요약 줄 4칸 + 12칸 벤토 그리드에 카드 6개 (목업 dash.html) */
 function HomePage() {
   return (
     <div className="home-page">
@@ -16,6 +16,7 @@ function HomePage() {
             key={card.id}
             title={card.title}
             linkTo={card.linkTo}
+            linkLabel={card.linkLabel}
             size={card.size}
             body={card.body}
           />

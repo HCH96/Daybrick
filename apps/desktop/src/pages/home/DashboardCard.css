@@ -1,28 +1,29 @@
-/* 벤토 그리드(12칸)에서 차지하는 크기. 창이 좁으면 모두 6칸 */
+/* 벤토 그리드(12칸)에서 차지하는 크기. 창이 좁으면 모두 6칸 (R14) */
 .dashboard-card--large {
   grid-column: span 7;
   grid-row: span 2;
-}
-
-.dashboard-card--wide {
-  grid-column: span 7;
 }
 
 .dashboard-card--narrow {
   grid-column: span 5;
 }
 
+.dashboard-card--quarter {
+  grid-column: span 4;
+}
+
 @media (max-width: 1279px) {
   .dashboard-card--large,
-  .dashboard-card--wide,
-  .dashboard-card--narrow {
+  .dashboard-card--narrow,
+  .dashboard-card--quarter {
     grid-column: span 6;
   }
 }
 
 .dashboard-card {
   min-width: 0;
-  padding: 18px 20px;
+  min-height: 200px;
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
   background: var(--surface);
@@ -34,7 +35,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .dashboard-card__title,
@@ -54,6 +56,7 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--accent);
+  white-space: nowrap;
 }
 
 .dashboard-card__title:hover,
@@ -71,4 +74,25 @@
 .dashboard-card__body {
   flex: 1;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * large 카드(다가오는 7일): 본문을 절대 위치로 띄워 카드 높이를 키우지 않고 안에서 스크롤한다 (R34).
+ * 카드 높이는 오른쪽 두 카드가 정한 두 줄 높이를 따르므로, 본문 스크롤(R4)과 겹치지 않는다.
+ */
+.dashboard-card--large .dashboard-card__body {
+  position: relative;
+}
+
+.dashboard-card__scroll {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }

@@ -1,20 +1,22 @@
 import type { ComponentType } from "react";
 import type { PageId } from "../../app/types";
-import { PAGE_LABELS } from "../../app/pageLabels";
 import { useNavigation } from "../../app/navigation";
-import { withRo } from "../../utils/korean";
 import type { CardSize } from "./dashboardCards";
 import "./DashboardCard.css";
 
 interface DashboardCardProps {
   title: string;
   linkTo: PageId;
+  linkLabel: string;
   size: CardSize;
   body: ComponentType;
 }
 
-/** 홈 카드 공통 틀: 제목(누르면 이동) + 오른쪽 위 이동 링크 + 본문. size에 따라 그리드 칸 수가 정해진다. */
-function DashboardCard({ title, linkTo, size, body: Body }: DashboardCardProps) {
+/**
+ * 홈 카드 공통 틀 (R16): 제목(누르면 이동) + 오른쪽 위 링크 "캘린더 ›" + 본문.
+ * size에 따라 그리드 칸 수가 정해진다. large 카드는 본문이 카드 높이를 키우지 않고 안에서 스크롤한다.
+ */
+function DashboardCard({ title, linkTo, linkLabel, size, body: Body }: DashboardCardProps) {
   const { navigate } = useNavigation();
   const goTo = () => navigate(linkTo);
 
@@ -25,11 +27,17 @@ function DashboardCard({ title, linkTo, size, body: Body }: DashboardCardProps) 
           {title}
         </button>
         <button type="button" className="dashboard-card__link" onClick={goTo}>
-          {withRo(PAGE_LABELS[linkTo])} 가기 →
+          {linkLabel} ›
         </button>
       </div>
       <div className="dashboard-card__body">
-        <Body />
+        {size === "large" ? (
+          <div className="dashboard-card__scroll">
+            <Body />
+          </div>
+        ) : (
+          <Body />
+        )}
       </div>
     </section>
   );
