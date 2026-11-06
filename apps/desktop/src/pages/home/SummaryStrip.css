@@ -1,3 +1,4 @@
+/* 홈 요약 줄 4칸 (목업 dash.css .kpis, .kpi). 칸은 버튼이라 누르면 해당 메뉴로 이동한다 */
 .summary-strip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -5,30 +6,87 @@
 }
 
 .summary-strip__item {
-  padding: 16px 20px;
+  min-width: 0;
+  padding: 14px 18px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.summary-strip__item:hover {
+  border-color: var(--border-2);
+  background: var(--surface-2);
+}
+
+.summary-strip__item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .summary-strip__label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
   font-size: 12px;
   color: var(--muted);
+}
+
+.summary-strip__link {
+  color: var(--faint);
+  white-space: nowrap;
 }
 
 .summary-strip__value {
   margin-top: 2px;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
   line-height: 1.4;
-  color: var(--border);
-}
-
-.summary-strip__note {
-  margin-top: 2px;
-  font-size: 12px;
-  color: var(--muted);
+  letter-spacing: -0.3px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.summary-strip__value small {
+  margin-left: 2px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* 강조색은 다음 일정 날짜·시각과 D-n에만 */
+.summary-strip__when {
+  margin-right: 6px;
+  color: var(--accent);
+}
+
+.summary-strip__title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* 빈 값·불러오는 중: 회색 문장 */
+.summary-strip__value--none {
+  padding: 4px 0 3px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--faint);
+}
+
+.summary-strip__meter {
+  height: 4px;
+  margin-top: 6px;
+  background: var(--track);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.summary-strip__meter > div {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 99px;
 }

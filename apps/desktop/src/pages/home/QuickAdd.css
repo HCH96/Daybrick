@@ -1,22 +1,32 @@
-/* 비활성 상태: 흐리게, 눌러도 반응 없음 */
+/* 홈 빠른 추가 (목업 dash.css .quick, .quick.focus, .quick-hint) */
 .quick-add {
-  width: 340px;
-  height: 40px;
+  position: relative;
+  width: 360px;
   flex-shrink: 1;
   min-width: 0;
+}
+
+.quick-add__box {
+  height: 40px;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 14px;
+  padding: 0 12px 0 14px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 10px;
-  color: var(--muted);
-  opacity: 0.6;
-  cursor: not-allowed;
+  color: var(--faint);
+  cursor: text;
 }
 
-.quick-add svg {
+/* 입력 중: 보라 테두리 */
+.quick-add__box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+  color: var(--text);
+}
+
+.quick-add__box svg {
   flex-shrink: 0;
 }
 
@@ -30,9 +40,34 @@
   font: inherit;
   font-size: 13px;
   outline: none;
-  cursor: not-allowed;
 }
 
 .quick-add__input::placeholder {
+  color: var(--faint);
+}
+
+.quick-add__kbd {
+  flex-shrink: 0;
+  font-family: inherit;
+  font-size: 11px;
   color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 1px 6px;
+}
+
+/* 안내 문구: 입력 중에만, 머리 높이를 바꾸지 않게 칸 아래에 띄운다 */
+.quick-add__hint {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--faint);
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+.quick-add:focus-within .quick-add__hint {
+  visibility: visible;
 }
