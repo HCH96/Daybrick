@@ -45,3 +45,14 @@ export function useOpenedAt(): string | null {
 
   return openedAt;
 }
+
+/**
+ * 추천 탭을 마지막으로 떠난 시각을 읽기만 한다 (홈 새 추천 공고, 메인 페이지 D10).
+ * 이번 실행에서 기억한 값이 있으면 그것, 없으면 파일에서 읽는다. 저장하지 않아 "새" 기준을 바꾸지 않는다 (메인 페이지 R47).
+ * 연 적이 없으면 null. 파일을 읽지 못하면 실패를 그대로 넘긴다.
+ */
+export async function readOpenedAt(): Promise<string | null> {
+  if (cachedOpenedAt !== undefined) return cachedOpenedAt;
+  const local = await loadJobSearchLocal();
+  return local.recommendOpenedAt;
+}

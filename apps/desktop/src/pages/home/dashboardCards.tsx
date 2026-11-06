@@ -1,7 +1,7 @@
 import type { ComponentType } from "react";
 import type { PageId } from "../../app/types";
-import CardState from "./CardState";
 import ApplicationsSummaryCard from "./ApplicationsSummaryCard";
+import NewPostingsCard from "./jobs/NewPostingsCard";
 import NowCard from "./now/NowCard";
 import ProjectProgressCard from "./projects/ProjectProgressCard";
 import UpcomingCard from "./upcoming/UpcomingCard";
@@ -30,7 +30,6 @@ export interface DashboardCardDef {
  *   [ 다가오는 7일 (large) ][ 지금 하는 것 (narrow) ]
  *   [                      ][ 이번 주 집중 (narrow) ]
  *   [ 프로젝트 진행 ][ 지원 현황 ][ 새 추천 공고 ] (quarter)
- * 단계마다 빈 상태 body를 실제 카드 본문으로 바꾼다.
  */
 export const dashboardCards: DashboardCardDef[] = [
   {
@@ -79,13 +78,6 @@ export const dashboardCards: DashboardCardDef[] = [
     linkTo: "job-search",
     linkLabel: "구직 관리",
     size: "quarter",
-    body: () => (
-      <CardState
-        kind="empty"
-        linkTo="job-search"
-        message="새 추천 공고가 없어요"
-        description="새로 들어온 공고 수와 점수 높은 공고 3개가 보여요"
-      />
-    ),
+    body: NewPostingsCard,
   },
 ];
