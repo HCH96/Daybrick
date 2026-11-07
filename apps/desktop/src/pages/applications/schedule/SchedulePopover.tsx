@@ -67,7 +67,7 @@ function SchedulePopover({ application }: SchedulePopoverProps) {
       <MiniCalendar key={editingId ?? "new"} value={editing?.date ?? null} onSelect={pickDate} marked={marked} />
 
       <div className="sched__list">
-        {events.length === 0 && <p className="sched__empty">저장된 일정이 없습니다</p>}
+        {events.length === 0 && <p className="sched__empty">저장된 일정이 없어요</p>}
         {events.map((event) => (
           <ScheduleItemRow
             key={event.id}

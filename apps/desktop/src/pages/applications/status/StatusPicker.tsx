@@ -59,7 +59,7 @@ function StatusPicker({ status, stage, onPick }: StatusPickerProps) {
               <StatusBadge status={def.id} stage={null} />
               {def.hasStage && (
                 <span className="status-picker__more">
-                  <ChevronRightIcon size={13} />
+                  <ChevronRightIcon size={12} />
                 </span>
               )}
             </button>

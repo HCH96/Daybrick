@@ -3,14 +3,19 @@
   display: inline-flex;
   padding: 0;
   border: none;
-  border-radius: 99px;
+  border-radius: var(--radius-control);
   background: none;
   font: inherit;
   cursor: pointer;
 }
 
+.status-row__badge .status-badge {
+  transition: box-shadow var(--dur-fast) var(--ease);
+}
+
+/* 올림: 밝기 필터 대신 옅은 테두리 */
 .status-row__badge:hover .status-badge {
-  filter: brightness(1.12);
+  box-shadow: 0 0 0 1px var(--border-2) inset;
 }
 
 .status-row__badge:focus-visible {
@@ -20,7 +25,7 @@
 
 /* 상태 고르기 창 (목업 5-1) */
 .status-picker {
-  padding: 6px;
+  padding: var(--space-8);
 }
 
 .status-picker__more {
@@ -29,39 +34,39 @@
 }
 
 .status-picker__sub {
-  padding: 6px;
+  padding: var(--space-8);
 }
 
 /* 결과 고르기 창 (목업 5-3) */
 .result-picker {
-  padding: 12px;
+  padding: var(--space-12);
 }
 
 .result-picker__question {
-  margin: 0 0 8px;
-  font-size: 12px;
+  margin: 0 0 var(--space-8);
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
 .result-picker__later {
-  font-size: 11px;
+  font-size: var(--fs-11);
   color: var(--faint);
 }
 
 /* 전형 날짜 고르기 창 (R22) */
 .stage-date {
-  padding: 10px;
+  padding: var(--space-12);
 }
 
 .stage-date__title {
-  margin: 0 2px 8px;
-  font-size: 12px;
+  margin: 0 0 var(--space-8);
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
 .stage-date__foot {
-  margin-top: 6px;
-  padding-top: 4px;
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
   border-top: 1px solid var(--border-2);
 }
 

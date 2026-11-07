@@ -2,29 +2,31 @@
 .prop-cell,
 .prop-input {
   width: 100%;
-  min-height: 30px;
-  padding: 5px 8px;
+  min-height: 32px;
+  padding: var(--space-4) var(--space-8);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: none;
   color: var(--text);
   font: inherit;
-  font-size: 13.5px;
-  line-height: 20px;
+  font-size: var(--fs-13);
+  font-variant-numeric: tabular-nums;
+  line-height: 24px;
   text-align: left;
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .prop-cell {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--space-4);
   cursor: pointer;
 }
 
 .prop-cell:hover,
 .prop-input:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--hover-faint);
 }
 
 .prop-cell:focus-visible {
@@ -34,11 +36,6 @@
 
 .prop-cell--empty {
   color: var(--faint);
-}
-
-.prop-cell--chips {
-  padding-top: 4px;
-  padding-bottom: 4px;
 }
 
 .prop-input {
@@ -59,14 +56,14 @@
 
 .prop-input--invalid,
 .prop-input--invalid:focus {
-  box-shadow: 0 0 0 1px #ff8a8a inset;
+  box-shadow: 0 0 0 1px var(--red) inset;
 }
 
 /* URL: 편집 중이 아니면 밑줄 링크처럼 */
 .prop-url {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--space-2);
   width: 100%;
 }
 
@@ -80,34 +77,37 @@
 }
 
 .prop-url__open {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
   display: grid;
   place-items: center;
   padding: 0;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: none;
   color: var(--faint);
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 .prop-url__open:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--hover);
   color: var(--text);
 }
 
 /* 체크박스 */
 .prop-check {
-  width: 18px;
-  height: 18px;
-  margin: 6px 8px;
+  width: 16px;
+  height: 16px;
+  margin: var(--space-8);
   display: grid;
   place-items: center;
   padding: 0;
   border: 1.5px solid var(--muted);
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   background: none;
   color: var(--on-accent);
   cursor: pointer;
@@ -126,11 +126,11 @@
 
 /* 날짜 고르기 창 */
 .date-pop {
-  padding: 10px;
+  padding: var(--space-12);
 }
 
 .date-pop__foot {
-  margin-top: 6px;
-  padding-top: 4px;
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
   border-top: 1px solid var(--border-2);
 }

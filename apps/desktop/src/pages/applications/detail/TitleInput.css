@@ -1,7 +1,8 @@
+/* 상세 제목: 페이지 제목과 같은 26/600 */
 .title-input {
   display: block;
   width: 100%;
-  margin: 6px 0 14px;
+  margin: var(--space-8) 0 var(--space-16);
   padding: 0;
   border: none;
   outline: none;
@@ -10,8 +11,8 @@
   background: none;
   color: var(--text);
   font: inherit;
-  font-size: 26px;
-  font-weight: 800;
+  font-size: var(--fs-26);
+  font-weight: var(--fw-semibold);
   line-height: 1.35;
   letter-spacing: -0.3px;
 }

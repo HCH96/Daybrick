@@ -1,7 +1,7 @@
 .gallery {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-20);
   /* 열 수를 창 폭이 아니라 본문 폭으로 정한다 (사이드바를 접고 펴도 맞게) */
   container-type: inline-size;
 }
@@ -16,8 +16,8 @@
 .gallery__sort {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+  gap: var(--space-4);
+  font-size: var(--fs-12);
   color: var(--faint);
 }
 
@@ -25,7 +25,7 @@
 .gallery__grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--space-20);
 }
 
 /* 본문 폭이 좁으면 3열 (카드 한 장이 200px 아래로 줄어들 때쯤) */
@@ -36,8 +36,8 @@
 }
 
 .gallery__empty {
-  padding: 48px 0;
+  padding: 48px var(--space-16);
   text-align: center;
-  font-size: 13px;
+  font-size: var(--fs-13);
   color: var(--muted);
 }

@@ -28,7 +28,7 @@ function OptionChip({ name, color, onRemove }: OptionChipProps) {
             onRemove();
           }}
         >
-          <SmallCloseIcon size={11} />
+          <SmallCloseIcon size={12} />
         </button>
       )}
     </span>

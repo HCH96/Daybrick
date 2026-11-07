@@ -1,12 +1,13 @@
+/* 상태 배지 (design-direction 1부 8): 높이 22, 모서리 6, 연한 바탕, 6px 점 + 12px/500 */
 .status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 24px;
-  padding: 0 10px;
-  border-radius: 99px;
-  font-size: 12px;
-  font-weight: 700;
+  gap: var(--space-8);
+  height: 22px;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   color: var(--badge-color);
   background: var(--badge-bg);
@@ -21,27 +22,21 @@
 }
 
 .status-badge__stage {
-  font-weight: 600;
-  opacity: 0.85;
+  font-weight: var(--fw-regular);
 }
 
 .status-badge__stage::before {
   content: "·";
-  margin-right: 6px;
+  margin-right: var(--space-8);
   opacity: 0.7;
 }
 
-/* 큰 배지: 상세 팝업 제목 아래 (R17) */
+/* 큰 배지: 상세 팝업 제목 아래의 누르는 배지 (R17). 버튼이라 버튼 높이·모서리 */
 .status-badge--big {
-  height: 32px;
-  padding: 0 12px 0 14px;
-  font-size: 14px;
-  gap: 8px;
-}
-
-.status-badge--big::before {
-  width: 8px;
-  height: 8px;
+  height: 28px;
+  padding: 0 var(--space-8) 0 var(--space-12);
+  border-radius: var(--radius-control);
+  font-size: var(--fs-13);
 }
 
 .status-badge__chev {

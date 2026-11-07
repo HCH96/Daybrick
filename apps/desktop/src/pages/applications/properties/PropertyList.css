@@ -3,38 +3,44 @@
   flex-direction: column;
 }
 
+/* 속성 한 줄: 높이 36 (값 칸 32 + 위아래 2) */
 .prop-row {
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
+  grid-template-columns: 152px minmax(0, 1fr);
   align-items: start;
-  min-height: 34px;
-  padding: 2px 0;
-  border-radius: 6px;
+  min-height: 36px;
+  padding: var(--space-2) 0;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .prop-row:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--hover-faint);
 }
 
 /* 이름 칸: 누르면 메뉴 */
 .prop-row__name {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
   min-width: 0;
-  height: 30px;
-  padding: 0 6px;
+  height: 32px;
+  padding: 0 var(--space-8);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: none;
   color: var(--muted);
-  font-size: 13px;
+  font: inherit;
+  font-size: var(--fs-13);
   text-align: left;
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 .prop-row__name:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--hover);
   color: var(--text);
 }
 
@@ -63,30 +69,35 @@
 .add-prop {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
   align-self: flex-start;
-  margin-top: 2px;
-  padding: 8px 6px;
+  height: 32px;
+  margin-top: var(--space-4);
+  padding: 0 var(--space-8);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: none;
   color: var(--faint);
-  font-size: 13px;
+  font: inherit;
+  font-size: var(--fs-13);
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 .add-prop:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--hover);
   color: var(--text);
 }
 
 /* 속성 메뉴·속성 추가 창 */
 .prop-menu {
-  padding: 6px;
+  padding: var(--space-8);
 }
 
 .prop-menu .pop-input {
-  margin-bottom: 4px;
+  margin-bottom: var(--space-4);
 }
 
 .type-list__icon {

@@ -1,17 +1,19 @@
 .next-event {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-8);
   min-width: 0;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   color: var(--text);
+  font-variant-numeric: tabular-nums;
 }
 
+/* D-day: 보라 대신 본문 색 (이 화면의 보라는 주요 버튼·선택된 탭에만) */
 .next-event b {
   flex-shrink: 0;
-  font-weight: 800;
-  color: var(--accent);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
 }
 
 .next-event__text {
@@ -26,7 +28,7 @@
 }
 
 .next-event--urgent b {
-  color: #ff8a8a;
+  color: var(--red);
 }
 
 .next-event--applied {
@@ -34,7 +36,7 @@
 }
 
 .next-event--none {
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-regular);
   color: var(--faint);
 }

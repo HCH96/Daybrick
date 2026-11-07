@@ -1,7 +1,7 @@
 import SegmentedControl, { type SegmentOption } from "../../components/common/SegmentedControl";
 import { PlusIcon } from "../../components/icons/StatusIcons";
 import { GridIcon, SmallCalendarIcon } from "../../components/icons/ViewIcons";
-import { PAGE_LABELS } from "../../app/pageLabels";
+import { NAV_LABELS } from "../../app/pageLabels";
 
 export type ApplicationsView = "gallery" | "calendar";
 
@@ -23,7 +23,7 @@ function ApplicationsHeader({ subtitle, view, onViewChange, onCreate, canCreate 
   return (
     <header className="applications-header">
       <div>
-        <h1 className="applications-header__title">{PAGE_LABELS.applications}</h1>
+        <h1 className="applications-header__title">{NAV_LABELS.applications}</h1>
         <div className="applications-header__sub">{subtitle}</div>
       </div>
       <div className="applications-header__right">

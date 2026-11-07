@@ -1,8 +1,8 @@
-/* 지원 관리 달력 (목업 calendar.html / calendar.css) */
+/* 지원 관리 달력 (목업 calendar.html / calendar.css). 시간 축 계획 유형: 강조는 오늘 하나 */
 .cal-view {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-16);
 }
 
 /* ===== 위쪽 줄: 월 이동·범례 ===== */
@@ -10,21 +10,23 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-16);
   flex-wrap: wrap;
 }
 
 :where(.cal-view) .cal-bar__nav {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-8);
 }
 
+/* 월 제목: Calendar 페이지의 월 이동 제목과 같은 16/600 */
 :where(.cal-view) .cal-bar__month {
   margin: 0;
   min-width: 120px;
-  font-size: 18px;
-  font-weight: 800;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
   text-align: center;
 }
 
@@ -33,10 +35,14 @@
   height: 32px;
   display: grid;
   place-items: center;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   border: 1px solid var(--border);
   background: var(--surface);
+  font: inherit;
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 :where(.cal-view) .cal-bar__icon-btn {
@@ -46,9 +52,9 @@
 }
 
 :where(.cal-view) .cal-bar__today {
-  padding: 0 12px;
+  padding: 0 var(--space-12);
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 :where(.cal-view) .cal-bar__icon-btn:hover,
@@ -57,18 +63,24 @@
   color: var(--text);
 }
 
+:where(.cal-view) .cal-bar__icon-btn:focus-visible,
+:where(.cal-view) .cal-bar__today:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 :where(.cal-view) .cal-legend {
   display: flex;
   align-items: center;
-  gap: 14px;
-  font-size: 12px;
+  gap: var(--space-16);
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
 :where(.cal-view) .cal-legend span {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-8);
 }
 
 :where(.cal-view) .cal-legend__dot {
@@ -99,26 +111,30 @@
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
+/* 요일 머리: Calendar 페이지와 같은 32px, 12/500 faint */
 .cal-view .cal-week--head div {
-  padding: 8px 10px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--muted);
+  height: 32px;
+  padding: 0 var(--space-8);
+  display: flex;
+  align-items: center;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
+  color: var(--faint);
   border-bottom: 1px solid var(--border);
-  background: var(--sidebar);
 }
 
-.cal-view .cal-week--head div:first-child { color: #e88; }
-.cal-view .cal-week--head div:last-child { color: #8ab0ff; }
+/* 주말 글자색 (design-direction 시간 축 계획): 일 빨강, 토 파랑 */
+.cal-view .cal-week--head div:first-child { color: var(--red); }
+.cal-view .cal-week--head div:last-child { color: var(--blue); }
 
 .cal-view .cal-day {
-  height: 118px;
-  padding: 6px 6px 4px;
+  height: 120px;
+  padding: var(--space-4);
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: var(--space-4);
   min-width: 0;
   box-sizing: border-box;
 }
@@ -127,59 +143,68 @@
 .cal-view .cal-week:last-child .cal-day { border-bottom: none; }
 
 .cal-view .cal-day__num {
-  height: 22px;
-  padding: 0 4px;
+  height: 20px;
+  padding: 0 var(--space-4);
   display: flex;
   align-items: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
   flex-shrink: 0;
 }
 
-.cal-view .cal-day--out { background: #1d1d21; }
-.cal-view .cal-day--out .cal-day__num { color: var(--faint); opacity: 0.6; }
-.cal-view .cal-day--past .cal-day__num { color: var(--faint); }
-.cal-view .cal-day--today { background: #25223a; }
+/* 지난 날짜는 한 단계, 다른 달은 두 단계 어두운 바탕 (Calendar 페이지와 같게) */
+.cal-view .cal-day--past { background: var(--sidebar); }
+.cal-view .cal-day--past .cal-day__num { color: var(--muted); }
+.cal-view .cal-day--out { background: var(--bg); }
+.cal-view .cal-day--out .cal-day__num { color: var(--faint); }
 
-.cal-view .cal-day--today .cal-day__num span {
-  width: 22px;
-  height: 22px;
-  margin-left: -4px;
-  display: grid;
-  place-items: center;
-  border-radius: 99px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font-weight: 800;
+/* 오늘: 아주 옅은 보라 바탕 + 보라 숫자 칸 (이 보기의 보라는 여기 하나) */
+.cal-view .cal-day--today {
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
 }
 
-/* ===== 일정 한 줄 ===== */
+.cal-view .cal-day--today .cal-day__num span {
+  min-width: 20px;
+  height: 20px;
+  margin-left: calc(-1 * var(--space-4));
+  padding: 0 var(--space-4);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: var(--fw-semibold);
+}
+
+/* ===== 일정 한 줄: 높이 20, 간격 4 (Calendar 페이지 칩과 같게) ===== */
 :where(.cal-view, .cal-more-pop) .cal-ev {
   width: 100%;
-  height: 21px;
-  padding: 0 6px;
+  height: 20px;
+  padding: 0 var(--space-4);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--space-4);
   flex-shrink: 0;
   min-width: 0;
   border: none;
-  border-radius: 5px;
+  border-radius: var(--radius-xs);
   font: inherit;
-  font-size: 11.5px;
-  font-weight: 600;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   overflow: hidden;
   text-align: left;
   cursor: pointer;
+  transition: box-shadow var(--dur-fast) var(--ease);
 }
 
 :where(.cal-view, .cal-more-pop) .cal-ev::before {
   content: "";
   width: 3px;
   height: 12px;
-  border-radius: 2px;
+  border-radius: 1px;
   background: currentColor;
   flex-shrink: 0;
 }
@@ -192,7 +217,7 @@
 :where(.cal-view, .cal-more-pop) .cal-ev__kind {
   flex-shrink: 0;
   opacity: 0.8;
-  font-weight: 500;
+  font-weight: var(--fw-regular);
 }
 
 /* 상태 색 = 카드의 현재 상태 */
@@ -222,14 +247,18 @@
 /* ===== +N개 더 ===== */
 :where(.cal-view) .cal-more {
   align-self: flex-start;
-  padding: 0 6px;
+  height: 20px;
+  padding: 0 var(--space-4);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   background: none;
   color: var(--muted);
   font: inherit;
-  font-size: 11px;
+  font-size: var(--fs-11);
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 :where(.cal-view) .cal-more:hover {
@@ -238,15 +267,15 @@
 }
 
 :where(.popover).cal-more-pop {
-  padding: 8px;
+  padding: var(--space-8);
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: var(--space-4);
 }
 
 :where(.cal-more-pop) .cal-more-pop__date {
-  padding: 2px 4px 6px;
-  font-size: 12px;
-  font-weight: 700;
+  padding: 0 var(--space-4) var(--space-4);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   color: var(--muted);
 }

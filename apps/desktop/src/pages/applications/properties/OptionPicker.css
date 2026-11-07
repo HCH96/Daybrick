@@ -1,5 +1,5 @@
 .option-picker {
-  padding: 8px;
+  padding: var(--space-8);
 }
 
 /* 고른 항목 칩 + 입력 칸 */
@@ -7,25 +7,25 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  min-height: 34px;
-  margin-bottom: 6px;
-  padding: 5px 8px;
+  gap: var(--space-4);
+  min-height: 36px;
+  margin-bottom: var(--space-8);
+  padding: var(--space-4) var(--space-8);
   border: 1px solid var(--accent);
-  border-radius: 7px;
+  border-radius: var(--radius-control);
   background: var(--bg);
 }
 
 .option-picker__text {
   flex: 1;
   min-width: 60px;
-  height: 22px;
+  height: 24px;
   padding: 0;
   border: none;
   background: none;
   color: var(--text);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-13);
   outline: none;
 }
 
@@ -46,22 +46,22 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--space-8);
   min-height: 32px;
-  padding: 4px 6px;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-12);
   cursor: pointer;
 }
 
 .option-picker__row--active {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--hover);
 }
 
 .option-picker__create {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-8);
   min-width: 0;
   color: var(--muted);
 }
@@ -69,25 +69,28 @@
 .option-picker__tail {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-4);
   flex-shrink: 0;
 }
 
 .option-picker__dots {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   display: grid;
   place-items: center;
   padding: 0;
   border: none;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   background: none;
   color: var(--faint);
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 .option-picker__dots:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--pressed);
   color: var(--text);
 }
 
@@ -100,8 +103,8 @@
 .color-palette {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  gap: 6px;
-  padding: 6px 6px 4px;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-8) var(--space-4);
 }
 
 .color-palette__swatch {
@@ -109,7 +112,7 @@
   height: 20px;
   padding: 0;
   border: none;
-  border-radius: 5px;
+  border-radius: var(--radius-xs);
   cursor: pointer;
 }
 
@@ -122,11 +125,11 @@
 }
 
 .option-menu {
-  padding: 8px;
+  padding: var(--space-8);
 }
 
 .pop-row__label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
 }
