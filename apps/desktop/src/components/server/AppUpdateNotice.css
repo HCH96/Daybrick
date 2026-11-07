@@ -3,17 +3,17 @@
 .app-update-notice {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-16);
 }
 
 .app-update-notice__row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  font-size: 13px;
+  gap: var(--space-16);
+  font-size: var(--fs-13);
 }
 
 .app-update-notice__key {
-  width: 110px;
+  width: 112px;
   color: var(--muted);
 }

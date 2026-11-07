@@ -12,31 +12,34 @@
 .titlebar__nav {
   display: flex;
   align-items: center;
-  gap: 2px;
-  padding-left: 8px;
+  gap: var(--space-2);
+  padding-left: var(--space-8);
 }
 
 .titlebar__button {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   display: grid;
   place-items: center;
   padding: 0;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--muted);
   cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
 }
 
 .titlebar__button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--hover);
   color: var(--text);
 }
 
 /* 사이드바가 펼쳐져 있을 때 */
 .titlebar__button--pressed {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--pressed);
   color: var(--text);
 }
 
@@ -51,18 +54,18 @@
   outline-offset: -2px;
 }
 
-/* 버튼이 없는 빈 곳: 끌어서 창 이동 */
 /* 사이드바 없는 화면에서 왼쪽에 보이는 앱 이름 */
 .titlebar__title {
   height: 100%;
   display: flex;
   align-items: center;
-  padding-left: 16px;
-  font-size: 13px;
-  font-weight: 700;
+  padding-left: var(--space-16);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-semibold);
   color: var(--muted);
 }
 
+/* 버튼이 없는 빈 곳: 끌어서 창 이동 */
 .titlebar__drag {
   flex: 1;
   height: 100%;
@@ -75,7 +78,7 @@
 }
 
 .window-controls__button {
-  width: 46px;
+  width: 46px; /* Windows 기본 창 버튼 폭 */
   height: 100%;
   display: grid;
   place-items: center;
@@ -84,13 +87,14 @@
   background: transparent;
   color: var(--text);
   cursor: default;
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .window-controls__button:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--pressed);
 }
 
 .window-controls__button--close:hover {
-  background: #c42b1c;
-  color: #ffffff;
+  background: var(--close-hover);
+  color: var(--on-close);
 }

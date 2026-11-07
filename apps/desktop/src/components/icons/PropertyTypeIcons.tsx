@@ -40,6 +40,6 @@ const PATHS: Record<PropertyType, ReactNode> = {
   ),
 };
 
-export function PropertyTypeIcon({ type, size = 15 }: { type: PropertyType; size?: number }) {
+export function PropertyTypeIcon({ type, size = 16 }: { type: PropertyType; size?: number }) {
   return <LineIcon size={size}>{PATHS[type]}</LineIcon>;
 }

@@ -5,8 +5,8 @@
   overflow-y: auto;
   background: var(--surface-2);
   border: 1px solid var(--border-2);
-  border-radius: 10px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pop);
   pointer-events: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--border-2) transparent;
@@ -14,26 +14,28 @@
 
 /* ===== 작은 창 안에서 같이 쓰는 모양 ===== */
 
-/* 줄 하나 (메뉴 항목) */
+/* 줄 하나 (메뉴 항목): 촘촘한 목록 높이 32 */
 .pop-row {
   width: 100%;
+  min-height: var(--row-h-dense);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 7px 8px;
+  gap: var(--space-8);
+  padding: var(--space-4) var(--space-8);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-control);
   background: none;
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--fs-13);
   text-align: left;
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .pop-row:hover:not(:disabled),
 .pop-row--active {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--hover);
 }
 
 .pop-row:focus-visible {
@@ -47,7 +49,7 @@
 }
 
 .pop-row--danger {
-  color: #ff8a8a;
+  color: var(--red);
 }
 
 .pop-row__check {
@@ -57,14 +59,14 @@
 
 /* 작은 제목 (예: "종류") */
 .pop-caption {
-  padding: 4px 8px 2px;
-  font-size: 11px;
+  padding: var(--space-4) var(--space-8) var(--space-2);
+  font-size: var(--fs-11);
   color: var(--faint);
 }
 
 .pop-sep {
   height: 1px;
-  margin: 5px 4px;
+  margin: var(--space-4);
   background: var(--border-2);
 }
 
@@ -72,14 +74,15 @@
 .pop-input {
   width: 100%;
   height: 32px;
-  padding: 0 8px;
+  padding: 0 var(--space-8);
   border: 1px solid var(--border-2);
-  border-radius: 7px;
+  border-radius: var(--radius-control);
   background: var(--bg);
   color: var(--text);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-13);
   outline: none;
+  transition: border-color var(--dur-fast) var(--ease);
 }
 
 .pop-input:focus {
@@ -92,7 +95,7 @@
 
 /* 짧은 안내 문구 */
 .pop-hint {
-  padding: 4px 8px 6px;
-  font-size: 11.5px;
+  padding: var(--space-4) var(--space-8) var(--space-8);
+  font-size: var(--fs-12);
   color: var(--faint);
 }

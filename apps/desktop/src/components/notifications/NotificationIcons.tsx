@@ -47,7 +47,7 @@ export function CheckAllIcon({ size = 14 }: IconProps) {
 }
 
 /** 알림 없음 빈 상태의 종 */
-export function EmptyBellIcon({ size = 18 }: IconProps) {
+export function EmptyBellIcon({ size = 16 }: IconProps) {
   return (
     <LineIcon size={size}>
       <path d="M6 9a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9" />

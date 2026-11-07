@@ -1,10 +1,11 @@
 /* ===== 알림 행 (R11–R13, R23) ===== */
 .notification-row {
   display: flex;
-  gap: 10px;
-  padding: 12px 10px 12px 14px;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-12) var(--space-12) var(--space-16);
   border-bottom: 1px solid var(--border);
   cursor: pointer; /* 본문을 누르면 확인하고 갈 곳으로 이동 (R16) */
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .notification-row:last-child {
@@ -12,16 +13,16 @@
 }
 
 .notification-row:hover {
-  background: rgba(255, 255, 255, 0.035);
+  background: var(--hover-faint);
 }
 
-/* 왼쪽 18px 칸: 주의 = 주황 경고 삼각형, 정보 = 회색 점 */
+/* 왼쪽 16px 칸: 주의 = 주황 경고 삼각형, 정보 = 회색 점 */
 .notification-row__lead {
-  width: 18px;
+  width: 16px;
   flex-shrink: 0;
   display: flex;
   justify-content: center;
-  padding-top: 2px;
+  padding-top: var(--space-2);
 }
 
 .notification-row__warn {
@@ -32,7 +33,7 @@
 .notification-row__dot {
   width: 8px;
   height: 8px;
-  margin-top: 4px;
+  margin-top: var(--space-4);
   border-radius: 50%;
   background: var(--muted);
 }
@@ -44,17 +45,17 @@
 }
 
 .notification-row__meta {
-  font-size: 11px;
+  font-size: var(--fs-11);
   color: var(--muted);
 }
 
 .notification-row__meta b {
-  font-weight: 400;
+  font-weight: var(--fw-regular);
 }
 
 .notification-row__title {
-  margin-top: 1px;
-  font-size: 13px;
+  margin-top: var(--space-2);
+  font-size: var(--fs-13);
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
@@ -62,15 +63,15 @@
 }
 
 .notification-row__text {
-  margin-top: 1px;
-  font-size: 12px;
+  margin-top: var(--space-2);
+  font-size: var(--fs-12);
   color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* 오른쪽 28px 버튼 칸: 안 읽음 ✓, 확인함 ↺. 행에 마우스를 올리면 보라 바탕 */
+/* 오른쪽 28px 버튼 칸: 안 읽음 ✓, 확인함 ↺. 행에 마우스를 올리면 한 단계 밝은 바탕 */
 .notification-row__act {
   width: 28px;
   height: 28px;
@@ -79,16 +80,23 @@
   place-items: center;
   padding: 0;
   border: none;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   background: none;
   color: var(--muted);
   cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
 }
 
 .notification-row:hover .notification-row__act,
 .notification-row__act:focus-visible {
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: var(--hover);
+  color: var(--text);
+}
+
+.notification-row__act:hover {
+  background: var(--pressed);
 }
 
 .notification-row__act:focus-visible {
@@ -96,14 +104,14 @@
   outline-offset: -2px;
 }
 
-/* 안 읽음: 제목 굵게, 보낸 기능 이름 밝게 (R13) */
+/* 안 읽음: 제목 강조, 보낸 기능 이름 밝게 (R13) */
 .notification-row--unread .notification-row__title {
-  font-weight: 700;
+  font-weight: var(--fw-semibold);
 }
 
 .notification-row--unread .notification-row__meta b {
   color: var(--text);
-  font-weight: 600;
+  font-weight: var(--fw-medium);
 }
 
 /* 확인함: 왼쪽 표시와 글만 45%로 흐리게, 버튼은 흐리지 않는다 */

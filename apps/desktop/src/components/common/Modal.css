@@ -4,10 +4,10 @@
   inset: 0;
   display: grid;
   place-items: center;
-  padding: 24px;
-  background: rgba(8, 8, 10, 0.62);
+  padding: var(--space-24);
+  background: var(--scrim);
   pointer-events: auto;
-  animation: modal-fade 0.12s ease-out;
+  animation: modal-fade var(--dur-enter) var(--ease);
 }
 
 .modal {
@@ -18,22 +18,17 @@
   overflow: hidden;
   background: var(--popup);
   border: 1px solid var(--border-2);
-  border-radius: 14px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-modal);
   outline: none;
 }
 
-/* 최대화: 어두운 막 없이 본문 영역(사이드바 오른쪽)만 꽉 채운다 */
+/* 최대화: 어두운 막 없이 본문 영역(사이드바 오른쪽)만 꽉 채운다. 사이드바를 접고 펴면 바로 따라간다 */
 .modal-layer--max {
   left: var(--overlay-main-left);
   padding: 0;
   background: none;
   animation: none;
-}
-
-/* 최대화가 자리 잡은 뒤에만 붙는다: 사이드바 접기·펴기를 같은 속도로 따라간다 (최대화 순간엔 전환 없음) */
-.modal-layer--follow {
-  transition: left 0.15s ease;
 }
 
 .modal-layer--max .modal {

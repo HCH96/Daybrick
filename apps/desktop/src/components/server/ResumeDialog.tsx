@@ -109,7 +109,7 @@ function ResumeDialog({ onClose }: { onClose: () => void }) {
           {done ? (
             <div className="wiz-alert wiz-alert--ok" role="status">
               <span className="wiz-alert__icon">
-                <SmallCheckIcon size={18} />
+                <SmallCheckIcon />
               </span>
               <div>
                 <b>다시 연결됐습니다</b>
@@ -118,7 +118,7 @@ function ResumeDialog({ onClose }: { onClose: () => void }) {
             </div>
           ) : requested ? (
             <>
-              <p>Supabase 무료 플랜은 7일 동안 쓰지 않으면 서버를 멈춥니다.</p>
+              <p>Supabase 무료 플랜은 7일 동안 쓰지 않으면 서버를 멈춥니다</p>
               <div className="resume-dialog__waiting" role="status">
                 <span className="resume-dialog__spin" aria-hidden="true" />
                 <div>

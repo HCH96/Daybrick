@@ -5,7 +5,7 @@
 
 | 순서 | id | 페이지 | 유형 | 코드 범위 | 기록 위치 | 상태 | 날짜 |
 |---|---|---|---|---|---|---|---|
-| 0 | common | 공통 기반 | 공통 | `styles/`, `components/` (아래 setup 몫 제외) | docs/common/ai/design/logs/ | 대기 | |
+| 0 | common | 공통 기반 | 공통 | `styles/`, `components/` (아래 setup 몫 제외) | docs/common/ai/design/logs/ | 완료 | 2026-11-07 |
 | 1 | home | Home | 한눈에 보기 | `pages/home/` | main-page | 대기 | |
 | 2 | today | Today | 지금 실행 | `pages/today/` | today | 대기 | |
 | 3 | calendar | Calendar | 시간 축 계획 | `pages/calendar/` | calendar | 대기 | |

@@ -1,33 +1,52 @@
-/* 그라파이트 바이올렛 색 조합 (docs/ai/features/main-page.md 색 목록) */
+/*
+ * Daybrick 디자인 토큰. 값은 여기서만 정한다 (기준: docs/common/ai/design/design-direction.md)
+ * 색 조합: 그라파이트 바이올렛
+ */
 :root {
+  /* ===== 바탕 단계 ===== */
   --bg: #17171a;
   --sidebar: #1c1c20;
   --surface: #222227;
-  --surface-2: #28282e; /* 눌린 버튼 등 한 단계 밝은 바탕 (지원 관리 목업) */
+  --surface-2: #28282e; /* 눌린 버튼 등 한 단계 밝은 바탕 */
   --popup: #1f1f24; /* 팝업·작은 창 바탕 */
   --border: #33333b;
   --border-2: #3d3d46; /* 한 단계 밝은 테두리 */
   --track: #33333b;
+
+  /* 바탕 위에 겹치는 무채색 (마우스 올림, 눌림, 덮개) */
+  --hover: rgba(255, 255, 255, 0.06);
+  --hover-faint: rgba(255, 255, 255, 0.03);
+  --pressed: rgba(255, 255, 255, 0.08);
+  --scrim: rgba(8, 8, 10, 0.62); /* 모달 뒤를 어둡게 */
+  --scrim-light: rgba(8, 8, 10, 0.45); /* 확인 창 뒤 (이미 모달 위일 수 있어 옅게) */
+  --foot-tint: rgba(0, 0, 0, 0.12); /* 창 아래 버튼 줄 */
+
+  /* ===== 글자 ===== */
   --text: #ededf2;
   --muted: #9b9ba8;
-  --faint: #6b6b78; /* 더 흐린 글자 */
+  --faint: #6b6b78;
+
+  /* ===== 강조 ===== */
   --accent: #a68cff;
   --accent-soft: #2d2745;
+  --accent-line: #3d345e;
   --on-accent: #17171a;
 
-  /* 지원 상태 */
+  /* ===== 상태색 (연한 바탕과 짝지어 쓴다) ===== */
   --neutral: #cdcdd6;
   --neutral-soft: #2b2b31;
   --blue: #7aa8ff;
   --blue-soft: #1e2740;
   --amber: #f0b860;
   --amber-soft: #3a2f1c;
+  --amber-line: #4d3d22;
   --green: #66cf95;
   --green-soft: #1a3428;
 
-  /* 선택 항목 색: 위 4색(회색·파랑·주황·초록) + 아래 4색 = 8색 팔레트 (지원 관리 목업) */
+  /* 선택 항목 색: 위 4색(회색·파랑·주황·초록) + 아래 4색 = 8색 팔레트 */
   --red: #ff8a8a;
   --red-soft: #3a1f22;
+  --red-line: #4d2a2e;
   --violet: #c4b2ff;
   --violet-soft: #2d2745;
   --teal: #5fd0c8;
@@ -35,13 +54,73 @@
   --pink: #f29ad3;
   --pink-soft: #3a1f33;
 
-  /* 알림 배지 전용: 작은 크기에서도 보이도록 진한 빨강 (알림 목업) */
+  /* 지우기 같은 위험 버튼 */
+  --danger: #d9534f;
+  --danger-hover: #e0625e;
+  --on-danger: #ffffff;
+
+  /* 알림 배지 전용: 작은 크기에서도 보이도록 진한 빨강 */
   --badge: #f0524f;
   --on-badge: #ffffff;
 
-  /* 숫자 시계 글꼴 (투데이 타이머, 투데이 목업 common.css) */
-  --mono: "Cascadia Mono", "Consolas", monospace;
+  /* 창 닫기 버튼 (Windows 기본과 같은 빨강) */
+  --close-hover: #c42b1c;
+  --on-close: #ffffff;
 
-  --radius: 12px;
+  /* 로고 벽돌 칸 */
+  --logo-cell: rgba(255, 255, 255, 0.85);
+
+  /* ===== 글씨 ===== */
+  --font: "Pretendard Variable", Pretendard, "Malgun Gothic", "Segoe UI", sans-serif;
+  --mono: "Cascadia Mono", "Consolas", monospace; /* 타이머 시계, 코드 상자에만 */
+
+  --fs-11: 11px;
+  --fs-12: 12px;
+  --fs-13: 13px;
+  --fs-14: 14px;
+  --fs-16: 16px;
+  --fs-20: 20px;
+  --fs-26: 26px;
+  --fs-34: 34px; /* 큰 숫자 표시만 */
+  --fs-56: 56px; /* 큰 숫자 표시만 */
+
+  --fw-regular: 400;
+  --fw-medium: 500; /* 라벨·강조 */
+  --fw-semibold: 600; /* 제목 */
+
+  /* ===== 간격 (4px 배수, 작은 부품 안만 2) ===== */
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px; /* 작은 패널·팝업 안쪽 */
+  --space-20: 20px; /* 카드 안쪽, 카드 사이 */
+  --space-24: 24px;
+  --space-28: 28px;
+  --space-32: 32px;
+
+  --row-h: 36px; /* 목록 한 줄 */
+  --row-h-dense: 32px; /* 촘촘한 목록 한 줄 */
+
+  /* ===== 모서리 ===== */
+  --radius-xs: 4px; /* 안쪽 최소 */
+  --radius-sm: 6px; /* 상태 배지, 작은 칸 */
+  --radius-control: 8px; /* 버튼·입력 */
+  --radius: 12px; /* 카드·팝업 */
+  --radius-lg: 16px; /* 모달·큰 패널 */
+  --radius-pill: 999px; /* 알림 숫자 배지·스위치에만 */
+
+  /* ===== 그림자 (팝업·모달·끌고 있는 카드에만) ===== */
+  --shadow-pop: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.45);
+
+  /* ===== 움직임 ===== */
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --dur-fast: 120ms; /* 반응 */
+  --dur-enter: 200ms; /* 들어오는 것 */
+
+  /* ===== 틀 ===== */
+  --content-max: 1280px;
+  --content-max-narrow: 880px; /* 설정 */
   --sidebar-width: 200px;
 }

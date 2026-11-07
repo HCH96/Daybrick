@@ -4,16 +4,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-8);
   text-align: center;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .empty-state__icon {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--neutral-soft);
   display: grid;
   place-items: center;
@@ -22,24 +22,26 @@
 
 .empty-state__msg {
   color: var(--text);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
 }
 
 .empty-state__button {
-  margin-top: 6px;
-  padding: 7px 14px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  margin-top: var(--space-8);
+  height: 32px;
+  padding: 0 var(--space-16);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-control);
   background: transparent;
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 600;
+  color: var(--text);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .empty-state__button:hover {
-  background: var(--accent-soft);
+  background: var(--hover);
 }
 
 .empty-state__button:focus-visible {

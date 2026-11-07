@@ -6,7 +6,7 @@ import LineIcon from "./LineIcon";
  */
 
 /** 체크 표시 목록 (빈 목록 안내, 체크리스트 진행도) */
-export function ChecklistIcon({ size = 15 }: { size?: number }) {
+export function ChecklistIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M10 6h10M10 12h10M10 18h10M3.5 6l1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17" />
@@ -15,7 +15,7 @@ export function ChecklistIcon({ size = 15 }: { size?: number }) {
 }
 
 /** 태스크 종류 (상세 팝업 머리, 목업 i-plan: 달력 + 체크) */
-export function TaskIcon({ size = 15 }: { size?: number }) {
+export function TaskIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <rect x="3" y="4.5" width="18" height="16.5" rx="2" />
@@ -25,7 +25,7 @@ export function TaskIcon({ size = 15 }: { size?: number }) {
 }
 
 /** 날짜 (상세 팝업 기간 줄·날짜 칩, 목업 i-cal) */
-export function DateIcon({ size = 15 }: { size?: number }) {
+export function DateIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <rect x="3" y="4.5" width="18" height="16.5" rx="2" />
@@ -73,7 +73,7 @@ export function PeopleIcon({ size = 12 }: { size?: number }) {
 }
 
 /** 메모 (상세 팝업 메모 머리, 목업 i-note) */
-export function NoteIcon({ size = 15 }: { size?: number }) {
+export function NoteIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M4 5h16M4 10h16M4 15h10M4 20h6" />
@@ -82,7 +82,7 @@ export function NoteIcon({ size = 15 }: { size?: number }) {
 }
 
 /** 지원 카드 연결 (상세 팝업 속성 줄·목록 줄 연결 회사, 목업 i-link) */
-export function LinkIcon({ size = 15 }: { size?: number }) {
+export function LinkIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" />
@@ -91,7 +91,7 @@ export function LinkIcon({ size = 15 }: { size?: number }) {
 }
 
 /** 찾기 (지원 카드 고르기 찾기칸, 목업 i-search) */
-export function SearchIcon({ size = 15 }: { size?: number }) {
+export function SearchIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <circle cx="11" cy="11" r="7" />

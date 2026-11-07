@@ -35,7 +35,9 @@ function AppLayout({ titleBar, banner, sidebar, sidebarCollapsed = false, childr
           >
             <div className="app-layout__sidebar-inner">{sidebar}</div>
           </aside>
-          <main className="app-layout__main">{children}</main>
+          <div className="app-layout__main-frame">
+            <main className="app-layout__main">{children}</main>
+          </div>
           <div
             ref={setOverlayRoot}
             className={

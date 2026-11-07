@@ -8,11 +8,11 @@ import ResumeDialog from "./ResumeDialog";
 import "./ServerBanner.css";
 
 const BANNER_ICONS: Record<BannerStatus, ReactNode> = {
-  "login-needed": <UserIcon size={15} />,
-  "server-update": <ArrowUpIcon size={15} />,
-  "app-update": <InfoIcon size={15} />,
-  paused: <PauseIcon size={15} />,
-  unreachable: <CloudOffIcon size={15} />,
+  "login-needed": <UserIcon size={16} />,
+  "server-update": <ArrowUpIcon size={16} />,
+  "app-update": <InfoIcon size={16} />,
+  paused: <PauseIcon size={16} />,
+  unreachable: <CloudOffIcon size={16} />,
 };
 
 function isBannerStatus(status: ServerStatus): status is BannerStatus {
@@ -60,7 +60,7 @@ function ServerBanner() {
             title="이번 실행 동안 숨기기"
             onClick={() => dismissBanner(status)}
           >
-            <CrossIcon size={15} />
+            <CrossIcon size={16} />
           </button>
         </div>
       )}

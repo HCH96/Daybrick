@@ -23,4 +23,5 @@
 - [docs/common/ai/formats/record-format.md](docs/common/ai/formats/record-format.md): 진행 기록(logs)·결정(decisions.md) 양식, 모든 명령이 공용
 - [docs/common/ai/design/design-direction.md](docs/common/ai/design/design-direction.md): 모든 페이지 디자인 기준 (공통 규칙 + 페이지 유형별 표현). 폴리싱 전에 읽고, 정해지지 않은 건 사용자에게 물은 뒤 이 문서에 먼저 적는다
 - [docs/common/ai/design/polish-targets.md](docs/common/ai/design/polish-targets.md): `/polish` 대상 페이지 목록, 페이지별 코드 범위·기록 위치·진행 상태
+- [docs/common/ai/design/logs/index.md](docs/common/ai/design/logs/index.md): 공통 기반(common) 폴리싱 진행 기록 목차
 - [docs/common/ai/token-reports/index.md](docs/common/ai/token-reports/index.md): 요청할 때 만드는 세션별 토큰 사용량·컨텍스트 증가 원인 보고서 목차

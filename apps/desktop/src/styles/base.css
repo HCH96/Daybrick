@@ -1,3 +1,5 @@
+@import "pretendard/dist/web/variable/pretendardvariable.css";
+
 *,
 *::before,
 *::after {
@@ -34,13 +36,34 @@ body {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: "Malgun Gothic", "Segoe UI", sans-serif;
-  font-size: 14px;
+  font-family: var(--font);
+  font-size: var(--fs-14);
+  font-weight: var(--fw-regular);
   line-height: 1.5;
+  font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
 }
 
 button {
   font: inherit;
   color: inherit;
+}
+
+/* 입력 칸은 크기는 각 화면이 정하고, 글꼴만 앱 글꼴을 따른다 */
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+/* 움직임 줄이기: 반복과 이동을 끈다 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

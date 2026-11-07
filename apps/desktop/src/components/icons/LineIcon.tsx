@@ -5,8 +5,8 @@ interface LineIconProps {
   children: ReactNode;
 }
 
-/** 선으로 그리는 아이콘 틀 (24x24 기준). 색은 글자색(currentColor)을 따른다. */
-function LineIcon({ size = 18, children }: LineIconProps) {
+/** 선으로 그리는 아이콘 틀 (24x24 기준, 기본 16px·선 1.5). 색은 글자색(currentColor)을 따른다. */
+function LineIcon({ size = 16, children }: LineIconProps) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -14,7 +14,7 @@ function LineIcon({ size = 18, children }: LineIconProps) {
       height={size}
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.8}
+      strokeWidth={1.5}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"

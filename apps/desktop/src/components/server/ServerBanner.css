@@ -1,30 +1,30 @@
-/* 안내 띠: 제목 표시줄 바로 아래 전체 폭 40px, 본문을 밀어낸다. 서버 연결 목업 parts.css의 banner 기준 */
+/* 안내 띠: 제목 표시줄 바로 아래 전체 폭 40px, 본문을 밀어낸다 */
 .server-banner {
   height: 40px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  padding: 0 12px 0 18px;
-  font-size: 13px;
+  padding: 0 var(--space-12) 0 var(--space-16);
+  font-size: var(--fs-13);
   border-bottom: 1px solid;
 }
 
 .server-banner--warn {
   background: var(--amber-soft);
   color: var(--amber);
-  border-color: #4d3d22;
+  border-color: var(--amber-line);
 }
 
 .server-banner--bad {
   background: var(--red-soft);
   color: var(--red);
-  border-color: #4d2a2e;
+  border-color: var(--red-line);
 }
 
 .server-banner--info {
   background: var(--accent-soft);
   color: var(--accent);
-  border-color: #3d345e;
+  border-color: var(--accent-line);
 }
 
 /* 띠 전체(닫기 버튼 빼고)가 누르는 자리 */
@@ -34,7 +34,7 @@
   height: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-8);
   padding: 0;
   border: none;
   background: none;
@@ -48,22 +48,23 @@
 .server-banner__close:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: -2px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
 }
 
 .server-banner__msg {
-  font-weight: 700;
+  font-weight: var(--fw-medium);
   white-space: nowrap;
 }
 
 .server-banner__go {
-  font-size: 12px;
+  font-size: var(--fs-12);
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-underline-offset: 4px;
   opacity: 0.9;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: opacity var(--dur-fast) var(--ease);
 }
 
 .server-banner__main:hover .server-banner__go {
@@ -78,14 +79,17 @@
   place-items: center;
   padding: 0;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: none;
   color: inherit;
   opacity: 0.8;
   cursor: pointer;
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
 }
 
 .server-banner__close:hover {
   opacity: 1;
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--hover);
 }

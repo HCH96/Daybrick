@@ -7,7 +7,7 @@ function PanelEmpty({ filter }: { filter: NotificationFilter }) {
   return (
     <div className="notification-panel__empty">
       <div className="notification-panel__empty-icon">
-        {unreadOnly ? <CheckIcon size={18} /> : <EmptyBellIcon />}
+        {unreadOnly ? <CheckIcon /> : <EmptyBellIcon />}
       </div>
       <p>{unreadOnly ? "안 읽은 알림이 없습니다" : "새 알림이 없습니다"}</p>
     </div>

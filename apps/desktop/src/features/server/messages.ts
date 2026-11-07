@@ -191,11 +191,11 @@ export type BannerTone = "warn" | "bad" | "info";
 
 /** 안내 띠 문구 (R40). link는 밑줄 링크 글자. */
 export const BANNER_TEXTS: Record<BannerStatus, { tone: BannerTone; message: string; link: string }> = {
-  "login-needed": { tone: "warn", message: "로그인이 필요합니다.", link: "설정에서 로그인" },
-  "server-update": { tone: "warn", message: "서버 업데이트가 필요합니다.", link: "업데이트하기" },
-  "app-update": { tone: "info", message: "앱을 업데이트하세요.", link: "자세히" },
-  paused: { tone: "warn", message: "서버가 일시정지됐습니다.", link: "재개 방법 보기" },
-  unreachable: { tone: "bad", message: "서버에 접속할 수 없습니다.", link: "몇 분마다 다시 확인 중 · 설정 열기" },
+  "login-needed": { tone: "warn", message: "로그인이 필요합니다", link: "설정에서 로그인" },
+  "server-update": { tone: "warn", message: "서버 업데이트가 필요합니다", link: "업데이트하기" },
+  "app-update": { tone: "info", message: "앱을 업데이트하세요", link: "자세히" },
+  paused: { tone: "warn", message: "서버가 일시정지됐습니다", link: "재개 방법 보기" },
+  unreachable: { tone: "bad", message: "서버에 접속할 수 없습니다", link: "몇 분마다 다시 확인 중 · 설정 열기" },
 };
 
 /** 재개 안내 팝업의 이유 (R42) */

@@ -2,7 +2,7 @@ import LineIcon from "./LineIcon";
 
 /** 서버 연결 화면 아이콘 (서버 연결 목업의 SVG) */
 
-export function ServerIcon({ size = 18 }: { size?: number }) {
+export function ServerIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <rect x="3" y="4" width="18" height="7" rx="2" />
@@ -12,7 +12,7 @@ export function ServerIcon({ size = 18 }: { size?: number }) {
   );
 }
 
-export function KeyIcon({ size = 18 }: { size?: number }) {
+export function KeyIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <circle cx="8" cy="15" r="4" />
@@ -22,7 +22,7 @@ export function KeyIcon({ size = 18 }: { size?: number }) {
 }
 
 /** Google 로고를 선으로 그린 것 (목업 i-google) */
-export function GoogleIcon({ size = 18 }: { size?: number }) {
+export function GoogleIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M21 12.2c0-.7-.1-1.3-.2-1.9H12v3.6h5.1a4.4 4.4 0 0 1-1.9 2.9v2.4h3.1c1.8-1.7 2.7-4.1 2.7-7z" />
@@ -33,7 +33,7 @@ export function GoogleIcon({ size = 18 }: { size?: number }) {
   );
 }
 
-export function ClockIcon({ size = 18 }: { size?: number }) {
+export function ClockIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <circle cx="12" cy="12" r="9" />
@@ -42,7 +42,7 @@ export function ClockIcon({ size = 18 }: { size?: number }) {
   );
 }
 
-export function WarnIcon({ size = 18 }: { size?: number }) {
+export function WarnIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M12 3l10 18H2z" />
@@ -52,7 +52,7 @@ export function WarnIcon({ size = 18 }: { size?: number }) {
 }
 
 /** 다음 단계로: 오른쪽 화살표 */
-export function ArrowRightIcon({ size = 18 }: { size?: number }) {
+export function ArrowRightIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M5 12h14M13 6l6 6-6 6" />
@@ -61,7 +61,7 @@ export function ArrowRightIcon({ size = 18 }: { size?: number }) {
 }
 
 /** 도움말: 동그라미 속 물음표 ("어디서 찾나요?") */
-export function HelpIcon({ size = 18 }: { size?: number }) {
+export function HelpIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <circle cx="12" cy="12" r="9" />
@@ -71,7 +71,7 @@ export function HelpIcon({ size = 18 }: { size?: number }) {
 }
 
 /** 오류: X */
-export function CrossIcon({ size = 18 }: { size?: number }) {
+export function CrossIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M6 6l12 12M18 6L6 18" />
@@ -80,7 +80,7 @@ export function CrossIcon({ size = 18 }: { size?: number }) {
 }
 
 /** 접속 불가: 빗금 친 구름 */
-export function CloudOffIcon({ size = 18 }: { size?: number }) {
+export function CloudOffIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M7 18h10a4 4 0 0 0 .5-7.97A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z" />
@@ -90,7 +90,7 @@ export function CloudOffIcon({ size = 18 }: { size?: number }) {
 }
 
 /** 일시정지: 동그라미 속 두 줄 */
-export function PauseIcon({ size = 18 }: { size?: number }) {
+export function PauseIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <circle cx="12" cy="12" r="9" />
@@ -100,7 +100,7 @@ export function PauseIcon({ size = 18 }: { size?: number }) {
 }
 
 /** 사용자 (이미 세팅된 서버 → 로그인) */
-export function UserIcon({ size = 18 }: { size?: number }) {
+export function UserIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <circle cx="12" cy="8" r="4" />
@@ -110,7 +110,7 @@ export function UserIcon({ size = 18 }: { size?: number }) {
 }
 
 /** 업데이트: 위쪽 화살표 */
-export function ArrowUpIcon({ size = 18 }: { size?: number }) {
+export function ArrowUpIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M12 19V5M6 11l6-6 6 6" />
@@ -119,7 +119,7 @@ export function ArrowUpIcon({ size = 18 }: { size?: number }) {
 }
 
 /** 값 보기: 눈 */
-export function EyeIcon({ size = 18 }: { size?: number }) {
+export function EyeIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
@@ -129,7 +129,7 @@ export function EyeIcon({ size = 18 }: { size?: number }) {
 }
 
 /** 값 가리기: 빗금 친 눈 */
-export function EyeOffIcon({ size = 18 }: { size?: number }) {
+export function EyeOffIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
@@ -139,7 +139,7 @@ export function EyeOffIcon({ size = 18 }: { size?: number }) {
   );
 }
 
-export function CopyIcon({ size = 18 }: { size?: number }) {
+export function CopyIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <rect x="9" y="9" width="12" height="12" rx="2" />
@@ -148,7 +148,7 @@ export function CopyIcon({ size = 18 }: { size?: number }) {
   );
 }
 
-export function LockIcon({ size = 18 }: { size?: number }) {
+export function LockIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <rect x="5" y="11" width="14" height="10" rx="2" />
@@ -158,7 +158,7 @@ export function LockIcon({ size = 18 }: { size?: number }) {
 }
 
 /** 다시 시도: 둥근 화살표 두 개 */
-export function RefreshIcon({ size = 18 }: { size?: number }) {
+export function RefreshIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4" />
@@ -167,7 +167,7 @@ export function RefreshIcon({ size = 18 }: { size?: number }) {
 }
 
 /** 안내: 동그라미 안의 i (앱 업데이트 띠) */
-export function InfoIcon({ size = 18 }: { size?: number }) {
+export function InfoIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <circle cx="12" cy="12" r="9" />

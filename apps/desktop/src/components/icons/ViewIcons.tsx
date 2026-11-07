@@ -5,7 +5,7 @@ import LineIcon from "./LineIcon";
 /** 갤러리: 네 칸 바둑판 */
 export function GridIcon() {
   return (
-    <LineIcon size={15}>
+    <LineIcon size={16}>
       <rect x="4" y="4" width="7" height="7" rx="1.5" />
       <rect x="13" y="4" width="7" height="7" rx="1.5" />
       <rect x="4" y="13" width="7" height="7" rx="1.5" />
@@ -17,7 +17,7 @@ export function GridIcon() {
 /** 달력 (작은 크기) */
 export function SmallCalendarIcon() {
   return (
-    <LineIcon size={15}>
+    <LineIcon size={16}>
       <rect x="3" y="5" width="18" height="16" rx="2" />
       <path d="M3 10h18M8 3v4M16 3v4" />
     </LineIcon>

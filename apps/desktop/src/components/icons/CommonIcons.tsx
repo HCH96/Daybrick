@@ -2,7 +2,7 @@ import LineIcon from "./LineIcon";
 
 /** 여러 화면에서 같이 쓰는 작은 아이콘 (지원 관리 목업의 SVG) */
 
-export function ChevronLeftIcon({ size = 15 }: { size?: number }) {
+export function ChevronLeftIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M15 6l-6 6 6 6" />
@@ -10,7 +10,7 @@ export function ChevronLeftIcon({ size = 15 }: { size?: number }) {
   );
 }
 
-export function ChevronRightIcon({ size = 15 }: { size?: number }) {
+export function ChevronRightIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M9 6l6 6-6 6" />
@@ -18,7 +18,7 @@ export function ChevronRightIcon({ size = 15 }: { size?: number }) {
   );
 }
 
-export function ChevronDownIcon({ size = 15 }: { size?: number }) {
+export function ChevronDownIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M6 9l6 6 6-6" />
@@ -26,7 +26,7 @@ export function ChevronDownIcon({ size = 15 }: { size?: number }) {
   );
 }
 
-export function PlusIcon({ size = 15 }: { size?: number }) {
+export function PlusIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M12 5v14M5 12h14" />
@@ -35,7 +35,7 @@ export function PlusIcon({ size = 15 }: { size?: number }) {
 }
 
 /** 고치기: 연필 (플랜 목업) */
-export function PenIcon({ size = 15 }: { size?: number }) {
+export function PenIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M4 20h4L19 9l-4-4L4 16z" />
@@ -44,7 +44,7 @@ export function PenIcon({ size = 15 }: { size?: number }) {
 }
 
 /** 끌어 옮기기 손잡이: 점 여섯 개 (플랜 목업) */
-export function GripIcon({ size = 15 }: { size?: number }) {
+export function GripIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <circle cx="9" cy="6" r="1" />
@@ -57,7 +57,7 @@ export function GripIcon({ size = 15 }: { size?: number }) {
   );
 }
 
-export function SmallCheckIcon({ size = 15 }: { size?: number }) {
+export function SmallCheckIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M5 12l5 5 9-10" />
@@ -74,7 +74,7 @@ export function SmallCloseIcon({ size = 12 }: { size?: number }) {
 }
 
 /** 더보기: 가로 점 세 개 */
-export function DotsIcon({ size = 15 }: { size?: number }) {
+export function DotsIcon({ size = 16 }: { size?: number }) {
   return (
     <svg viewBox="0 0 24 24" width={size} height={size} fill="currentColor" aria-hidden="true">
       <circle cx="5" cy="12" r="1.6" />

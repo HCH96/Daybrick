@@ -2,26 +2,26 @@
 .notification-bell {
   position: relative;
   flex-shrink: 0;
-  margin-right: 4px;
+  margin-right: var(--space-4);
 }
 
 /* 안 읽은 수 배지: 높이 16px 알약 모양, 숫자가 길면 옆으로 늘어난다 */
 .notification-bell__badge {
   position: absolute;
-  top: 1px;
-  left: 15px;
+  top: var(--space-2);
+  left: 16px;
   min-width: 16px;
   height: 16px;
-  padding: 0 4px;
+  padding: 0 var(--space-4);
   box-sizing: border-box;
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   background: var(--badge);
   color: var(--on-badge);
-  font-size: 10px;
-  font-weight: 700;
+  font-size: var(--fs-11);
+  font-weight: var(--fw-semibold);
   line-height: 16px;
   text-align: center;
   white-space: nowrap;
-  box-shadow: 0 0 0 2px var(--sidebar);
+  box-shadow: 0 0 0 2px var(--sidebar); /* 종 위에 떠 보이게 하는 바탕색 테두리 */
   pointer-events: none;
 }
