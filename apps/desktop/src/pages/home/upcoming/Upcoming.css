@@ -156,10 +156,10 @@
   color: var(--on-accent);
 }
 
-.upcoming-row__ini--1 { background: #f2d36b; }
-.upcoming-row__ini--2 { background: #6fd19a; }
-.upcoming-row__ini--3 { background: #7fa9ff; }
-.upcoming-row__ini--4 { background: #f5a46a; }
-.upcoming-row__ini--5 { background: #67d3c8; }
-.upcoming-row__ini--6 { background: #f58d9c; }
-.upcoming-row__ini--7 { background: #c4a3ff; }
+.upcoming-row__ini--1 { background: var(--initial-1); }
+.upcoming-row__ini--2 { background: var(--initial-2); }
+.upcoming-row__ini--3 { background: var(--initial-3); }
+.upcoming-row__ini--4 { background: var(--initial-4); }
+.upcoming-row__ini--5 { background: var(--initial-5); }
+.upcoming-row__ini--6 { background: var(--initial-6); }
+.upcoming-row__ini--7 { background: var(--initial-7); }

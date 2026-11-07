@@ -59,7 +59,7 @@ export function FlagIcon({ done, className }: FlagIconProps) {
           <path
             d="M4.4 3.9l1.3 1.3 2.3-2.4"
             fill="none"
-            stroke="#17171a"
+            style={{ stroke: "var(--on-accent)" }}
             strokeWidth={1.3}
             strokeLinecap="round"
             strokeLinejoin="round"

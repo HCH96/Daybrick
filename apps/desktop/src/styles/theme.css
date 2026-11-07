@@ -61,6 +61,15 @@
   --pink: #f29ad3;
   --pink-soft: #3a1f33;
 
+  /* 회사 머리글자 칸 7색 (캘린더 지원 칩, 홈 공고·다가오는 일정). 글자는 --on-accent */
+  --initial-1: #f2d36b;
+  --initial-2: #6fd19a;
+  --initial-3: #7fa9ff;
+  --initial-4: #f5a46a;
+  --initial-5: #67d3c8;
+  --initial-6: #f58d9c;
+  --initial-7: #c4a3ff;
+
   /* 지우기 같은 위험 버튼 */
   --danger: #d9534f;
   --danger-hover: #e0625e;

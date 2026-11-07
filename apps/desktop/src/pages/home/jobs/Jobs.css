@@ -65,13 +65,13 @@
   color: var(--on-accent);
 }
 
-.home-job__ini--1 { background: #f2d36b; }
-.home-job__ini--2 { background: #6fd19a; }
-.home-job__ini--3 { background: #7fa9ff; }
-.home-job__ini--4 { background: #f5a46a; }
-.home-job__ini--5 { background: #67d3c8; }
-.home-job__ini--6 { background: #f58d9c; }
-.home-job__ini--7 { background: #c4a3ff; }
+.home-job__ini--1 { background: var(--initial-1); }
+.home-job__ini--2 { background: var(--initial-2); }
+.home-job__ini--3 { background: var(--initial-3); }
+.home-job__ini--4 { background: var(--initial-4); }
+.home-job__ini--5 { background: var(--initial-5); }
+.home-job__ini--6 { background: var(--initial-6); }
+.home-job__ini--7 { background: var(--initial-7); }
 
 .home-job__tx {
   flex: 1;

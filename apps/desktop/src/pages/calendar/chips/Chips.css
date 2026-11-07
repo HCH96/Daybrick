@@ -114,13 +114,13 @@
 }
 
 /* 배지 색 7가지 (badge.ts의 색 번호). 지원 관리와 같은 값이라 토큰화는 공통 기반 몫 */
-.cal-ini--1 { background: #f2d36b; }
-.cal-ini--2 { background: #6fd19a; }
-.cal-ini--3 { background: #7fa9ff; }
-.cal-ini--4 { background: #f5a46a; }
-.cal-ini--5 { background: #67d3c8; }
-.cal-ini--6 { background: #f58d9c; }
-.cal-ini--7 { background: #c4a3ff; }
+.cal-ini--1 { background: var(--initial-1); }
+.cal-ini--2 { background: var(--initial-2); }
+.cal-ini--3 { background: var(--initial-3); }
+.cal-ini--4 { background: var(--initial-4); }
+.cal-ini--5 { background: var(--initial-5); }
+.cal-ini--6 { background: var(--initial-6); }
+.cal-ini--7 { background: var(--initial-7); }
 
 /* ===== 체크포인트 깃발 (R15–R16): 바탕 없음, 프로젝트 색 깃발 ===== */
 .cal-chip--flag {
