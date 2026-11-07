@@ -42,6 +42,20 @@ export const pages: PageDef[] = [
     component: HomePage,
   },
   {
+    id: "today",
+    label: PAGE_LABELS.today,
+    navLabel: NAV_LABELS.today,
+    icon: TodayIcon,
+    component: TodayPage,
+  },
+  {
+    id: "calendar",
+    label: PAGE_LABELS.calendar,
+    navLabel: NAV_LABELS.calendar,
+    icon: CalendarNavIcon,
+    component: CalendarPage,
+  },
+  {
     id: "plan",
     label: PAGE_LABELS.plan,
     navLabel: NAV_LABELS.plan,
@@ -56,20 +70,6 @@ export const pages: PageDef[] = [
     component: ProjectsPage,
   },
   {
-    id: "calendar",
-    label: PAGE_LABELS.calendar,
-    navLabel: NAV_LABELS.calendar,
-    icon: CalendarNavIcon,
-    component: CalendarPage,
-  },
-  {
-    id: "applications",
-    label: PAGE_LABELS.applications,
-    navLabel: NAV_LABELS.applications,
-    icon: ApplicationsIcon,
-    component: ApplicationsPage,
-  },
-  {
     id: "job-search",
     label: PAGE_LABELS["job-search"],
     navLabel: NAV_LABELS["job-search"],
@@ -77,11 +77,11 @@ export const pages: PageDef[] = [
     component: JobSearchPage,
   },
   {
-    id: "today",
-    label: PAGE_LABELS.today,
-    navLabel: NAV_LABELS.today,
-    icon: TodayIcon,
-    component: TodayPage,
+    id: "applications",
+    label: PAGE_LABELS.applications,
+    navLabel: NAV_LABELS.applications,
+    icon: ApplicationsIcon,
+    component: ApplicationsPage,
   },
   {
     id: "settings",
