@@ -1,29 +1,27 @@
-/* 본문은 최대 1280px, 가운데 정렬. 바깥은 배경색 여백 */
+/* 본문 너비(최대 1280, 가운데)는 AppLayout이 정한다 */
 .home-page {
-  max-width: 1280px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 20px; /* 목업 .home과 같은 간격 */
+  gap: var(--space-20);
 }
 
 .home-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 24px;
+  gap: var(--space-24);
 }
 
 .home-header__date {
-  margin-bottom: 4px;
-  font-size: 13px;
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
 .home-header__greeting {
   margin: 0;
-  font-size: 26px;
-  font-weight: 800;
+  font-size: var(--fs-26);
+  font-weight: var(--fw-semibold);
   letter-spacing: -0.3px;
 }
 
@@ -35,5 +33,5 @@
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-auto-rows: minmax(200px, auto);
-  gap: 18px;
+  gap: var(--space-20);
 }

@@ -1,4 +1,4 @@
-/* 홈 "프로젝트 진행" 카드 (R40–R41, 목업 dash.html dash-projects) */
+/* 홈 "프로젝트 진행" 카드 (R40–R41) */
 
 .home-projs {
   flex: 1;
@@ -10,7 +10,7 @@
 .home-proj {
   display: block;
   width: 100%;
-  padding: 7px 0;
+  padding: var(--space-8) 0;
   border: none;
   border-bottom: 1px solid var(--border);
   background: none;
@@ -31,21 +31,21 @@
 .home-proj:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
 .home-proj__top {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13.5px;
-  font-weight: 600;
+  gap: var(--space-8);
   min-width: 0;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
 }
 
 .home-proj__dot {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--c);
   flex-shrink: 0;
@@ -60,19 +60,20 @@
 
 .home-proj__time {
   margin-left: auto;
-  font-size: 12px;
-  font-weight: 600;
+  flex-shrink: 0;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-regular);
   color: var(--muted);
   font-variant-numeric: tabular-nums;
-  flex-shrink: 0;
 }
 
+/* 점(8) + 간격(8) 만큼 들여 이름과 줄을 맞춘다 */
 .home-proj__bottom {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 4px 0 0 17px;
-  font-size: 12px;
+  gap: var(--space-12);
+  margin: var(--space-4) 0 0 var(--space-16);
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
@@ -86,9 +87,9 @@
 
 .home-proj__bar {
   flex: 1;
-  height: 5px;
+  height: 4px;
   background: var(--track);
-  border-radius: 99px;
+  border-radius: var(--space-2);
   overflow: hidden;
 }
 
@@ -96,12 +97,12 @@
   display: block;
   height: 100%;
   background: var(--c);
-  border-radius: 99px;
+  border-radius: var(--space-2);
 }
 
 .home-projs__more {
   margin-top: auto;
-  padding-top: 8px;
-  font-size: 12px;
+  padding-top: var(--space-8);
+  font-size: var(--fs-12);
   color: var(--muted);
 }

@@ -1,7 +1,7 @@
 import { badgeColor, badgeInitial } from "../../../features/calendar/badge";
 import type { SortedPosting } from "../../../features/job-search/sortPostings";
 
-/** 이 점수 이상이면 보라, 미만이면 회색 */
+/** 이 점수 이상이면 밝은 글자, 미만이면 흐린 글자 */
 const HIGH_SCORE = 80;
 /** D-7 이하면 주황 */
 const SOON_DAYS = 7;

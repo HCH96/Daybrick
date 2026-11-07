@@ -32,7 +32,7 @@ function QuickAdd({ todayKey }: QuickAddProps) {
           className="quick-add__input"
           type="text"
           value={title}
-          placeholder="할 일 추가…"
+          placeholder="할 일 추가"
           aria-label="오늘 할 일 빠르게 추가"
           onChange={(e) => setTitle(e.target.value)}
           onKeyDown={onKeyDown}

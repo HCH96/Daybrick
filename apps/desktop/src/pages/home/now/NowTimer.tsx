@@ -37,14 +37,16 @@ function LiveTimes({ today, running, todayKey, groupName }: Omit<NowTimerProps, 
         <span className={paused ? "now-timer__clock now-timer__clock--paused" : "now-timer__clock"}>
           {formatClockSeconds(sessionElapsed(running, now))}
         </span>
-        <span className={paused ? "now-pill now-pill--pause" : "now-pill now-pill--run"}>{paused ? "일시정지" : "진행 중"}</span>
+        <span className={paused ? "now-badge now-badge--pause" : "now-badge now-badge--run"}>
+          {paused ? "일시정지" : "진행 중"}
+        </span>
       </div>
     </>
   );
 }
 
 /**
- * 타이머가 있을 때 (R35): 태스크 제목·묶음 색, 이번 세션 경과, 상태 알약, [일시정지/재개]·[완료]·[중단].
+ * 타이머가 있을 때 (R35): 태스크 제목·묶음 색, 이번 세션 경과, 상태 배지, [일시정지/재개]·[완료]·[중단].
  * 버튼은 투데이와 같은 저장소 동작을 부른다. 실행 중엔 [완료], 일시정지엔 [재개]를 강조한다. 트랙 그림은 없다.
  */
 function NowTimer({ plan, today, running, todayKey }: NowTimerProps) {

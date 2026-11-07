@@ -63,7 +63,7 @@ function NowTaskList({ plan, todayKey }: NowTaskListProps) {
               aria-label={`${title} 타이머 시작`}
               onClick={() => requestStart(task.id)}
             >
-              <PlayIcon size={11} />
+              <PlayIcon size={12} />
               시작
             </button>
           </div>

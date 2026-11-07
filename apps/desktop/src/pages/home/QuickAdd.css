@@ -1,4 +1,4 @@
-/* 홈 빠른 추가 (목업 dash.css .quick, .quick.focus, .quick-hint) */
+/* 홈 빠른 추가: 입력 중에는 보라 테두리와 보라 + 아이콘 (홈의 보라 쓰는 곳 하나) */
 .quick-add {
   position: relative;
   width: 360px;
@@ -10,20 +10,25 @@
   height: 40px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 12px 0 14px;
+  gap: var(--space-8);
+  padding: 0 var(--space-12);
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   color: var(--faint);
   cursor: text;
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
-/* 입력 중: 보라 테두리 */
+.quick-add__box:hover {
+  border-color: var(--border-2);
+}
+
 .quick-add__box:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
-  color: var(--text);
+  color: var(--accent);
 }
 
 .quick-add__box svg {
@@ -38,7 +43,7 @@
   background: transparent;
   color: var(--text);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-13);
   outline: none;
 }
 
@@ -48,12 +53,13 @@
 
 .quick-add__kbd {
   flex-shrink: 0;
-  font-family: inherit;
-  font-size: 11px;
-  color: var(--muted);
+  padding: var(--space-2) var(--space-4);
   border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+  font-family: inherit;
+  font-size: var(--fs-11);
+  line-height: 1;
+  color: var(--muted);
 }
 
 /* 안내 문구: 입력 중에만, 머리 높이를 바꾸지 않게 칸 아래에 띄운다 */
@@ -61,8 +67,8 @@
   position: absolute;
   top: 100%;
   right: 0;
-  margin-top: 4px;
-  font-size: 11px;
+  margin-top: var(--space-4);
+  font-size: var(--fs-11);
   color: var(--faint);
   white-space: nowrap;
   visibility: hidden;

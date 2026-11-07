@@ -1,13 +1,13 @@
-/* 홈 요약 줄 4칸 (목업 dash.css .kpis, .kpi). 칸은 버튼이라 누르면 해당 메뉴로 이동한다 */
+/* 홈 요약 줄 4칸: 라벨 + 큰 숫자(또는 한 줄)만. 칸은 버튼이라 누르면 해당 메뉴로 이동한다 */
 .summary-strip {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+  gap: var(--space-20);
 }
 
 .summary-strip__item {
   min-width: 0;
-  padding: 14px 18px;
+  padding: var(--space-16);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -15,6 +15,9 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
 }
 
 .summary-strip__item:hover {
@@ -30,8 +33,8 @@
 .summary-strip__label {
   display: flex;
   justify-content: space-between;
-  gap: 8px;
-  font-size: 12px;
+  gap: var(--space-8);
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
@@ -41,52 +44,40 @@
 }
 
 .summary-strip__value {
-  margin-top: 2px;
-  font-size: 22px;
-  font-weight: 800;
-  line-height: 1.4;
+  margin-top: var(--space-4);
+  font-size: var(--fs-20);
+  font-weight: var(--fw-semibold);
+  line-height: 28px;
   letter-spacing: -0.3px;
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .summary-strip__value small {
-  margin-left: 2px;
-  font-size: 14px;
-  font-weight: 600;
+  margin-left: var(--space-4);
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0;
   color: var(--muted);
 }
 
-/* 강조색은 다음 일정 날짜·시각과 D-n에만 */
+/* 다음 일정·가까운 마감: 큰 날짜(또는 D-n) + 제목 */
 .summary-strip__when {
-  margin-right: 6px;
-  color: var(--accent);
+  margin-right: var(--space-8);
 }
 
 .summary-strip__title {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0;
 }
 
 /* 빈 값·불러오는 중: 회색 문장 */
 .summary-strip__value--none {
-  padding: 4px 0 3px;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0;
   color: var(--faint);
-}
-
-.summary-strip__meter {
-  height: 4px;
-  margin-top: 6px;
-  background: var(--track);
-  border-radius: 99px;
-  overflow: hidden;
-}
-
-.summary-strip__meter > div {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 99px;
 }

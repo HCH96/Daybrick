@@ -51,7 +51,7 @@ function NoneValue({ text }: { text: string }) {
   return <div className="summary-strip__value summary-strip__value--none">{text}</div>;
 }
 
-/** 강조색 날짜(또는 D-n) + 제목 */
+/** 큰 날짜(또는 D-n) + 제목 */
 function WhenValue({ when, title }: { when: string; title: string }) {
   return (
     <div className="summary-strip__value" title={`${when} ${title}`}>
@@ -61,7 +61,7 @@ function WhenValue({ when, title }: { when: string; title: string }) {
   );
 }
 
-/** 오늘 집중 (R23): 오늘 합계 / 하루 목표 + 막대. 타이머가 도는 동안 1초마다 갱신 */
+/** 오늘 집중 (R23): 오늘 합계 / 하루 목표. 타이머가 도는 동안 1초마다 갱신 (요약 칸에는 막대를 넣지 않는다) */
 function FocusItem({ todayKey }: SummaryStripProps) {
   const { state } = useToday();
   const ticking = state.kind === "ready" && state.data.running?.state === "running";
@@ -73,17 +73,11 @@ function FocusItem({ todayKey }: SummaryStripProps) {
   } else {
     const total = dayTotal(state.data, todayKey, now);
     const goalMs = state.data.settings.dailyGoalMinutes * 60000;
-    const ratio = goalMs > 0 ? Math.min(1, total / goalMs) : 0;
     body = (
-      <>
-        <div className="summary-strip__value">
-          {formatClock(total)}
-          <small>/ {formatClock(goalMs)}</small>
-        </div>
-        <div className="summary-strip__meter">
-          <div style={{ width: `${ratio * 100}%` }} />
-        </div>
-      </>
+      <div className="summary-strip__value">
+        {formatClock(total)}
+        <small>/ {formatClock(goalMs)}</small>
+      </div>
     );
   }
   return (

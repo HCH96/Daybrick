@@ -1,4 +1,4 @@
-/* 홈 "지금 하는 것" 카드 (R35–R37, 목업 part-now.html now-running·now-paused·now-tasks) */
+/* 홈 "지금 하는 것" 카드 (R35–R37): 타이머 또는 오늘 태스크 목록 */
 
 .now-timer,
 .now-tasks {
@@ -10,8 +10,8 @@
 
 /* 묶음(카테고리·프로젝트) 색 점 */
 .now-dot {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--c, var(--muted));
   flex-shrink: 0;
@@ -21,10 +21,10 @@
 .now-timer__task {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 700;
+  gap: var(--space-8);
   min-width: 0;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
 }
 
 .now-timer__title {
@@ -34,23 +34,25 @@
   text-overflow: ellipsis;
 }
 
+/* 점(8) + 간격(8) 만큼 들여 제목과 줄을 맞춘다 */
 .now-timer__sub {
-  font-size: 12px;
+  margin: var(--space-2) 0 0 var(--space-16);
+  font-size: var(--fs-12);
   color: var(--muted);
-  margin: 2px 0 0 17px;
+  font-variant-numeric: tabular-nums;
 }
 
 .now-timer__row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 14px 0;
+  gap: var(--space-12);
+  margin: var(--space-16) 0;
 }
 
 .now-timer__clock {
   font-family: var(--mono);
-  font-size: 34px;
-  font-weight: 700;
+  font-size: var(--fs-34);
+  font-weight: var(--fw-semibold);
   letter-spacing: -0.5px;
   font-variant-numeric: tabular-nums;
 }
@@ -59,19 +61,32 @@
   color: var(--muted);
 }
 
-.now-pill {
-  font-size: 11px;
-  font-weight: 700;
-  border-radius: 99px;
-  padding: 2px 9px;
+/* 상태 배지: 높이 22, 모서리 6, 연한 바탕 + 6px 점 */
+.now-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 22px;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
 }
 
-.now-pill--run {
+.now-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.now-badge--run {
   background: var(--green-soft);
   color: var(--green);
 }
 
-.now-pill--pause {
+.now-badge--pause {
   background: var(--amber-soft);
   color: var(--amber);
 }
@@ -79,57 +94,89 @@
 /* ── 버튼 ── */
 .now-acts {
   display: flex;
-  gap: 8px;
+  gap: var(--space-8);
   margin-top: auto;
 }
 
 .now-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-8);
   height: 32px;
-  padding: 0 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  cursor: pointer;
+  padding: 0 var(--space-12);
   flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.now-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
 .now-btn:hover {
-  border-color: var(--accent);
+  border-color: var(--border-2);
+  background: var(--hover);
 }
 
+.now-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 홈의 주요 버튼은 밝은 무채색 (보라는 벽돌 벽 오늘 줄에 남긴다) */
 .now-btn--primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--on-accent);
-  font-weight: 700;
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--bg);
+}
+
+.now-btn--primary:hover {
+  border-color: var(--neutral);
+  background: var(--neutral);
 }
 
 .now-btn--quiet {
+  border-color: transparent;
   background: transparent;
   color: var(--muted);
 }
 
-.now-btn--sm {
-  height: 26px;
-  padding: 0 10px;
-  font-size: 12px;
-  border-radius: 7px;
+.now-btn--quiet:hover {
+  color: var(--text);
 }
 
-/* ── 오늘 태스크 목록 ── */
+.now-btn--sm {
+  height: 24px;
+  gap: var(--space-4);
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-12);
+}
+
+.now-btn--sm svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ── 오늘 태스크 목록: 한 줄 36 ── */
 .now-task {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 0;
+  gap: var(--space-8);
+  height: var(--row-h);
+  flex-shrink: 0;
   border-bottom: 1px solid var(--border);
-  font-size: 13.5px;
+  font-size: var(--fs-13);
 }
 
 .now-task:last-of-type {
@@ -145,9 +192,9 @@
 }
 
 .now-task__status {
-  font-size: 11px;
-  color: var(--faint);
   flex-shrink: 0;
+  font-size: var(--fs-11);
+  color: var(--faint);
 }
 
 .now-task__status--on {
@@ -156,17 +203,21 @@
 
 .now-more {
   margin-top: auto;
-  padding: 8px 0 0;
+  padding: var(--space-8) 0 0;
   border: none;
   background: none;
   font: inherit;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
   text-align: left;
   cursor: pointer;
 }
 
 .now-more b {
-  color: var(--accent);
-  font-weight: 600;
+  font-weight: var(--fw-medium);
+  color: var(--text);
+}
+
+.now-more:hover b {
+  text-decoration: underline;
 }
