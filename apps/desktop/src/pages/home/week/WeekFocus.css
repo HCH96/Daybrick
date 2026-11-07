@@ -1,4 +1,4 @@
-/* 홈 "이번 주 집중" 카드: 벽돌 벽 (R38–R39, 홈의 "순간") */
+/* 홈 "이번 주 집중" 카드 (R38–R39): 월~일 막대 + 하루 목표 점선. 오늘 막대만 강조색 */
 
 .week-focus {
   flex: 1;
@@ -8,7 +8,7 @@
 }
 
 .week-focus__total {
-  margin: -4px 0 var(--space-8);
+  margin: -4px 0 var(--space-12);
   font-size: var(--fs-13);
   color: var(--muted);
 }
@@ -21,104 +21,89 @@
   font-variant-numeric: tabular-nums;
 }
 
-/*
- * 벽: 줄마다 [요일 16 | 간격 8 | 벽돌 칸]. 위 16px은 목표 글자 자리.
- * --goal, --end는 벽돌 칸 너비에 대한 비율 (0~1).
- */
-.week-focus__wall {
-  --label-w: 24px; /* 요일 16 + 간격 8 */
+/* 막대 7개. 아래 20px는 요일 글자 자리 */
+.week-focus__chart {
   position: relative;
-  margin-top: auto;
-  padding-top: var(--space-16);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+  flex: 1;
+  min-height: 112px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-12);
+  align-items: end;
+  padding-bottom: var(--space-20);
 }
 
-/* 하루 목표 세로 점선 */
+/* 하루 목표 점선: 막대 영역(전체 - 20px)에서 --ratio 높이 */
 .week-focus__goal {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: calc(var(--label-w) + (100% - var(--label-w)) * var(--goal, 1));
-  border-left: 1px dashed var(--faint);
+  left: 0;
+  right: 0;
+  bottom: calc(20px + (100% - 20px) * var(--ratio, 1));
+  border-top: 1px dashed var(--faint);
   pointer-events: none;
 }
 
 .week-focus__goal span {
   position: absolute;
-  top: 0;
-  right: var(--space-4);
+  right: 0;
+  top: -16px;
   font-size: var(--fs-11);
   line-height: 12px;
   color: var(--faint);
-  white-space: nowrap;
 }
 
-.week-focus__row {
+.week-focus__col {
   position: relative;
+  height: 100%;
   display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
-  gap: var(--space-8);
-  height: 12px;
 }
 
-.week-focus__day {
-  width: 16px;
-  flex-shrink: 0;
-  font-size: var(--fs-11);
-  line-height: 12px;
-  color: var(--muted);
-  text-align: center;
+/* 지난 요일 막대: 흐린 보라 (사용자 결정, 토큰화는 공통 기반 몫) */
+.week-focus__bar {
+  width: 100%;
+  max-width: 24px;
+  min-height: 4px;
+  border-radius: var(--radius-xs) var(--radius-xs) var(--space-2) var(--space-2);
+  background: #5e5289;
+  transition: opacity var(--dur-fast) var(--ease);
 }
 
-.week-focus__row--today .week-focus__day {
-  font-weight: var(--fw-medium);
-  color: var(--text);
-}
-
-.week-focus__row--future .week-focus__day {
-  color: var(--faint);
-}
-
-.week-focus__bricks {
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  display: flex;
-}
-
-/* 벽돌 한 장: 칸 너비가 길이, 오른쪽 2px은 줄눈 */
-.week-focus__brick {
-  position: relative;
-  flex-shrink: 0;
-  min-width: 4px;
-  height: 100%;
-}
-
-.week-focus__brick::before {
-  content: "";
-  position: absolute;
-  inset: 0 var(--space-2) 0 0;
-  border-radius: var(--space-2);
-  background: var(--faint);
-  transition: background-color var(--dur-fast) var(--ease);
-}
-
-.week-focus__row--today .week-focus__brick::before {
+.week-focus__col--today .week-focus__bar {
   background: var(--accent);
 }
 
-.week-focus__row--past:hover .week-focus__brick::before {
-  background: var(--muted);
+.week-focus__col--past:hover .week-focus__bar {
+  opacity: 0.8;
 }
 
-/* 마우스를 올린 줄의 끝 위 말풍선 "11/5 (목) 4시간" */
+/* 아직 안 온 요일: 납작한 회색 */
+.week-focus__bar--empty {
+  height: 4px;
+  min-height: 0;
+  border-radius: var(--space-2);
+  background: var(--neutral-soft);
+}
+
+.week-focus__col > span {
+  position: absolute;
+  bottom: -20px;
+  font-size: var(--fs-12);
+  color: var(--muted);
+}
+
+.week-focus__col--today > span {
+  font-weight: var(--fw-medium);
+  color: var(--accent);
+}
+
+/* 마우스를 올린 막대 위 말풍선 "11/5 (목) 4시간" */
 .week-focus__tip {
   display: none;
   position: absolute;
-  bottom: calc(100% + var(--space-4));
-  left: calc(var(--label-w) + (100% - var(--label-w)) * var(--end, 0));
+  left: 50%;
   transform: translateX(-50%);
   z-index: 1;
   padding: var(--space-4) var(--space-8);
@@ -137,6 +122,6 @@
   font-weight: var(--fw-medium);
 }
 
-.week-focus__row:hover .week-focus__tip {
+.week-focus__col:hover .week-focus__tip {
   display: block;
 }
