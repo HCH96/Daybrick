@@ -14,7 +14,7 @@
 | 6 | applications | Applications | 모음과 관리 | `pages/applications/` | applications | 완료 | 2026-11-07 |
 | 7 | job-search | Job Search | 모음과 관리 | `pages/job-search/` | job-search | 완료 | 2026-11-08 |
 | 8 | settings | Settings | 가끔 들르는 화면 | `pages/settings/` | server-setup | 완료 | 2026-11-08 |
-| 9 | setup | 첫 실행 안내·연결 마법사·서버 화면 | 가끔 들르는 화면 | `pages/server-setup/`, `components/server/ServerUpdateScreen*`, `components/server/ServerRequired*` | server-setup | 대기 | |
+| 9 | setup | 첫 실행 안내·연결 마법사·서버 화면 | 가끔 들르는 화면 | `pages/server-setup/`, `components/server/ServerUpdateScreen*`, `components/server/ServerRequired*` | server-setup | 완료 | 2026-11-08 |
 
 기록 위치가 기능명이면 `docs/features/<기능명>/ai/logs/`에 남긴다.
 

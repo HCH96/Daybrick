@@ -3,7 +3,7 @@
 .server-update {
   height: 100%;
   overflow-y: auto;
-  padding: 0 32px 40px;
+  padding: 0 var(--space-32) 40px;
 }
 
 .server-update__wrap {
@@ -12,7 +12,7 @@
   padding-top: 40px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-20);
 }
 
 /* 마법사 안에 넣을 때는 마법사 단계 화면 여백을 따른다 */
@@ -26,23 +26,30 @@
   padding-top: 0;
 }
 
-.server-update__wrap h2 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 800;
+.server-update :is(b, strong) {
+  font-weight: var(--fw-medium);
 }
 
+.server-update__wrap h2 {
+  margin: 0;
+  font-size: var(--fs-26);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.3px;
+}
+
+/* 제목 바로 아래 부제 (gap 20 − 12 = 8) */
 .server-update__desc {
-  margin: -10px 0 0;
+  margin: -12px 0 0;
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
 .ver-flow {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 18px 22px;
-  border-radius: 14px;
+  gap: var(--space-16);
+  padding: var(--space-20);
+  border-radius: var(--radius);
   background: var(--surface);
   box-shadow: 0 0 0 1px var(--border) inset;
 }
@@ -54,15 +61,18 @@
 
 .ver-box small {
   display: block;
+  margin-bottom: var(--space-4);
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-12);
 }
 
-.ver-box b {
-  font-size: 28px;
-  font-family: Consolas, monospace;
+.server-update .ver-box b {
+  font-size: var(--fs-26);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
 }
 
+/* 이 화면에서 가장 중요한 숫자 하나: 앱이 필요한 구조 */
 .ver-box--target b {
   color: var(--accent);
 }
@@ -73,41 +83,42 @@
 }
 
 .change-list {
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--sidebar);
-  padding: 14px 18px;
-  font-size: 13px;
+  padding: var(--space-16) var(--space-20);
+  font-size: var(--fs-13);
 }
 
 .change-list b {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: var(--space-8);
 }
 
 .change-list ul {
   margin: 0;
-  padding-left: 18px;
+  padding-left: var(--space-20);
   color: var(--muted);
 }
 
 .change-list__note {
-  margin-top: 8px;
+  margin-top: var(--space-8);
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-12);
 }
 
 .update-foot {
   display: flex;
-  gap: 8px;
+  gap: var(--space-8);
   justify-content: flex-end;
 }
 
 .ver-pair {
   display: inline-flex;
-  gap: 6px;
+  gap: var(--space-4);
   align-items: center;
 }
 
 .ver-pair b {
-  font-family: Consolas, monospace;
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
 }

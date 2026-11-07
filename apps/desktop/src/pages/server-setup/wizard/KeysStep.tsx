@@ -71,7 +71,7 @@ function KeysStep({ inputs, setInputs, check, checking, onSubmit }: KeysStepProp
           />
           {states.url === "ok" && (
             <span className="wiz-input__ok">
-              <SmallCheckIcon size={15} />
+              <SmallCheckIcon size={16} />
             </span>
           )}
         </div>

@@ -23,7 +23,7 @@ function WizardGuide({ guide }: { guide: StepGuide }) {
               {item.link && (
                 <button type="button" className="wiz-guide__link" onClick={() => item.link && openExternal(item.link.url)}>
                   {item.link.label}
-                  <ExternalLinkIcon size={13} />
+                  <ExternalLinkIcon size={16} />
                 </button>
               )}
             </div>
@@ -33,7 +33,7 @@ function WizardGuide({ guide }: { guide: StepGuide }) {
       {guide.tip && (
         <div className="wiz-guide__tip">
           <b>
-            <WarnIcon size={15} />
+            <WarnIcon size={16} />
             {guide.tip.title}
           </b>
           {guide.tip.paragraphs.map((p) => (

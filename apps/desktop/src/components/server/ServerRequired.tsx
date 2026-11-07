@@ -12,7 +12,7 @@ interface ServerRequiredProps {
  * 서버가 필요한 화면에 넣는 "서버 연결 필요" 표시 (R40, D1). 누르면 설정 → 서버 연결로 간다.
  * 서버 연결 기능에서는 쓰는 화면이 없고, 이후 기능이 연결 안 함일 때 넣는다.
  */
-function ServerRequired({ description = "이 기능은 내 Supabase 서버에 데이터를 저장합니다." }: ServerRequiredProps) {
+function ServerRequired({ description = "이 기능은 내 Supabase 서버에 데이터를 저장합니다" }: ServerRequiredProps) {
   const { navigate } = useNavigation();
   return (
     <div className="server-required">

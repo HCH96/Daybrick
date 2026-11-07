@@ -25,10 +25,10 @@ function DoneStep({ summary }: { summary: DoneSummary }) {
   return (
     <div className="wiz-center">
       <div className="wiz-big-mark wiz-big-mark--ok">
-        <SmallCheckIcon size={30} />
+        <SmallCheckIcon size={32} />
       </div>
       <h2>서버 연결을 마쳤습니다</h2>
-      <p>이제 이 서버가 Daybrick의 데이터를 보관합니다.</p>
+      <p>이제 이 서버가 Daybrick의 데이터를 보관합니다</p>
 
       <div className="wiz-summary">
         <div>

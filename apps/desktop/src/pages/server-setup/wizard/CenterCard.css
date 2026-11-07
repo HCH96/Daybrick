@@ -2,18 +2,19 @@
 
 .wiz-center {
   max-width: 520px;
-  margin: 30px auto 0;
+  margin: var(--space-32) auto 0;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-16);
 }
 
 .wiz-center h2 {
-  margin: 6px 0 0;
-  font-size: 24px;
-  font-weight: 800;
+  margin: var(--space-4) 0 0;
+  font-size: var(--fs-20);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.3px;
 }
 
 .wiz-center p {
@@ -23,24 +24,25 @@
 
 /* 테두리 있는 작은 카드 (브라우저 대기, 거부) */
 .wiz-center--boxed {
-  padding: 28px;
-  border-radius: 14px;
+  padding: var(--space-32);
+  border-radius: var(--radius-lg);
   background: var(--bg);
   box-shadow: 0 0 0 1px var(--border) inset;
 }
 
 .wiz-center--boxed h2 {
-  font-size: 19px;
+  font-size: var(--fs-16);
+  letter-spacing: 0;
 }
 
 .wiz-center__help {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
 .wiz-center__actions {
   display: flex;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .wiz-big-mark {
@@ -57,8 +59,8 @@
 }
 
 .wiz-big-mark--info {
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: var(--surface-2);
+  color: var(--muted);
 }
 
 .wiz-big-mark--bad {
@@ -66,12 +68,17 @@
   color: var(--red);
 }
 
+/* 브라우저 로그인을 기다리는 동안만 도는 원 (진행 중은 파랑) */
+.wiz-big-mark--wait {
+  background: var(--blue-soft);
+}
+
 .wiz-big-mark__spin {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 3px solid rgba(166, 140, 255, 0.25);
-  border-top-color: var(--accent);
+  border: 3px solid var(--border-2);
+  border-top-color: var(--blue);
   animation: wiz-center-spin 0.9s linear infinite;
 }
 
@@ -84,32 +91,35 @@
 .wiz-server-chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  border-radius: 99px;
+  gap: var(--space-8);
+  height: 28px;
+  padding: 0 var(--space-12);
+  border-radius: var(--radius-sm);
   background: var(--surface);
   box-shadow: 0 0 0 1px var(--border) inset;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
-  font-family: Consolas, monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ④ 완료 요약 */
 .wiz-summary {
   width: 100%;
   text-align: left;
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--surface);
   box-shadow: 0 0 0 1px var(--border) inset;
-  padding: 6px 18px;
+  padding: var(--space-4) var(--space-20);
 }
 
 .wiz-summary div {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
-  padding: 11px 0;
-  font-size: 13px;
+  align-items: center;
+  gap: var(--space-16);
+  min-height: var(--row-h);
+  padding: var(--space-8) 0;
+  font-size: var(--fs-13);
 }
 
 .wiz-summary div + div {
@@ -120,8 +130,9 @@
   color: var(--muted);
 }
 
-.wiz-summary__mono {
-  font-family: Consolas, monospace;
+.wiz-summary b {
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
 }
 
 /* ④ 다음에 할 일 */
@@ -130,23 +141,23 @@
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .wiz-next-list > div {
   display: flex;
-  gap: 10px;
+  gap: var(--space-12);
   align-items: flex-start;
-  font-size: 13px;
-  padding: 12px 14px;
-  border-radius: 10px;
+  font-size: var(--fs-13);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-control);
   background: var(--sidebar);
 }
 
 .wiz-next-list svg {
   flex-shrink: 0;
-  color: var(--accent);
-  margin-top: 1px;
+  color: var(--muted);
+  margin-top: var(--space-2);
 }
 
 .wiz-next-list p {
@@ -157,11 +168,17 @@
 .wiz-next-list span {
   color: var(--muted);
   display: block;
-  font-size: 12px;
+  font-size: var(--fs-12);
 }
 
 /* 가운데 화면 안의 결과 줄은 왼쪽 정렬 */
 .wiz-center .wiz-alert {
   width: 100%;
   text-align: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wiz-big-mark__spin {
+    animation: none;
+  }
 }

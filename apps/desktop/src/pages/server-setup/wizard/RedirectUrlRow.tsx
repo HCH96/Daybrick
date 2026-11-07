@@ -49,7 +49,7 @@ function RedirectUrlRow({ projectRef }: { projectRef: string }) {
           />
         </div>
         <button type="button" className="setup-btn" onClick={() => void copy()}>
-          {copied ? <SmallCheckIcon size={15} /> : <CopyIcon size={15} />}
+          {copied ? <SmallCheckIcon size={16} /> : <CopyIcon size={16} />}
           {copied ? "복사됨" : "복사"}
         </button>
       </div>

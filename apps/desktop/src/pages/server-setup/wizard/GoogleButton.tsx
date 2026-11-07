@@ -17,7 +17,7 @@ function GoogleButton({ onClick, label = "Google로 로그인", small = false, d
       onClick={onClick}
       disabled={disabled}
     >
-      <GoogleIcon size={small ? 14 : 18} />
+      <GoogleIcon size={16} />
       {label}
     </button>
   );

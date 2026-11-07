@@ -22,11 +22,11 @@ function hostOf(url: string): string {
 function WaitingCard({ onReopenBrowser, onCancelLogin }: Pick<LoginStepProps, "onReopenBrowser" | "onCancelLogin">) {
   return (
     <div className="wiz-center wiz-center--boxed">
-      <div className="wiz-big-mark wiz-big-mark--info">
+      <div className="wiz-big-mark wiz-big-mark--wait">
         <span className="wiz-big-mark__spin" />
       </div>
       <h2>브라우저에서 로그인을 마쳐 주세요</h2>
-      <p>로그인이 끝나면 자동으로 이 화면으로 돌아옵니다.</p>
+      <p>로그인이 끝나면 자동으로 이 화면으로 돌아옵니다</p>
       <div className="wiz-center__actions">
         <button type="button" className="setup-btn setup-btn--sm" onClick={onReopenBrowser}>
           브라우저 다시 열기
@@ -45,7 +45,7 @@ function DeniedCard({ onLogin }: Pick<LoginStepProps, "onLogin">) {
   return (
     <div className="wiz-center wiz-center--boxed" role="alert">
       <div className="wiz-big-mark wiz-big-mark--bad">
-        <LockIcon size={30} />
+        <LockIcon size={32} />
       </div>
       <h2>{message.title}</h2>
       <p>{message.desc}</p>
@@ -68,7 +68,7 @@ function LoginStep({ url, schema, phase, onLogin, onReopenBrowser, onCancelLogin
   return (
     <div className="wiz-center">
       <div className="wiz-big-mark wiz-big-mark--info">
-        <UserIcon size={30} />
+        <UserIcon size={32} />
       </div>
       <h2>이 서버에 로그인하세요</h2>
       <p>
@@ -76,7 +76,7 @@ function LoginStep({ url, schema, phase, onLogin, onReopenBrowser, onCancelLogin
         씁니다.
       </p>
       <span className="wiz-server-chip">
-        <ServerIcon size={14} />
+        <ServerIcon size={16} />
         {hostOf(url)} · 구조 {schema ?? 0}
       </span>
       {failure && (

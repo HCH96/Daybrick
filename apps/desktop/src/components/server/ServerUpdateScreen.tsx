@@ -36,7 +36,7 @@ function ChangeList({ pair }: { pair: SchemaPair | null }) {
         {from !== null && to !== null && from > to ? null : <li>{schemaLine}</li>}
         <li>앱이 가진 서버 함수 다시 배포</li>
       </ul>
-      <div className="change-list__note">기존 데이터는 지우거나 바꾸지 않습니다.</div>
+      <div className="change-list__note">기존 데이터는 지우거나 바꾸지 않습니다</div>
     </div>
   );
 }
@@ -108,7 +108,7 @@ export function ServerUpdatePanel({
             <b>{pair ? schemaText(pair.server) : "…"}</b>
           </div>
           <span className="ver-flow__arrow">
-            <ArrowRightIcon size={22} />
+            <ArrowRightIcon size={16} />
           </span>
           <div className="ver-box ver-box--target">
             <small>앱이 필요한 구조</small>
@@ -132,7 +132,7 @@ export function ServerUpdatePanel({
                 나중에
               </button>
               <button type="button" className="setup-btn setup-btn--primary" disabled={!canStart} onClick={start}>
-                <ArrowUpIcon size={15} />
+                <ArrowUpIcon size={16} />
                 업데이트
               </button>
             </div>
@@ -153,7 +153,7 @@ export function ServerUpdatePanel({
           <>
             <div className="wiz-alert wiz-alert--ok" role="status">
               <span className="wiz-alert__icon">
-                <SmallCheckIcon size={18} />
+                <SmallCheckIcon size={16} />
               </span>
               <div>
                 <b>서버 업데이트를 마쳤습니다</b>

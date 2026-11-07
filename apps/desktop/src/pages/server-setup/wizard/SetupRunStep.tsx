@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { RUN_STEPS, type RunProgress } from "../../../features/server/setupRunner";
 import RunStepList from "./RunStepList";
 import "./SetupRunStep.css";
@@ -29,7 +30,7 @@ function SetupRunStep({ progress, onRetry, onCancel, onReopenBrowser }: SetupRun
         </span>
       </div>
       <div className="wiz-run-progress" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={doneCount}>
-        <i style={{ width: `${(doneCount / total) * 100}%` }} />
+        <i style={{ "--run-ratio": doneCount / total } as CSSProperties} />
       </div>
 
       <RunStepList progress={progress} onRetry={onRetry} onCancel={onCancel} />

@@ -20,7 +20,7 @@ function WizardProgress({ steps, current }: { steps: readonly WizardStepInfo[]; 
               className={`wiz-steps__step wiz-steps__step--${state}`}
               aria-current={state === "on" ? "step" : undefined}
             >
-              <span className="wiz-steps__num">{state === "done" ? <SmallCheckIcon size={13} /> : i + 1}</span>
+              <span className="wiz-steps__num">{state === "done" ? <SmallCheckIcon size={16} /> : i + 1}</span>
               {step.label}
             </li>
           </Fragment>

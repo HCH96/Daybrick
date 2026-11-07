@@ -1,23 +1,24 @@
-/* [Google로 로그인]: 다른 버튼과 구별되는 밝은 흰 바탕 (목업 common.css의 .btn.google). 설정 화면에서도 쓴다. */
+/* [Google로 로그인]: 다른 버튼과 구별되는 밝은 바탕 (목업 common.css의 .btn.google). 설정 화면에서도 쓴다. */
 .google-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  height: 46px;
-  padding: 0 22px;
+  gap: var(--space-8);
+  height: 44px;
+  padding: 0 var(--space-20);
   border: none;
-  border-radius: 12px;
-  background: #f2f2f5;
-  color: #1f1f24;
+  border-radius: var(--radius-control);
+  background: var(--text);
+  color: var(--popup);
   font: inherit;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .google-btn:hover:not(:disabled) {
-  background: #ffffff;
+  background: var(--neutral);
 }
 
 .google-btn:focus-visible {
@@ -31,8 +32,7 @@
 }
 
 .google-btn--sm {
-  height: 30px;
-  padding: 0 12px;
-  font-size: 12px;
-  border-radius: 8px;
+  height: 32px;
+  padding: 0 var(--space-12);
+  font-size: var(--fs-12);
 }

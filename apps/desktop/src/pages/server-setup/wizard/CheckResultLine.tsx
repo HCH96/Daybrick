@@ -16,7 +16,7 @@ import { openExternal } from "./openExternal";
 function iconFor(check: KeysCheck): ReactNode {
   switch (check.kind) {
     case "ok":
-      if (check.route === "setup") return <SmallCheckIcon size={18} />;
+      if (check.route === "setup") return <SmallCheckIcon size={16} />;
       return check.route === "login" ? <UserIcon /> : <ArrowUpIcon />;
     case "bad-url":
       return <CrossIcon />;
@@ -50,7 +50,7 @@ function CheckResultLine({ check }: { check: KeysCheck }) {
                 onClick={() => message.link && openExternal(message.link.url)}
               >
                 {message.link.label}
-                <ExternalLinkIcon size={13} />
+                <ExternalLinkIcon size={16} />
               </button>
             </>
           )}

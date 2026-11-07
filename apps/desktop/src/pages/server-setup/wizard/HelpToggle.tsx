@@ -1,5 +1,5 @@
 import { Fragment, useId, useState } from "react";
-import { ExternalLinkIcon } from "../../../components/icons/CommonIcons";
+import { ChevronDownIcon, ExternalLinkIcon } from "../../../components/icons/CommonIcons";
 import { HelpIcon } from "../../../components/icons/ServerIcons";
 import type { FieldHelp } from "./guides";
 import { openExternal } from "./openExternal";
@@ -18,8 +18,11 @@ function HelpToggle({ help }: { help: FieldHelp }) {
         aria-controls={popId}
         onClick={() => setOpen((v) => !v)}
       >
-        <HelpIcon size={14} />
-        어디서 찾나요? {open ? "▴" : "▾"}
+        <HelpIcon size={16} />
+        어디서 찾나요?
+        <span className="wiz-help__chevron" aria-hidden="true">
+          <ChevronDownIcon size={16} />
+        </span>
       </button>
       {open && (
         <div className="wiz-help-pop" id={popId}>
@@ -32,7 +35,7 @@ function HelpToggle({ help }: { help: FieldHelp }) {
                 onClick={() => help.link && openExternal(help.link.url)}
               >
                 {help.link.label}
-                <ExternalLinkIcon size={13} />
+                <ExternalLinkIcon size={16} />
               </button>
             )}
           </div>

@@ -1,27 +1,30 @@
-/* ③ 자동 세팅 실행 화면. 서버 연결 목업 wizard.css의 run-list·progress·progress-label, common.css의 spin 기준 */
+/* ③ 자동 세팅 실행 화면 (서버 업데이트 화면도 단계 목록을 쓴다). 서버 연결 목업 wizard.css의 run-list·progress 기준 */
 
 /* ===== 진행 막대 "n / 6 단계" ===== */
 .wiz-run-progress__label {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .wiz-run-progress {
-  height: 6px;
-  margin: 6px 0 22px;
-  border-radius: 6px;
+  height: 4px;
+  margin: var(--space-8) 0 var(--space-24);
+  border-radius: var(--space-2);
   background: var(--surface-2);
   overflow: hidden;
 }
 
+/* 너비 대신 가로 배율로 채운다 (배율은 TSX의 --run-ratio) */
 .wiz-run-progress i {
   display: block;
   height: 100%;
-  border-radius: 6px;
   background: var(--accent);
-  transition: width 0.3s ease;
+  transform: scaleX(var(--run-ratio, 0));
+  transform-origin: left center;
+  transition: transform var(--dur-enter) var(--ease);
 }
 
 /* ===== 단계 목록 ===== */
@@ -29,7 +32,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  border-radius: 12px;
+  border-radius: var(--radius);
   background: var(--surface);
   box-shadow: 0 0 0 1px var(--border) inset;
   overflow: hidden;
@@ -37,11 +40,12 @@
 
 .wiz-run__item {
   display: grid;
-  grid-template-columns: 28px 1fr auto;
-  gap: 14px;
+  grid-template-columns: 24px 1fr auto;
+  gap: var(--space-12);
   align-items: center;
-  padding: 15px 18px;
-  font-size: 14px;
+  padding: var(--space-12) var(--space-20);
+  font-size: var(--fs-14);
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .wiz-run__item + .wiz-run__item {
@@ -58,12 +62,12 @@
 
 .wiz-run__text small {
   display: block;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--faint);
 }
 
 .wiz-run__state {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--faint);
 }
 
@@ -83,28 +87,28 @@
 }
 
 .wiz-run__item--wait .wiz-run__mark {
-  box-shadow: 0 0 0 1.5px var(--border-2) inset;
+  box-shadow: 0 0 0 1px var(--border-2) inset;
 }
 
-/* 진행: 보라 바탕, 돌아가는 원 */
+/* 진행: 한 단계 밝은 줄, 파랑 돌아가는 원 */
 .wiz-run__item--run {
-  background: rgba(166, 140, 255, 0.06);
+  background: var(--hover-faint);
 }
 
 .wiz-run__item--run .wiz-run__text {
-  font-weight: 700;
+  font-weight: var(--fw-medium);
 }
 
 .wiz-run__item--run .wiz-run__state {
-  color: var(--accent);
+  color: var(--blue);
 }
 
 .wiz-run__spin {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2.5px solid rgba(166, 140, 255, 0.25);
-  border-top-color: var(--accent);
+  border: 2px solid var(--border-2);
+  border-top-color: var(--blue);
   animation: wiz-run-spin 0.9s linear infinite;
 }
 
@@ -115,10 +119,6 @@
 }
 
 /* 실패: 빨강 ✕, 아래 줄에 이유와 [다시 시도] */
-.wiz-run__item--fail {
-  background: rgba(255, 138, 138, 0.06);
-}
-
 .wiz-run__item--fail .wiz-run__mark {
   background: var(--red-soft);
   color: var(--red);
@@ -126,33 +126,42 @@
 
 .wiz-run__item--fail .wiz-run__state {
   color: var(--red);
-  font-weight: 700;
+  font-weight: var(--fw-medium);
 }
 
+/* 이유 상자는 단계 이름 칸과 같은 줄에서 시작 (20 + 24 + 12) */
 .wiz-run__fail {
-  padding: 0 18px 16px 60px;
-  background: rgba(255, 138, 138, 0.06);
+  padding: 0 var(--space-20) var(--space-16) 56px;
 }
 
 .wiz-run__fail-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 10px;
+  gap: var(--space-8);
+  margin-top: var(--space-12);
 }
 
 .setup-btn--sm {
-  height: 30px;
-  padding: 0 12px;
-  font-size: 12px;
-  border-radius: 8px;
+  height: 32px;
+  padding: 0 var(--space-12);
+  font-size: var(--fs-12);
 }
 
 /* 계정 등록 중: [브라우저 다시 열기]와 도움말 */
 .wiz-run__reopen {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-  font-size: 12px;
+  gap: var(--space-12);
+  margin-top: var(--space-12);
+  font-size: var(--fs-12);
   color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wiz-run__spin {
+    animation: none;
+  }
+
+  .wiz-run-progress i {
+    transition: none;
+  }
 }

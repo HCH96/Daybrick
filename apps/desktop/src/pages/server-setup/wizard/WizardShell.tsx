@@ -21,7 +21,7 @@ import "./WizardFields.css";
 function PendingStep({ step }: { step: WizardStepId }) {
   return (
     <div className="wiz-form__inner" data-step={step}>
-      <p className="wiz-form__desc">이 화면은 주소·키 확인 뒤에 보입니다.</p>
+      <p className="wiz-form__desc">이 화면은 주소·키 확인 뒤에 보입니다</p>
     </div>
   );
 }

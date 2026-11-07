@@ -1,27 +1,28 @@
 /* 서버 연결 마법사 틀 (제목 표시줄 아래 창 전체, 사이드바 없음). 서버 연결 목업 wizard.css 기준 */
 
-/* ===== 버튼 (첫 실행 안내도 함께 쓴다) ===== */
+/* ===== 버튼 (첫 실행 안내, 설정·구직 관리의 작은 창도 함께 쓴다. 값은 설정 화면 버튼과 같다) ===== */
 .setup-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  height: 38px;
-  padding: 0 16px;
+  gap: var(--space-8);
+  height: 36px;
+  padding: 0 var(--space-16);
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   background: var(--surface-2);
   color: var(--text);
   box-shadow: 0 0 0 1px var(--border-2) inset;
   font: inherit;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
 
 .setup-btn:hover:not(:disabled) {
-  filter: brightness(1.08);
+  background: var(--border);
 }
 
 .setup-btn:focus-visible {
@@ -40,6 +41,10 @@
   box-shadow: none;
 }
 
+.setup-btn--primary:hover:not(:disabled) {
+  background: var(--violet);
+}
+
 .setup-btn--ghost {
   background: transparent;
   color: var(--muted);
@@ -47,15 +52,14 @@
 }
 
 .setup-btn--ghost:hover:not(:disabled) {
-  filter: none;
+  background: var(--hover);
   color: var(--text);
 }
 
 .setup-btn--lg {
-  height: 46px;
-  padding: 0 24px;
-  font-size: 15px;
-  border-radius: 12px;
+  height: 44px;
+  padding: 0 var(--space-24);
+  font-size: var(--fs-14);
 }
 
 /* ===== 틀 ===== */
@@ -67,7 +71,7 @@
 }
 
 .wiz-top {
-  padding: 22px 56px 20px;
+  padding: var(--space-20) 56px;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -75,11 +79,11 @@
 }
 
 .wiz-top__title {
-  font-size: 18px;
-  font-weight: 800;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-semibold);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-8);
   white-space: nowrap;
 }
 
@@ -132,26 +136,31 @@
 }
 
 .wiz-form__inner h2 {
-  margin: 0 0 6px;
-  font-size: 24px;
-  font-weight: 800;
+  margin: 0 0 var(--space-8);
+  font-size: var(--fs-26);
+  font-weight: var(--fw-semibold);
   letter-spacing: -0.3px;
 }
 
 .wiz-form__desc {
-  margin: 0 0 28px;
+  margin: 0 0 var(--space-32);
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--fs-13);
+}
+
+/* 마법사 안의 굵은 글자는 500 (브라우저 기본 700을 쓰지 않는다) */
+.wiz :is(b, strong) {
+  font-weight: var(--fw-medium);
 }
 
 .wiz-foot {
-  height: 76px;
+  height: 72px;
   flex-shrink: 0;
   border-top: 1px solid var(--border);
   padding: 0 56px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-8);
 }
 
 .wiz-foot__spacer {
@@ -163,7 +172,7 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-12);
   max-width: 760px;
   margin: 0;
   padding: 0;
@@ -173,26 +182,29 @@
 .wiz-steps__step {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: var(--space-8);
+  font-size: var(--fs-13);
   color: var(--faint);
   white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease);
 }
 
 .wiz-steps__num {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 12px;
-  font-weight: 800;
-  box-shadow: 0 0 0 1.5px var(--border-2) inset;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 0 0 1px var(--border-2) inset;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
 
 .wiz-steps__step--on {
   color: var(--text);
-  font-weight: 700;
+  font-weight: var(--fw-medium);
 }
 
 .wiz-steps__step--on .wiz-steps__num {
@@ -215,12 +227,13 @@
   flex: 1;
   height: 2px;
   min-width: 24px;
-  border-radius: 2px;
+  border-radius: var(--space-2);
   background: var(--border);
+  transition: background-color var(--dur-enter) var(--ease);
 }
 
 .wiz-steps__line--done {
-  background: #2f6b4b;
+  background: color-mix(in srgb, var(--green) 40%, var(--bg));
 }
 
 /* ===== 가이드 ===== */
@@ -228,24 +241,24 @@
   min-width: 0;
   background: var(--sidebar);
   border-left: 1px solid var(--border);
-  padding: 32px 30px;
+  padding: var(--space-32) var(--space-28);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-16);
 }
 
 .wiz-guide__head {
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--accent);
-  letter-spacing: 0.5px;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
+  color: var(--muted);
 }
 
+/* 머리 줄과 제목은 붙여서 한 묶음으로 (gap 16 − 12 = 4) */
 .wiz-guide__title {
   margin: -12px 0 0;
-  font-size: 17px;
-  font-weight: 800;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-semibold);
 }
 
 .wiz-guide__list {
@@ -254,28 +267,29 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-12);
   counter-reset: guide;
 }
 
 .wiz-guide__list li {
   counter-increment: guide;
   display: grid;
-  grid-template-columns: 24px 1fr;
-  gap: 10px;
-  font-size: 13px;
+  grid-template-columns: 20px 1fr;
+  gap: var(--space-12);
+  font-size: var(--fs-13);
 }
 
 .wiz-guide__list li::before {
   content: counter(guide);
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--surface-2);
   display: grid;
   place-items: center;
-  font-size: 11px;
-  font-weight: 800;
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
   color: var(--muted);
 }
 
@@ -283,9 +297,9 @@
 .wiz-guide__list li.wiz-guide__group {
   counter-increment: none;
   display: block;
-  margin-top: 4px;
-  font-size: 12px;
-  font-weight: 700;
+  margin-top: var(--space-4);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   color: var(--faint);
 }
 
@@ -302,102 +316,105 @@
   color: var(--muted);
 }
 
+/* 바깥 사이트 링크: 설정 화면 링크와 같은 무채색 밑줄 */
 .wiz-guide__link {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-4);
   padding: 0;
   border: none;
   background: none;
-  color: var(--accent);
+  color: var(--muted);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-13);
+  text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
 }
 
 .wiz-guide__link:hover {
-  text-decoration: underline;
+  color: var(--text);
 }
 
 .wiz-guide__link:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
 /* 주의 상자는 가이드 맨 아래에 붙는다 */
 .wiz-guide__tip {
   margin-top: auto;
-  padding: 12px 14px;
-  border-radius: 10px;
-  font-size: 12px;
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-control);
+  font-size: var(--fs-12);
   background: var(--amber-soft);
-  color: var(--text);
+  color: var(--muted);
 }
 
 .wiz-guide__tip b {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
+  gap: var(--space-8);
+  margin-bottom: var(--space-4);
   color: var(--amber);
-  font-size: 12px;
+  font-size: var(--fs-12);
 }
 
 .wiz-guide__tip p {
   margin: 0;
-  opacity: 0.85;
 }
 
 .wiz-guide__tip p + p {
-  margin-top: 4px;
+  margin-top: var(--space-4);
 }
 
 /* ===== ① 준비 카드 ===== */
 .prep-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: var(--space-20);
 }
 
 .prep-card {
-  padding: 18px;
-  border-radius: 12px;
+  padding: var(--space-20);
+  border-radius: var(--radius);
   background: var(--surface);
   box-shadow: 0 0 0 1px var(--border) inset;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-8);
 }
 
 .prep-card__head {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-weight: 800;
-  font-size: 15px;
+  gap: var(--space-12);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-14);
 }
 
 .prep-card__icon {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
-  border-radius: 9px;
-  background: var(--accent-soft);
-  color: var(--accent);
+  border-radius: var(--radius-control);
+  background: var(--surface-2);
+  color: var(--muted);
   display: grid;
   place-items: center;
 }
 
 .prep-card p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
 .prep-card__cost {
   margin-top: auto;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--faint);
 }
 
@@ -405,12 +422,12 @@
 @media (max-width: 1100px) {
   .wiz-top,
   .wiz-foot {
-    padding-left: 32px;
-    padding-right: 32px;
+    padding-left: var(--space-32);
+    padding-right: var(--space-32);
   }
 
   .wiz-top {
-    gap: 24px;
+    gap: var(--space-24);
   }
 
   /* 가이드를 좁혀 왼쪽에 준비물 카드 두 줄이 들어가게 */
@@ -423,44 +440,46 @@
   }
 
   .wiz-form {
-    padding: 32px;
+    padding: var(--space-32);
   }
 
   .wiz-guide {
-    padding: 24px;
-    gap: 14px;
+    padding: var(--space-24);
+  }
+
+  .prep-cards {
+    gap: var(--space-16);
   }
 }
 
 /* ===== 낮은 창 (640px 등): 위아래 여백을 줄여 스크롤 없이 들어가게 ===== */
 @media (max-height: 760px) {
   .wiz-top {
-    padding-top: 12px;
-    padding-bottom: 12px;
+    padding-top: var(--space-12);
+    padding-bottom: var(--space-12);
   }
 
   .wiz-foot {
-    height: 58px;
+    height: 56px;
   }
 
   .wiz-form {
-    padding-top: 24px;
-    padding-bottom: 24px;
+    padding-top: var(--space-24);
+    padding-bottom: var(--space-24);
   }
 
   .wiz-form__inner h2 {
-    font-size: 21px;
+    font-size: var(--fs-20);
   }
 
   .wiz-form__desc {
-    margin-bottom: 18px;
-    font-size: 13px;
+    margin-bottom: var(--space-20);
   }
 
   .wiz-guide {
-    padding-top: 14px;
-    padding-bottom: 14px;
-    gap: 10px;
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
+    gap: var(--space-12);
   }
 
   .wiz-guide__title {
@@ -468,28 +487,28 @@
   }
 
   .wiz-guide__list {
-    gap: 8px;
+    gap: var(--space-8);
   }
 
   .wiz-guide__list li {
-    font-size: 12.5px;
+    font-size: var(--fs-12);
   }
 
   .wiz-guide__tip {
-    padding: 10px 12px;
+    padding: var(--space-8) var(--space-12);
   }
 
   .wiz-guide__tip p + p {
-    margin-top: 2px;
+    margin-top: var(--space-2);
   }
 
   .prep-cards {
-    gap: 10px;
+    gap: var(--space-12);
   }
 
   .prep-card {
-    padding: 12px 14px;
-    gap: 4px;
+    padding: var(--space-12) var(--space-16);
+    gap: var(--space-4);
   }
 
   .prep-card__icon {

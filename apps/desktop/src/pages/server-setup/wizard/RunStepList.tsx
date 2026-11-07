@@ -15,9 +15,9 @@ const STATE_LABEL: Record<RunStepState, string> = {
 function StepMark({ state }: { state: RunStepState }) {
   switch (state) {
     case "done":
-      return <SmallCheckIcon size={14} />;
+      return <SmallCheckIcon size={16} />;
     case "fail":
-      return <CrossIcon size={14} />;
+      return <CrossIcon size={16} />;
     case "run":
       return <span className="wiz-run__spin" />;
     case "wait":
@@ -67,7 +67,7 @@ function RunStepList({ progress, onRetry, onCancel, flow = "setup", cancelLabel 
                   <p>{message.desc}</p>
                   <div className="wiz-run__fail-actions">
                     <button type="button" className="setup-btn setup-btn--primary setup-btn--sm" onClick={onRetry}>
-                      <RefreshIcon size={14} />
+                      <RefreshIcon size={16} />
                       다시 시도
                     </button>
                     <button type="button" className="setup-btn setup-btn--ghost setup-btn--sm" onClick={onCancel}>

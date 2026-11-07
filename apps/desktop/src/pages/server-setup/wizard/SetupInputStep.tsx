@@ -45,7 +45,7 @@ function SetupInputStep(props: SetupInputStepProps) {
         앱이 서버에 테이블·로그인 설정·서버 함수를 만들어 줍니다. 아래 값은 세팅하는 동안에만 쓰고 저장하지 않습니다.
       </p>
 
-      <div className="wiz-section-label">SUPABASE · ANTHROPIC</div>
+      <div className="wiz-section-label">Supabase · Anthropic</div>
       <div className="wiz-field">
         <label className="wiz-field__label" htmlFor="wiz-pat">
           Supabase 개인 액세스 토큰 (PAT)
@@ -75,7 +75,7 @@ function SetupInputStep(props: SetupInputStepProps) {
         <HelpToggle help={FIELD_HELPS.anthropicKey} />
       </div>
 
-      <div className="wiz-section-label">GOOGLE 로그인</div>
+      <div className="wiz-section-label">Google 로그인</div>
       <RedirectUrlRow projectRef={projectRef} />
       <div className="wiz-two-col">
         <div className="wiz-field">

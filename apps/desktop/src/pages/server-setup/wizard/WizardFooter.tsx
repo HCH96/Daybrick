@@ -37,7 +37,7 @@ function WizardFooter({ onCancel, canCancel = true, onPrev, canGoPrev, next, hid
       {next && (
         <button type="button" className="setup-btn setup-btn--primary" onClick={next.onClick} disabled={next.disabled}>
           {next.label}
-          <ArrowRightIcon size={15} />
+          <ArrowRightIcon size={16} />
         </button>
       )}
     </div>
