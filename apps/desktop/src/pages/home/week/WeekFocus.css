@@ -67,7 +67,7 @@
   max-width: 24px;
   min-height: 4px;
   border-radius: var(--radius-xs) var(--radius-xs) var(--space-2) var(--space-2);
-  background: #5e5289;
+  background: var(--accent-dim);
   transition: opacity var(--dur-fast) var(--ease);
 }
 

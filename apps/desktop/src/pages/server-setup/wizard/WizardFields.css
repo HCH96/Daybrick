@@ -45,7 +45,7 @@
 }
 
 .wiz-input--ok {
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--green) 40%, var(--bg)) inset;
+  box-shadow: 0 0 0 1px var(--green-line) inset;
 }
 
 .wiz-input--bad,

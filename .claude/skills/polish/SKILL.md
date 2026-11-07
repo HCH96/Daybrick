@@ -10,7 +10,7 @@ argument-hint: <대상 id> (common, home, today, calendar, plan, projects, appli
 
 ## 기준 문서와 우선순위
 1. `docs/common/ai/design/design-direction.md`: **최우선 기준.** 매번 통째로 읽는다
-2. `apps/desktop/src/styles/theme.css`: 값은 이 토큰만 쓴다. 새 값이 필요하면 토큰으로 추가한다
+2. `apps/desktop/src/styles/theme.css`: 값은 이 토큰만 쓴다. 새 값이 필요하면 **페이지 작업 중이라도 바로 토큰을 추가한다** (아래 "대상과 범위"의 예외). 직접 쓴 색이나 `color-mix`로 비슷한 색을 만들어 미루지 않는다. 이름은 기존 짝(`-soft`, `-line` 등)을 따르고 쓰는 곳을 주석으로 단다
 3. unslop 스킬 (`.claude/skills/unslop/`): 점검 목록과 고치는 순서만 빌려 쓴다
    - 읽는 것: `SKILL.md`의 "Run it" 이후 1~9단계·"Do not"·"Checklist", `references/signs.md`
    - 홈 벽돌 벽, 프로젝트 잔디처럼 "순간"을 새로 그릴 때만 `references/visuals.md`
@@ -27,6 +27,8 @@ argument-hint: <대상 id> (common, home, today, calendar, plan, projects, appli
 - `common`(공통 기반)이 `완료`가 아니면 다른 페이지를 시작하지 않고 그 사실을 알린다
 - 범위는 목록의 "코드 범위" 열이 정한다. 그 폴더 아래의 화면이 모두 하위 화면이다
 - **여러 페이지가 같이 쓰는 파일**(`components/`, `styles/`, AppLayout·Sidebar·TitleBar, 공용 Modal·Popover·ConfirmDialog·EmptyState 등)은 페이지 작업에서 고치지 않는다. 고칠 게 보이면 보고의 "공통 기반 제안"에 적는다. 페이지만 다르게 보여야 하면 그 페이지 CSS에서 덮어쓴다
+  - 예외: theme.css에 **새 토큰을 추가하는 것**은 페이지 작업에서 한다. 이미 있는 토큰의 값을 바꾸거나 지우는 것만 공통 기반 몫이다
+  - `color-mix`는 카테고리 색처럼 값이 실행 중에 정해지는 색을 연하게 할 때만 쓴다. 고정된 색 조합이면 토큰으로 만든다
 - 다른 기능의 코드, 노트, 명세는 읽지 않는다. 기능 동작(store, reducer, api)은 건드리지 않는다
 
 ## 진행 순서
