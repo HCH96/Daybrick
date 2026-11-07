@@ -50,7 +50,7 @@ function StageListEditor({ items, onChange }: StageListEditorProps) {
           return (
             <div key={item.key} ref={reorder.itemRef(i)} className={classes.join(" ")}>
               <span className="proj-step__grip" onPointerDown={reorder.startDrag(i)} aria-label="끌어서 순서 바꾸기">
-                <GripIcon size={14} />
+                <GripIcon size={16} />
               </span>
               <span className="proj-step__no">{i + 1}</span>
               <input
@@ -83,7 +83,7 @@ function StageListEditor({ items, onChange }: StageListEditorProps) {
         })}
       </div>
       <button type="button" className="proj-add-step" onClick={() => insertAt(items.length)}>
-        <PlusIcon size={12} />
+        <PlusIcon size={16} />
         단계 추가
       </button>
     </>

@@ -52,8 +52,8 @@ function HeatStats({ value }: { value: HeatStatsValue }) {
 
   return (
     <div className="proj-heat__stats">
-      <div className={`proj-heat__streak${value.risk ? " is-risk" : ""}`}>
-        {/* 오늘 기록 전이면 약한 불(작은 불)로 깜빡인다 (목업 heat-risk) */}
+      <div className={`proj-heat__streak${value.risk ? " is-risk" : ""}${value.running ? " is-live" : ""}`}>
+        {/* 오늘 기록 전이면 흐린 작은 불, 타이머가 돌 때만 일렁인다 (목업 heat-risk) */}
         <Campfire fire={value.risk ? "small" : fireByStreak(value.streak)} size={40} />
         <div className="proj-hs">
           <small>{value.risk ? "연속 작업 (어제까지)" : "연속 작업"}</small>

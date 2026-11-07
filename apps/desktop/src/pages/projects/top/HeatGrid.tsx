@@ -17,7 +17,7 @@ interface HeatGridProps {
 const DAY_LABELS = ["월", "", "수", "", "금", "", ""];
 /** 칸 16px + 간격 4px */
 const STEP = 20;
-const TIP_WIDTH = 210;
+const TIP_WIDTH = 208;
 const GRID_WIDTH = HEAT_WEEKS * STEP - 4;
 
 /** 오늘 칸의 진하기가 오르는 순간 번호를 올린다 (같은 날·같은 거르기일 때만, R56·D9) */

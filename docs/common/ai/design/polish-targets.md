@@ -10,7 +10,7 @@
 | 2 | today | Today | 지금 실행 | `pages/today/` | today | 완료 | 2026-11-07 |
 | 3 | calendar | Calendar | 시간 축 계획 | `pages/calendar/` | calendar | 완료 | 2026-11-07 |
 | 4 | plan | Plan | 시간 축 계획 | `pages/plan/` | plan | 완료 | 2026-11-07 |
-| 5 | projects | Projects | 쌓인 기록 | `pages/projects/` | projects | 대기 | |
+| 5 | projects | Projects | 쌓인 기록 | `pages/projects/` | projects | 완료 | 2026-11-07 |
 | 6 | applications | Applications | 모음과 관리 | `pages/applications/` | applications | 대기 | |
 | 7 | job-search | Job Search | 모음과 관리 | `pages/job-search/` | job-search | 대기 | |
 | 8 | settings | Settings | 가끔 들르는 화면 | `pages/settings/` | server-setup | 대기 | |

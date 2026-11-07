@@ -2,39 +2,33 @@
 .proj-list-area {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-12);
 }
 
 .proj-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-12);
 }
 
 /* ===== 카드 (.pcard) ===== */
 .proj-card {
   position: relative;
   display: grid;
-  grid-template-columns: 18px minmax(160px, 260px) minmax(120px, 1fr) 150px 130px 28px;
+  grid-template-columns: 16px minmax(160px, 260px) minmax(120px, 1fr) 152px 128px 28px;
   align-items: center;
-  gap: 14px;
+  gap: var(--space-16);
   height: 72px;
-  padding: 0 14px 0 6px;
+  padding: 0 var(--space-16) 0 var(--space-8);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  /* 프로젝트 색 띠: 앱 공통 왼쪽 3px 띠 */
+  box-shadow: inset 3px 0 0 var(--c);
   cursor: grab;
-}
-
-.proj-card::before {
-  content: "";
-  position: absolute;
-  left: -1px;
-  top: 12px;
-  bottom: 12px;
-  width: 4px;
-  border-radius: 0 3px 3px 0;
-  background: var(--c);
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
 }
 
 .proj-card:hover,
@@ -48,6 +42,7 @@
   place-items: center;
   color: var(--faint);
   opacity: 0.5;
+  transition: opacity var(--dur-fast) var(--ease);
 }
 
 .proj-card:hover .proj-card__grip {
@@ -65,10 +60,11 @@
   left: 0;
   right: 0;
   height: 2px;
-  border-radius: 1px;
+  border-radius: var(--space-2);
   background: var(--accent);
 }
 
+/* 카드 사이 12px 틈의 가운데 */
 .proj-card--drop-before::after {
   top: -7px;
 }
@@ -81,6 +77,7 @@
 .proj-card--finished {
   opacity: 0.55;
   cursor: default;
+  transition: opacity var(--dur-fast) var(--ease);
 }
 
 .proj-card--finished:hover {
@@ -90,7 +87,7 @@
 .proj-card__name {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: var(--space-4);
   min-width: 0;
 }
 
@@ -102,24 +99,30 @@
 }
 
 .proj-card__row b {
-  font-size: 16px;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-semibold);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+/* 종류 표시: 상태 배지와 같은 틀 (높이 20, 모서리 6, 연한 바탕) */
 .proj-kind-chip {
   flex-shrink: 0;
-  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 var(--space-8);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
   color: var(--muted);
   background: var(--neutral-soft);
-  border-radius: 5px;
-  padding: 1px 7px;
-  font-weight: 600;
+  border-radius: var(--radius-sm);
 }
 
 .proj-card__cur {
-  font-size: 12px;
+  font-size: var(--fs-12);
+  font-variant-numeric: tabular-nums;
   color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
@@ -129,13 +132,13 @@
 .proj-card__cur em {
   font-style: normal;
   color: var(--c);
-  font-weight: 600;
+  font-weight: var(--fw-medium);
 }
 
 .proj-card__last {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .proj-card__last div,
@@ -147,13 +150,14 @@
 
 .proj-card__last small,
 .proj-card__total small {
-  font-size: 11px;
+  font-size: var(--fs-11);
   color: var(--faint);
 }
 
 .proj-card__last span {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
@@ -163,8 +167,8 @@
 }
 
 .proj-card__total span {
-  font-size: 15px;
-  font-weight: 700;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-medium);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -175,23 +179,26 @@
   display: inline-grid;
   place-items: center;
   border: 0;
-  border-radius: 7px;
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--muted);
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 .proj-card__more:hover,
 .proj-card__more[aria-expanded="true"] {
-  background: var(--surface);
+  background: var(--hover);
   color: var(--text);
 }
 
 /* ===== 작은 진행 트랙 (.track.mini) ===== */
 .proj-mini {
   position: relative;
-  height: 30px;
-  margin: 0 10px 0 4px;
+  height: 32px;
+  margin: 0 var(--space-12) 0 var(--space-4);
 }
 
 .proj-mini__rail {
@@ -220,11 +227,11 @@
 
 .proj-mini__pin {
   position: absolute;
-  top: 17px;
-  width: 10px;
-  height: 10px;
+  top: 16px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  transform: translateX(-5px);
+  transform: translateX(-6px);
   background: var(--bg);
   border: 2px solid var(--border-2);
   box-sizing: border-box;
@@ -240,7 +247,7 @@
   top: -2px;
   left: calc(var(--p) * 100%);
   width: 20px;
-  height: 21px;
+  height: 20px;
   transform: translateX(-10px);
   color: var(--c);
 }
@@ -262,7 +269,7 @@
 
 /* ===== 카드 … 메뉴, 이름·색 바꾸기 ===== */
 .proj-menu {
-  padding: 6px;
+  padding: var(--space-4);
 }
 
 .proj-menu__row.pop-row--danger svg {
@@ -271,19 +278,19 @@
 
 .proj-edit {
   background: var(--popup);
-  border-radius: 12px;
 }
 
 .proj-edit__body {
-  padding: 14px;
+  padding: var(--space-16);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-12);
 }
 
 .proj-edit__title {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-semibold);
 }
 
 /* ===== 만들기 버튼, 빈 안내, 완료 묶음 ===== */
@@ -291,15 +298,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-8);
   height: 44px;
-  border: 1.5px dashed var(--border-2);
+  border: 1px dashed var(--border-2);
   border-radius: var(--radius);
   background: transparent;
   color: var(--muted);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
 }
 
 .proj-add:hover {
@@ -308,28 +318,31 @@
 }
 
 .proj-empty {
-  padding: 28px 16px;
+  padding: var(--space-28) var(--space-16);
   text-align: center;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .proj-done {
   align-self: flex-start;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 6px;
+  gap: var(--space-8);
+  height: var(--row-h-dense);
+  padding: 0 var(--space-8);
   border: 0;
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--muted);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
 }
 
 .proj-done svg {
-  transition: transform 0.12s ease;
+  transition: transform var(--dur-fast) var(--ease);
 }
 
 .proj-done--open svg {
@@ -342,5 +355,6 @@
 
 .proj-done__cnt {
   color: var(--faint);
-  font-weight: 400;
+  font-weight: var(--fw-regular);
+  font-variant-numeric: tabular-nums;
 }

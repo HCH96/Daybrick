@@ -123,13 +123,13 @@ function EditStagesDialog({ project, onClose }: EditStagesDialogProps) {
           <div className="proj-kinds">
             <div className="proj-kind proj-kind--on proj-kind--fixed">
               <b>
-                {weekly ? <DateIcon size={13} /> : <FlagIcon size={13} />}
+                {weekly ? <DateIcon size={16} /> : <FlagIcon size={16} />}
                 {weekly ? "주차형" : "단계형"}
               </b>
               <span>{project.name}</span>
             </div>
           </div>
-          <span className="proj-hint">만든 뒤에는 종류를 바꿀 수 없어요.</span>
+          <span className="proj-hint">만든 뒤에는 종류를 바꿀 수 없어요</span>
         </div>
         {weekly ? (
           <WeeklyEditor
@@ -152,7 +152,7 @@ function EditStagesDialog({ project, onClose }: EditStagesDialogProps) {
           <div className="proj-field">
             <span className="proj-field__label">단계 (최소 1개)</span>
             <StageListEditor items={drafts} onChange={setDrafts} />
-            {emptyOld && <span className="proj-hint proj-hint--warn">있던 단계의 이름은 비울 수 없어요.</span>}
+            {emptyOld && <span className="proj-hint proj-hint--warn">있던 단계의 이름은 비울 수 없어요</span>}
           </div>
         )}
         <div className="proj-create__foot">

@@ -71,7 +71,7 @@ const StageColumn = forwardRef<HTMLElement, StageColumnProps>(function StageColu
           aria-label={`${label}에 태스크 추가`}
           onClick={() => setAdding(true)}
         >
-          <PlusIcon size={14} />
+          <PlusIcon size={16} />
         </button>
       </header>
 
@@ -79,7 +79,7 @@ const StageColumn = forwardRef<HTMLElement, StageColumnProps>(function StageColu
         {tasks.length === 0 && !adding && (
           <div className="proj-stage__empty">
             <span>아직 태스크가 없어요</span>
-            <small>+ 를 눌러 추가</small>
+            <small>+를 눌러 추가</small>
           </div>
         )}
         {open.map(row)}

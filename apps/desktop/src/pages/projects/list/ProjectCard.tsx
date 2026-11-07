@@ -73,7 +73,7 @@ function ProjectCard({
       }}
     >
       <span className="proj-card__grip" aria-hidden="true">
-        {!finished && <GripIcon size={14} />}
+        {!finished && <GripIcon size={16} />}
       </span>
       <div className="proj-card__name">
         <div className="proj-card__row">
@@ -101,7 +101,7 @@ function ProjectCard({
         aria-expanded={menuAnchor !== null}
         onClick={(e) => setMenuAnchor(menuAnchor ? null : e.currentTarget)}
       >
-        <DotsIcon size={15} />
+        <DotsIcon size={16} />
       </button>
       {menuAnchor && (
         <CardMenu anchor={menuAnchor} project={project} taskCount={projectTaskCount} onClose={() => setMenuAnchor(null)} />

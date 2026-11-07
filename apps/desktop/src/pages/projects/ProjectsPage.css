@@ -3,34 +3,35 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-20);
 }
 
 .projects-page__head {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  align-items: baseline;
+  gap: var(--space-12);
 }
 
 .projects-page__title {
   margin: 0;
-  font-size: 26px;
-  font-weight: 800;
+  font-size: var(--fs-26);
+  font-weight: var(--fw-semibold);
   letter-spacing: -0.3px;
   white-space: nowrap;
 }
 
 .projects-page__sub {
-  font-size: 14px;
+  font-size: var(--fs-13);
   color: var(--muted);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 .projects-page__notice {
-  padding: 48px 16px;
+  padding: 48px var(--space-16);
   text-align: center;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .projects-page__notice--error {
@@ -41,18 +42,18 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-bottom: 24px;
+  padding-bottom: var(--space-24);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-20);
 }
 
 /* 목록 윗줄 (R2): 왼쪽 60% 잔디, 오른쪽 40% 버블. 판 틀은 잔디·버블이 같이 쓴다 */
 .proj-top {
   display: grid;
   grid-template-columns: 3fr 2fr;
-  gap: 16px;
-  height: 262px;
+  gap: var(--space-20);
+  height: 264px;
   flex-shrink: 0;
 }
 
@@ -60,39 +61,41 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 14px 18px;
+  padding: var(--space-16) var(--space-20);
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-12);
 }
 
 .proj-panel__head {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: var(--space-8);
   white-space: nowrap;
 }
 
 .proj-panel__head > b {
-  font-size: 15px;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-semibold);
 }
 
 .proj-panel__head > span {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--faint);
+  font-variant-numeric: tabular-nums;
 }
 
 .proj-panel__right {
   margin-left: auto;
 }
 
-/* 실제 타이머 진행 중 표시 (R44): 빨간 점 6px, 1.4초 깜빡임 */
+/* 실제 타이머 진행 중 표시 (R44): 보라 점 8px, 타이머가 도는 동안만 깜빡인다 */
 .proj-panel__head > .proj-live {
   align-self: center;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: var(--space-8);
   color: var(--muted);
   min-width: 0;
   overflow: hidden;
@@ -102,22 +105,22 @@
 .proj-live::before {
   content: "";
   flex-shrink: 0;
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: #ff5f5f;
-  animation: proj-live-blink 1.4s infinite;
+  background: var(--accent);
+  animation: proj-live-blink 1.4s var(--ease) infinite;
 }
 
 .proj-live b {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--text);
-  font-weight: 600;
+  font-weight: var(--fw-medium);
 }
 
 @keyframes proj-live-blink {
   50% {
-    opacity: 0.2;
+    opacity: 0.3;
   }
 }
 

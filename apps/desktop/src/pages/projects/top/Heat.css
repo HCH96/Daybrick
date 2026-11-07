@@ -4,22 +4,22 @@
   min-height: 0;
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 30px;
+  gap: var(--space-32);
   align-items: center;
 }
 
 .proj-heat__box {
   display: grid;
-  grid-template-columns: 22px auto;
-  grid-template-rows: 18px auto;
+  grid-template-columns: 24px auto;
+  grid-template-rows: 20px auto;
 }
 
 .proj-heat__months {
   grid-column: 2;
   display: grid;
   grid-template-columns: repeat(16, 16px);
-  column-gap: 4px;
-  font-size: 11px;
+  column-gap: var(--space-4);
+  font-size: var(--fs-11);
   color: var(--faint);
 }
 
@@ -32,13 +32,13 @@
   grid-column: 1;
   display: grid;
   grid-template-rows: repeat(7, 16px);
-  row-gap: 4px;
-  font-size: 10px;
+  row-gap: var(--space-4);
+  font-size: var(--fs-11);
   line-height: 16px;
   color: var(--faint);
 }
 
-/* 칸 16px·간격 4px·모서리 4px, 강조색 28/52/78/100% */
+/* 칸 16px·간격 4px·모서리 4px, 강조색 28/52/78/100% (잔디는 보라 4단계 유지, design-direction 쌓인 기록) */
 .proj-heat__grid {
   --hc: var(--accent);
   grid-row: 2;
@@ -48,12 +48,13 @@
   grid-template-rows: repeat(7, 16px);
   grid-auto-flow: column;
   grid-auto-columns: 16px;
-  gap: 4px;
+  gap: var(--space-4);
 }
 
 .proj-heat__cell {
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   background: var(--surface-2);
+  transition: background-color var(--dur-enter) var(--ease);
 }
 
 .proj-heat__cell.l1 {
@@ -82,40 +83,33 @@
   outline-offset: 1px;
 }
 
-/* 타이머 중: 오늘 칸 숨쉬기 2.4초 (R56) */
+/* 타이머 중: 오늘 칸 테두리가 2.4초마다 옅어졌다 돌아온다 (R56). 빛 번짐은 쓰지 않는다 */
 .proj-heat__grid.is-ticking .proj-heat__cell.is-today {
-  animation: proj-heat-breathe 2.4s ease-in-out infinite;
+  animation: proj-heat-breathe 2.4s var(--ease) infinite;
 }
 
-/* 진하기가 오르는 순간 1.5배 → 0.9 → 1.06 → 1 (약 0.7초) */
+/* 진하기가 오르는 순간 한 번 살짝 커졌다 돌아온다 */
 .proj-heat__cell.is-bump {
-  animation: proj-heat-bump 0.7s ease-out;
+  animation: proj-heat-bump 320ms var(--ease);
 }
 
 .proj-heat__grid.is-ticking .proj-heat__cell.is-today.is-bump {
-  animation: proj-heat-bump 0.7s ease-out, proj-heat-breathe 2.4s ease-in-out 0.7s infinite;
+  animation:
+    proj-heat-bump 320ms var(--ease),
+    proj-heat-breathe 2.4s var(--ease) 320ms infinite;
 }
 
 @keyframes proj-heat-breathe {
   50% {
-    box-shadow: 0 0 10px 3px color-mix(in srgb, var(--hc) 70%, transparent);
+    outline-color: color-mix(in srgb, var(--text) 25%, transparent);
   }
 }
 
 @keyframes proj-heat-bump {
-  0% {
-    transform: scale(1);
+  from {
+    transform: scale(1.25);
   }
-  30% {
-    transform: scale(1.5);
-  }
-  55% {
-    transform: scale(0.9);
-  }
-  78% {
-    transform: scale(1.06);
-  }
-  100% {
+  to {
     transform: scale(1);
   }
 }
@@ -124,15 +118,15 @@
 .proj-heat__legend {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 11px;
+  gap: var(--space-4);
+  font-size: var(--fs-11);
   color: var(--faint);
 }
 
 .proj-heat__legend i {
-  width: 11px;
-  height: 11px;
-  border-radius: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-xs);
   background: var(--surface-2);
 }
 
@@ -152,18 +146,19 @@
   background: var(--accent);
 }
 
-/* 프로젝트로 거를 때 머리 칩 (R58) */
+/* 프로젝트로 거를 때 머리 칩 (R58): 상태 배지와 같은 틀 */
 .proj-panel__head > .proj-heat__chip {
   align-self: center;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 600;
+  gap: var(--space-8);
+  height: 22px;
+  padding: 0 var(--space-8);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   color: var(--c);
   background: color-mix(in srgb, var(--c) 16%, transparent);
-  border-radius: 99px;
-  padding: 1px 10px;
+  border-radius: var(--radius-sm);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -177,6 +172,11 @@
   flex-shrink: 0;
 }
 
+.proj-heat__chip .proj-heat__dot {
+  width: 6px;
+  height: 6px;
+}
+
 /* 칸 말풍선 (R59) */
 .proj-heat__tip-pos {
   position: absolute;
@@ -185,33 +185,36 @@
 }
 
 .proj-heat__tip {
-  width: 210px;
-  padding: 10px 12px;
+  width: 208px;
+  padding: var(--space-12) var(--space-16);
   background: var(--popup);
   border: 1px solid var(--border-2);
-  border-radius: 10px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pop);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-8);
 }
 
 .proj-heat__tip b {
-  font-size: 12px;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-semibold);
 }
 
 .proj-heat__tip b span {
   color: var(--muted);
-  font-weight: 400;
-  margin-left: 4px;
+  font-weight: var(--fw-regular);
+  font-variant-numeric: tabular-nums;
+  margin-left: var(--space-4);
 }
 
 .proj-heat__tip-row {
   display: grid;
   grid-template-columns: 8px 1fr auto;
   align-items: center;
-  gap: 7px;
-  font-size: 12px;
+  column-gap: var(--space-8);
+  row-gap: var(--space-4);
+  font-size: var(--fs-12);
 }
 
 .proj-heat__tip-name {
@@ -230,14 +233,14 @@
 .proj-heat__tip-bar {
   grid-column: 2 / 4;
   height: 4px;
-  border-radius: 2px;
+  border-radius: var(--space-2);
   background: var(--surface-2);
 }
 
 .proj-heat__tip-bar i {
   display: block;
   height: 100%;
-  border-radius: 2px;
+  border-radius: var(--space-2);
   background: var(--c);
 }
 
@@ -245,72 +248,68 @@
 .proj-heat__stats {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-16);
   min-width: 0;
 }
 
 .proj-hs small {
   display: block;
-  font-size: 11px;
+  font-size: var(--fs-11);
   color: var(--faint);
 }
 
 .proj-hs b {
-  font-size: 22px;
+  font-size: var(--fs-20);
+  font-weight: var(--fw-semibold);
   font-variant-numeric: tabular-nums;
 }
 
 .proj-hs b em {
   font-style: normal;
-  font-size: 13px;
+  font-size: var(--fs-13);
   color: var(--muted);
-  font-weight: 600;
-  margin-left: 2px;
+  font-weight: var(--fw-medium);
+  margin-left: var(--space-2);
 }
 
 .proj-hs__sub {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .proj-hs > .proj-live {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  margin-left: 8px;
-  font-size: 12px;
+  gap: var(--space-8);
+  margin-left: var(--space-8);
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
 .proj-heat__streak {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-12);
 }
 
-/* 모닥불 1.8초 일렁임, 오늘 기록 전이면 1.1초 약한 깜빡임 (R57) */
-.proj-heat__streak .proj-fire svg {
-  animation: proj-heat-flicker 1.8s ease-in-out infinite;
+/* 모닥불 일렁임은 타이머가 도는 동안만 (반복 움직임 규칙). 오늘 기록 전이면 흐린 작은 불로 멈춰 있다 (R57) */
+.proj-heat__streak.is-live .proj-fire svg {
+  animation: proj-heat-flicker 1.8s var(--ease) infinite;
   transform-origin: 50% 85%;
 }
 
-.proj-heat__streak.is-risk .proj-fire svg {
-  animation: proj-heat-weak 1.1s steps(2) infinite;
+.proj-heat__streak.is-risk .proj-fire {
+  opacity: 0.6;
 }
 
 .proj-heat__streak.is-risk .proj-hs__sub {
   color: var(--amber);
-  font-weight: 600;
+  font-weight: var(--fw-medium);
 }
 
 @keyframes proj-heat-flicker {
   50% {
     transform: scale(1.05, 0.96);
-  }
-}
-
-@keyframes proj-heat-weak {
-  50% {
-    opacity: 0.45;
   }
 }

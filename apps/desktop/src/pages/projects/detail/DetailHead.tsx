@@ -33,7 +33,7 @@ function DetailHead({ project, tasks, onEditStages }: DetailHeadProps) {
         aria-label="뒤로"
         onClick={() => (canGoBack ? goBack() : toList())}
       >
-        <ChevronLeftIcon size={18} />
+        <ChevronLeftIcon size={16} />
       </button>
       <span className="proj-detail__dot" aria-hidden="true" />
       <h1 className="proj-detail__title" title={project.name}>
@@ -42,7 +42,7 @@ function DetailHead({ project, tasks, onEditStages }: DetailHeadProps) {
       <span className="proj-detail__kind">{weekly ? "주차형" : "단계형"}</span>
       <span className="proj-detail__spacer" />
       <button type="button" className="proj-btn proj-btn--ghost proj-detail__edit" onClick={onEditStages}>
-        {weekly ? <DateIcon size={13} /> : <FlagIcon size={13} />}
+        {weekly ? <DateIcon size={16} /> : <FlagIcon size={16} />}
         {weekly ? "주차 편집" : "단계 편집"}
       </button>
       <button
@@ -52,7 +52,7 @@ function DetailHead({ project, tasks, onEditStages }: DetailHeadProps) {
         aria-expanded={menuAnchor !== null}
         onClick={(e) => setMenuAnchor(menuAnchor ? null : e.currentTarget)}
       >
-        <DotsIcon size={15} />
+        <DotsIcon size={16} />
       </button>
       {menuAnchor && (
         <CardMenu

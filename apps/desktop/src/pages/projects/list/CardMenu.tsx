@@ -54,7 +54,7 @@ function CardMenu({ anchor, project, taskCount, onClose, onDeleted }: CardMenuPr
         이름·색 바꾸기
       </button>
       <button type="button" className="pop-row proj-menu__row" onClick={() => setPhase("stages")}>
-        {project.kind === "weekly" ? <DateIcon size={13} /> : <FlagIcon size={13} />}
+        {project.kind === "weekly" ? <DateIcon size={16} /> : <FlagIcon size={16} />}
         {project.kind === "weekly" ? "주차 편집" : "단계 편집"}
       </button>
       <div className="pop-sep" />

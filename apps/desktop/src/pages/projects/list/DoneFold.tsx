@@ -23,7 +23,7 @@ function DoneFold({ count, open, onToggle, children }: DoneFoldProps) {
         aria-expanded={open}
         onClick={onToggle}
       >
-        <ChevronRightIcon size={13} />
+        <ChevronRightIcon size={12} />
         완료 <span className="proj-done__cnt">{count}개</span>
       </button>
       {open && <div className="proj-list">{children}</div>}

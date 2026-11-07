@@ -62,7 +62,7 @@ function ProjectList({ data, clock }: ProjectListProps) {
       )}
       {data.projects.length === 0 && <div className="proj-empty">아직 프로젝트가 없어요. 아래에서 첫 프로젝트를 만들어 보세요.</div>}
       <button type="button" className="proj-add" onClick={() => setCreating(true)}>
-        <PlusIcon size={14} />
+        <PlusIcon size={16} />
         프로젝트 만들기
       </button>
       <DoneFold count={done.length} open={data.view.projectsDoneOpen} onToggle={() => setProjectsDoneOpen(!data.view.projectsDoneOpen)}>

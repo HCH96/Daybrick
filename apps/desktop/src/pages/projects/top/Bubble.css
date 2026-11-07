@@ -22,21 +22,24 @@
   cursor: grabbing;
 }
 
+/* 원 안 퍼센트: 밝은 프로젝트 색 위라 어두운 글자 */
 .proj-bubble__pct {
-  fill: #fff;
-  font-weight: 500;
+  fill: var(--on-accent);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
 }
 
+/* 순서가 바뀌면 줄이 제자리로 옮겨 간다 (위치를 알려주는 움직임) */
 .proj-bubble__row {
   transition:
-    transform 600ms cubic-bezier(0.645, 0.045, 0.355, 1),
-    opacity 150ms;
+    transform 600ms var(--ease),
+    opacity var(--dur-fast) var(--ease);
 }
 
-/* 서로 강조 (R58–R59): 흐림 0.3, 고른 원 흰 테두리, 그날 한 원 테두리 1.4초 반짝임 */
+/* 서로 강조 (R58–R59): 흐림 0.3, 고른 원 밝은 테두리, 그날 작업한 원 프로젝트 색 테두리 */
 .proj-bubble__row.is-dim,
 .proj-bubble__node.is-dim > * {
   opacity: 0.3;
@@ -54,35 +57,29 @@
 }
 
 .proj-bubble__halo.is-ring {
-  stroke: #fff;
-  stroke-width: 2.5;
+  stroke: var(--text);
+  stroke-width: 2;
   opacity: 1;
 }
 
 .proj-bubble__halo.is-glow {
-  stroke-width: 3;
+  stroke-width: 2;
   opacity: 1;
-  animation: proj-bubble-glow 1.4s ease-in-out infinite;
-}
-
-@keyframes proj-bubble-glow {
-  50% {
-    opacity: 0.15;
-  }
 }
 
 .proj-bubble__name {
-  fill: var(--text);
-  font-size: 12px;
+  fill: var(--muted);
+  font-size: var(--fs-12);
 }
 
 .proj-bubble__name--on {
-  font-weight: 700;
+  fill: var(--text);
+  font-weight: var(--fw-medium);
 }
 
 .proj-bubble__time {
-  fill: var(--muted);
-  font-size: 11px;
+  fill: var(--faint);
+  font-size: var(--fs-11);
   text-anchor: end;
   font-variant-numeric: tabular-nums;
 }
@@ -93,20 +90,21 @@
   display: grid;
   place-content: center;
   justify-items: center;
-  gap: 6px;
+  gap: var(--space-4);
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
+  text-align: center;
 }
 
 .proj-bubble__ring {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  border: 2px dashed var(--border-2);
-  margin-bottom: 4px;
+  border: 1px dashed var(--border-2);
+  margin-bottom: var(--space-8);
 }
 
 .proj-bubble__empty small {
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-12);
 }

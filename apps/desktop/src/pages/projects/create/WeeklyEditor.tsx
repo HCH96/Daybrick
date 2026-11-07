@@ -73,7 +73,7 @@ function WeeklyEditor({ thisWeek, startWeek, weekCount, weekNames, onStartWeek, 
               disabled={weekCount >= MAX_WEEKS}
               onClick={() => onWeekCount(weekCount + 1)}
             >
-              <PlusIcon size={12} />
+              <PlusIcon size={16} />
             </button>
           </div>
         </div>

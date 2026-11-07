@@ -77,13 +77,13 @@ function CreateProjectDialog({ onClose }: CreateProjectDialogProps) {
           <span className="proj-field__label">종류</span>
           <div className="proj-kinds" role="radiogroup" aria-label="종류">
             <KindOption on={kind === "stage"} onPick={() => setKind("stage")} title="단계형" desc="단계 이름을 순서대로 적기">
-              <FlagIcon size={13} />
+              <FlagIcon size={16} />
             </KindOption>
             <KindOption on={kind === "weekly"} onPick={() => setKind("weekly")} title="주차형" desc="시작 주·주 수로 자동 생성">
-              <DateIcon size={13} />
+              <DateIcon size={16} />
             </KindOption>
           </div>
-          <span className="proj-hint">만든 뒤에는 종류를 바꿀 수 없어요.</span>
+          <span className="proj-hint">만든 뒤에는 종류를 바꿀 수 없어요</span>
         </div>
         {kind === "stage" ? (
           <div className="proj-field">

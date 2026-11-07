@@ -56,14 +56,17 @@ function FlagTrack({ project, tasks, currentIndex }: FlagTrackProps) {
       <span className="proj-track__finish" aria-hidden="true">
         <FinishArt />
       </span>
+      {/* 트랙 너비만 한 길을 transform으로 옮겨 캐릭터를 달리게 한다 (위치 속성은 애니메이션하지 않음) */}
       <span
-        className={runnerClasses.join(" ")}
+        className="proj-track__lane"
         aria-hidden="true"
         onTransitionEnd={(e) => {
-          if (e.propertyName === "left") onArrive();
+          if (e.target === e.currentTarget && e.propertyName === "transform") onArrive();
         }}
       >
-        <RunnerArt />
+        <span className={runnerClasses.join(" ")}>
+          <RunnerArt />
+        </span>
       </span>
     </div>
   );

@@ -6,53 +6,55 @@
 }
 
 .proj-create__body {
-  padding: 20px 22px;
+  padding: var(--space-24);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-20);
   overflow-y: auto;
 }
 
 .proj-create__title {
   margin: 0;
-  font-size: 17px;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-semibold);
 }
 
 .proj-create__foot {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
-  padding-top: 4px;
+  gap: var(--space-8);
+  padding-top: var(--space-4);
 }
 
 /* ===== 칸 ===== */
 .proj-field {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: var(--space-8);
   min-width: 0;
 }
 
 .proj-field__label {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
-  font-weight: 600;
+  font-weight: var(--fw-medium);
 }
 
 .proj-input {
   height: 36px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 12px;
+  gap: var(--space-8);
+  padding: 0 var(--space-12);
   background: var(--bg);
   border: 1px solid var(--border-2);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   color: var(--text);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-13);
   outline: none;
   min-width: 0;
+  transition: border-color var(--dur-fast) var(--ease);
 }
 
 .proj-input:focus {
@@ -64,26 +66,28 @@
 }
 
 .proj-hint {
-  font-size: 11px;
+  font-size: var(--fs-11);
   color: var(--faint);
-  margin-top: -2px;
 }
 
 /* ===== 버튼 ===== */
 .proj-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-8);
   height: 32px;
-  padding: 0 14px;
-  border-radius: 8px;
+  padding: 0 var(--space-16);
+  border-radius: var(--radius-control);
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 .proj-btn--ghost {
@@ -93,6 +97,7 @@
 }
 
 .proj-btn--ghost:hover {
+  background: var(--hover);
   color: var(--text);
 }
 
@@ -102,32 +107,40 @@
   color: var(--on-accent);
 }
 
+/* 주요 버튼 올림: 한 단계 밝은 보라 (Plan과 같게) */
 .proj-btn--primary:hover {
-  filter: brightness(1.08);
+  background: var(--violet);
+  border-color: var(--violet);
 }
 
 .proj-btn:disabled {
   opacity: 0.45;
   cursor: default;
-  filter: none;
+}
+
+.proj-btn--primary:disabled:hover {
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 .proj-icon-btn {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   display: inline-grid;
   place-items: center;
   flex-shrink: 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--faint);
-  font-size: 15px;
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 .proj-icon-btn:hover:not(:disabled) {
-  background: var(--surface-2);
+  background: var(--hover);
   color: var(--text);
 }
 
@@ -140,12 +153,12 @@
 .proj-color {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-12);
 }
 
 .proj-color__swatches {
   display: flex;
-  gap: 8px;
+  gap: var(--space-8);
   align-items: center;
   flex-wrap: wrap;
 }
@@ -167,15 +180,17 @@
 .proj-color__more {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-left: 4px;
-  padding: 3px 6px;
+  gap: var(--space-8);
+  height: 24px;
+  margin-left: var(--space-4);
+  padding: 0 var(--space-8);
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--fs-12);
   cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
 }
 
 .proj-color__more:hover,
@@ -187,39 +202,43 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  box-shadow: 0 0 0 2px var(--popup), 0 0 0 3px var(--text);
+  box-shadow: 0 0 0 2px var(--popup), 0 0 0 4px var(--text);
 }
 
 /* ===== 종류 ===== */
 .proj-kinds {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .proj-kind {
   border: 1px solid var(--border-2);
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: var(--radius-control);
+  padding: var(--space-12);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 2px;
+  gap: var(--space-4);
   background: transparent;
   color: var(--text);
   text-align: left;
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
 }
 
 .proj-kind b {
   display: flex;
   align-items: center;
-  gap: 7px;
-  font-size: 13px;
+  gap: var(--space-8);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
 }
 
 .proj-kind span {
-  font-size: 11px;
+  font-size: var(--fs-11);
   color: var(--muted);
 }
 
@@ -236,7 +255,7 @@
 .proj-steps {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-8);
 }
 
 .proj-steps--weeks {
@@ -248,7 +267,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .proj-step__grip {
@@ -259,8 +278,8 @@
 }
 
 .proj-step__no {
-  width: 18px;
-  font-size: 12px;
+  width: 20px;
+  font-size: var(--fs-12);
   color: var(--faint);
   text-align: right;
   font-variant-numeric: tabular-nums;
@@ -273,7 +292,7 @@
 
 .proj-step__when {
   width: 92px;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
@@ -289,30 +308,35 @@
   left: 0;
   right: 0;
   height: 2px;
-  border-radius: 1px;
+  border-radius: var(--space-2);
   background: var(--accent);
 }
 
+/* 줄 사이 8px 틈의 가운데 */
 .proj-step--drop-before::before {
-  top: -4px;
+  top: -5px;
 }
 
 .proj-step--drop-after::after {
-  bottom: -4px;
+  bottom: -5px;
 }
 
+/* 단계 추가: + 를 단계 번호 칸에 맞춘다 (손잡이 16 + 간격 8) */
 .proj-add-step {
   align-self: flex-start;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 26px;
+  gap: var(--space-8);
+  height: 28px;
+  padding: 0 var(--space-8) 0 var(--space-24);
   border: 0;
+  border-radius: var(--radius-control);
   background: transparent;
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
 }
 
 .proj-add-step:hover {
@@ -322,8 +346,8 @@
 /* ===== 주차형 시작 주·주 수 ===== */
 .proj-two {
   display: grid;
-  grid-template-columns: 1fr 130px;
-  gap: 12px;
+  grid-template-columns: 1fr 128px;
+  gap: var(--space-12);
 }
 
 .proj-select {
@@ -332,10 +356,16 @@
 
 .proj-stepper {
   justify-content: space-between;
-  padding: 0 4px;
+  padding: 0 var(--space-4);
+}
+
+/* − 는 글자라 아이콘(16)과 같은 크기로 */
+.proj-stepper .proj-icon-btn {
+  font-size: var(--fs-16);
 }
 
 .proj-stepper b {
-  font-size: 14px;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
   font-variant-numeric: tabular-nums;
 }
