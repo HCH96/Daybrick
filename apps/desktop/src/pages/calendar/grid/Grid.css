@@ -18,13 +18,13 @@
   align-items: center;
   flex-shrink: 0;
   border-bottom: 1px solid var(--border);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   color: var(--faint);
 }
 
 .cal-dow span {
-  padding-left: 10px;
+  padding-left: var(--space-8);
 }
 
 /* 주 줄 묶음(page)을 겹쳐 놓는 상자. 줄 수(5~6)는 page의 style로 정한다 */
@@ -46,8 +46,8 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: 28px repeat(4, 21px);
-  row-gap: 3px;
+  grid-template-rows: 28px repeat(4, 20px);
+  row-gap: var(--space-4);
   align-content: start;
   min-height: 0;
   border-top: 1px solid var(--border);
@@ -79,25 +79,28 @@
   border-left: none;
 }
 
+/* 지난 날짜는 한 단계, 다른 달은 두 단계 어두운 바탕 */
 :where(.cal-grid) .cal-day--past {
-  background: rgba(0, 0, 0, 0.14); /* 지난 날짜: 살짝 흐림 */
+  background: var(--sidebar);
 }
 
 :where(.cal-grid) .cal-day--other {
-  background: rgba(0, 0, 0, 0.3); /* 다른 달: 더 흐림 */
+  background: var(--bg);
 }
 
+/* 오늘: 아주 옅은 보라 바탕 + 보라 숫자 표시 (화면의 보라는 여기 하나) */
 :where(.cal-grid) .cal-day--today {
-  background: rgba(166, 140, 255, 0.07);
-  box-shadow: inset 0 0 0 1.5px rgba(166, 140, 255, 0.55);
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
 }
 
 :where(.cal-grid) .cal-day__num {
   display: block;
   height: 28px;
-  padding: 5px 10px 0;
-  font-size: 13px;
-  font-weight: 600;
+  padding: var(--space-4) var(--space-8) 0;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: 20px;
   color: var(--text);
   white-space: nowrap;
 }
@@ -108,34 +111,34 @@
 
 :where(.cal-grid) .cal-day--other .cal-day__num {
   color: var(--faint);
-  font-weight: 500;
 }
 
 :where(.cal-grid) .cal-day--today .cal-day__num b {
-  display: inline-grid;
-  place-items: center;
-  min-width: 22px;
-  height: 22px;
-  margin: -2px 0 0 -5px;
-  border-radius: 99px;
+  display: inline-block;
+  min-width: 20px;
+  height: 20px;
+  margin-left: calc(-1 * var(--space-4));
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-sm);
   background: var(--accent);
   color: var(--on-accent);
-  font-weight: 800;
+  font-weight: var(--fw-semibold);
+  text-align: center;
 }
 
-/* ===== 달 넘김 (R41): 가로 48px + 투명도, 220ms ease-out ===== */
+/* ===== 달 넘김 (R41): 가로 48px + 투명도, 200ms ===== */
 .cal-page--in-next {
-  animation: cal-in-next 220ms ease-out;
+  animation: cal-in-next var(--dur-enter) var(--ease);
 }
 .cal-page--in-prev {
-  animation: cal-in-prev 220ms ease-out;
+  animation: cal-in-prev var(--dur-enter) var(--ease);
 }
 .cal-page--out-next {
-  animation: cal-out-next 220ms ease-out forwards;
+  animation: cal-out-next var(--dur-enter) var(--ease) forwards;
   pointer-events: none;
 }
 .cal-page--out-prev {
-  animation: cal-out-prev 220ms ease-out forwards;
+  animation: cal-out-prev var(--dur-enter) var(--ease) forwards;
   pointer-events: none;
 }
 
@@ -161,18 +164,18 @@
   display: inline-block;
 }
 .cal-flip-text--next {
-  animation: cal-text-next 220ms ease-out;
+  animation: cal-text-next var(--dur-enter) var(--ease);
 }
 .cal-flip-text--prev {
-  animation: cal-text-prev 220ms ease-out;
+  animation: cal-text-prev var(--dur-enter) var(--ease);
 }
 
 @keyframes cal-text-next {
-  from { transform: translateX(30px); opacity: 0; }
+  from { transform: translateX(32px); opacity: 0; }
   to { transform: none; opacity: 1; }
 }
 @keyframes cal-text-prev {
-  from { transform: translateX(-30px); opacity: 0; }
+  from { transform: translateX(-32px); opacity: 0; }
   to { transform: none; opacity: 1; }
 }
 
@@ -188,22 +191,24 @@
   }
 }
 
-/* ===== +N (넘친 날의 4번째 줄, R5·D13): 굵은 회색 글자, 올리거나 열면 회색 바탕 ===== */
+/* ===== +N (넘친 날의 4번째 줄, R5·D13): 회색 글자, 올리거나 열면 회색 바탕 ===== */
 :where(.cal-grid) .cal-week > .cal-week-more {
   justify-self: start;
-  margin: 0 5px;
-  padding: 0 7px;
-  height: 21px;
+  margin: 0 var(--space-4);
+  padding: 0 var(--space-8);
+  height: 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: var(--radius-xs);
   background: none;
   font: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 21px;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: 20px;
   color: var(--muted);
   white-space: nowrap;
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
 
 :where(.cal-grid) .cal-week > .cal-week-more:hover,
@@ -219,16 +224,16 @@
 
 /* ===== +N 그날 일정 목록 (목업 part-more .day-list): 250px, 칩은 24px ===== */
 .popover.cal-day-list {
-  padding: 10px 6px 8px;
+  padding: var(--space-12) var(--space-8) var(--space-8);
   background: var(--popup);
 }
 
 .cal-day-list__head {
   display: flex;
   align-items: center;
-  padding: 0 6px 8px 8px;
-  font-size: 13px;
-  font-weight: 800;
+  padding: 0 0 var(--space-8) var(--space-8);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-semibold);
   color: var(--text);
 }
 
@@ -239,10 +244,11 @@
   height: 24px;
   margin-left: auto;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: none;
   color: var(--muted);
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
 
 .cal-day-list__close:hover {
@@ -251,7 +257,7 @@
 }
 
 .cal-day-list .cal-chip--list {
-  margin: 0 2px 4px;
+  margin: 0 0 var(--space-4);
   height: 24px;
   line-height: 24px;
 }
@@ -263,7 +269,7 @@
 .cal-day-list .cal-chip--list .cal-day-list__range {
   margin-left: auto;
   flex-shrink: 0;
-  font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: var(--fs-11);
+  font-variant-numeric: tabular-nums;
   color: var(--muted);
 }

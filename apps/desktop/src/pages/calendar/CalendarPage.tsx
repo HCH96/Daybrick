@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useNavigation } from "../../app/navigation";
-import { PAGE_LABELS } from "../../app/pageLabels";
+import { NAV_LABELS } from "../../app/pageLabels";
 import type { CalItem } from "../../features/calendar/items";
 import { useCalendar } from "../../features/calendar/store";
 import { useTodayKey } from "../../features/today/useTodayKey";
@@ -75,7 +75,7 @@ function CalendarPage() {
   return (
     <div className="calendar-page">
       <header className="calendar-page__head">
-        <h1 className="calendar-page__title">{PAGE_LABELS.calendar}</h1>
+        <h1 className="calendar-page__title">{NAV_LABELS.calendar}</h1>
         <MonthHeader
           year={view.year}
           month={view.month}

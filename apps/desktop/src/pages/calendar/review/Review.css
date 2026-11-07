@@ -11,30 +11,31 @@
   box-shadow: inset 0 0 0 1.5px var(--muted);
 }
 
+/* 달력 옆에 붙는 카드: 달력과 같은 바탕·테두리, 그림자 없음 */
 .cal-review {
   width: 380px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  background: var(--popup);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.25);
   overflow: hidden;
 }
 
 .cal-review__head {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 16px 14px 12px 20px;
+  gap: var(--space-8);
+  padding: var(--space-16) var(--space-16) var(--space-12) var(--space-20);
   border-bottom: 1px solid var(--border);
 }
 
 .cal-review__head h2 {
   margin: 0;
-  font-size: 18px;
-  font-weight: 800;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
 }
 
 .cal-review__head .cal-icon-btn {
@@ -46,13 +47,13 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 6px 20px 16px;
+  padding: var(--space-4) var(--space-20) var(--space-16);
 }
 
 .cal-review__label {
-  margin: 14px 0 8px;
-  font-size: 12px;
-  font-weight: 700;
+  margin: var(--space-24) 0 var(--space-8);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   color: var(--faint);
 }
 
@@ -60,16 +61,16 @@
 .cal-review__allday {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 10px 0 12px;
+  gap: var(--space-4);
+  padding: var(--space-12) 0;
   border-bottom: 1px dashed var(--border);
 }
 
 .cal-review__allday-lbl {
   width: 96px;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--faint);
-  line-height: 23px;
+  line-height: 20px;
 }
 
 .cal-review__allday .cal-chip {
@@ -77,18 +78,18 @@
   max-width: 100%;
 }
 
-/* 타임라인 (R44–R45): 시각 칸 + 세로선 + 항목 */
+/* 타임라인 (R44–R45): 시각 칸 96 + 점 칸 16 + 항목. 세로선은 점 칸 가운데 */
 .cal-review__tl {
   position: relative;
-  margin-top: 4px;
+  margin-top: var(--space-4);
 }
 
 .cal-review__tl::before {
   content: "";
   position: absolute;
-  left: 103px;
-  top: 8px;
-  bottom: 8px;
+  left: calc(104px - 0.5px);
+  top: var(--space-8);
+  bottom: var(--space-8);
   width: 1px;
   background: var(--border);
 }
@@ -102,21 +103,20 @@
 .cal-review__time {
   width: 96px;
   flex-shrink: 0;
-  font-family: var(--mono);
-  font-size: 12px;
+  font-size: var(--fs-12);
+  font-variant-numeric: tabular-nums;
   color: var(--muted);
 }
 
 .cal-review__time small {
   display: block;
-  font-family: inherit;
-  font-size: 10.5px;
+  font-size: var(--fs-11);
   color: var(--faint);
   line-height: 1.2;
 }
 
 .cal-review__pin {
-  width: 15px;
+  width: 16px;
   flex-shrink: 0;
   display: grid;
   place-items: center;
@@ -124,34 +124,35 @@
 }
 
 .cal-review__pin i {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--c, var(--faint));
-  box-shadow: 0 0 0 3px var(--popup);
+  box-shadow: 0 0 0 var(--space-4) var(--surface); /* 세로선을 점 둘레에서 끊는다 */
 }
 
 .cal-review__pin i.cal-review__pin-ev {
-  background: var(--popup);
+  background: var(--surface);
   border: 1.5px solid var(--muted);
 }
 
 .cal-review__item {
   flex: 1;
   min-width: 0;
-  margin-left: 10px;
+  margin-left: var(--space-12);
 }
 
-/* 타이머 기록 구간: 카테고리 색 막대 (길이는 시간과 무관, 통계 아님) */
+/* 타이머 기록 구간: 연한 카테고리 색 + 왼쪽 3px 띠 (길이는 시간과 무관, 통계 아님) */
 .cal-review__rec {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  border-radius: 7px;
+  gap: var(--space-8);
+  height: 28px;
+  padding: 0 var(--space-12);
+  border-radius: var(--radius-xs);
   background: color-mix(in srgb, var(--c) 17%, transparent);
   box-shadow: inset 3px 0 0 var(--c);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .cal-review__rec span {
@@ -163,13 +164,14 @@
 
 .cal-review__item .cal-chip {
   margin: 0;
-  height: 26px;
-  font-size: 13px;
-  line-height: 26px;
+  height: 28px;
+  padding: 0 var(--space-12);
+  font-size: var(--fs-13);
+  line-height: 28px;
 }
 
 .cal-review__item .cal-chip--personal {
-  line-height: 24px;
+  line-height: 26px;
 }
 
 /* 시각은 왼쪽 칸에 있으므로 칩 안 시각은 뺀다 */
@@ -177,19 +179,19 @@
   display: none;
 }
 
-/* 완료한 태스크 (R46) */
+/* 완료한 태스크 (R46): 한 줄 32 */
 .cal-review__done {
   display: flex;
   flex-direction: column;
-  gap: 2px;
 }
 
 .cal-review__done-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 4px;
-  font-size: 13px;
+  gap: var(--space-8);
+  height: 32px;
+  padding: 0 var(--space-4);
+  font-size: var(--fs-13);
 }
 
 .cal-review__done-row span {
@@ -202,38 +204,46 @@
 
 .cal-review__done-row em {
   font-style: normal;
-  font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--fs-11);
+  font-variant-numeric: tabular-nums;
   color: var(--faint);
 }
 
+/* 초록 동그라미 + 어두운 체크 (체크 모양은 마스크, 색은 토큰) */
 .cal-review__check {
+  position: relative;
   width: 16px;
   height: 16px;
   flex-shrink: 0;
   border-radius: 50%;
-  border: 1.8px solid var(--green);
-  background: var(--green)
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.6 6.2l2.2 2.2 4.6-4.8' fill='none' stroke='%2317171a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-    center / 10px no-repeat;
+  background: var(--green);
+}
+
+.cal-review__check::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--on-accent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.6 6.2l2.2 2.2 4.6-4.8' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 10px no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.6 6.2l2.2 2.2 4.6-4.8' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 10px no-repeat;
 }
 
 /* 빈 상태 (R47) */
 .cal-review__empty {
-  margin: 36px 0 20px;
+  margin: 36px 0 var(--space-20);
   text-align: center;
   color: var(--faint);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .cal-review__empty svg {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-8);
   color: var(--border-2);
 }
 
 /* 아래 [개인 일정 추가] (R48) */
 .cal-review__foot {
-  padding: 12px 20px 16px;
+  padding: var(--space-16) var(--space-20);
   border-top: 1px solid var(--border);
 }
 
@@ -242,16 +252,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-8);
   height: 36px;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   border: 1px dashed var(--border-2);
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
 
 .cal-review__add-btn:hover {
@@ -259,32 +270,37 @@
   color: var(--text);
 }
 
+.cal-review__add-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 .cal-review__add-form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .cal-review__add-title {
-  height: 34px;
-  padding: 0 10px;
+  height: 36px;
+  padding: 0 var(--space-12);
   border: 1px dashed var(--accent);
-  border-radius: 6px;
-  background: rgba(166, 140, 255, 0.08);
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   color: var(--text);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-13);
   outline: none;
 }
 
 .cal-review__add-line {
   display: flex;
-  gap: 8px;
+  gap: var(--space-8);
   align-items: center;
 }
 
 .cal-review__add-acts {
   display: flex;
   justify-content: flex-end;
-  gap: 6px;
+  gap: var(--space-8);
 }

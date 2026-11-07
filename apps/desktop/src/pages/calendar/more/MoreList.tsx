@@ -36,7 +36,7 @@ function MoreList({ anchor, date, items, onClose, onOpen }: MoreListProps) {
       <div className="cal-day-list__head">
         {date.getMonth() + 1}월 {date.getDate()}일 ({WEEKDAYS[date.getDay()]})
         <button type="button" className="cal-day-list__close" onClick={onClose} aria-label="닫기">
-          <SmallCloseIcon size={14} />
+          <SmallCloseIcon size={16} />
         </button>
       </div>
       {items.map((item) => {

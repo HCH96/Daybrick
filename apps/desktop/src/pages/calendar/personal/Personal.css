@@ -1,19 +1,19 @@
 /* 개인 일정 입력·편집 (목업 part-personal.html, parts.css의 .ch.input·.hint·.bg i.sel·.edit-pop·.confirm, R23–R29) */
 
-/* ===== 칩 모양 입력칸 (5-1·5-2): 보라 테두리 + 옅은 보라 고리, 높이 23px ===== */
+/* ===== 칩 모양 입력칸 (5-1·5-2): 보라 테두리 + 옅은 보라 고리, 높이 24px ===== */
 .cal-week > .cal-pin {
   z-index: 3;
   align-self: center;
-  height: 23px;
-  margin: 0 5px;
-  padding: 0 7px;
+  height: 24px;
+  margin: 0 var(--space-4);
+  padding: 0 var(--space-8);
   display: flex;
   align-items: center;
   min-width: 0;
-  border-radius: 5px;
+  border-radius: var(--radius-xs);
   background: var(--surface);
   border: 1.5px solid var(--accent);
-  box-shadow: 0 0 0 3px rgba(166, 140, 255, 0.18);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
   cursor: text;
 }
 
@@ -25,7 +25,7 @@
   outline: none;
   background: none;
   font: inherit;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--text);
   caret-color: var(--accent);
 }
@@ -37,13 +37,14 @@
 /* 입력칸 아래 안내 "Enter 저장 · Esc 취소" */
 .cal-pin__hint {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + var(--space-8));
   left: -2px;
-  padding: 2px 8px;
+  padding: var(--space-2) var(--space-8);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: var(--popup);
-  font-size: 11px;
+  font-size: var(--fs-11);
+  font-variant-numeric: tabular-nums;
   color: var(--faint);
   white-space: pre;
   pointer-events: none;
@@ -51,7 +52,7 @@
 
 .cal-pin__hint--above {
   top: auto;
-  bottom: calc(100% + 6px);
+  bottom: calc(100% + var(--space-8));
 }
 
 /* 입력칸이 있는 주 줄은 안내가 아래 주에 걸쳐 보이도록 잘라내지 않고 위로 올린다 */
@@ -61,17 +62,17 @@
 }
 
 .cal-pin__kbd {
-  margin-right: 3px;
-  padding: 0 4px;
+  margin-right: var(--space-4);
+  padding: 0 var(--space-4);
   border: 1px solid var(--border-2);
-  border-radius: 4px;
-  font-size: 10.5px;
+  border-radius: var(--radius-xs);
+  font-size: var(--fs-11);
   color: var(--muted);
 }
 
 /* ===== 드래그 범위 (5-2): 지나간 칸을 보라 테두리로 묶는다 ===== */
 .cal-day.cal-day--sel {
-  background: rgba(166, 140, 255, 0.13);
+  background: color-mix(in srgb, var(--accent) 13%, var(--surface));
   box-shadow: inset 0 1.5px 0 var(--accent), inset 0 -1.5px 0 var(--accent);
 }
 
@@ -89,56 +90,59 @@
 
 /* ===== 편집 팝오버 (5-3): 300px ===== */
 .popover.cal-pe {
-  padding: 14px 16px;
+  padding: var(--space-16);
   background: var(--popup);
 }
 
 .cal-pe__title {
   width: 100%;
-  height: 34px;
-  padding: 0 10px;
+  height: 36px;
+  padding: 0 var(--space-12);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--surface);
   font: inherit;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
   color: var(--text);
   outline: none;
+  transition: border-color var(--dur-fast) var(--ease);
 }
 
 .cal-pe__title:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(166, 140, 255, 0.18);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .cal-pe__row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  font-size: 12px;
+  gap: var(--space-8);
+  margin-top: var(--space-12);
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
 .cal-pe__row > label {
-  width: 34px;
+  width: 36px;
   flex-shrink: 0;
 }
 
 .cal-pe__fld {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 30px;
-  padding: 0 9px;
+  gap: var(--space-4);
+  height: 32px;
+  padding: 0 var(--space-8);
   border: 1px solid var(--border);
-  border-radius: 7px;
+  border-radius: var(--radius-control);
   background: var(--surface);
-  font-family: var(--mono);
-  font-size: 12.5px;
+  font: inherit;
+  font-size: var(--fs-13);
+  font-variant-numeric: tabular-nums;
   color: var(--text);
   cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease);
 }
 
 .cal-pe__fld:hover {
@@ -148,7 +152,7 @@
 .cal-pe__fld--focus,
 .cal-pe__time:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(166, 140, 255, 0.18);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
   outline: none;
 }
 
@@ -163,41 +167,43 @@
 }
 
 .cal-pe__error {
-  margin: 6px 0 0 42px;
-  font-size: 11.5px;
+  margin: var(--space-4) 0 0 44px;
+  font-size: var(--fs-12);
   color: var(--red);
 }
 
 .cal-pe__caption {
-  margin: 6px 0 0 42px;
-  font-size: 11px;
+  margin: var(--space-4) 0 0 44px;
+  font-size: var(--fs-11);
   color: var(--faint);
 }
 
 /* 없음 / 시각 */
 .cal-pe__seg {
   display: inline-flex;
-  padding: 2px;
+  padding: var(--space-2);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--surface);
 }
 
 .cal-pe__seg button {
-  padding: 3px 10px;
+  height: 24px;
+  padding: 0 var(--space-12);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: none;
   font: inherit;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
 
 .cal-pe__seg button.cal-pe__seg-on {
   background: var(--surface-2);
   color: var(--text);
-  font-weight: 700;
+  font-weight: var(--fw-medium);
 }
 
 .cal-pe__seg button:disabled {
@@ -213,26 +219,27 @@
 .cal-pe__foot {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 14px;
-  padding-top: 12px;
+  gap: var(--space-8);
+  margin-top: var(--space-16);
+  padding-top: var(--space-12);
   border-top: 1px solid var(--border);
 }
 
 .cal-pe__btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--space-4);
   height: 28px;
-  padding: 0 11px;
+  padding: 0 var(--space-12);
   border: 1px solid transparent;
-  border-radius: 7px;
+  border-radius: var(--radius-control);
   background: none;
   font: inherit;
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   color: var(--muted);
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
 
 .cal-pe__btn:hover:not(:disabled) {
@@ -257,13 +264,11 @@
   margin-left: auto;
   background: var(--accent);
   color: var(--on-accent);
-  font-weight: 700;
 }
 
 .cal-pe__btn--primary:hover:not(:disabled) {
-  background: var(--accent);
+  background: var(--violet);
   color: var(--on-accent);
-  filter: brightness(1.08);
 }
 
 .cal-pe__btn--primary:disabled {
@@ -272,27 +277,25 @@
 }
 
 .cal-pe__btn--danger {
-  background: var(--red);
-  color: var(--on-accent);
-  font-weight: 700;
+  background: var(--danger);
+  color: var(--on-danger);
 }
 
 .cal-pe__btn--danger:hover:not(:disabled) {
-  background: var(--red);
-  color: var(--on-accent);
-  filter: brightness(1.08);
+  background: var(--danger-hover);
+  color: var(--on-danger);
 }
 
 /* ===== 삭제 확인 줄 (5-4): 빨간 바탕 ===== */
 .cal-pe__confirm {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 14px;
-  padding: 10px 10px 10px 12px;
-  border-radius: 8px;
+  gap: var(--space-8);
+  margin-top: var(--space-16);
+  padding: var(--space-8) var(--space-8) var(--space-8) var(--space-12);
+  border-radius: var(--radius-control);
   background: var(--red-soft);
-  font-size: 12.5px;
+  font-size: var(--fs-13);
   color: var(--text);
 }
 
@@ -302,6 +305,6 @@
 }
 
 .popover.cal-pe-date {
-  padding: 10px;
+  padding: var(--space-12);
   background: var(--popup);
 }

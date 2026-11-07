@@ -17,7 +17,7 @@ function ReviewAddRow({ day }: { day: string }) {
         <AddForm day={day} onDone={() => setAdding(false)} />
       ) : (
         <button type="button" className="cal-review__add-btn" onClick={() => setAdding(true)}>
-          <PlusIcon size={13} />
+          <PlusIcon size={16} />
           개인 일정 추가
         </button>
       )}

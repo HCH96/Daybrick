@@ -42,7 +42,7 @@
   overflow-y: auto;
 }
 
-/* 카드: 제목, 카테고리 점, 시간만. 카테고리 색은 --cat */
+/* 카드: 왼쪽 카테고리 색 띠, 제목, 카테고리 점, 시간. 카테고리 색은 --cat */
 .kanban-card {
   --cat: var(--faint);
   position: relative;
@@ -54,6 +54,7 @@
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-control);
+  box-shadow: inset 3px 0 0 var(--cat);
   cursor: pointer;
   text-align: left;
   user-select: none;
@@ -256,7 +257,7 @@ body.kanban-dragging * {
 .kanban-card--lifted {
   transform: rotate(-2deg);
   border-color: var(--border-2);
-  box-shadow: var(--shadow-pop);
+  box-shadow: inset 3px 0 0 var(--cat), var(--shadow-pop);
 }
 
 .kanban-card--lifted.kanban-card--running {

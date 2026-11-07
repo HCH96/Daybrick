@@ -63,7 +63,7 @@ function ReviewPanel({ day, onClose, onOpen }: ReviewPanelProps) {
       <div className="cal-review__body">
         {empty ? (
           <div className="cal-review__empty">
-            <ClockIcon size={34} />
+            <ClockIcon size={32} />
             <div>이날은 남은 기록이 없어요</div>
           </div>
         ) : (
