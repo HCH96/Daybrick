@@ -74,7 +74,7 @@ function RerunSetupDialog({ session, projectRef, onFinished, onClose }: RerunSet
     >
       <p>인증 설정, 서버 구조, 서버 함수, 비밀값을 다시 맞추고 마무리 확인을 합니다. 이미 있는 것은 건너뜁니다.</p>
       <div className="set-dialog__keep">
-        <SmallCheckIcon size={14} />
+        <SmallCheckIcon size={16} />
         서버의 데이터는 지워지지 않습니다 · 로그인 계정도 그대로 둡니다
       </div>
       {started ? (
@@ -83,7 +83,7 @@ function RerunSetupDialog({ session, projectRef, onFinished, onClose }: RerunSet
           {finished && (
             <div className="wiz-alert wiz-alert--ok" role="status">
               <span className="wiz-alert__icon">
-                <SmallCheckIcon size={18} />
+                <SmallCheckIcon size={16} />
               </span>
               <div>
                 <b>다시 실행을 마쳤습니다</b>
@@ -124,7 +124,7 @@ function RerunSetupDialog({ session, projectRef, onFinished, onClose }: RerunSet
                 ariaLabel="Google 클라이언트 비밀값"
               />
             </div>
-            {halfGoogle && <span className="wiz-field__note">바꾸려면 ID와 비밀값을 둘 다 넣으세요.</span>}
+            {halfGoogle && <span className="wiz-field__note">바꾸려면 ID와 비밀값을 둘 다 넣으세요</span>}
           </div>
         </>
       )}

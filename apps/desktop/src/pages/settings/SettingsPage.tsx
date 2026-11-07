@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { NAV_LABELS } from "../../app/pageLabels";
 import ServerSection from "./ServerSection";
 import "./SettingsPage.css";
 
@@ -16,8 +17,8 @@ function SettingsPage() {
   return (
     <div className="settings-page">
       <div>
-        <h1 className="settings-page__title">Settings</h1>
-        <div className="settings-page__sub">앱 설정. 기능이 늘면 아래에 칸이 추가됩니다.</div>
+        <h1 className="settings-page__title">{NAV_LABELS.settings}</h1>
+        <div className="settings-page__sub">앱 설정</div>
       </div>
 
       <div className="settings-page__anchors">

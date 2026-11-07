@@ -14,7 +14,7 @@ function LoginAction({ login }: { login: SettingsLogin }) {
     // 일시정지·접속 불가(또는 첫 확인 전)면 로그인보다 접속 확인이 먼저다
     return (
       <button type="button" className="settings-btn settings-btn--sm" onClick={recheck} disabled={checking}>
-        <RefreshIcon size={14} />
+        <RefreshIcon size={16} />
         {checking ? "확인 중…" : "지금 다시 확인"}
       </button>
     );
@@ -74,7 +74,7 @@ function ServerSectionLogin({ url }: { url: string }) {
           </div>
         </div>
       )}
-      <ServerDangerRow hint="로그인 전에는 서버 기능을 쓸 수 없습니다." withSwitch={false} />
+      <ServerDangerRow hint="로그인 전에는 서버 기능을 쓸 수 없습니다" withSwitch={false} />
     </>
   );
 }

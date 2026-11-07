@@ -18,7 +18,7 @@ function ServerSectionOff() {
         </ul>
       </div>
       <button type="button" className="settings-btn settings-btn--primary" onClick={openSetup}>
-        <ServerIcon size={15} />
+        <ServerIcon size={16} />
         서버 연결 시작
       </button>
     </div>

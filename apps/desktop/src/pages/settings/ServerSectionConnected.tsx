@@ -71,7 +71,7 @@ function ServerSectionConnected({ session, url }: ServerSectionConnectedProps) {
             <small>앱을 켤 때마다 확인</small>
           </span>
           <button type="button" className="settings-btn settings-btn--sm" onClick={recheck} disabled={checking}>
-            <RefreshIcon size={14} />
+            <RefreshIcon size={16} />
             {checking ? "확인 중…" : "지금 다시 확인"}
           </button>
         </div>
@@ -104,7 +104,7 @@ function ServerSectionConnected({ session, url }: ServerSectionConnectedProps) {
             )}
           </span>
           <button type="button" className="settings-btn settings-btn--sm" onClick={() => setDialog("key")} disabled={!ref}>
-            <KeyIcon size={14} />
+            <KeyIcon size={16} />
             교체
           </button>
         </div>
@@ -112,7 +112,7 @@ function ServerSectionConnected({ session, url }: ServerSectionConnectedProps) {
 
       <div className="settings-actions">
         <button type="button" className="settings-btn settings-btn--sm" onClick={() => setDialog("rerun")} disabled={!ref}>
-          <RefreshIcon size={14} />
+          <RefreshIcon size={16} />
           자동 세팅 다시 실행
         </button>
         <span className="settings-actions__help">로그인 설정·서버 함수가 망가졌을 때 복구용. 데이터는 그대로입니다.</span>
