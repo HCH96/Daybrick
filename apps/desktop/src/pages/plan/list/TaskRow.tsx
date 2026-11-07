@@ -65,7 +65,7 @@ function TaskRow({ task, onOpen }: TaskRowProps) {
             )}
             {linkName && (
               <span className="plan-task__lnk" aria-label={`연결된 지원 카드 ${linkName}`}>
-                <LinkIcon size={11} />
+                <LinkIcon size={12} />
                 {linkName}
               </span>
             )}

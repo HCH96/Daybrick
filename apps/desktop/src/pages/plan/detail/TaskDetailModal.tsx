@@ -59,7 +59,7 @@ function TaskDetailModal({ taskId, onClose, onOpenApplication }: TaskDetailModal
             {maximized ? <RestoreIcon /> : <MaximizeIcon />}
           </button>
           <span className="task-detail__kind">
-            <TaskIcon size={13} />
+            <TaskIcon size={16} />
             Task
           </span>
         </div>

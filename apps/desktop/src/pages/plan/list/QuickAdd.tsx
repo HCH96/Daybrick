@@ -37,7 +37,7 @@ function QuickAdd() {
   return (
     <div className="plan-quick">
       <label className="plan-field plan-quick__field">
-        <PlusIcon size={13} />
+        <PlusIcon size={16} />
         <input
           ref={inputRef}
           className="plan-quick__input"
@@ -66,7 +66,7 @@ function QuickAdd() {
       >
         <span className={picked ? "plan-cat-dot" : "plan-cat-dot plan-cat-dot--ring"} />
         <span className="plan-quick__cat-name">{picked?.name ?? "미분류"}</span>
-        <ChevronDownIcon size={13} />
+        <ChevronDownIcon size={12} />
       </button>
 
       {pickAnchor && (

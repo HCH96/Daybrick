@@ -56,7 +56,7 @@ function TaskBar({ bar, task, color, onOpen }: TaskBarProps) {
       )}
       {bar.cutLeft && (
         <span className="plan-tbar__cut" aria-label="지난 주에서 이어짐">
-          <ChevronLeftIcon size={13} />
+          <ChevronLeftIcon size={12} />
         </span>
       )}
       <StatusDot status={task.status} size="sm" />
@@ -68,7 +68,7 @@ function TaskBar({ bar, task, color, onOpen }: TaskBarProps) {
       )}
       {bar.cutRight && (
         <span className="plan-tbar__cut plan-tbar__cut--r" aria-label="다음 주로 이어짐">
-          <ChevronRightIcon size={13} />
+          <ChevronRightIcon size={12} />
         </span>
       )}
       {!bar.cutRight && (

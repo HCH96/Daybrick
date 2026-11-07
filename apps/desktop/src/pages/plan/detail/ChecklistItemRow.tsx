@@ -63,7 +63,7 @@ function ChecklistItemRow({
   return (
     <div ref={rowRef} className={className}>
       <span className="task-check__grip" aria-hidden="true" onPointerDown={onGripDown}>
-        <GripIcon size={14} />
+        <GripIcon size={16} />
       </span>
       <button
         type="button"
@@ -93,7 +93,7 @@ function ChecklistItemRow({
       )}
       {!editing && (
         <button type="button" className="task-check__del" title="항목 지우기" aria-label="항목 지우기" onClick={onDelete}>
-          <SmallCloseIcon size={14} />
+          <SmallCloseIcon size={16} />
         </button>
       )}
     </div>

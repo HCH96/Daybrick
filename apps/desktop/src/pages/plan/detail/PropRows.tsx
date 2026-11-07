@@ -62,7 +62,7 @@ function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
 
   return (
     <div className="task-detail__props">
-      <PropRow icon={<ChecklistIcon size={15} />} label="카테고리">
+      <PropRow icon={<ChecklistIcon size={16} />} label="카테고리">
         <button
           type="button"
           className={open?.kind === "category" ? "task-detail__cat task-detail__cat--on" : "task-detail__cat"}
@@ -76,7 +76,7 @@ function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
         </button>
       </PropRow>
 
-      <PropRow icon={<SmallCheckIcon size={15} />} label="상태">
+      <PropRow icon={<SmallCheckIcon size={16} />} label="상태">
         <button
           type="button"
           className={open?.kind === "status" ? "task-detail__plain task-detail__plain--on" : "task-detail__plain"}
@@ -89,7 +89,7 @@ function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
         </button>
       </PropRow>
 
-      <PropRow icon={<DateIcon size={15} />} label="기간">
+      <PropRow icon={<DateIcon size={16} />} label="기간">
         <PeriodField
           start={task.start}
           end={task.end}
@@ -99,10 +99,10 @@ function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
 
       <LinkedCardRow task={task} onOpenApplication={onOpenApplication} />
 
-      <PropRow icon={<ChecklistIcon size={15} />} label="체크리스트">
+      <PropRow icon={<ChecklistIcon size={16} />} label="체크리스트">
         {task.checklist === null ? (
           <button type="button" className="task-detail__add" onClick={() => createChecklist(task.id)}>
-            <PlusIcon size={14} />
+            <PlusIcon size={16} />
             체크리스트
           </button>
         ) : (
@@ -147,7 +147,7 @@ function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
                 <span className="plan-quick__opt-name">{o.label}</span>
                 {selected && (
                   <span className="pop-row__check">
-                    <SmallCheckIcon size={14} />
+                    <SmallCheckIcon size={16} />
                   </span>
                 )}
               </button>
@@ -162,14 +162,14 @@ function PropRows({ task, categories, onOpenApplication }: PropRowsProps) {
 /** 체크리스트 줄 값: `완료/전체` + 80px 진행 막대 (목업 .mini-prog, R37, D24) */
 function ChecklistProgressValue({ task }: { task: Task }) {
   const { done, total } = checklistProgress(task);
-  const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+  const ratio = total > 0 ? done / total : 0;
   return (
     <>
       <span className="task-check__count">
         {done}/{total}
       </span>
       <span className="task-check__mini" role="progressbar" aria-label="체크리스트 진행도" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}>
-        <i style={{ width: `${percent}%` }} />
+        <i style={{ transform: `scaleX(${ratio})` }} />
       </span>
     </>
   );

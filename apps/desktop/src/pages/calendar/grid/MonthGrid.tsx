@@ -82,8 +82,10 @@ function MonthGrid({ year, month, dir, todayKey, onOpen, reviewDay, onReview }: 
   return (
     <div className="cal-grid">
       <div className="cal-dow">
-        {DOW.map((d) => (
-          <span key={d}>{d}</span>
+        {DOW.map((d, i) => (
+          <span key={d} className={i === 5 ? "cal-dow__sat" : i === 6 ? "cal-dow__sun" : undefined}>
+            {d}
+          </span>
         ))}
       </div>
       <div className="cal-pages" onMouseDown={onMouseDown}>

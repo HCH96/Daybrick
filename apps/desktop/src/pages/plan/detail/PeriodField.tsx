@@ -49,7 +49,7 @@ function PeriodField({ start, end, onChange }: PeriodFieldProps) {
             aria-expanded={open !== null}
             onClick={(e) => setOpen({ side: "start", anchor: e.currentTarget })}
           >
-            <PlusIcon size={14} />
+            <PlusIcon size={16} />
             날짜 정하기
           </button>
         </>

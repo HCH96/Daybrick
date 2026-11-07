@@ -3,20 +3,20 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-16);
 }
 
 .plan-page__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--space-16);
 }
 
 .plan-page__title {
   margin: 0;
-  font-size: 26px;
-  font-weight: 800;
+  font-size: var(--fs-26);
+  font-weight: var(--fw-semibold);
   letter-spacing: -0.3px;
   white-space: nowrap;
 }
@@ -27,7 +27,7 @@
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(200px, 2fr) 5fr;
-  gap: 16px;
+  gap: var(--space-16);
 }
 
 .plan-panel {
@@ -48,10 +48,10 @@
 }
 
 .plan-page__notice {
-  padding: 48px 16px;
+  padding: 48px var(--space-16);
   text-align: center;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .plan-page__notice--error {
@@ -62,66 +62,103 @@
 .plan-head-tools {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-12);
   flex-shrink: 0;
   white-space: nowrap;
 }
 
 .plan-period {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-right: 4px;
+  align-items: center;
+  gap: var(--space-8);
+  margin-right: var(--space-4);
   flex-shrink: 0;
 }
 
 .plan-period b {
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: -0.2px;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
 }
 
+/* 주 번호 칩 `N주차` */
 .plan-period span {
-  padding: 1px 8px;
-  border-radius: 6px;
+  height: 20px;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-sm);
   background: var(--surface-2);
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: 20px;
 }
 
 .plan-weeknav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-4);
 }
 
+/* 플랜 버튼: 머리는 28, 작은 창 아래 버튼 줄은 .plan-btn--lg 32 */
 .plan-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 30px;
-  padding: 0 12px;
-  border-radius: 8px;
+  gap: var(--space-4);
+  height: 28px;
+  padding: 0 var(--space-12);
+  border-radius: var(--radius-control);
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
-  font-size: 13px;
-  font-weight: 600;
+  font: inherit;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
 
 .plan-btn:hover {
   background: var(--surface-2);
 }
 
+.plan-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 .plan-btn--ghost {
+  padding: 0 var(--space-8);
   background: transparent;
   border-color: transparent;
   color: var(--muted);
 }
 
 .plan-btn--ghost:hover {
+  background: var(--surface-2);
   color: var(--text);
+}
+
+.plan-btn.plan-btn--lg {
+  height: 32px;
+  padding: 0 var(--space-12);
+  font-size: var(--fs-13);
+}
+
+.plan-btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+/* 주요 버튼 올림: 공용 확인 창과 같게 한 단계 밝은 보라 */
+.plan-btn--primary:hover {
+  background: var(--violet);
+  border-color: var(--violet);
+}
+
+.plan-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
 }

@@ -23,7 +23,7 @@ function WeekNav({ weekStart, onPrev, onThisWeek, onNext }: WeekNavProps) {
       </div>
       <div className="plan-weeknav">
         <button type="button" className="plan-btn plan-btn--ghost" onClick={onPrev}>
-          <ChevronLeftIcon size={14} />
+          <ChevronLeftIcon size={16} />
           이전 주
         </button>
         <button type="button" className="plan-btn" onClick={onThisWeek}>
@@ -31,7 +31,7 @@ function WeekNav({ weekStart, onPrev, onThisWeek, onNext }: WeekNavProps) {
         </button>
         <button type="button" className="plan-btn plan-btn--ghost" onClick={onNext}>
           다음 주
-          <ChevronRightIcon size={14} />
+          <ChevronRightIcon size={16} />
         </button>
       </div>
       <ScheduleSwitch />

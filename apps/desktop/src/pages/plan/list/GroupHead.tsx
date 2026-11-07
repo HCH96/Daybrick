@@ -64,7 +64,7 @@ function GroupHead(props: GroupHeadProps) {
         }
       }}
     >
-      <span className="plan-ghead__fold">{dragging ? <GripIcon size={14} /> : <ChevronDownIcon size={14} />}</span>
+      <span className="plan-ghead__fold">{dragging ? <GripIcon size={16} /> : <ChevronDownIcon size={16} />}</span>
       <span className={fixed ? "plan-ghead__dot plan-ghead__dot--ring" : "plan-ghead__dot"} />
       <span className="plan-ghead__name">{name}</span>
       <span className="plan-ghead__count">{count}</span>
@@ -77,7 +77,7 @@ function GroupHead(props: GroupHeadProps) {
             aria-label={`${name} 메뉴`}
             onClick={(e) => onMenu(e.currentTarget)}
           >
-            <DotsIcon size={14} />
+            <DotsIcon size={16} />
           </button>
         )}
         {onAdd && (
@@ -89,7 +89,7 @@ function GroupHead(props: GroupHeadProps) {
             onMouseDown={(e) => e.preventDefault()}
             onClick={onAdd}
           >
-            <PlusIcon size={14} />
+            <PlusIcon size={16} />
           </button>
         )}
       </span>

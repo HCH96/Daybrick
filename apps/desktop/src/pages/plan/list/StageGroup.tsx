@@ -68,7 +68,7 @@ function StageGroup({ stage, label, range, tasks, open, onOpenTask }: StageGroup
         }}
       >
         <span className="plan-ghead__fold">
-          <ChevronDownIcon size={14} />
+          <ChevronDownIcon size={16} />
         </span>
         <span className="plan-ghead__name">{label}</span>
         {range && <span className="plan-sgroup__range">{formatShortRange(range.start, range.end)}</span>}
@@ -85,7 +85,7 @@ function StageGroup({ stage, label, range, tasks, open, onOpenTask }: StageGroup
               setAdding(true);
             }}
           >
-            <PlusIcon size={14} />
+            <PlusIcon size={16} />
           </button>
         </span>
       </div>

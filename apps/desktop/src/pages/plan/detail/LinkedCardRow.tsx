@@ -39,7 +39,7 @@ function LinkedCardRow({ task, onOpenApplication }: LinkedCardRowProps) {
     value = (
       <>
         <span className="task-card-link__note">
-          {state.kind === "loading" ? "지원 카드를 불러오는 중…" : "지원 데이터를 읽지 못했어요."}
+          {state.kind === "loading" ? "지원 카드를 불러오는 중…" : "지원 데이터를 읽지 못했어요"}
         </span>
         {unlink}
       </>
@@ -75,7 +75,7 @@ function LinkedCardRow({ task, onOpenApplication }: LinkedCardRowProps) {
           setPickAnchor((a) => (a ? null : target));
         }}
       >
-        <PlusIcon size={14} />
+        <PlusIcon size={16} />
         지원 카드 연결
       </button>
     );
@@ -84,7 +84,7 @@ function LinkedCardRow({ task, onOpenApplication }: LinkedCardRowProps) {
   return (
     <div className="task-detail__prop">
       <span className="task-detail__label">
-        <LinkIcon size={15} />
+        <LinkIcon size={16} />
         지원 카드
       </span>
       <div className="task-detail__val">{value}</div>

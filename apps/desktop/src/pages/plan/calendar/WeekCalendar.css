@@ -16,10 +16,10 @@
 .plan-day-h {
   display: flex;
   align-items: center;
-  height: 42px;
-  padding: 0 12px;
-  font-size: 13px;
-  font-weight: 600;
+  height: 40px;
+  padding: 0 var(--space-12);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
@@ -31,27 +31,20 @@
 
 /* 요일과 날짜 숫자는 같은 크기·굵기, 숫자만 밝게 (목업 B2) */
 .plan-day-h b {
-  margin-left: 4px;
-  font-weight: 600;
+  display: inline-block;
+  min-width: 20px;
+  height: 20px;
+  margin-left: var(--space-4);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-sm);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  line-height: 20px;
+  text-align: center;
   color: var(--text);
 }
 
-/* 오늘: 요일+숫자를 옅은 보라 알약으로 감싼다 (칸 몸통의 옅은 보라는 .plan-cols__today) */
-.plan-day-h--today span {
-  display: inline-flex;
-  align-items: center;
-  height: 24px;
-  padding: 0 9px;
-  margin-left: -6px;
-  border-radius: 99px;
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.plan-day-h--today b {
-  color: var(--accent);
-}
-
+/* 주말 글자색 (design-direction 시간 축 계획): 토 파랑, 일 빨강 */
 .plan-day-h--sat,
 .plan-day-h--sat b {
   color: var(--blue);
@@ -60,6 +53,21 @@
 .plan-day-h--sun,
 .plan-day-h--sun b {
   color: var(--red);
+}
+
+/* 오늘: 날짜 숫자만 보라 칸 (칸 몸통의 옅은 보라는 .plan-cols__today). 캘린더 오늘 표시와 같다 */
+.plan-day-h--today,
+.plan-day-h--today.plan-day-h--sat,
+.plan-day-h--today.plan-day-h--sun {
+  color: var(--text);
+}
+
+.plan-day-h--today b,
+.plan-day-h--today.plan-day-h--sat b,
+.plan-day-h--today.plan-day-h--sun b {
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: var(--fw-semibold);
 }
 
 /* 몸통: 막대가 많아지면 세로로 스크롤 (R29) */
@@ -87,7 +95,7 @@
 }
 
 .plan-cols .plan-cols__today {
-  background: rgba(166, 140, 255, 0.05);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
 }
 
 /* 막대 층: 줄 = lane, 칸 = col (R23·R29) */
@@ -96,39 +104,41 @@
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   grid-auto-rows: 32px;
-  row-gap: 6px;
-  padding: 10px 0;
+  row-gap: var(--space-4);
+  padding: var(--space-8) 0;
 }
 
+/* 태스크 막대: 연한 카테고리 바탕 + 왼쪽 3px 카테고리 띠 (앱 공통 띠 모양) */
 .plan-tbar {
-  --cat: #8a8a96;
+  --cat: var(--muted);
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: var(--space-8);
   min-width: 0;
-  margin: 0 6px;
-  padding: 0 10px 0 8px;
+  margin: 0 var(--space-4);
+  padding: 0 var(--space-8) 0 var(--space-12);
   border: none;
-  border-left: 3px solid var(--cat);
-  border-radius: 7px;
-  background: color-mix(in srgb, var(--cat) 16%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--cat) 17%, transparent);
+  box-shadow: inset 3px 0 0 var(--cat);
   color: var(--text);
   font: inherit;
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .plan-tbar:hover {
-  background: color-mix(in srgb, var(--cat) 24%, transparent);
+  background: color-mix(in srgb, var(--cat) 26%, transparent);
 }
 
 .plan-tbar:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 1.5px var(--cat);
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
 
 .plan-tbar__title {
@@ -139,16 +149,16 @@
 
 /* 완료는 흐리게 남긴다 (R24) */
 .plan-tbar--done {
-  opacity: 0.45;
+  opacity: 0.42;
 }
 
-/* 주 경계에서 잘린 쪽: 모서리 각지게 + ‹ › (R23) */
+/* 주 경계에서 잘린 쪽: 칸 끝까지 붙이고 모서리를 펴서 ‹ › (R23). 왼쪽이 잘리면 띠도 없다 */
 .plan-tbar--cut-l {
   margin-left: 0;
-  border-left: 0;
+  padding-left: var(--space-4);
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  padding-left: 6px;
+  box-shadow: none;
 }
 
 .plan-tbar--cut-r {
@@ -166,25 +176,38 @@
 
 .plan-tbar__cut--r {
   margin-left: auto;
-  margin-right: -4px;
-  padding-left: 4px;
+  margin-right: calc(-1 * var(--space-4));
 }
 
-/* 빈 곳 더블클릭 바로 만들기 칸 (목업 cal-new, R28) — InlineTaskInput을 막대 모양으로 */
+/* 막대 오른쪽 끝 체크리스트 진행도 `2/5` (목업 tbar .meta). 잘린 쪽 › 가 있으면 그 앞에 붙는다 */
+.plan-tbar__meta {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding-left: var(--space-4);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.plan-tbar__meta + .plan-tbar__cut--r {
+  margin-left: 0;
+}
+
+/* 빈 곳 더블클릭 바로 만들기 칸 (목업 cal-new, R28) — InlineTaskInput을 막대 모양으로. --cat은 BarLayer가 미분류 색으로 준다 */
 .plan-bars__draft {
   min-width: 0;
 }
 
 .plan-task.plan-task--bar {
   height: 32px;
-  margin: 0 6px;
-  padding: 0 8px;
-  gap: 7px;
+  margin: 0 var(--space-4);
+  padding: 0 var(--space-8) 0 var(--space-12);
+  gap: var(--space-8);
   align-items: center;
-  border-left: 3px solid #8a8a96;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   background: var(--surface);
-  box-shadow: 0 0 0 1.5px var(--accent);
+  box-shadow: inset 3px 0 0 var(--cat), 0 0 0 1.5px var(--accent);
 }
 
 .plan-task--bar .plan-st {
@@ -198,8 +221,8 @@
   border: none;
   background: none;
   box-shadow: none;
-  font-size: 12.5px;
-  font-weight: 500;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
 }
 
 /* 막대 없는 주의 안내 한 줄 */
@@ -207,9 +230,10 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 14px;
+  bottom: var(--space-16);
+  padding: 0 var(--space-16);
   text-align: center;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--faint);
   pointer-events: none;
 }
@@ -219,39 +243,40 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  padding: 8px 0;
+  padding: var(--space-8) 0;
   border-bottom: 1px dashed var(--border-2);
 }
 
 .plan-sched__cell {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-4);
   min-width: 0;
-  padding: 0 6px;
+  padding: 0 var(--space-4);
 }
 
-/* 알약: 끌 수 없으므로 손잡이·그림자가 없다 */
+/* 지원 일정 칩: 종류 색 연한 바탕 + 글자. 끌 수 없으므로 손잡이·그림자가 없다 */
 .plan-ev {
   --k: var(--muted);
   --k-soft: var(--surface);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-4);
   min-width: 0;
-  height: 24px;
-  padding: 0 8px 0 6px;
+  height: 20px;
+  padding: 0 var(--space-8) 0 var(--space-4);
   border: none;
-  border-radius: 99px;
+  border-radius: var(--radius-xs);
   background: var(--k-soft);
   color: var(--k);
   font: inherit;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .plan-ev:hover {
@@ -259,8 +284,8 @@
 }
 
 .plan-ev:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 1.5px var(--k);
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
 
 .plan-ev svg {
@@ -276,9 +301,9 @@
 .plan-ev em {
   flex-shrink: 0;
   margin-left: auto;
-  padding-left: 4px;
+  padding-left: var(--space-4);
   font-style: normal;
-  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   opacity: 0.8;
 }
 
@@ -302,31 +327,32 @@
   --k-soft: var(--teal-soft);
 }
 
-/* 알약 풍선 (목업 제안). body에 포털로 띄운다. */
+/* 칩 풍선 (목업 제안). body에 포털로 띄운다 */
 .plan-ev-tip {
   position: fixed;
   z-index: 50;
-  padding: 10px 12px;
+  padding: var(--space-8) var(--space-12);
   border: 1px solid var(--border-2);
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   background: var(--popup);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-pop);
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: var(--fs-12);
+  font-variant-numeric: tabular-nums;
+  line-height: 20px;
   pointer-events: none;
 }
 
 .plan-ev-tip b {
   display: block;
-  margin-bottom: 2px;
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
 }
 
 /* 시간 없는 개인 일정이 덮는 날 (캘린더 R32): 칸 배경을 살짝 어둡게. 오늘·놓일 칸 색 위에 겹친다 */
 .plan-cols i.plan-cols__busy {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18));
+  background-image: linear-gradient(var(--foot-tint), var(--foot-tint));
 }
 
 /* 개인 일정 층 (캘린더 R31): 지원 일정 층 아래, 막대 층 위. 비면 숨긴다 */
@@ -334,9 +360,9 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  grid-auto-rows: 22px;
-  row-gap: 4px;
-  padding: 8px 0;
+  grid-auto-rows: 20px;
+  row-gap: var(--space-4);
+  padding: var(--space-8) 0;
   border-bottom: 1px dashed var(--border-2);
 }
 
@@ -348,37 +374,37 @@
 .plan-pev {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--space-4);
   min-width: 0;
-  margin: 0 6px;
-  padding: 0 7px;
-  border: 1px dashed #55555f;
-  border-radius: 5px;
+  margin: 0 var(--space-4);
+  padding: 0 var(--space-8);
+  border: 1px dashed var(--border-2);
+  border-radius: var(--radius-xs);
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--fs-12);
+  line-height: 18px;
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .plan-pev:hover {
-  border-color: var(--muted);
-  color: var(--text);
+  background: var(--hover);
 }
 
 .plan-pev:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 1.5px var(--muted);
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
 
 .plan-pev em {
   flex-shrink: 0;
   font-style: normal;
-  font-family: var(--mono);
-  font-size: 11px;
+  font-variant-numeric: tabular-nums;
   color: var(--faint);
 }
 
@@ -391,7 +417,7 @@
 /* 주 경계에서 잘린 쪽: 칸 끝까지 붙이고 그쪽 점선·모서리를 없앤 뒤 ‹ › */
 .plan-pev--cut-l {
   margin-left: 0;
-  padding-left: 4px;
+  padding-left: var(--space-4);
   border-left: none;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
@@ -413,32 +439,34 @@
 
 .plan-pev__cut--r {
   margin-left: auto;
-  padding-left: 4px;
+  padding-left: var(--space-4);
 }
 
 /* 페이지 머리 오른쪽 `지원 일정` 스위치 (R33). 왼쪽 세로선이 주 이동 버튼과의 구분선이다 */
 .plan-switch {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
   flex-shrink: 0;
-  padding: 0 0 0 14px;
+  padding: 0 0 0 var(--space-12);
   white-space: nowrap;
   border: none;
   border-left: 1px solid var(--border);
   background: none;
   color: var(--muted);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-13);
   cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
 }
 
 .plan-switch i {
   position: relative;
   width: 32px;
-  height: 18px;
-  border-radius: 99px;
+  height: 20px;
+  border-radius: var(--radius-pill);
   background: var(--border-2);
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .plan-switch i::after {
@@ -446,11 +474,11 @@
   position: absolute;
   top: 2px;
   left: 2px;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: var(--muted);
-  transition: left 0.12s;
+  transition: transform var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
 }
 
 .plan-switch--on {
@@ -462,7 +490,7 @@
 }
 
 .plan-switch--on i::after {
-  left: 16px;
+  transform: translateX(12px);
   background: var(--on-accent);
 }
 
@@ -474,32 +502,24 @@
   box-shadow: 0 0 0 2px var(--accent);
 }
 
-/* 막대 오른쪽 끝 체크리스트 진행도 `2/5` (목업 tbar .meta). 잘린 쪽 › 가 있으면 그 앞에 붙는다 */
-.plan-tbar__meta {
-  flex-shrink: 0;
-  margin-left: auto;
-  padding-left: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-}
-
-.plan-tbar__meta + .plan-tbar__cut--r {
-  margin-left: 0;
-}
-
-/* 좁은 달력 (R46, 앱 최소 960×640 창에서 달력 폭 약 500px): 요일 칸 여백을 줄이고 지원 일정 알약은 시간부터 숨긴다 */
+/* 좁은 달력 (R46, 앱 최소 960×640 창에서 달력 폭 약 500px): 요일 칸 여백을 줄이고 지원 일정 칩은 시간부터 숨긴다 */
 @container plan-week (max-width: 620px) {
   .plan-day-h {
-    padding: 0 8px;
+    padding: 0 var(--space-8);
   }
 
-  .plan-day-h--today span {
-    margin-left: -3px;
-    padding: 0 7px;
+  .plan-day-h b {
+    margin-left: var(--space-2);
   }
 
   .plan-ev em {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plan-switch i,
+  .plan-switch i::after {
+    transition: none;
   }
 }

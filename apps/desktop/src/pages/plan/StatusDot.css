@@ -1,4 +1,5 @@
-/* 태스크 상태 표시 ○ ◐ ● (목업 common.css의 .st) — 목록·달력 막대·팝업 공용 */
+/* 태스크 상태 표시 ○ ◐ ● (목업 common.css의 .st) — 목록·달력 막대·팝업 공용
+   진행 중의 반쪽 채움은 기능용 그라데이션이다 */
 .plan-st {
   position: relative;
   display: block;
@@ -7,7 +8,7 @@
   padding: 0;
   flex-shrink: 0;
   border-radius: 50%;
-  border: 1.8px solid var(--faint);
+  border: 1.5px solid var(--faint);
   background: none;
 }
 
@@ -16,30 +17,40 @@
   background: linear-gradient(90deg, var(--amber) 50%, transparent 50%);
 }
 
-/* 완료 (목업 r2 C1): 초록 채운 원 + 정가운데 SVG 체크. 테두리 꺾기 체크는 한쪽으로 치우쳐 보여서 바꿈 */
+/* 완료 (목업 r2 C1): 초록 채운 원 + 정가운데 체크. 체크는 마스크로 그려 토큰 색을 쓴다 */
 .plan-st--done {
   border-color: var(--green);
-  background: var(--green)
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.6 6.2l2.2 2.2 4.6-4.8' fill='none' stroke='%2317171a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+  background: var(--green);
+}
+
+.plan-st--done::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--on-accent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.6 6.2l2.2 2.2 4.6-4.8' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / 10px no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.6 6.2l2.2 2.2 4.6-4.8' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
     center / 10px no-repeat;
 }
 
 .plan-st--sm {
-  width: 13px;
-  height: 13px;
-  border-width: 1.6px;
+  width: 12px;
+  height: 12px;
 }
 
-.plan-st--sm.plan-st--done {
-  background-size: 8px;
+.plan-st--sm.plan-st--done::after {
+  -webkit-mask-size: 8px;
+  mask-size: 8px;
 }
 
 .plan-st--btn {
   cursor: pointer;
+  transition: box-shadow var(--dur-fast) var(--ease);
 }
 
 .plan-st--btn:hover {
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px var(--pressed);
 }
 
 .plan-st--btn:focus-visible {

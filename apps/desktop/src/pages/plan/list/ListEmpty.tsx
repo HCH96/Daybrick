@@ -11,7 +11,7 @@ function ListEmpty() {
       <div>
         위 입력칸에 제목을 적고 Enter를 누르면
         <br />
-        날짜 없는 태스크가 생겨요.
+        날짜 없는 태스크가 생겨요
       </div>
     </div>
   );

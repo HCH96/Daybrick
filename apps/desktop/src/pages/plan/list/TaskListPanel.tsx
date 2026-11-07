@@ -1,5 +1,6 @@
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useMemo, useState, type CSSProperties } from "react";
 import { PlusIcon, SmallCloseIcon } from "../../../components/icons/CommonIcons";
+import { NONE_CATEGORY_COLOR } from "../../../features/plan/color";
 import { groupTasksByCategory, NONE_GROUP_KEY, type TaskGroup } from "../../../features/plan/selectors";
 import { usePlan } from "../../../features/plan/store";
 import { projectFoldKey } from "../../../features/projects/group";
@@ -43,7 +44,7 @@ function TaskListPanel({ onOpenTask }: { onOpenTask: (id: string) => void }) {
     <div className={dropHere ? "plan-list plan-list--drop" : "plan-list"} data-drop="list">
       {dropHere && (
         <div className="plan-list__drop-msg">
-          <SmallCloseIcon size={13} />
+          <SmallCloseIcon size={16} />
           여기에 놓으면 날짜를 지워요
         </div>
       )}
@@ -88,7 +89,7 @@ function TaskListPanel({ onOpenTask }: { onOpenTask: (id: string) => void }) {
           className={addAnchor ? "plan-list__add-cat plan-list__add-cat--on" : "plan-list__add-cat"}
           onClick={(e) => setAddAnchor(e.currentTarget)}
         >
-          <PlusIcon size={13} />
+          <PlusIcon size={16} />
           카테고리 추가
         </button>
       </div>
@@ -113,6 +114,7 @@ function UncategorizedGroup({ group, collapsed, onOpenTask }: UncategorizedGroup
   return (
     <div
       className={dropHere ? "plan-group plan-group--none plan-group--drop" : "plan-group plan-group--none"}
+      style={{ "--cat": NONE_CATEGORY_COLOR } as CSSProperties}
       data-drop-group={dropGroupValue(null)}
     >
       <GroupHead

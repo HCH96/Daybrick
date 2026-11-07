@@ -52,7 +52,7 @@ function CardPickDialog({ anchor, onPick, onClose }: CardPickDialogProps) {
   return (
     <Popover anchor={anchor} onClose={onClose} width={420} ariaLabel="지원 카드 고르기" className="card-pick">
       <label className="card-pick__field">
-        <SearchIcon size={14} />
+        <SearchIcon size={16} />
         <input
           className="card-pick__input"
           value={query}
@@ -69,9 +69,9 @@ function CardPickDialog({ anchor, onPick, onClose }: CardPickDialogProps) {
 
       <div className="card-pick__list" role="listbox" aria-label="지원 카드">
         {state.kind === "loading" && <div className="card-pick__empty">지원 데이터를 불러오는 중…</div>}
-        {state.kind === "error" && <div className="card-pick__empty">지원 데이터를 읽지 못해 카드를 고를 수 없어요.</div>}
+        {state.kind === "error" && <div className="card-pick__empty">지원 데이터를 읽지 못해 카드를 고를 수 없어요</div>}
         {list && total === 0 && <div className="card-pick__empty">지원관리에 카드가 없어요. 지원관리에서 먼저 카드를 만들어 주세요.</div>}
-        {list && total > 0 && flat.length === 0 && <div className="card-pick__empty">찾는 카드가 없어요.</div>}
+        {list && total > 0 && flat.length === 0 && <div className="card-pick__empty">찾는 카드가 없어요</div>}
         {list && list.active.length > 0 && <div className="card-pick__group">진행 중</div>}
         {list?.active.map((item, i) => (
           <PickRow key={item.application.id} item={item} on={i === current} onPick={() => pick(item)} onHover={() => setCursor(i)} />

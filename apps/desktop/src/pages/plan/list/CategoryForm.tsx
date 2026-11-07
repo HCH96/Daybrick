@@ -67,10 +67,10 @@ function CategoryForm({ anchor, category, onClose }: CategoryFormProps) {
         </div>
         <ColorPicker value={color} onChange={setColor} recentColors={recentColors} />
         <div className="cat-form__foot">
-          <button type="button" className="plan-btn plan-btn--ghost" onClick={onClose}>
+          <button type="button" className="plan-btn plan-btn--lg plan-btn--ghost" onClick={onClose}>
             취소
           </button>
-          <button type="submit" className="plan-btn plan-btn--primary" disabled={!canSave}>
+          <button type="submit" className="plan-btn plan-btn--lg plan-btn--primary" disabled={!canSave}>
             {category ? "저장" : "만들기"}
           </button>
         </div>

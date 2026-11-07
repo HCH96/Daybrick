@@ -84,7 +84,7 @@ function Checklist({ task }: ChecklistProps) {
 
       <div className="task-check__foot">
         <button type="button" className="task-check__add" onClick={() => addAt(items.length)}>
-          <PlusIcon size={15} />
+          <PlusIcon size={16} />
           항목 추가
         </button>
         <button
@@ -122,7 +122,7 @@ function LiftedItem({ item, offset }: { item: ChecklistItem; offset: { x: number
       aria-hidden="true"
     >
       <span className="task-check__grip">
-        <GripIcon size={14} />
+        <GripIcon size={16} />
       </span>
       <span className="task-check__box">{item.checked && <SmallCheckIcon size={12} />}</span>
       <span className="task-check__text">{item.text}</span>

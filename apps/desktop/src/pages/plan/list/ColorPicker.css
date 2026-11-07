@@ -1,15 +1,16 @@
-/* 색 선택기 (목업 part-list.html의 list-catform 구역: sv·hue·hex·recent) */
+/* 색 선택기 (목업 part-list.html의 list-catform 구역: sv·hue·hex·recent)
+   색 평면·색상 막대의 그라데이션과 흰 손잡이는 색을 고르는 기능이라 그대로 둔다 */
 .color-picker {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-12);
 }
 
 /* 색 평면: 가로 채도, 세로 밝기 */
 .color-picker__plane {
   position: relative;
-  height: 150px;
-  border-radius: 8px;
+  height: 148px;
+  border-radius: var(--radius-control);
   background: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, var(--hue));
   cursor: crosshair;
   touch-action: none;
@@ -17,11 +18,11 @@
 
 .color-picker__plane i {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--text);
+  box-shadow: 0 0 0 1px var(--scrim-light);
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
@@ -30,8 +31,8 @@
 .color-picker__hue {
   position: relative;
   height: 12px;
-  margin: 0 9px;
-  border-radius: 99px;
+  margin: 0 var(--space-8);
+  border-radius: var(--radius-xs);
   background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
   cursor: pointer;
   touch-action: none;
@@ -41,24 +42,24 @@
 .color-picker__hue::before {
   content: "";
   position: absolute;
-  inset: -6px -9px;
+  inset: calc(-1 * var(--space-4)) calc(-1 * var(--space-8));
 }
 
 .color-picker__hue i {
   position: absolute;
-  top: -3px;
-  width: 18px;
-  height: 18px;
+  top: -2px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: var(--hue);
-  border: 2px solid #fff;
+  border: 2px solid var(--text);
+  box-shadow: 0 0 0 1px var(--scrim-light);
   transform: translateX(-50%);
   pointer-events: none;
 }
 
 .color-picker__hex {
-  font-family: Consolas, monospace;
-  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
 }
 
 .color-picker__hex--invalid,
@@ -70,9 +71,9 @@
 .color-picker__recent {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--space-8);
   align-items: center;
-  font-size: 11px;
+  font-size: var(--fs-11);
   color: var(--faint);
 }
 
@@ -81,8 +82,8 @@
   height: 20px;
   padding: 0;
   border: none;
-  border-radius: 5px;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-xs);
+  box-shadow: inset 0 0 0 1px var(--hover);
   cursor: pointer;
 }
 

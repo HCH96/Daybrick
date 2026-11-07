@@ -27,7 +27,7 @@ function CategoryOption({ name, color, ring, selected, onPick }: CategoryOptionP
       <span className="plan-quick__opt-name">{name}</span>
       {selected && (
         <span className="pop-row__check">
-          <SmallCheckIcon size={14} />
+          <SmallCheckIcon size={16} />
         </span>
       )}
     </button>

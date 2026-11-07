@@ -1,8 +1,8 @@
 /* 지원 카드 고르기 작은 창 (목업 part-card-pick: picker·pk) */
 .popover.card-pick {
   background: var(--popup);
-  border-radius: 12px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pop);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -12,19 +12,19 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
   height: 36px;
-  margin: 12px;
-  padding: 0 12px;
+  margin: var(--space-12);
+  padding: 0 var(--space-12);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--surface);
   color: var(--faint);
 }
 
 .card-pick__field:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(166, 140, 255, 0.18);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .card-pick__input {
@@ -35,7 +35,7 @@
   background: none;
   color: var(--text);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .card-pick__input::placeholder {
@@ -51,27 +51,29 @@
   scrollbar-color: var(--border-2) transparent;
 }
 
+/* 묶음 라벨 `진행 중`·`종료`: 위 묶음과 8, 아래 줄과 4 */
 .card-pick__group {
-  padding: 4px 12px 2px;
-  font-size: 11px;
-  font-weight: 700;
+  padding: var(--space-8) var(--space-16) var(--space-4);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
   color: var(--faint);
 }
 
 .card-pick__row {
-  width: calc(100% - 12px);
+  width: calc(100% - var(--space-16));
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 0 6px;
-  padding: 8px 10px;
+  gap: var(--space-12);
+  margin: 0 var(--space-8);
+  padding: var(--space-8);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: none;
   color: var(--text);
   font: inherit;
   text-align: left;
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .card-pick__row--on {
@@ -90,15 +92,15 @@
 }
 
 .card-pick__title {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .card-pick__sub {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -106,8 +108,8 @@
 }
 
 .card-pick__empty {
-  padding: 10px 14px 12px;
-  font-size: 12.5px;
+  padding: var(--space-8) var(--space-16) var(--space-12);
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
@@ -116,10 +118,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 6px;
-  padding: 10px 12px;
+  margin-top: var(--space-8);
+  padding: var(--space-8) var(--space-16);
   border-top: 1px solid var(--border);
-  font-size: 12px;
+  font-size: var(--fs-12);
+  font-variant-numeric: tabular-nums;
   color: var(--faint);
 }
 
@@ -127,7 +130,7 @@
 .task-card-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
   min-width: 0;
   max-width: 100%;
 }
@@ -139,8 +142,8 @@
   background: none;
   color: var(--text);
   font: inherit;
-  font-size: 13.5px;
-  font-weight: 600;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   text-decoration: underline;
   text-decoration-color: var(--faint);
   text-underline-offset: 3px;
@@ -161,11 +164,11 @@
 
 .task-card-link__co {
   flex-shrink: 0;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--faint);
 }
 
 .task-card-link__note {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--faint);
 }

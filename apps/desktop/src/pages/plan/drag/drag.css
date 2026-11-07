@@ -9,13 +9,13 @@
 
 .plan-drag-ghost--task {
   background: var(--surface-2);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   transform: rotate(-2deg);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55), 0 0 0 1.5px var(--accent);
+  box-shadow: var(--shadow-pop), 0 0 0 1.5px var(--accent);
 }
 
 .plan-drag-ghost--task .plan-task {
-  padding-left: 10px;
+  padding-left: var(--space-12);
 }
 
 .plan-drag-ghost.plan-tbar {
@@ -26,7 +26,7 @@
 /* 들어 올린 막대 (cal-move) */
 .plan-tbar.plan-tbar--lift {
   background: color-mix(in srgb, var(--cat) 24%, var(--sidebar));
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), 0 0 0 1.5px var(--cat);
+  box-shadow: inset 3px 0 0 var(--cat), var(--shadow-pop), 0 0 0 1.5px var(--cat);
   transform: rotate(-1deg);
 }
 
@@ -39,7 +39,7 @@
 
 /* 끝을 끄는 막대 (cal-resize) */
 .plan-tbar.plan-tbar--sel {
-  box-shadow: 0 0 0 1.5px var(--cat);
+  box-shadow: inset 3px 0 0 var(--cat), 0 0 0 1.5px var(--cat);
 }
 
 /* 막대 양 끝 손잡이: 마우스를 올렸을 때만 (R26) */
@@ -51,7 +51,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 10px;
+  width: 8px;
   display: none;
   cursor: ew-resize;
 }
@@ -59,8 +59,8 @@
 .plan-tbar__h::before {
   content: "";
   position: absolute;
-  top: 5px;
-  bottom: 5px;
+  top: var(--space-8);
+  bottom: var(--space-8);
   width: 4px;
   border-radius: 2px;
   background: var(--cat);
@@ -71,7 +71,7 @@
 }
 
 .plan-tbar__h--l::before {
-  left: 3px;
+  left: var(--space-2);
 }
 
 .plan-tbar__h--r {
@@ -79,7 +79,7 @@
 }
 
 .plan-tbar__h--r::before {
-  right: 3px;
+  right: var(--space-2);
 }
 
 .plan-tbar:hover .plan-tbar__h,
@@ -93,23 +93,26 @@
 
 /* 놓일 칸: 보라 테두리 + 옅은 보라 바탕 */
 .plan-cols i.plan-cols__drop {
-  background: rgba(166, 140, 255, 0.12);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
   box-shadow: inset 0 0 0 2px var(--accent);
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
 }
 
-/* 놓일 날짜 알약 */
+/* 놓일 날짜 표시 */
 .plan-drop-hint {
   position: absolute;
   left: 50%;
-  bottom: 10px;
+  bottom: var(--space-12);
   z-index: 2;
   transform: translateX(-50%);
-  padding: 2px 10px;
-  border-radius: 99px;
+  height: 20px;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-sm);
   background: var(--accent-soft);
   color: var(--accent);
-  font-size: 11.5px;
+  font-size: var(--fs-12);
+  font-variant-numeric: tabular-nums;
+  line-height: 20px;
   white-space: nowrap;
   pointer-events: none;
 }
@@ -121,26 +124,26 @@
 
 .plan-list.plan-list--drop {
   box-shadow: inset 0 0 0 2px var(--accent);
-  background: rgba(166, 140, 255, 0.07);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
 }
 
 .plan-list__drop-msg {
   position: absolute;
-  top: 4px;
-  left: 4px;
-  right: 4px;
+  top: var(--space-4);
+  left: var(--space-4);
+  right: var(--space-4);
   z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-8);
   height: 40px;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   border: 1.5px dashed var(--accent);
   background: var(--sidebar);
   color: var(--accent);
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   pointer-events: none;
 }
 
@@ -148,7 +151,7 @@
 /* 놓을 묶음 전체: 보라 테두리 + 옅은 보라 바탕 */
 .plan-group.plan-group--drop {
   box-shadow: inset 0 0 0 2px var(--accent);
-  background: rgba(166, 140, 255, 0.07);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
 }
 
 .plan-group--drop .plan-ghead,
@@ -170,9 +173,9 @@
 .plan-task.plan-task--ghost::after {
   content: "";
   position: absolute;
-  inset: 1px 2px;
+  inset: 0;
   border: 1.5px dashed var(--border-2);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   pointer-events: none;
 }
 

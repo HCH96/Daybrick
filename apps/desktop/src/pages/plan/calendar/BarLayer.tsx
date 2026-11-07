@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type CSSProperties } from "react";
 import type { PlanData, Task } from "../../../features/plan/types";
 import { countLanes, type WeekBar } from "../../../features/plan/weekLayout";
 import { NONE_GROUP_INFO, taskGroupInfo } from "../../../features/projects/group";
@@ -31,7 +31,7 @@ function BarLayer({ bars, tasks, plan, onOpenTask, draftCol, onSubmitDraft, onCl
         return <TaskBar key={bar.taskId} bar={bar} task={task} color={color} onOpen={onOpenTask} />;
       })}
       {draftCol !== null && (
-        <div className="plan-bars__draft" style={{ gridColumn: `${draftCol + 1} / span 1`, gridRow: countLanes(bars) + 1 }}>
+        <div className="plan-bars__draft" style={{ "--cat": NONE_GROUP_INFO.color, gridColumn: `${draftCol + 1} / span 1`, gridRow: countLanes(bars) + 1 } as CSSProperties}>
           <InlineTaskInput
             className="plan-task--bar"
             keepOpen={false}
