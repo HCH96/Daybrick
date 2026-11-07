@@ -7,21 +7,21 @@
 }
 
 .js-guide__toc {
-  padding: 16px 12px;
+  padding: var(--space-16) var(--space-12);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--space-2);
 }
 
 .js-guide__toc-item {
-  padding: 8px 12px;
+  padding: var(--space-8) var(--space-12);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: none;
   color: var(--muted);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-13);
   text-align: left;
   cursor: pointer;
 }
@@ -35,43 +35,43 @@
 .js-guide__toc-item--on:hover {
   background: var(--accent-soft);
   color: var(--accent);
-  font-weight: 700;
+  font-weight: var(--fw-medium);
 }
 
 .js-guide__main {
   min-height: 0;
   overflow-y: auto;
-  padding: 20px 24px;
-  font-size: 13px;
+  padding: var(--space-20) var(--space-24);
+  font-size: var(--fs-13);
 }
 
 .js-guide__main h4 {
-  margin: 0 0 6px;
-  font-size: 16px;
+  margin: 0 0 var(--space-8);
+  font-size: var(--fs-16);
 }
 
 .js-guide__main p {
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-12);
   color: var(--muted);
   line-height: 1.6;
 }
 
 .js-guide__list {
   margin: 0;
-  padding-left: 18px;
+  padding-left: var(--space-20);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-8);
   line-height: 1.6;
 }
 
 .js-guide__keys {
-  margin-top: 14px;
+  margin-top: var(--space-16);
 }
 
 .js-guide__key {
-  font-family: Consolas, monospace;
-  font-size: 12px;
+  font-family: var(--mono);
+  font-size: var(--fs-12);
   color: var(--muted);
   white-space: nowrap;
 }
@@ -83,17 +83,17 @@
 /* ===== 코드 상자 ===== */
 .js-code {
   position: relative;
-  border-radius: 10px;
-  background: #111114;
+  border-radius: var(--radius-control);
+  background: var(--bg);
   border: 1px solid var(--border);
 }
 
 .js-code pre {
   margin: 0;
-  padding: 14px 16px;
+  padding: var(--space-16) var(--space-16);
   overflow-x: auto;
   font-family: Consolas, monospace;
-  font-size: 12px;
+  font-size: var(--fs-12);
   line-height: 1.65;
   color: var(--neutral);
   white-space: pre;
@@ -101,19 +101,23 @@
 
 .js-code__copy {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  height: 26px;
-  padding: 0 10px;
+  top: var(--space-8);
+  right: var(--space-8);
+  height: 28px;
+  padding: 0 var(--space-12);
   border: none;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   background: var(--surface-2);
   color: var(--text);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--fs-12);
   cursor: pointer;
 }
 
+.js-code__copy {
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
 .js-code__copy:hover {
-  filter: brightness(1.15);
+  background: var(--border);
 }

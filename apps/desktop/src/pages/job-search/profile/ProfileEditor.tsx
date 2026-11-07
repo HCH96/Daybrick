@@ -69,8 +69,8 @@ function ProfileEditor({
         <div className="js-profile__draft-note">
           <AlertIcon />
           {latest
-            ? `저장하기 전까지는 기존 프로필(v${latest.version})로 채점해요.`
-            : "저장하기 전까지는 채점에 쓰이지 않아요."}
+            ? `저장하기 전까지는 기존 프로필(v${latest.version})로 채점해요`
+            : "저장하기 전까지는 채점에 쓰이지 않아요"}
         </div>
       )}
       <div className="js-profile__editor-body">
@@ -108,7 +108,7 @@ function ProfileEditor({
           </button>
         )}
         <button type="button" className="setup-btn setup-btn--primary" disabled={busy} onClick={onSave}>
-          <SmallCheckIcon size={14} />
+          <SmallCheckIcon size={16} />
           저장 (v{nextVersion})
         </button>
       </div>

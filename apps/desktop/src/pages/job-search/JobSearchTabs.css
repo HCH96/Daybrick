@@ -1,24 +1,28 @@
 /* 구직 관리 밑줄 탭. 목업 common.css의 .tabs·.tab 기준 */
 .job-search-tabs {
   display: flex;
-  gap: 4px;
+  gap: var(--space-4);
   border-bottom: 1px solid var(--border);
-  margin-bottom: 20px;
+  margin-bottom: var(--space-20);
 }
 
 .job-search-tabs__tab {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-16);
   margin-bottom: -1px;
   border: none;
   border-bottom: 2px solid transparent;
   background: none;
   color: var(--muted);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--fs-14);
   cursor: pointer;
+}
+
+.job-search-tabs__tab {
+  transition: color var(--dur-fast) var(--ease);
 }
 
 .job-search-tabs__tab:hover {
@@ -32,15 +36,14 @@
 
 .job-search-tabs__tab--on {
   color: var(--text);
-  font-weight: 700;
+  font-weight: var(--fw-medium);
   border-bottom-color: var(--accent);
 }
 
+/* 개수는 빛나는 배지 대신 muted 숫자 (1부 8) */
 .job-search-tabs__count {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 0 6px;
-  border-radius: 99px;
-  background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--muted);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-regular);
+  font-variant-numeric: tabular-nums;
 }

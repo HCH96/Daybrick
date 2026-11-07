@@ -3,19 +3,19 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-bottom: 20px;
+  padding-bottom: var(--space-20);
 }
 
 .js-recommend .setup-btn,
 .js-recommend__state .setup-btn {
-  height: 34px;
-  border-radius: 8px;
+  height: 36px;
+  border-radius: var(--radius-control);
 }
 
 .js-recommend .setup-btn--sm {
   height: 28px;
-  padding: 0 10px;
-  font-size: 12px;
+  padding: 0 var(--space-12);
+  font-size: var(--fs-12);
 }
 
 .js-recommend .setup-btn--primary {
@@ -24,8 +24,8 @@
 
 /* ===== 상태 상자: 1줄 사용액(UsageLine), 2줄 수집 상태 ===== */
 .js-recommend__status {
-  margin-bottom: 16px;
-  padding: 14px 18px;
+  margin-bottom: var(--space-16);
+  padding: var(--space-16) var(--space-20);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
@@ -34,23 +34,23 @@
 .js-recommend__status-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-top: 12px;
-  padding-top: 12px;
+  gap: var(--space-16);
+  margin-top: var(--space-12);
+  padding-top: var(--space-12);
   border-top: 1px solid var(--border);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-recommend__status-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-8);
   color: var(--muted);
 }
 
 .js-recommend__status-item b {
   color: var(--text);
-  font-weight: 600;
+  font-weight: var(--fw-medium);
 }
 
 .js-recommend__dot-sep {
@@ -59,18 +59,18 @@
 
 .js-recommend__faint {
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-12);
 }
 
 .js-recommend__chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-4);
   height: 22px;
-  padding: 0 8px;
-  border-radius: 99px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
 }
 
 .js-recommend__chip--red {
@@ -87,20 +87,20 @@
 .js-recommend__toolbar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: var(--space-8);
+  margin-bottom: var(--space-16);
 }
 
 .js-recommend__sort {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: 34px;
-  padding: 0 12px;
+  gap: var(--space-8);
+  height: 36px;
+  padding: 0 var(--space-12);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--surface);
-  font-size: 13px;
+  font-size: var(--fs-13);
   cursor: pointer;
 }
 
@@ -123,7 +123,8 @@
 
 .js-recommend__count {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
+  font-variant-numeric: tabular-nums;
 }
 
 .js-recommend__count b {
@@ -133,30 +134,30 @@
 .js-recommend__stale-note {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: 34px;
-  padding: 0 6px 0 12px;
-  border-radius: 8px;
+  gap: var(--space-8);
+  height: 36px;
+  padding: 0 var(--space-8) 0 var(--space-12);
+  border-radius: var(--radius-control);
   background: var(--amber-soft);
   color: var(--amber);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-recommend__right {
   margin-left: auto;
   display: flex;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .js-recommend__n {
   color: var(--muted);
-  font-weight: 400;
+  font-weight: var(--fw-regular);
 }
 
 /* ===== 결과 줄·빈 목록·읽는 중 ===== */
 .js-recommend__msg {
-  margin: -6px 0 14px;
-  font-size: 13px;
+  margin: calc(-1 * var(--space-8)) 0 var(--space-16);
+  font-size: var(--fs-13);
 }
 
 .js-recommend__msg--ok {
@@ -171,14 +172,14 @@
 .js-recommend__state {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-12);
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 /* ===== 카드 3열 ===== */
 .js-recommend__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  gap: var(--space-20);
 }

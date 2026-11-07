@@ -11,7 +11,7 @@ export function FileIcon({ size = 16 }: { size?: number }) {
   );
 }
 
-export function TextIcon({ size = 14 }: { size?: number }) {
+export function TextIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M4 6h16M4 12h16M4 18h10" />
@@ -21,7 +21,7 @@ export function TextIcon({ size = 14 }: { size?: number }) {
 
 export function UploadIcon() {
   return (
-    <LineIcon size={22}>
+    <LineIcon size={20}>
       <path d="M12 16V4M7 9l5-5 5 5M4 20h16" />
     </LineIcon>
   );
@@ -29,7 +29,7 @@ export function UploadIcon() {
 
 export function AlertIcon() {
   return (
-    <LineIcon size={14}>
+    <LineIcon size={16}>
       <path d="M12 3l10 18H2z" />
       <path d="M12 10v5M12 18v.01" />
     </LineIcon>
@@ -39,7 +39,7 @@ export function AlertIcon() {
 /** 고치기: 연필 */
 export function PencilIcon() {
   return (
-    <LineIcon size={14}>
+    <LineIcon size={16}>
       <path d="M4 20h4L19 9l-4-4L4 16z" />
       <path d="m13.5 6.5 4 4" />
     </LineIcon>

@@ -14,28 +14,28 @@
 }
 
 .js-popup .setup-btn {
-  height: 34px;
-  border-radius: 8px;
-  gap: 6px;
+  height: 36px;
+  border-radius: var(--radius-control);
+  gap: var(--space-8);
 }
 
 .js-popup--state {
   align-items: center;
   justify-content: center;
-  gap: 14px;
+  gap: var(--space-12);
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 /* ===== 인젝션 경고줄 (R13) ===== */
 .js-popup__warn {
   display: flex;
-  gap: 12px;
-  padding: 14px 22px;
+  gap: var(--space-12);
+  padding: var(--space-16) var(--space-24);
   background: var(--red-soft);
   color: var(--red);
-  border-bottom: 1px solid #5a2a2f;
-  font-size: 13px;
+  border-bottom: 1px solid var(--red-line);
+  font-size: var(--fs-13);
   flex-shrink: 0;
 }
 
@@ -45,16 +45,16 @@
 
 .js-popup__warn b {
   display: block;
-  font-size: 14px;
-  margin-bottom: 4px;
+  font-size: var(--fs-14);
+  margin-bottom: var(--space-4);
 }
 
 .js-popup__warn q {
   display: block;
-  margin-top: 6px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.25);
+  margin-top: var(--space-8);
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
   color: var(--text);
   quotes: "“" "”";
   white-space: pre-wrap;
@@ -63,9 +63,9 @@
 /* ===== 머리 ===== */
 .js-popup__head {
   display: flex;
-  gap: 16px;
+  gap: var(--space-16);
   align-items: flex-start;
-  padding: 18px 22px;
+  padding: var(--space-20) var(--space-24);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
@@ -78,8 +78,8 @@
 .js-popup__co {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: var(--space-8);
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
@@ -88,33 +88,39 @@
 }
 
 .js-popup__title {
-  margin: 4px 0 10px;
-  font-size: 20px;
-  font-weight: 800;
+  margin: var(--space-4) 0 var(--space-12);
+  font-size: var(--fs-20);
+  font-weight: var(--fw-semibold);
 }
 
 .js-popup__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--space-8);
 }
 
 .js-popup__head-side {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .js-popup__x {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   display: grid;
   place-items: center;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: none;
   color: var(--muted);
   cursor: pointer;
+}
+
+.js-popup__x,
+.js-popup__src-chip,
+.js-popup__src-dots {
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
 
 .js-popup__x:hover {
@@ -126,14 +132,14 @@
 .js-popup__chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-4);
   height: 22px;
-  padding: 0 8px;
-  border-radius: 99px;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-sm);
   background: var(--neutral-soft);
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
 }
 
@@ -173,10 +179,10 @@
 .js-popup__col {
   min-height: 0;
   overflow-y: auto;
-  padding: 18px 22px;
+  padding: var(--space-20) var(--space-24);
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-20);
 }
 
 .js-popup__col + .js-popup__col {
@@ -186,29 +192,29 @@
 .js-popup__sec-title {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin: 0 0 8px;
-  font-size: 13px;
-  font-weight: 700;
+  gap: var(--space-8);
+  margin: 0 0 var(--space-8);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   color: var(--muted);
 }
 
 .js-popup__sec-title--gap {
-  margin-top: 16px;
+  margin-top: var(--space-16);
 }
 
 .js-popup__empty {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-13);
   color: var(--faint);
 }
 
 /* ===== 점수 (R10, R51) ===== */
 .js-popup__score {
   display: flex;
-  gap: 18px;
+  gap: var(--space-20);
   align-items: center;
-  padding: 16px 18px;
+  padding: var(--space-16) var(--space-20);
   border-radius: var(--radius);
   background: var(--surface);
   border: 1px solid var(--border);
@@ -216,15 +222,16 @@
 }
 
 .js-popup__num {
-  font-size: 40px;
-  font-weight: 800;
+  font-size: var(--fs-34);
+  font-weight: var(--fw-semibold);
   line-height: 1;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .js-popup__num small {
-  font-size: 16px;
-  margin-left: 2px;
+  font-size: var(--fs-16);
+  margin-left: var(--space-2);
 }
 
 .js-popup__num--green {
@@ -245,29 +252,29 @@
 
 .js-popup__score--none .js-popup__num {
   color: var(--faint);
-  font-size: 22px;
+  font-size: var(--fs-20);
 }
 
 .js-popup__sum {
   flex: 1;
-  font-size: 13px;
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
 .js-popup__sum p {
-  margin: 6px 0 0;
+  margin: var(--space-8) 0 0;
 }
 
 /* ===== 강점·부족한 점 (R12) ===== */
 .js-popup__reasons {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .js-popup__reason {
-  padding: 10px 12px;
-  border-radius: 10px;
+  padding: var(--space-12) var(--space-12);
+  border-radius: var(--radius-control);
   background: var(--surface);
   border-left: 3px solid var(--green);
 }
@@ -277,15 +284,15 @@
 }
 
 .js-popup__reason-t {
-  font-size: 13px;
-  font-weight: 700;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
 }
 
 .js-popup__ev {
   display: flex;
-  gap: 8px;
-  margin-top: 5px;
-  font-size: 12px;
+  gap: var(--space-8);
+  margin-top: var(--space-4);
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
@@ -293,22 +300,22 @@
   flex-shrink: 0;
   width: 44px;
   color: var(--faint);
-  font-weight: 700;
+  font-weight: var(--fw-medium);
 }
 
 /* ===== 추출 항목 (R48, R50) ===== */
 .js-popup__fields {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-8);
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-popup__field {
   display: grid;
   grid-template-columns: 96px 1fr;
-  gap: 12px;
+  gap: var(--space-12);
 }
 
 .js-popup__field dt {
@@ -322,7 +329,7 @@
 
 .js-popup__field ul {
   margin: 0;
-  padding-left: 16px;
+  padding-left: var(--space-16);
 }
 
 .js-popup__dash {
@@ -332,7 +339,7 @@
 .js-popup__raw {
   display: block;
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-12);
 }
 
 .js-popup__sched {
@@ -340,22 +347,22 @@
 }
 
 .js-popup__sched + .js-popup__sched {
-  margin-top: 6px;
+  margin-top: var(--space-8);
 }
 
 .js-popup__stack {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: var(--space-4);
 }
 
 /* ===== 원문 ===== */
 .js-popup__source-text {
-  padding: 12px 14px;
-  border-radius: 10px;
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-control);
   background: var(--bg);
   border: 1px solid var(--border);
-  font-size: 12px;
+  font-size: var(--fs-12);
   line-height: 1.7;
   color: var(--muted);
   white-space: pre-wrap;
@@ -365,8 +372,8 @@
 .js-popup__posters {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: var(--space-8);
+  margin-bottom: var(--space-12);
 }
 
 .js-popup__poster {
@@ -374,7 +381,7 @@
   width: 300px;
   padding: 0;
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   overflow: hidden;
   background: var(--bg);
   cursor: zoom-in;
@@ -392,11 +399,11 @@
   bottom: 8px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.6);
-  font-size: 12px;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-sm);
+  background: var(--scrim);
+  font-size: var(--fs-12);
   color: var(--text);
 }
 
@@ -404,8 +411,8 @@
 .js-popup__foot {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 14px 22px;
+  gap: var(--space-8);
+  padding: var(--space-16) var(--space-24);
   border-top: 1px solid var(--border);
   flex-shrink: 0;
 }
@@ -414,7 +421,7 @@
   flex: 1;
   min-width: 0;
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-12);
 }
 
 .js-popup__left--ok {
@@ -430,29 +437,29 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  margin: -2px 0 10px;
-  font-size: 12px;
+  gap: var(--space-8);
+  margin: -2px 0 var(--space-12);
+  font-size: var(--fs-12);
 }
 
 .js-popup__src-label {
-  margin-right: 4px;
+  margin-right: var(--space-4);
   color: var(--muted);
-  font-weight: 700;
+  font-weight: var(--fw-medium);
 }
 
 .js-popup__src-chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-4);
   height: 22px;
-  padding: 0 8px;
+  padding: 0 var(--space-8);
   border: none;
-  border-radius: 99px;
+  border-radius: var(--radius-sm);
   background: var(--neutral-soft);
   color: var(--muted);
   font: inherit;
-  font-weight: 600;
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   cursor: pointer;
 }
@@ -469,12 +476,12 @@
 
 /* ⋯ 단추 (목업 sources.html 사이트 표의 ⋯) */
 .js-popup__src-dots {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   display: grid;
   place-items: center;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--muted);
   cursor: pointer;

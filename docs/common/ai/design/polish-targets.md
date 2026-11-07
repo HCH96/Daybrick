@@ -12,7 +12,7 @@
 | 4 | plan | Plan | 시간 축 계획 | `pages/plan/` | plan | 완료 | 2026-11-07 |
 | 5 | projects | Projects | 쌓인 기록 | `pages/projects/` | projects | 완료 | 2026-11-07 |
 | 6 | applications | Applications | 모음과 관리 | `pages/applications/` | applications | 완료 | 2026-11-07 |
-| 7 | job-search | Job Search | 모음과 관리 | `pages/job-search/` | job-search | 대기 | |
+| 7 | job-search | Job Search | 모음과 관리 | `pages/job-search/` | job-search | 완료 | 2026-11-08 |
 | 8 | settings | Settings | 가끔 들르는 화면 | `pages/settings/` | server-setup | 대기 | |
 | 9 | setup | 첫 실행 안내·연결 마법사·서버 화면 | 가끔 들르는 화면 | `pages/server-setup/`, `components/server/ServerUpdateScreen*`, `components/server/ServerRequired*` | server-setup | 대기 | |
 

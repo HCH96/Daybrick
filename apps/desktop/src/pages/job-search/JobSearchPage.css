@@ -1,6 +1,6 @@
-/* 지원 관리처럼 본문은 최대 1280px, 가운데 정렬 */
+/* 본문은 최대 1280px, 가운데 정렬 (design-direction 1부 1) */
 .job-search-page {
-  max-width: 1280px;
+  max-width: var(--content-max);
   height: 100%;
   margin: 0 auto;
   display: flex;
@@ -8,9 +8,10 @@
 }
 
 .job-search-page__title {
-  margin: 0 0 14px;
-  font-size: 22px;
-  font-weight: 800;
+  margin: 0 0 var(--space-20);
+  font-size: var(--fs-26);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.3px;
 }
 
 .job-search-page__body {
@@ -18,4 +19,31 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+}
+
+/*
+ * 이 페이지와 페이지가 띄우는 창(공고 상세·일정 제안·사이트 창·이미지 확대) 공통.
+ * <b>는 브라우저 기본 700이라 500으로, 공용 setup-btn은 굵기·올림 효과만 이 페이지에서 덮어쓴다.
+ */
+:is(.job-search-page, .js-popup, .js-sched, .js-dlg, .js-zoom) :is(b, strong) {
+  font-weight: var(--fw-medium);
+}
+
+:is(.job-search-page, .js-popup, .js-sched, .js-dlg) .setup-btn {
+  gap: var(--space-8);
+  font-weight: var(--fw-medium);
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+:is(.job-search-page, .js-popup, .js-sched, .js-dlg) .setup-btn:hover:not(:disabled) {
+  filter: none;
+  background: var(--border);
+}
+
+:is(.job-search-page, .js-popup, .js-sched, .js-dlg) .setup-btn--primary:hover:not(:disabled) {
+  background: var(--violet);
+}
+
+:is(.job-search-page, .js-popup, .js-sched, .js-dlg) .setup-btn--ghost:hover:not(:disabled) {
+  background: var(--hover);
 }

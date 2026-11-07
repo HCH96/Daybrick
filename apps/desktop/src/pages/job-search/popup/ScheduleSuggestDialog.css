@@ -14,20 +14,20 @@
 .js-sched__head {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 18px 22px;
+  gap: var(--space-8);
+  padding: var(--space-20) var(--space-24);
   border-bottom: 1px solid var(--border);
 }
 
 .js-sched__head h3 {
   margin: 0;
   flex: 1;
-  font-size: 17px;
-  font-weight: 800;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-semibold);
 }
 
 .js-sched__body {
-  padding: 20px 22px;
+  padding: var(--space-20) var(--space-24);
   overflow-y: auto;
   min-height: 0;
 }
@@ -35,13 +35,13 @@
 .js-sched__done {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  margin-bottom: 18px;
-  border-radius: 10px;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-16);
+  margin-bottom: var(--space-20);
+  border-radius: var(--radius-control);
   background: var(--green-soft);
   color: var(--green);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-sched__done b {
@@ -49,31 +49,31 @@
 }
 
 .js-sched__warn {
-  margin: -8px 0 18px;
-  font-size: 12px;
+  margin: -8px 0 var(--space-20);
+  font-size: var(--fs-12);
   color: var(--amber);
 }
 
 .js-sched__title {
-  margin: 0 0 8px;
-  font-size: 13px;
-  font-weight: 700;
+  margin: 0 0 var(--space-8);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-semibold);
   color: var(--muted);
 }
 
 .js-sched__list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .js-sched__row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-16);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   background: var(--surface);
   color: var(--text);
   font: inherit;
@@ -82,13 +82,13 @@
 }
 
 .js-sched__box {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   display: grid;
   place-items: center;
   flex-shrink: 0;
   border: 1.5px solid var(--muted);
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
 }
 
 .js-sched__box--on {
@@ -103,39 +103,39 @@
 }
 
 .js-sched__main b {
-  font-size: 14px;
+  font-size: var(--fs-14);
 }
 
 .js-sched__raw {
   display: block;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--faint);
 }
 
 .js-sched__date {
-  font-size: 13px;
-  font-weight: 700;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
 }
 
 .js-sched__vague {
-  margin-top: 16px;
-  padding: 12px 14px;
+  margin-top: var(--space-16);
+  padding: var(--space-12) var(--space-16);
   border: 1px dashed var(--border);
-  border-radius: 10px;
-  font-size: 13px;
+  border-radius: var(--radius-control);
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
 .js-sched__vague b {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-4);
   color: var(--text);
 }
 
 .js-sched__foot {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
-  padding: 14px 22px;
+  gap: var(--space-8);
+  padding: var(--space-16) var(--space-24);
   border-top: 1px solid var(--border);
 }

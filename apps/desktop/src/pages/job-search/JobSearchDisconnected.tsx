@@ -5,7 +5,7 @@ import "./JobSearchDisconnected.css";
 
 function CloudIcon() {
   return (
-    <LineIcon size={26}>
+    <LineIcon size={24}>
       <path d="M7 18a5 5 0 0 1-.6-10A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z" />
     </LineIcon>
   );
@@ -13,7 +13,7 @@ function CloudIcon() {
 
 function LinkIcon() {
   return (
-    <LineIcon size={15}>
+    <LineIcon size={16}>
       <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1" />
       <path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" />
     </LineIcon>

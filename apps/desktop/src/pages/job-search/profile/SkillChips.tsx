@@ -52,7 +52,7 @@ function SkillChips({ items, onChange }: SkillChipsProps) {
             aria-label={`${skill.name} 빼기`}
             onClick={() => onChange(items.filter((_, i) => i !== index))}
           >
-            <SmallCloseIcon size={10} />
+            <SmallCloseIcon size={12} />
           </button>
         </span>
       ))}
@@ -74,7 +74,7 @@ function SkillChips({ items, onChange }: SkillChipsProps) {
         />
       ) : (
         <button type="button" className="js-profile__mini-btn" onClick={() => setAdding(true)}>
-          <PlusIcon size={13} />
+          <PlusIcon size={12} />
           추가
         </button>
       )}

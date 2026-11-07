@@ -3,34 +3,34 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-bottom: 20px;
+  padding-bottom: var(--space-20);
 }
 
 .js-sources__state {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-12);
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-sources .setup-btn,
 .js-sources__state .setup-btn {
-  height: 34px;
-  border-radius: 8px;
+  height: 36px;
+  border-radius: var(--radius-control);
 }
 
 /* ===== 위쪽 단추 줄 ===== */
 .js-sources__bar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
+  gap: var(--space-8);
+  margin-bottom: var(--space-16);
 }
 
 .js-sources__msg {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-sources__msg--ok {
@@ -44,7 +44,7 @@
 .js-sources__actions {
   margin-left: auto;
   display: flex;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .js-sources__spinner {
@@ -52,8 +52,8 @@
   height: 12px;
   border-radius: 50%;
   border: 2px solid var(--border-2);
-  border-top-color: var(--accent);
-  animation: js-sources-spin 0.8s linear infinite;
+  border-top-color: var(--text);
+  animation: js-sources-spin 800ms linear infinite;
 }
 
 @keyframes js-sources-spin {
@@ -62,31 +62,37 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .js-sources__spinner {
+    animation: none;
+  }
+}
+
 /* ===== 사이트 표 ===== */
 .js-sources__panel {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 6px 8px;
+  padding: var(--space-8) var(--space-8);
 }
 
 .js-sources__table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-sources__table th {
   text-align: left;
   color: var(--muted);
-  font-weight: 600;
-  font-size: 12px;
-  padding: 10px 12px;
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-12);
+  padding: var(--space-12) var(--space-12);
   border-bottom: 1px solid var(--border);
 }
 
 .js-sources__table td {
-  padding: 12px;
+  padding: var(--space-12);
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
 }
@@ -106,24 +112,24 @@
 
 /* 자사 스위치 칸 (R90): 스위치 하나 폭 */
 .js-sources__table .js-sources__own {
-  width: 58px;
+  width: 60px;
   white-space: nowrap;
 }
 
 .js-sources__site b {
   display: block;
-  font-size: 14px;
+  font-size: var(--fs-14);
 }
 
 .js-sources__sub {
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-regular);
 }
 
 .js-sources__kv {
   font-family: Consolas, monospace;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
@@ -131,7 +137,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 3px;
+  gap: var(--space-4);
 }
 
 .js-sources__result .js-sources__sub {
@@ -142,10 +148,10 @@
 .js-sources__switch {
   display: inline-block;
   vertical-align: middle;
-  width: 34px;
+  width: 36px;
   height: 20px;
   border: none;
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   background: var(--track);
   position: relative;
   cursor: pointer;
@@ -155,13 +161,13 @@
 .js-sources__switch::after {
   content: "";
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 14px;
-  height: 14px;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: var(--muted);
-  transition: left 0.15s;
+  transition: transform var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
 }
 
 .js-sources__switch--on {
@@ -169,7 +175,7 @@
 }
 
 .js-sources__switch--on::after {
-  left: 17px;
+  transform: translateX(16px);
   background: var(--on-accent);
 }
 
@@ -186,12 +192,12 @@
 
 /* ⋯ 단추 (목업 .x-btn) */
 .js-sources__dots {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   display: grid;
   place-items: center;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--muted);
   cursor: pointer;
@@ -211,20 +217,21 @@
 .js-sources__chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-4);
   height: 22px;
-  padding: 0 8px;
-  border-radius: 99px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   background: var(--neutral-soft);
   color: var(--neutral);
 }
 
+/* 공유 사이트: 무채색 */
 .js-sources__chip--accent {
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: var(--neutral-soft);
+  color: var(--neutral);
 }
 
 .js-sources__chip--blue {
@@ -244,32 +251,32 @@
 
 /* ===== 어댑터 카드 ===== */
 .js-sources__adapters {
-  margin-top: 18px;
+  margin-top: var(--space-20);
 }
 
 .js-sources__title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  margin: 0 0 12px;
+  gap: var(--space-8);
+  font-size: var(--fs-14);
+  font-weight: var(--fw-semibold);
+  margin: 0 0 var(--space-12);
 }
 
 .js-sources__ad-list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: var(--space-12);
 }
 
 .js-sources__ad {
-  padding: 12px 14px;
-  border-radius: 10px;
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-control);
   background: var(--bg);
   border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-8);
   min-width: 0;
 }
 
@@ -277,16 +284,16 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .js-sources__ad-top b {
-  font-size: 14px;
+  font-size: var(--fs-14);
 }
 
 .js-sources__empty {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
   margin: 0;
 }
 
@@ -294,15 +301,15 @@
 .js-sources__ad-btn {
   align-self: flex-start;
   height: 28px;
-  margin-top: 4px;
-  padding: 0 10px;
-  font-size: 12px;
+  margin-top: var(--space-4);
+  padding: 0 var(--space-12);
+  font-size: var(--fs-12);
 }
 
 /* 수집 뒤 처리 상태 줄 (사용자 테스트 r1 추가 요청 5) */
 .js-sources__process {
-  margin-bottom: 14px;
-  padding: 10px 16px;
+  margin-bottom: var(--space-16);
+  padding: var(--space-12) var(--space-16);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);

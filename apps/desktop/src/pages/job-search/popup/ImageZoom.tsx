@@ -60,10 +60,10 @@ function ImageZoom({ urls, start, title, onClose }: ImageZoomProps) {
         {urls.length > 1 && (
           <>
             <button type="button" className="js-zoom__btn" aria-label="이전 이미지" onClick={() => go(index - 1)}>
-              <ChevronLeftIcon size={14} />
+              <ChevronLeftIcon size={16} />
             </button>
             <button type="button" className="js-zoom__btn" aria-label="다음 이미지" onClick={() => go(index + 1)}>
-              <ChevronRightIcon size={14} />
+              <ChevronRightIcon size={16} />
             </button>
           </>
         )}

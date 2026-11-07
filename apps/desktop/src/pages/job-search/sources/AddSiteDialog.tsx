@@ -154,7 +154,7 @@ function AddSiteDialog({ mode, adapters, sites, onClose, onSaved }: AddSiteDialo
       </button>
       {test.kind !== "idle" && (
         <button type="button" className="setup-btn" disabled={busy || blocker !== null} onClick={() => void runTest()}>
-          <RefreshIcon size={14} />
+          <RefreshIcon size={16} />
           다시 시험
         </button>
       )}
@@ -166,7 +166,7 @@ function AddSiteDialog({ mode, adapters, sites, onClose, onSaved }: AddSiteDialo
         aria-busy={saving}
         onClick={() => void save()}
       >
-        <SmallCheckIcon size={14} />
+        <SmallCheckIcon size={16} />
         {saving ? "저장 중…" : "저장"}
       </button>
     </>

@@ -90,7 +90,7 @@ function ExperienceList({ rows, kinds, onChange }: ExperienceListProps) {
                 빼기
               </button>
               <button type="button" className="js-profile__mini-btn" onClick={() => setEditing(null)}>
-                <SmallCheckIcon size={13} />
+                <SmallCheckIcon size={12} />
                 완료
               </button>
             </div>
@@ -130,7 +130,7 @@ function ExperienceList({ rows, kinds, onChange }: ExperienceListProps) {
         ),
       )}
       <button type="button" className="js-profile__mini-btn" onClick={add}>
-        <PlusIcon size={13} />
+        <PlusIcon size={12} />
         경력·프로젝트 추가
       </button>
     </div>

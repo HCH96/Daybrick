@@ -40,7 +40,7 @@ function SiteRowMenu({ site, anchor, onClose, onToggle, onDelete }: SiteRowMenuP
       {confirming && (
         <ConfirmDialog
           title={`"${site.name}" 사이트를 삭제할까요?`}
-          message="이 사이트는 더 수집하지 않고, 되돌릴 수 없어요."
+          message="이 사이트는 더 수집하지 않고, 되돌릴 수 없어요"
           note={SITE_DELETE_NOTE}
           confirmLabel="삭제"
           onCancel={() => setConfirming(false)}

@@ -41,7 +41,7 @@ function BalancePanel({ data }: { data: JobSearchData }) {
         기준 잔액
       </h3>
       <p className="js-settings__desc">
-        Anthropic 콘솔에서 본 남은 크레딧을 넣으면, 그때부터 사용액을 $0부터 다시 세서 예상 잔액을 보여줘요.
+        Anthropic 콘솔에서 본 남은 크레딧을 넣으면, 그때부터 사용액을 $0부터 다시 세서 예상 잔액을 보여줘요
       </p>
       <div className="js-settings__bal-now">
         {usage.baselineUsd === null || usage.estimatedUsd === null ? (

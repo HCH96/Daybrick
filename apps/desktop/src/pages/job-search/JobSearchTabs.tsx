@@ -4,11 +4,11 @@ import "./JobSearchTabs.css";
 interface JobSearchTabsProps {
   tab: JobSearchTabId;
   onChange: (tab: JobSearchTabId) => void;
-  /** 메일 제안 탭 옆 대기 중 제안 개수 칩. 0이거나 없으면 숨긴다 (JobSearchPage의 useMailCount) */
+  /** 메일 제안 탭 옆 대기 중 제안 개수(muted 숫자). 0이거나 없으면 숨긴다 (JobSearchPage의 useMailCount) */
   mailCount?: number;
 }
 
-/** 밑줄 탭 6개 (R1). 선택된 탭은 굵게 + 보라 밑줄. */
+/** 밑줄 탭 6개 (R1). 선택된 탭은 text 글자(500) + 보라 밑줄. */
 function JobSearchTabs({ tab, onChange, mailCount = 0 }: JobSearchTabsProps) {
   return (
     <nav className="job-search-tabs" role="tablist" aria-label="구직 관리 탭">

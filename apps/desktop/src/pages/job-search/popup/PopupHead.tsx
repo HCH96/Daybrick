@@ -59,7 +59,7 @@ function PopupHead({ detail, days, onClose, sources }: PopupHeadProps) {
       </div>
       <div className="js-popup__head-side">
         <button type="button" className="setup-btn" disabled={!url} onClick={() => url && openExternal(url)}>
-          <ExternalLinkIcon size={13} />
+          <ExternalLinkIcon size={12} />
           원문 보기
         </button>
         <button type="button" className="js-popup__x" aria-label="닫기" onClick={onClose}>

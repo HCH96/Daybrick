@@ -153,7 +153,7 @@ function FiltersTab() {
         <FilterPanel
           title="2차 필터"
           tag="AI 없음 · 추출 항목 사용"
-          desc="항목 추출이 끝난 공고를 직군·기술스택·경력·고용 형태로 거릅니다."
+          desc="항목 추출이 끝난 공고를 직군·기술스택·경력·고용 형태로 거릅니다"
           rules={second}
           kinds={SECOND_KINDS}
           disabled={busy}

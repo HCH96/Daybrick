@@ -4,27 +4,27 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-bottom: 20px;
+  padding-bottom: var(--space-20);
 }
 
 .js-filters__state {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-12);
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-filters .setup-btn,
 .js-filters__state .setup-btn {
-  height: 34px;
-  border-radius: 8px;
+  height: 36px;
+  border-radius: var(--radius-control);
 }
 
 .js-filters__sub {
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-regular);
 }
 
 .js-filters__sub--block {
@@ -35,31 +35,31 @@
 .js-filters__flow {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
+  gap: var(--space-8);
+  margin-bottom: var(--space-20);
 }
 
 .js-filters__flow-step {
   flex: 1;
   min-width: 0;
-  padding: 12px 14px;
-  border-radius: 10px;
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-control);
   background: var(--surface);
   border: 1px solid var(--border);
 }
 
 .js-filters__flow-step b {
   display: block;
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-filters__flow-step--ai {
-  border-color: #4a3f73;
+  border-color: var(--border-2);
 }
 
 .js-filters__n {
-  font-size: 18px;
-  font-weight: 800;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-semibold);
 }
 
 .js-filters__flow-arrow {
@@ -69,8 +69,8 @@
 }
 
 .js-filters__msg {
-  margin: -6px 0 12px;
-  font-size: 13px;
+  margin: -8px 0 var(--space-12);
+  font-size: var(--fs-13);
 }
 
 .js-filters__msg--ok {
@@ -85,7 +85,7 @@
 .js-filters__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: var(--space-20);
   align-items: start;
 }
 
@@ -93,37 +93,37 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 18px 20px;
+  padding: var(--space-20) var(--space-20);
   min-width: 0;
 }
 
 .js-filters__panel-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  margin: 0 0 12px;
+  gap: var(--space-8);
+  font-size: var(--fs-14);
+  font-weight: var(--fw-semibold);
+  margin: 0 0 var(--space-12);
 }
 
 .js-filters__panel-desc {
   color: var(--muted);
-  font-size: 13px;
-  margin: -6px 0 14px;
+  font-size: var(--fs-13);
+  margin: -8px 0 var(--space-16);
 }
 
 .js-filters__empty {
   color: var(--muted);
-  font-size: 13px;
-  margin: 8px 0;
+  font-size: var(--fs-13);
+  margin: var(--space-8) 0;
 }
 
 /* ===== 조건 줄 ===== */
 .js-filters__rule {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 11px 0;
+  gap: var(--space-12);
+  padding: var(--space-12) 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -142,41 +142,41 @@
 }
 
 .js-filters__rule-kind {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
-  margin-bottom: 4px;
+  margin-bottom: var(--space-4);
 }
 
 .js-filters__vals {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: var(--space-4);
 }
 
 /* 기술스택 자동 추림 고정 줄 */
 .js-filters__auto {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  margin-bottom: 4px;
-  border-radius: 10px;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-16);
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-control);
   background: var(--bg);
   border: 1px solid var(--border);
 }
 
 .js-filters__auto b {
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 /* ===== 스위치 (목업 .sw) ===== */
 .js-filters__switch {
   flex-shrink: 0;
   display: inline-block;
-  width: 34px;
+  width: 36px;
   height: 20px;
   border: none;
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   background: var(--track);
   position: relative;
   cursor: pointer;
@@ -186,13 +186,13 @@
 .js-filters__switch::after {
   content: "";
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 14px;
-  height: 14px;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: var(--muted);
-  transition: left 0.15s;
+  transition: transform var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
 }
 
 .js-filters__switch--on {
@@ -200,7 +200,7 @@
 }
 
 .js-filters__switch--on::after {
-  left: 17px;
+  transform: translateX(16px);
   background: var(--on-accent);
 }
 
@@ -218,12 +218,12 @@
 /* 휴지통 (목업 .x-btn) */
 .js-filters__x {
   flex-shrink: 0;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   display: grid;
   place-items: center;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--muted);
   cursor: pointer;
@@ -244,18 +244,19 @@
   display: inline-flex;
   align-items: center;
   height: 22px;
-  padding: 0 8px;
-  border-radius: 99px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   background: var(--neutral-soft);
   color: var(--neutral);
 }
 
+/* 포함 조건: 무채색 (tone 이름은 기능 쪽 그대로) */
 .js-filters__chip--accent {
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: var(--neutral-soft);
+  color: var(--neutral);
 }
 
 .js-filters__chip--red {
@@ -270,28 +271,28 @@
 
 /* ===== 추가 줄 (목업 .add-rule) ===== */
 .js-filters__add {
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: var(--space-12);
+  padding-top: var(--space-12);
   border-top: 1px dashed var(--border);
 }
 
 .js-filters__add-row {
   display: flex;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .js-filters__input {
   flex: 1;
   min-width: 0;
-  height: 34px;
-  padding: 0 10px;
+  height: 36px;
+  padding: 0 var(--space-12);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--surface);
   box-shadow: 0 0 0 1px var(--border-2) inset;
   color: var(--text);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-filters__input:focus {
@@ -304,9 +305,9 @@
 }
 
 .js-filters__hint {
-  margin: 6px 0 0;
+  margin: var(--space-8) 0 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--fs-12);
 }
 
 .js-filters__hint--bad {
@@ -315,10 +316,10 @@
 
 /* ===== 바닥 안내 (목업 .foot-note) ===== */
 .js-filters__foot {
-  margin-top: 16px;
+  margin-top: var(--space-16);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-12);
 }

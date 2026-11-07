@@ -37,7 +37,7 @@ function ResultCell({ site }: { site: Site }) {
   if (result.ok) {
     return (
       <span className="js-sources__chip js-sources__chip--green">
-        <SmallCheckIcon size={13} />
+        <SmallCheckIcon size={12} />
         성공 · 공고 {result.read}개
       </span>
     );

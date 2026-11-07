@@ -109,7 +109,7 @@ function PricesPanel({ data }: { data: JobSearchData }) {
           ))}
         </tbody>
       </table>
-      <div className="js-settings__foot-note">단가를 바꾸면 그 뒤 호출부터 새 단가로 계산해요.</div>
+      <div className="js-settings__foot-note">단가를 바꾸면 그 뒤 호출부터 새 단가로 계산해요</div>
       <div className="js-settings__actions">
         <button type="button" className="setup-btn" disabled={saving} onClick={() => void save()}>
           단가 저장

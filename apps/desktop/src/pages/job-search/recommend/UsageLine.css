@@ -3,37 +3,38 @@
 .usage-line__row {
   display: flex;
   align-items: center;
-  gap: 28px;
-  font-size: 13px;
+  gap: var(--space-28);
+  font-size: var(--fs-13);
+  font-variant-numeric: tabular-nums;
 }
 
 .usage-line__meter {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-width: 170px;
+  gap: var(--space-8);
+  min-width: 168px;
 }
 
 .usage-line__meter-top {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: var(--space-8);
 }
 
 .usage-line__k,
 .usage-line__of {
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--fs-12);
 }
 
 .usage-line__meter-top b,
 .usage-line__balance b {
-  font-size: 15px;
+  font-size: var(--fs-14);
 }
 
 .usage-line__bar {
-  height: 5px;
-  border-radius: 99px;
+  height: 4px;
+  border-radius: var(--space-2);
   background: var(--track);
   overflow: hidden;
 }
@@ -41,8 +42,8 @@
 .usage-line__bar i {
   display: block;
   height: 100%;
-  border-radius: 99px;
-  background: var(--accent);
+  border-radius: var(--space-2);
+  background: var(--neutral);
 }
 
 .usage-line__bar i.usage-line__fill--warn {
@@ -52,8 +53,8 @@
 .usage-line__balance {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding-left: 28px;
+  gap: var(--space-8);
+  padding-left: var(--space-28);
   border-left: 1px solid var(--border);
 }
 
@@ -68,10 +69,10 @@
 .usage-line__note {
   margin-left: auto;
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-12);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-8);
 }
 
 .usage-line__msg {
@@ -81,8 +82,11 @@
 .usage-line__retry {
   border: none;
   background: none;
-  color: var(--accent);
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--border-2);
+  text-underline-offset: 3px;
   font: inherit;
-  font-weight: 600;
+  font-weight: var(--fw-medium);
   cursor: pointer;
 }

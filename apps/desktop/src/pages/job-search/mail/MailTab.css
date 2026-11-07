@@ -3,27 +3,27 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding-bottom: 20px;
+  padding-bottom: var(--space-20);
 }
 
 .js-mail .setup-btn {
-  height: 30px;
-  border-radius: 8px;
+  height: 28px;
+  border-radius: var(--radius-control);
   margin-top: 0;
 }
 
 .js-mail .setup-btn--sm {
-  padding: 0 12px;
-  font-size: 13px;
+  padding: 0 var(--space-12);
+  font-size: var(--fs-13);
 }
 
 /* ===== 위쪽 줄 ===== */
 .js-mail__bar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-  font-size: 13px;
+  gap: var(--space-12);
+  margin-bottom: var(--space-16);
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
@@ -31,7 +31,7 @@
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-12);
 }
 
 .js-mail__bar-right b {
@@ -39,8 +39,8 @@
 }
 
 .js-mail__msg {
-  margin: -4px 0 14px;
-  font-size: 13px;
+  margin: -4px 0 var(--space-16);
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
@@ -56,14 +56,14 @@
 .js-mail__chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-4);
   height: 22px;
-  padding: 0 8px;
-  border-radius: 99px;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-sm);
   background: var(--neutral-soft);
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
 }
 
@@ -77,23 +77,24 @@
   color: var(--red);
 }
 
+/* 상태 변경 제안: 진행 중이라 파랑 */
 .js-mail__chip--accent {
-  background: var(--accent-soft);
-  color: var(--accent);
+  background: var(--blue-soft);
+  color: var(--blue);
 }
 
 /* ===== 대기 중 제안 카드 ===== */
 .js-mail__sugs {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-12);
 }
 
 .js-mail__sug {
   display: grid;
   grid-template-columns: 1fr 300px;
-  gap: 20px;
-  padding: 16px 18px;
+  gap: var(--space-20);
+  padding: var(--space-16) var(--space-20);
   border-radius: var(--radius);
   background: var(--surface);
   border: 1px solid var(--border);
@@ -106,47 +107,47 @@
 .js-mail__sug-app {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 8px;
+  gap: var(--space-8);
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
+  margin-bottom: var(--space-8);
 }
 
 .js-mail__meta {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 4px 8px;
-  font-size: 12px;
+  gap: var(--space-4) var(--space-8);
+  font-size: var(--fs-12);
   color: var(--muted);
-  margin-bottom: 8px;
+  margin-bottom: var(--space-8);
 }
 
 .js-mail__meta b {
   color: var(--text);
-  font-weight: 600;
-  font-size: 13px;
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-13);
 }
 
 .js-mail__excerpt {
-  padding: 8px 12px;
-  border-left: 3px solid var(--accent);
+  padding: var(--space-8) var(--space-12);
+  border-left: 3px solid var(--border-2);
   background: var(--bg);
-  border-radius: 0 8px 8px 0;
-  font-size: 13px;
+  border-radius: 0 var(--radius-control) var(--radius-control) 0;
+  font-size: var(--fs-13);
   color: var(--neutral);
 }
 
 .js-mail__change {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-left: 20px;
+  gap: var(--space-8);
+  padding-left: var(--space-20);
   border-left: 1px solid var(--border);
 }
 
 .js-mail__change-k {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
@@ -157,7 +158,7 @@
 .js-mail__move {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
   flex-wrap: wrap;
 }
 
@@ -168,8 +169,8 @@
 .js-mail__sched {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: var(--space-8);
+  font-size: var(--fs-13);
 }
 
 .js-mail__sched--none {
@@ -178,19 +179,19 @@
 
 .js-mail__btns {
   display: flex;
-  gap: 8px;
+  gap: var(--space-8);
   align-items: center;
   justify-content: flex-end;
   margin-top: auto;
 }
 
 .js-mail__empty {
-  padding: 28px 18px;
+  padding: var(--space-28) var(--space-20);
   border: 1px dashed var(--border);
   border-radius: var(--radius);
   text-align: center;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 /* ===== 처리한 제안 (목업 .panel.done-list) ===== */
@@ -198,32 +199,32 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px 18px;
+  padding: var(--space-16) var(--space-20);
 }
 
 .js-mail__done {
-  margin-top: 18px;
+  margin-top: var(--space-20);
 }
 
 .js-mail__panel-title {
-  margin: 0 0 6px;
-  font-size: 14px;
-  font-weight: 700;
+  margin: 0 0 var(--space-8);
+  font-size: var(--fs-14);
+  font-weight: var(--fw-semibold);
 }
 
 .js-mail__sub {
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-regular);
 }
 
 .js-mail__done-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 0;
+  gap: var(--space-12);
+  padding: var(--space-12) 0;
   border-bottom: 1px solid var(--border);
-  font-size: 13px;
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
@@ -233,7 +234,7 @@
 
 .js-mail__done-row b {
   color: var(--text);
-  font-weight: 600;
+  font-weight: var(--fw-medium);
 }
 
 .js-mail__done-mail {
@@ -246,6 +247,6 @@
 .js-mail__when {
   margin-left: auto;
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-12);
   white-space: nowrap;
 }

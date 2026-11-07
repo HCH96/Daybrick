@@ -2,75 +2,75 @@
 .js-settings {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: var(--space-20);
   align-content: start;
   overflow-y: auto;
-  padding-bottom: 20px;
+  padding-bottom: var(--space-20);
 }
 
 .js-settings__state {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-12);
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-settings__panel {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 18px 20px;
+  padding: var(--space-20) var(--space-20);
   min-width: 0;
 }
 
 .js-settings__title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  margin: 0 0 12px;
+  gap: var(--space-8);
+  font-size: var(--fs-14);
+  font-weight: var(--fw-semibold);
+  margin: 0 0 var(--space-12);
 }
 
 .js-settings__desc {
   color: var(--muted);
-  font-size: 13px;
-  margin: -6px 0 14px;
+  font-size: var(--fs-13);
+  margin: -8px 0 var(--space-16);
 }
 
 .js-settings__sub {
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-regular);
 }
 
 .js-settings__fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: var(--space-12);
 }
 
 .js-settings__field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
+  gap: var(--space-8);
+  margin-bottom: var(--space-16);
 }
 
 .js-settings__field > span:first-child {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
-  font-weight: 600;
+  font-weight: var(--fw-medium);
 }
 
 .js-settings__input {
   height: 36px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 12px;
-  border-radius: 8px;
+  gap: var(--space-8);
+  padding: 0 var(--space-12);
+  border-radius: var(--radius-control);
   border: 1px solid var(--border);
   background: var(--bg);
 }
@@ -87,7 +87,7 @@
   background: transparent;
   color: var(--text);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-settings__input input::placeholder {
@@ -96,40 +96,40 @@
 
 .js-settings__input--price {
   height: 32px;
-  padding: 0 8px;
+  padding: 0 var(--space-8);
   width: 72px;
 }
 
 .js-settings__unit {
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--fs-12);
 }
 
 .js-settings__hint {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--faint);
-  margin-top: -6px;
-  margin-bottom: 12px;
+  margin-top: -8px;
+  margin-bottom: var(--space-12);
 }
 
 .js-settings__hint--end {
-  margin: 12px 0 0;
+  margin: var(--space-12) 0 0;
 }
 
 .js-settings__actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-8);
 }
 
 .js-settings__actions .setup-btn,
 .js-settings__bal-input .setup-btn {
-  height: 34px;
-  border-radius: 8px;
+  height: 36px;
+  border-radius: var(--radius-control);
 }
 
 .js-settings__result {
-  font-size: 12px;
+  font-size: var(--fs-12);
 }
 
 .js-settings__result--ok {
@@ -143,21 +143,21 @@
 .js-settings__bal-now {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  margin-bottom: 12px;
-  font-size: 13px;
+  gap: var(--space-8);
+  margin-bottom: var(--space-12);
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
 .js-settings__bal-now b {
-  font-size: 20px;
+  font-size: var(--fs-20);
   color: var(--text);
 }
 
 .js-settings__bal-input {
   display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
 }
 
 .js-settings__bal-input .js-settings__input {
@@ -167,21 +167,21 @@
 .js-settings__tbl {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
-  margin-top: 8px;
+  font-size: var(--fs-13);
+  margin-top: var(--space-8);
 }
 
 .js-settings__tbl th {
   text-align: left;
   color: var(--muted);
-  font-weight: 600;
-  font-size: 12px;
-  padding: 10px 8px;
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-12);
+  padding: var(--space-12) var(--space-8);
   border-bottom: 1px solid var(--border);
 }
 
 .js-settings__tbl td {
-  padding: 10px 8px;
+  padding: var(--space-12) var(--space-8);
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
 }
@@ -191,7 +191,7 @@
 }
 
 .js-settings__foot-note {
-  margin: 16px 0 12px;
+  margin: var(--space-16) 0 var(--space-12);
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-12);
 }

@@ -4,16 +4,16 @@
 .js-add__steps {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-right: 8px;
-  font-size: 13px;
+  gap: var(--space-8);
+  margin-right: var(--space-8);
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
 .js-add__steps-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .js-add__steps-line {
@@ -23,7 +23,7 @@
 .js-add__step {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-8);
 }
 
 .js-add__step i {
@@ -33,8 +33,8 @@
   display: grid;
   place-items: center;
   font-style: normal;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
   background: var(--neutral-soft);
 }
 
@@ -45,7 +45,7 @@
 
 .js-add__step--on {
   color: var(--text);
-  font-weight: 700;
+  font-weight: var(--fw-medium);
 }
 
 .js-add__step--on i {
@@ -64,18 +64,18 @@
 .js-add__form {
   min-width: 0;
   margin: 0;
-  padding: 20px 22px;
+  padding: var(--space-20) var(--space-24);
   border: none;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-20);
 }
 
 .js-add__fields {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-20);
 }
 
 .js-add__fields .wiz-field + .wiz-field {
@@ -84,7 +84,7 @@
 
 .js-add__result {
   min-width: 0;
-  padding: 20px 22px;
+  padding: var(--space-20) var(--space-24);
   border-left: 1px solid var(--border);
   overflow-y: auto;
 }
@@ -93,11 +93,11 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .js-add__hint {
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--faint);
 }
 
@@ -106,11 +106,11 @@
   align-self: stretch;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-12);
+  border-radius: var(--radius-control);
   border: 1px solid var(--border);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-add__radio--col {
@@ -126,7 +126,7 @@
 .js-add__radio label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-8);
   cursor: pointer;
 }
 
@@ -137,21 +137,21 @@
 
 .js-add__radio .js-add__select {
   margin-left: auto;
-  width: 170px;
-  height: 30px;
+  width: 168px;
+  height: 28px;
 }
 
 .js-add__select {
   align-self: stretch;
-  height: 38px;
-  padding: 0 10px;
+  height: 40px;
+  padding: 0 var(--space-12);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--surface);
   box-shadow: 0 0 0 1px var(--border-2) inset;
   color: var(--text);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 /* ===== 규칙 파일 ===== */
@@ -159,20 +159,20 @@
   align-self: stretch;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .js-add__file-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-8);
   min-width: 0;
 }
 
 .js-add__small-btn {
-  height: 30px;
-  padding: 0 12px;
-  font-size: 13px;
+  height: 28px;
+  padding: 0 var(--space-12);
+  font-size: var(--fs-13);
   flex-shrink: 0;
 }
 
@@ -181,25 +181,25 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .js-add__faint {
-  font-size: 13px;
+  font-size: var(--fs-13);
   color: var(--faint);
 }
 
 .js-add__errors {
   margin: 0;
-  padding-left: 18px;
+  padding-left: var(--space-20);
   color: var(--red);
-  font-size: 12px;
+  font-size: var(--fs-12);
   line-height: 1.6;
 }
 
 .js-add__ok {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   color: var(--green);
 }
 
@@ -212,19 +212,19 @@
   align-self: stretch;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .js-add__var {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-12);
 }
 
 .js-add__var-name {
   font-family: Consolas, monospace;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
@@ -233,24 +233,24 @@
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 13px;
+  gap: var(--space-8);
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
 .js-test__line {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 10px;
-  font-size: 13px;
-  margin-bottom: 14px;
+  gap: var(--space-8);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-control);
+  font-size: var(--fs-13);
+  margin-bottom: var(--space-16);
 }
 
 .js-test__line ul {
-  margin: 6px 0 0;
-  padding-left: 18px;
+  margin: var(--space-8) 0 0;
+  padding-left: var(--space-20);
 }
 
 .js-test__line--ok {
@@ -266,8 +266,8 @@
 .js-test__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 14px;
+  gap: var(--space-8);
+  margin-bottom: var(--space-16);
 }
 
 .js-test__chip--green {
@@ -286,14 +286,14 @@
 }
 
 .js-test__sub {
-  margin-bottom: 8px;
-  font-size: 13px;
-  font-weight: 700;
+  margin-bottom: var(--space-8);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   color: var(--muted);
 }
 
 .js-test__table td {
-  padding: 10px 12px;
+  padding: var(--space-12) var(--space-12);
 }
 
 .js-test__faint {
@@ -308,9 +308,9 @@
 .js-add__own {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: 600;
+  gap: var(--space-8);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   cursor: pointer;
 }
 

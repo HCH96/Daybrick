@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { NAV_LABELS } from "../../app/pageLabels";
 import { usePageIntent } from "../../app/pageIntent";
 import { JobSearchProvider } from "../../features/job-search/JobSearchProvider";
 import { useServer } from "../../features/server/useServer";
@@ -68,7 +69,7 @@ function JobSearchPage() {
 
   return (
     <div className="job-search-page">
-      <h1 className="job-search-page__title">구직 관리</h1>
+      <h1 className="job-search-page__title">{NAV_LABELS["job-search"]}</h1>
       {!loading && !connected && <JobSearchDisconnected />}
       {!loading && connected && serverSession && (
         <JobSearchProvider key={serverSession.userId} session={serverSession}>

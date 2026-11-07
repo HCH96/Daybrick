@@ -29,7 +29,7 @@ function PostingCard({ posting, days, isNew, stale, onOpen }: PostingCardProps) 
     >
       <div className="posting-card__top">
         <span className="posting-card__co">{posting.company ?? "회사 없음"}</span>
-        {isNew && <span className="posting-card__new">new</span>}
+        {isNew && <span className="posting-card__new">새 공고</span>}
       </div>
       <div className="posting-card__title">{posting.title ?? "제목 없음"}</div>
       {meta.length > 0 && <div className="posting-card__meta">{meta.join(" · ")}</div>}

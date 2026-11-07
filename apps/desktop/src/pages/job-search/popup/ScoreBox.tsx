@@ -15,7 +15,7 @@ function unscored(detail: PostingDetail): { chip: string; tone: string; text: st
     case "waiting":
       return { chip: "채점 대기", tone: "amber", text: WAITING_NOTE };
     default:
-      return { chip: "채점 전", tone: "", text: "아직 처리 순서를 기다리는 공고예요." };
+      return { chip: "채점 전", tone: "", text: "아직 처리 순서를 기다리는 공고예요" };
   }
 }
 

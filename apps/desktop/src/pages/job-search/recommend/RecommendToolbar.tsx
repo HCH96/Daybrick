@@ -38,7 +38,7 @@ function RecommendToolbar(props: RecommendToolbarProps) {
             </option>
           ))}
         </select>
-        <ChevronDownIcon size={13} />
+        <ChevronDownIcon size={12} />
       </label>
       <span className="js-recommend__count">
         추천 <b>{count}</b>개

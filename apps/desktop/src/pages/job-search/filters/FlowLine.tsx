@@ -40,7 +40,7 @@ function FlowLine({ counts }: FlowLineProps) {
           <Fragment key={step.name}>
             {i > 0 && (
               <span className="js-filters__flow-arrow" aria-hidden="true">
-                <ChevronRightIcon size={18} />
+                <ChevronRightIcon size={20} />
               </span>
             )}
             <div className={`js-filters__flow-step${step.ai ? " js-filters__flow-step--ai" : ""}`}>

@@ -4,7 +4,7 @@ import LineIcon from "../../../components/icons/LineIcon";
 
 export function CalendarIcon() {
   return (
-    <LineIcon size={13}>
+    <LineIcon size={12}>
       <rect x="3" y="5" width="18" height="16" rx="2" />
       <path d="M3 10h18M8 3v4M16 3v4" />
     </LineIcon>

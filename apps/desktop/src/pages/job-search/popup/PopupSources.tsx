@@ -35,7 +35,7 @@ function PopupSources({ sources, locked, disabled, busyId, onUnbundle }: PopupSo
           onClick={() => s.url && openExternal(s.url)}
         >
           {s.siteName}
-          <ExternalLinkIcon size={11} />
+          <ExternalLinkIcon size={12} />
           {s.isRep && <span>· 대표</span>}
           {busyId === s.postingId && <span>· 푸는 중…</span>}
         </button>
@@ -64,7 +64,7 @@ function PopupSources({ sources, locked, disabled, busyId, onUnbundle }: PopupSo
               type="button"
               className="pop-row"
               disabled={locked || disabled}
-              title={locked ? "지원한 공고는 묶음을 풀 수 없어요." : undefined}
+              title={locked ? "지원한 공고는 묶음을 풀 수 없어요" : undefined}
               onClick={() => {
                 setMenuAnchor(null);
                 onUnbundle(s);

@@ -79,7 +79,7 @@ function SourcePanel({
         <FileIcon />
         자료
       </h3>
-      <p className="js-profile__desc">PDF, 마크다운 파일, 붙여 넣은 텍스트를 여러 개 넣을 수 있어요.</p>
+      <p className="js-profile__desc">PDF, 마크다운 파일, 붙여 넣은 텍스트를 여러 개 넣을 수 있어요</p>
 
       {sources.length > 0 && (
         <div className="js-profile__src-list">
@@ -142,7 +142,7 @@ function SourcePanel({
           <div>파일을 여기로 끌어 놓기</div>
           <div className="js-profile__btn-row">
             <button type="button" className="setup-btn" disabled={busy} onClick={() => fileRef.current?.click()}>
-              <PlusIcon size={13} />
+              <PlusIcon size={12} />
               파일 추가
             </button>
             <button type="button" className="setup-btn" disabled={busy} onClick={() => setPasting(true)}>

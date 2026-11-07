@@ -182,7 +182,7 @@ function SourcesTab() {
             disabled={collecting || busyId !== null}
             onClick={() => setDialog({ kind: "add" })}
           >
-            <PlusIcon size={14} />
+            <PlusIcon size={16} />
             사이트 추가
           </button>
         </div>

@@ -2,23 +2,23 @@
 .js-gmail__acct {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 10px;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-control);
   background: var(--bg);
   border: 1px solid var(--border);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-12);
 }
 
 .js-gmail__avatar {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--blue-soft);
   color: var(--blue);
   display: grid;
   place-items: center;
-  font-weight: 800;
+  font-weight: var(--fw-medium);
   flex-shrink: 0;
 }
 
@@ -29,7 +29,7 @@
 
 .js-gmail__acct-main b {
   display: block;
-  font-size: 14px;
+  font-size: var(--fs-14);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -39,10 +39,10 @@
   display: inline-flex;
   align-items: center;
   height: 22px;
-  padding: 0 8px;
-  border-radius: 99px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
 }
 
@@ -58,16 +58,16 @@
 
 .js-gmail__warn {
   color: var(--red);
-  font-size: 13px;
-  margin-bottom: 12px;
+  font-size: var(--fs-13);
+  margin-bottom: var(--space-12);
 }
 
 .js-gmail__kv {
   display: grid;
   grid-template-columns: 110px 1fr;
-  gap: 8px 12px;
-  font-size: 13px;
-  margin: 0 0 12px;
+  gap: var(--space-8) var(--space-12);
+  font-size: var(--fs-13);
+  margin: 0 0 var(--space-12);
 }
 
 .js-gmail__kv dt {
@@ -83,12 +83,12 @@
 }
 
 .js-gmail__guide {
-  margin-top: 14px;
-  padding: 10px 12px;
-  border-radius: 8px;
+  margin-top: var(--space-16);
+  padding: var(--space-12) var(--space-12);
+  border-radius: var(--radius-control);
   background: var(--bg);
   border: 1px solid var(--border);
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
@@ -97,6 +97,6 @@
 }
 
 .js-gmail__guide ol {
-  margin: 6px 0 0;
-  padding-left: 18px;
+  margin: var(--space-8) 0 0;
+  padding-left: var(--space-20);
 }
