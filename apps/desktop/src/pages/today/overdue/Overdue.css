@@ -10,23 +10,20 @@
 .overdue__head {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 18px 20px 6px;
+  gap: var(--space-8);
+  padding: var(--space-20) var(--space-20) var(--space-8);
 }
 
 .overdue__title {
   margin: 0;
-  font-size: 17px;
-  font-weight: 800;
+  font-size: var(--fs-16);
+  font-weight: var(--fw-semibold);
 }
 
+/* 개수: 배지 대신 흐린 숫자 */
 .overdue__count {
-  padding: 1px 9px;
-  border-radius: 99px;
-  background: var(--red-soft);
-  color: var(--red);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: var(--fs-14);
+  color: var(--muted);
 }
 
 .overdue__close {
@@ -37,20 +34,28 @@
   place-items: center;
   padding: 0;
   border: none;
-  border-radius: 7px;
+  border-radius: var(--radius-control);
   background: none;
   color: var(--muted);
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 .overdue__close:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--hover);
   color: var(--text);
 }
 
+.overdue__close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 .overdue__desc {
-  padding: 0 20px 12px;
-  font-size: 12.5px;
+  padding: 0 var(--space-20) var(--space-12);
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
@@ -66,13 +71,13 @@
 .overdue__foot {
   display: flex;
   justify-content: flex-end;
-  padding: 12px 20px 16px;
+  padding: var(--space-12) var(--space-20) var(--space-16);
   border-top: 1px solid var(--border);
 }
 
 /* ===== 한 줄 ===== */
 .overdue-row {
-  padding: 14px 20px;
+  padding: var(--space-16) var(--space-20);
   border-bottom: 1px solid var(--border);
 }
 
@@ -83,12 +88,12 @@
 .overdue-row__top {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-12);
 }
 
 .overdue-row__dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--cat);
   flex-shrink: 0;
@@ -100,23 +105,24 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 14.5px;
-  font-weight: 700;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
 }
 
 .overdue-row__late {
   flex-shrink: 0;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: var(--fs-12);
+  font-weight: var(--fw-medium);
   color: var(--red);
 }
 
+/* 둘째·셋째 줄은 제목 글자 줄에 맞춘다 (점 8 + 사이 12) */
 .overdue-row__meta {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin: 5px 0 10px 20px;
-  font-size: 12px;
+  gap: var(--space-12);
+  margin: var(--space-4) 0 var(--space-12) var(--space-20);
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
@@ -127,26 +133,26 @@
 .overdue-row__state {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-4);
 }
 
 .overdue-row__acts {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-left: 20px;
+  gap: var(--space-8);
+  margin-left: var(--space-20);
 }
 
 .overdue-row__preview {
   margin-left: auto;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--faint);
   white-space: nowrap;
 }
 
 .overdue-row__preview b {
-  color: var(--accent);
-  font-weight: 700;
+  color: var(--text);
+  font-weight: var(--fw-medium);
 }
 
 /* ===== 버튼 (목업 .btn.sm) ===== */
@@ -154,23 +160,25 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-4);
   height: 28px;
-  padding: 0 10px;
+  padding: 0 var(--space-12);
   border: 1px solid var(--border-2);
-  border-radius: 7px;
+  border-radius: var(--radius-control);
   background: var(--surface-2);
   color: var(--text);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--fs-12);
   white-space: nowrap;
   cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
 }
 
 .overdue-btn:hover:not(:disabled),
 .overdue-btn--open {
-  border-color: var(--accent);
-  color: var(--accent);
+  background: var(--neutral-soft);
 }
 
 .overdue-btn:focus-visible {
@@ -183,25 +191,25 @@
   cursor: default;
 }
 
-.overdue-btn--good,
-.overdue-btn--good:hover:not(:disabled) {
+.overdue-btn--good {
   border-color: transparent;
   background: var(--green-soft);
   color: var(--green);
 }
 
 .overdue-btn--good:hover:not(:disabled) {
-  filter: brightness(1.15);
+  background: var(--green-soft);
+  color: var(--text);
 }
 
-.overdue-btn--ghost,
-.overdue-btn--ghost:hover:not(:disabled) {
+.overdue-btn--ghost {
   border-color: transparent;
   background: transparent;
   color: var(--muted);
 }
 
 .overdue-btn--ghost:hover:not(:disabled) {
+  background: var(--hover);
   color: var(--text);
 }
 
@@ -210,42 +218,28 @@
   border-color: var(--accent);
   background: var(--accent);
   color: var(--on-accent);
-  font-weight: 700;
+  font-weight: var(--fw-medium);
 }
 
-/* ===== 날짜 고르기 (R37, 목업 picker) ===== */
+/* ===== 날짜 고르기 (R37, 목업 picker). 겉모양·달력은 공용 Popover·MiniCalendar ===== */
 .overdue-picker {
-  padding: 14px;
-  background: #26262c;
-  border-radius: 12px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-}
-
-.overdue-picker .mini-cal__head {
-  font-size: 14px;
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.overdue-picker .mini-cal__day {
-  height: 32px;
-  border-radius: 7px;
-  font-size: 12.5px;
+  padding: var(--space-16);
 }
 
 .overdue-picker__note {
-  margin-top: 10px;
-  font-size: 12px;
+  margin-top: var(--space-12);
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
 .overdue-picker__note b {
-  color: var(--accent);
+  color: var(--text);
+  font-weight: var(--fw-medium);
 }
 
 .overdue-picker__btns {
   display: flex;
   justify-content: flex-end;
-  gap: 6px;
-  margin-top: 10px;
+  gap: var(--space-8);
+  margin-top: var(--space-12);
 }

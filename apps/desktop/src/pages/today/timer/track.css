@@ -37,7 +37,7 @@
 .track-scene__dust { width: 4px; height: 4px; background: #5e5f66; }
 .track-scene__dust--s { width: 3px; height: 3px; }
 .track-scene__z { font-family: var(--mono); color: var(--muted); }
-.track-scene__shadow { top: 112px; width: 26px; height: 4px; border-radius: 2px; background: #000; }
+.track-scene__shadow { top: 112px; width: 26px; height: 4px; border-radius: 2px; background: #000; opacity: 0.5; }
 .track-scene__conf { width: 4px; height: 4px; }
 
 /* 툴팁: 평소 숨김, 마우스 올림·포커스 때만 "오늘 기록 / 목표" (R43) */
@@ -53,7 +53,9 @@
   white-space: nowrap;
   opacity: 0;
   transform: translate(-50%, 4px);
-  transition: opacity 0.18s, transform 0.18s;
+  transition:
+    opacity var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
   pointer-events: none;
 }
 
@@ -64,7 +66,7 @@
 }
 
 .track-scene:focus { outline: none; }
-.track-scene:focus-visible { outline: 2px solid #6b6c74; outline-offset: 4px; border-radius: 10px; }
+.track-scene:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-control); }
 
 /* ===== 움직임 (keyframes 이름은 시안과 같다) ===== */
 .track-scene--run .track-scene__cloud { animation: dbCloud 9s linear infinite alternate; }
@@ -79,10 +81,11 @@
 .track-scene--paused .track-scene__z--2 { animation-delay: 1s; }
 .track-scene--paused .track-scene__z--3 { animation-delay: 2s; }
 
-.track-scene--goal .track-scene__char { animation: dbJump 0.9s cubic-bezier(0.3, 0.7, 0.4, 1) infinite; }
-.track-scene--goal .track-scene__shadow { animation: dbShadow 0.9s cubic-bezier(0.3, 0.7, 0.4, 1) infinite; }
-.track-scene--goal .track-scene__flag-wave { transform-origin: 0 50%; animation: dbWave 0.8s ease-in-out infinite; }
-.track-scene--goal .track-scene__conf { animation: dbConf 1.8s linear infinite; }
+/* 골인: 두 번 뛰고 깃발이 두 번 흔들린 뒤(2초 안) 만세 자세로 멈춘다. 색종이는 한 번 떨어지고 사라진다 */
+.track-scene--goal .track-scene__char { animation: dbJump 0.9s cubic-bezier(0.3, 0.7, 0.4, 1) 2; }
+.track-scene--goal .track-scene__shadow { animation: dbShadow 0.9s cubic-bezier(0.3, 0.7, 0.4, 1) 2; }
+.track-scene--goal .track-scene__flag-wave { transform-origin: 0 50%; animation: dbWave 0.8s ease-in-out 2; }
+.track-scene--goal .track-scene__conf { opacity: 0; animation: dbConf 1.5s linear 1 backwards; }
 
 /* 골인 + 일시정지: 깃발은 멈추고 캐릭터는 깃발 앞에서 존다 (색종이 없음) */
 .track-scene--goal.track-scene--paused .track-scene__flag-wave { animation: none; }

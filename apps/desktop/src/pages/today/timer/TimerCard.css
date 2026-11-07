@@ -2,15 +2,15 @@
 .timer-card {
   --c: var(--accent); /* 지금 태스크의 카테고리 색 (D7) */
   height: 100%;
-  padding: 22px;
+  padding: var(--space-20);
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-16);
 }
 
 .timer-card__top {
   display: flex;
-  gap: 12px;
+  gap: var(--space-12);
   align-items: stretch;
 }
 
@@ -24,12 +24,13 @@
 .timer-card__proj {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  line-height: 18px;
+  gap: var(--space-8);
+  font-size: var(--fs-13);
+  line-height: 20px;
   color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .timer-card__dot {
@@ -41,25 +42,26 @@
 }
 
 .timer-card__title {
-  margin-top: 6px;
-  font-size: 17px;
+  margin-top: var(--space-4);
+  font-size: var(--fs-16);
   line-height: 24px;
-  font-weight: 700;
+  font-weight: var(--fw-semibold);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .timer-card__time {
-  margin-top: 10px;
+  margin-top: var(--space-12);
   font-family: var(--mono);
-  font-size: 56px;
-  font-weight: 600;
+  font-size: var(--fs-56);
+  font-weight: var(--fw-semibold);
   line-height: 1;
   letter-spacing: -0.03em;
   color: var(--text);
 }
 
+/* 달리는 동안만 콜론이 깜빡인다 (지금 진행 중인 것) */
 .timer-card__time .elapsed-clock__colon {
   animation: dbBlink 2s ease-in-out infinite;
 }
@@ -80,9 +82,9 @@
 }
 
 .timer-card__sub {
-  margin-top: 10px;
-  font-size: 13px;
-  line-height: 18px;
+  margin-top: var(--space-12);
+  font-size: var(--fs-13);
+  line-height: 20px;
   color: var(--muted);
 }
 
@@ -97,28 +99,30 @@
 
 .timer-card__guide {
   margin-top: auto;
-  font-size: 12.5px;
+  font-size: var(--fs-12);
   color: var(--faint);
 }
 
 .timer-card__btns {
   margin-top: auto;
   display: flex;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .timer-card__btn {
   flex: 1;
   height: 44px;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  font-size: 14px;
-  font-weight: 700;
+  gap: var(--space-8);
+  font: inherit;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .timer-card__btn:focus-visible {
@@ -139,6 +143,10 @@
 .timer-card__btn--stop {
   background: var(--surface-2);
   color: var(--neutral);
+}
+
+.timer-card__btn--stop:hover {
+  background: var(--neutral-soft);
 }
 
 @keyframes dbBlink {

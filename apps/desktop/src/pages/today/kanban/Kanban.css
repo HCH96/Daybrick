@@ -5,8 +5,8 @@
   min-height: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  padding: 14px;
+  gap: var(--space-12);
+  padding: var(--space-16);
 }
 
 .kanban-col {
@@ -19,20 +19,18 @@
 .kanban-col__head {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 6px 8px;
-  font-size: 14px;
-  font-weight: 800;
+  gap: var(--space-8);
+  padding: var(--space-4) var(--space-4) var(--space-12);
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
   flex-shrink: 0;
 }
 
+/* 개수: 배지 대신 흐린 숫자 */
 .kanban-col__count {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-regular);
   color: var(--faint);
-  background: var(--surface-2);
-  border-radius: 99px;
-  padding: 0 8px;
 }
 
 .kanban-col__list {
@@ -40,25 +38,27 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-8);
   overflow-y: auto;
 }
 
-/* 카드: 왼쪽 카테고리 색 띠는 안쪽 그림자 (--cat) */
+/* 카드: 제목, 카테고리 점, 시간만. 카테고리 색은 --cat */
 .kanban-card {
-  --cat: #8a8a96;
+  --cat: var(--faint);
   position: relative;
   flex-shrink: 0;
   display: flex;
-  gap: 10px;
+  gap: var(--space-12);
   align-items: flex-start;
-  padding: 12px 12px 12px 16px;
-  background: var(--surface);
+  padding: var(--space-12);
+  background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  box-shadow: inset 3px 0 0 var(--cat);
+  border-radius: var(--radius-control);
   cursor: pointer;
   text-align: left;
+  user-select: none;
+  touch-action: none;
+  transition: border-color var(--dur-fast) var(--ease);
 }
 
 .kanban-card:hover {
@@ -76,8 +76,8 @@
 }
 
 .kanban-card__title {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
   line-height: 1.4;
   overflow-wrap: anywhere;
 }
@@ -86,26 +86,36 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 6px;
-  font-size: 12px;
+  gap: var(--space-8);
+  margin-top: var(--space-4);
+  font-size: var(--fs-12);
   color: var(--muted);
 }
 
+.kanban-card__cat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
 .kanban-card__dot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--cat);
   flex-shrink: 0;
 }
 
+/* D-N, 오늘 마감: 작은 표시 */
 .kanban-card__due {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 0 7px;
-  border-radius: 99px;
-  background: var(--surface-2);
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-11);
+  font-weight: var(--fw-medium);
+  background: var(--neutral-soft);
   color: var(--muted);
 }
 
@@ -129,32 +139,26 @@
 
 /* ▶ 타이머 시작 (R11). 다른 타이머가 돌면 자물쇠(--off) */
 .kanban-card__play {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
   display: grid;
   place-items: center;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius-control);
   background: var(--accent-soft);
   color: var(--accent);
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.kanban-card__play:hover {
+  background: var(--accent-line);
 }
 
 .kanban-card__play svg {
-  margin-left: 2px;
-}
-
-/* 빈 열 점선 상자 (R15) */
-.kanban-empty {
-  border: 1.5px dashed var(--border);
-  border-radius: 10px;
-  padding: 22px 12px;
-  text-align: center;
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--faint);
+  margin-left: var(--space-2);
 }
 
 .kanban-card__play:focus-visible {
@@ -162,8 +166,9 @@
   outline-offset: 2px;
 }
 
-.kanban-card__play--off {
-  background: var(--surface-2);
+.kanban-card__play--off,
+.kanban-card__play--off:hover {
+  background: transparent;
   color: var(--faint);
 }
 
@@ -171,56 +176,56 @@
   margin-left: 0;
 }
 
-/* 타이머가 도는 카드 (R48, 목업 card.running·live·pulse) */
-.kanban-card--running {
-  border-color: var(--accent);
-  background: #24212f;
+/* 빈 열 점선 상자 (R15) */
+.kanban-empty {
+  border: 1px dashed var(--border-2);
+  border-radius: var(--radius-control);
+  padding: var(--space-24) var(--space-12);
+  text-align: center;
+  font-size: var(--fs-12);
+  line-height: 1.6;
+  color: var(--faint);
 }
 
+/* 타이머가 도는 카드 (R48): 보라 테두리 + 보라 점과 흐른 시간 */
+.kanban-card--running,
 .kanban-card--running:hover {
   border-color: var(--accent);
 }
 
 .kanban-card__live {
-  margin-top: 8px;
+  margin-top: var(--space-8);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-8);
   font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent);
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
+  color: var(--text);
 }
 
 .kanban-card__pulse {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 3px rgba(166, 140, 255, 0.25);
 }
 
-/* 막힘 안내 말풍선 (목업 today-blocked의 tip) */
+/* 막힘 안내 말풍선 (목업 today-blocked의 tip). 겉모양은 공용 Popover */
 .kanban-tip {
-  padding: 9px 12px;
-  background: #34343c;
-  font-size: 12px;
+  padding: var(--space-8) var(--space-12);
+  font-size: var(--fs-12);
   color: var(--text);
   overflow: visible;
 }
 
 .kanban-tip span {
   display: block;
-  margin-top: 2px;
+  margin-top: var(--space-2);
   color: var(--muted);
 }
 
 /* ── 끌기 (R13, 목업 part-drag의 col.drop·card.ghost·card.lifted) ── */
-.kanban-card {
-  user-select: none;
-  touch-action: none;
-}
-
 body.kanban-dragging,
 body.kanban-dragging * {
   cursor: grabbing !important;
@@ -228,11 +233,11 @@ body.kanban-dragging * {
 
 /* 놓을 열: 열 전체를 보라 점선 + 옅은 보라 바탕. 열 크기는 그대로 두고 바깥으로 넓혀 칠한다 */
 .kanban-col--drop {
-  border-radius: 10px;
+  border-radius: var(--radius-control);
   background: var(--accent-soft);
-  box-shadow: 0 0 0 5px var(--accent-soft);
-  outline: 1.5px dashed var(--accent);
-  outline-offset: 5px;
+  box-shadow: 0 0 0 var(--space-4) var(--accent-soft);
+  outline: 1px dashed var(--accent);
+  outline-offset: var(--space-4);
 }
 
 /* 원래 자리: 흐린 점선 자리표시 */
@@ -251,7 +256,7 @@ body.kanban-dragging * {
 .kanban-card--lifted {
   transform: rotate(-2deg);
   border-color: var(--border-2);
-  box-shadow: inset 3px 0 0 var(--cat), 0 12px 28px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-pop);
 }
 
 .kanban-card--lifted.kanban-card--running {
@@ -259,8 +264,9 @@ body.kanban-dragging * {
 }
 
 .kanban-ghost__tip {
-  margin-top: 6px;
+  margin-top: var(--space-8);
+  background: var(--surface-2);
   border: 1px solid var(--border-2);
-  border-radius: 8px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  border-radius: var(--radius-control);
+  box-shadow: var(--shadow-pop);
 }

@@ -38,14 +38,14 @@ function StartButton({ taskId, blockedBy }: StartButtonProps) {
         }}
         onKeyDown={(e) => e.stopPropagation()}
       >
-        {blocked ? <LockIcon /> : <PlayIcon />}
+        {blocked ? <LockIcon size={16} /> : <PlayIcon size={16} />}
       </button>
       {anchor && blockedBy !== null && (
         <Popover anchor={anchor} onClose={() => setAnchor(null)} placement="bottom-end" width={210} ariaLabel="타이머 시작 불가 이유" className="kanban-tip">
           {/* 겹침 층에 그려져도 React 이벤트는 카드로 번지므로 여기서 막는다 */}
           <div onClick={(e) => e.stopPropagation()}>
             다른 타이머가 돌고 있어요
-            <span>"{blockedBy}"를 끝내거나 중단하면 시작할 수 있어요.</span>
+            <span>"{blockedBy}"를 끝내거나 중단하면 시작할 수 있어요</span>
           </div>
         </Popover>
       )}

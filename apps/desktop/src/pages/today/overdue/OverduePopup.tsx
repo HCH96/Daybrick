@@ -40,7 +40,7 @@ function OverduePopup({ tasks, plan, todayKey, onClose }: OverduePopupProps) {
         <h3 className="overdue__title">끝내지 못한 태스크</h3>
         <span className="overdue__count">{tasks.length}</span>
         <button type="button" className="overdue__close" aria-label="닫기" onClick={onClose}>
-          <SmallCloseIcon size={15} />
+          <SmallCloseIcon size={16} />
         </button>
       </div>
       <div className="overdue__desc">끝일이 지났는데 완료하지 않은 태스크예요. 하나씩 처리하면 목록에서 빠져요.</div>

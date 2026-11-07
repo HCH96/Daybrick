@@ -60,7 +60,7 @@ function OverdueRow({ task, category, todayKey, onMove, onComplete }: OverdueRow
       </div>
       <div className="overdue-row__acts">
         <button type="button" className="overdue-btn" {...hoverProps("bring")} onClick={() => onMove(bringToToday(task, todayKey))}>
-          <BringInIcon />
+          <BringInIcon size={16} />
           오늘로 가져오기
         </button>
         <button
@@ -70,11 +70,11 @@ function OverdueRow({ task, category, todayKey, onMove, onComplete }: OverdueRow
           {...hoverProps("postpone")}
           onClick={(e) => setPickerAnchor(pickerAnchor ? null : e.currentTarget)}
         >
-          <DateIcon size={13} />
+          <DateIcon />
           다른 날로
         </button>
         <button type="button" className="overdue-btn overdue-btn--good" {...hoverProps("done")} onClick={onComplete}>
-          <SmallCheckIcon size={13} />
+          <SmallCheckIcon />
           완료
         </button>
         {hover && <Preview kind={hover} task={task} todayKey={todayKey} length={length} />}

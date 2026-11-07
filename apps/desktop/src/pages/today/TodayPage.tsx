@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { PAGE_LABELS } from "../../app/pageLabels";
+import { NAV_LABELS } from "../../app/pageLabels";
 import { usePlan } from "../../features/plan/store";
 import type { PlanData } from "../../features/plan/types";
 import { taskCardGroup } from "../../features/projects/group";
@@ -39,7 +39,7 @@ function TodayPage() {
   return (
     <div className="today-page">
       <header className="today-page__head">
-        <h1 className="today-page__title">{PAGE_LABELS.today}</h1>
+        <h1 className="today-page__title">{NAV_LABELS.today}</h1>
         <span className="today-page__date">{formatKoreanDate(parseDateKey(todayKey))}</span>
       </header>
       {kind === "ready" && plan.kind === "ready" && today.kind === "ready" ? (

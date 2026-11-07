@@ -30,7 +30,7 @@ function StreakTile({ totals, todayKey, goalMinutes }: StreakTileProps) {
     >
       <div className="today-summary__tile-key">
         <span className="today-summary__flame">
-          <FlameIcon />
+          <FlameIcon size={16} />
         </span>
         스트릭
       </div>

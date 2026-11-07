@@ -38,7 +38,7 @@ function FocusTile({ data, todayKey }: FocusTileProps) {
             aria-label="하루 목표 고치기"
             title="하루 목표 고치기"
           >
-            <PenIcon size={13} />
+            <PenIcon />
           </button>
         )}
       </div>

@@ -26,7 +26,7 @@ function TimerEmpty({ data, todayKey }: { data: TodayData; todayKey: string }) {
           <RunTrack data={data} todayKey={todayKey} running={null} />
         </div>
       </div>
-      <div className="timer-card__guide">시작 전·진행 중 카드의 ▶ 버튼을 누르면 여기서 시간이 흘러요.</div>
+      <div className="timer-card__guide">시작 전·진행 중 카드의 ▶ 버튼을 누르면 여기서 시간이 흘러요</div>
     </div>
   );
 }

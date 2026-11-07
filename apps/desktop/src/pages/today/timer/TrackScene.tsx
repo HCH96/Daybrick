@@ -16,16 +16,16 @@ const TRACK_END = 142;
 const TICKS = [14, 28, 43, 57, 71, 85, 99, 114, 128];
 const GOAL_LEFT = 92; // 골인 때 캐릭터는 깃발 앞
 
-/** 색종이 8개 (목업 part-timer-goal.html 값 그대로) */
+/** 색종이 8개 (목업 part-timer-goal.html 위치). 한 번만 떨어지고 2초 안에 모두 끝난다 */
 const CONFETTI: CSSProperties[] = [
-  { left: 96, top: 14, background: "var(--c)", animationDuration: "1.6s" },
-  { left: 112, top: 6, width: 3, height: 5, background: "var(--accent)", animationDuration: "1.9s", animationDelay: ".3s" },
-  { left: 128, top: 18, height: 3, background: "#f2c94c", animationDuration: "1.7s", animationDelay: ".7s" },
-  { left: 150, top: 10, width: 3, height: 3, background: "var(--text)", animationDuration: "2.1s", animationDelay: ".15s" },
-  { left: 84, top: 24, width: 3, background: "#f2c94c", animationDuration: "1.8s", animationDelay: ".95s" },
-  { left: 120, top: 2, background: "var(--text)", animationDuration: "2s", animationDelay: ".5s" },
-  { left: 104, top: 26, width: 3, height: 3, background: "var(--accent)", animationDuration: "1.5s", animationDelay: "1.1s" },
-  { left: 138, top: 4, width: 3, background: "var(--c)", animationDuration: "2.2s", animationDelay: ".8s" },
+  { left: 96, top: 14, background: "var(--c)", animationDuration: "1.5s" },
+  { left: 112, top: 6, width: 3, height: 5, background: "var(--accent)", animationDuration: "1.5s", animationDelay: ".2s" },
+  { left: 128, top: 18, height: 3, background: "#f2c94c", animationDuration: "1.4s", animationDelay: ".4s" },
+  { left: 150, top: 10, width: 3, height: 3, background: "var(--text)", animationDuration: "1.6s", animationDelay: ".1s" },
+  { left: 84, top: 24, width: 3, background: "#f2c94c", animationDuration: "1.3s", animationDelay: ".5s" },
+  { left: 120, top: 2, background: "var(--text)", animationDuration: "1.5s", animationDelay: ".3s" },
+  { left: 104, top: 26, width: 3, height: 3, background: "var(--accent)", animationDuration: "1.2s", animationDelay: ".6s" },
+  { left: 138, top: 4, width: 3, background: "var(--c)", animationDuration: "1.4s", animationDelay: ".5s" },
 ];
 
 /** 트랙 그림 한 장면 (R42–R46, timer-visual.md). 움직임은 track.css의 장면 클래스가 건다. */

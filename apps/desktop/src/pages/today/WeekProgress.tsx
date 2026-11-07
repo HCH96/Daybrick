@@ -45,7 +45,7 @@ function WeekProgress({ data, todayKey }: WeekProgressProps) {
       </div>
       {overdue.length > 0 && (
         <button type="button" className="week-progress__overdue" onClick={() => setOverdueOpen(true)}>
-          <AlertIcon />
+          <AlertIcon size={16} />
           미완료 <b>{overdue.length}</b>
         </button>
       )}

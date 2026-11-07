@@ -45,7 +45,7 @@ function TimerDropTip({ running, target }: { running: RunningTimer; target: "don
   return (
     <div className="kanban-tip kanban-ghost__tip">
       {target === "done" ? "놓으면 타이머 완료" : "놓으면 타이머 중단"}
-      <span>{target === "done" ? `${minutes}을 기록하고 태스크를 완료로 바꿔요.` : `${minutes}을 기록하고 시작 전으로 돌려요.`}</span>
+      <span>{target === "done" ? `${minutes}을 기록하고 태스크를 완료로 바꿔요` : `${minutes}을 기록하고 시작 전으로 돌려요`}</span>
     </div>
   );
 }

@@ -3,45 +3,46 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-20);
 }
 
 .today-page__head {
   display: flex;
   align-items: baseline;
-  gap: 14px;
+  gap: var(--space-12);
 }
 
 .today-page__title {
   margin: 0;
-  font-size: 26px;
-  font-weight: 800;
+  font-size: var(--fs-26);
+  font-weight: var(--fw-semibold);
   letter-spacing: -0.3px;
   white-space: nowrap;
 }
 
 .today-page__date {
-  font-size: 14px;
+  font-size: var(--fs-13);
   color: var(--muted);
   white-space: nowrap;
 }
 
+/* 패널: Home 카드와 같은 바탕 단계. 안쪽 카드·타일은 --surface-2로 한 단계 올린다 */
 .today-panel {
   min-width: 0;
   min-height: 0;
-  background: var(--sidebar);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
 }
 
 /* 이번 주 진행 바 한 줄 (R3·R5, 목업 week) */
 .today-page__week {
-  height: 54px;
+  height: 56px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 0 12px 0 18px;
+  gap: var(--space-16);
+  padding: 0 var(--space-12) 0 var(--space-20);
 }
 
 /* 칸반 : 오른쪽 = 3 : 2 (약 60 : 40, R3) */
@@ -50,7 +51,7 @@
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-  gap: 16px;
+  gap: var(--space-20);
 }
 
 .today-page__kanban {
@@ -58,17 +59,17 @@
   display: flex;
 }
 
-/* 오른쪽: 위 타이머 250px, 아래 오늘 요약 (간격 18) */
+/* 오른쪽: 위 타이머, 아래 오늘 요약 */
 .today-page__side {
   min-width: 0;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--space-20);
 }
 
 .today-page__timer {
-  height: 250px;
+  height: 248px;
   flex-shrink: 0;
 }
 
@@ -82,10 +83,10 @@
 }
 
 .today-page__notice {
-  padding: 48px 16px;
+  padding: 48px var(--space-16);
   text-align: center;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--fs-13);
 }
 
 .today-page__notice--error {

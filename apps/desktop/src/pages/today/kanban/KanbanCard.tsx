@@ -47,8 +47,10 @@ export function KanbanCardBody({ task, category, todayKey, live }: KanbanCardBod
     <div className="kanban-card__main">
       <div className="kanban-card__title">{task.title || "제목 없음"}</div>
       <div className="kanban-card__meta">
-        <span className="kanban-card__dot" />
-        {category?.name ?? "미분류"}
+        <span className="kanban-card__cat">
+          <span className="kanban-card__dot" />
+          {category?.name ?? "미분류"}
+        </span>
         {dday && <span className={dday.dueToday ? "kanban-card__due kanban-card__due--today" : "kanban-card__due"}>{dday.text}</span>}
         {task.status === "done" && <span className="kanban-card__when">· {formatDoneAt(task.completedAt, todayKey)}</span>}
       </div>
@@ -63,7 +65,7 @@ export function KanbanCardBody({ task, category, todayKey, live }: KanbanCardBod
 }
 
 /**
- * 칸반 카드 (R10–R13, R48): 왼쪽 카테고리 색 띠 + 제목 + 색 점·카테고리 이름,
+ * 칸반 카드 (R10–R13, R48): 제목 + 색 점·카테고리 이름,
  * 여러 날이면 "D-N" / 끝일이 오늘이면 주황 "오늘 마감".
  * 완료 카드는 투명 바탕·흐린 제목에 끝낸 때를 보이고 ▶가 없다.
  * 타이머가 도는 카드는 보라 테두리 + 아래 보라 점과 흐른 시간 H:MM, ▶ 없음.

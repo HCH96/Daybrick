@@ -1,14 +1,14 @@
 /* 이번 주 진행 바 안쪽 (R5–R7, 목업 today.html의 week-label·bar·week-count·overdue-btn) */
 .week-progress__label {
-  font-size: 14px;
-  font-weight: 800;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-semibold);
   white-space: nowrap;
 }
 
 .week-progress__label span {
-  margin-left: 6px;
-  font-size: 12px;
-  font-weight: 400;
+  margin-left: var(--space-8);
+  font-size: var(--fs-12);
+  font-weight: var(--fw-regular);
   color: var(--faint);
 }
 
@@ -17,63 +17,56 @@
   height: 8px;
   display: flex;
   overflow: hidden;
-  border-radius: 99px;
+  border-radius: var(--radius-xs);
   background: var(--surface-2);
 }
 
 .week-progress__bar i {
   display: block;
   height: 100%;
-  border-radius: 99px;
   background: var(--green);
-  transition: width 0.3s ease;
 }
 
 .week-progress__count {
-  font-size: 13px;
+  font-size: var(--fs-13);
   color: var(--muted);
   white-space: nowrap;
 }
 
 .week-progress__count b {
   color: var(--text);
-  font-size: 15px;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
 }
 
+/* 미완료 N: 연한 빨강 바탕 버튼, 개수는 같은 줄의 숫자 */
 .week-progress__overdue {
   height: 32px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 12px;
+  gap: var(--space-8);
+  padding: 0 var(--space-12);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-control);
   background: var(--red-soft);
   color: var(--red);
   font: inherit;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: var(--fs-13);
+  font-weight: var(--fw-medium);
   white-space: nowrap;
   cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
 }
 
 .week-progress__overdue:hover {
-  filter: brightness(1.15);
+  background: var(--red-line);
 }
 
 .week-progress__overdue:focus-visible {
-  outline: 2px solid var(--red);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
 .week-progress__overdue b {
-  min-width: 20px;
-  height: 20px;
-  display: grid;
-  place-items: center;
-  padding: 0 6px;
-  border-radius: 99px;
-  background: var(--red);
-  color: var(--on-accent);
-  font-size: 11px;
+  font-weight: var(--fw-medium);
 }
