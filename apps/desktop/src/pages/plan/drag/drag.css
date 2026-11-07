@@ -93,7 +93,7 @@
 
 /* 놓일 칸: 보라 테두리 + 옅은 보라 바탕 */
 .plan-cols i.plan-cols__drop {
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  background: var(--accent-drop);
   box-shadow: inset 0 0 0 2px var(--accent);
   border-radius: var(--radius-xs);
 }
@@ -124,7 +124,7 @@
 
 .plan-list.plan-list--drop {
   box-shadow: inset 0 0 0 2px var(--accent);
-  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  background: var(--accent-drop);
 }
 
 .plan-list__drop-msg {
@@ -151,7 +151,7 @@
 /* 놓을 묶음 전체: 보라 테두리 + 옅은 보라 바탕 */
 .plan-group.plan-group--drop {
   box-shadow: inset 0 0 0 2px var(--accent);
-  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  background: var(--accent-drop);
 }
 
 .plan-group--drop .plan-ghead,

@@ -95,7 +95,7 @@
 }
 
 .plan-cols .plan-cols__today {
-  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  background: var(--accent-wash);
 }
 
 /* 막대 층: 줄 = lane, 칸 = col (R23·R29) */

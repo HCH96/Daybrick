@@ -99,7 +99,7 @@
 
 /* 오늘: 아주 옅은 보라 바탕 + 보라 숫자 표시 (화면의 보라는 여기 하나) */
 :where(.cal-grid) .cal-day--today {
-  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  background: var(--accent-wash);
 }
 
 :where(.cal-grid) .cal-day__num {

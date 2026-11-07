@@ -13,7 +13,7 @@
   border-radius: var(--radius-xs);
   background: var(--surface);
   border: 1.5px solid var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
   cursor: text;
 }
 
@@ -72,7 +72,7 @@
 
 /* ===== 드래그 범위 (5-2): 지나간 칸을 보라 테두리로 묶는다 ===== */
 .cal-day.cal-day--sel {
-  background: color-mix(in srgb, var(--accent) 13%, var(--surface));
+  background: var(--accent-soft);
   box-shadow: inset 0 1.5px 0 var(--accent), inset 0 -1.5px 0 var(--accent);
 }
 
@@ -111,7 +111,7 @@
 
 .cal-pe__title:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
 }
 
 .cal-pe__row {
@@ -152,7 +152,7 @@
 .cal-pe__fld--focus,
 .cal-pe__time:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
   outline: none;
 }
 

@@ -286,7 +286,7 @@
   padding: 0 var(--space-12);
   border: 1px dashed var(--accent);
   border-radius: var(--radius-control);
-  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  background: var(--accent-drop);
   color: var(--text);
   font: inherit;
   font-size: var(--fs-13);

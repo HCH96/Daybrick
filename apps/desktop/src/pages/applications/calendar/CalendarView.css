@@ -162,7 +162,7 @@
 
 /* 오늘: 아주 옅은 보라 바탕 + 보라 숫자 칸 (이 보기의 보라는 여기 하나) */
 .cal-view .cal-day--today {
-  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  background: var(--accent-wash);
 }
 
 .cal-view .cal-day--today .cal-day__num span {

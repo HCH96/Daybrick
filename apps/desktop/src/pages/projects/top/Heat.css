@@ -101,7 +101,7 @@
 
 @keyframes proj-heat-breathe {
   50% {
-    outline-color: color-mix(in srgb, var(--text) 25%, transparent);
+    outline-color: var(--text-line);
   }
 }
 
@@ -116,6 +116,7 @@
 
 /* 머리의 진하기 범례 */
 .proj-heat__legend {
+  --hc: var(--accent); /* 범례는 늘 보라 단계 (칸과 같은 계산) */
   display: flex;
   align-items: center;
   gap: var(--space-4);
@@ -131,15 +132,15 @@
 }
 
 .proj-heat__legend i.l1 {
-  background: color-mix(in srgb, var(--accent) 28%, var(--surface-2));
+  background: color-mix(in srgb, var(--hc) 28%, var(--surface-2));
 }
 
 .proj-heat__legend i.l2 {
-  background: color-mix(in srgb, var(--accent) 52%, var(--surface-2));
+  background: color-mix(in srgb, var(--hc) 52%, var(--surface-2));
 }
 
 .proj-heat__legend i.l3 {
-  background: color-mix(in srgb, var(--accent) 78%, var(--surface-2));
+  background: color-mix(in srgb, var(--hc) 78%, var(--surface-2));
 }
 
 .proj-heat__legend i.l4 {

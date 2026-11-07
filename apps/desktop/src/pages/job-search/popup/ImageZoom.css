@@ -7,7 +7,7 @@
   align-items: center;
   gap: var(--space-12);
   padding: var(--space-24);
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  background: var(--scrim-solid);
   pointer-events: auto;
   outline: none;
   animation: modal-fade var(--dur-fast) var(--ease);

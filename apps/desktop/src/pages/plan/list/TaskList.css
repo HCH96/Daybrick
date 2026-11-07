@@ -184,7 +184,7 @@
 .plan-quick__field:focus-within,
 .plan-field--inline:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
 }
 
 .plan-quick__input {
