@@ -2,15 +2,16 @@ import { useMemo } from "react";
 import { useApplications } from "../../../features/applications/store";
 import { useCalendar } from "../../../features/calendar/store";
 import type { CalSources } from "../../../features/calendar/items";
-import { buildUpcoming } from "../../../features/home/upcoming";
+import { buildUpcoming, groupUpcoming } from "../../../features/home/upcoming";
 import { usePlan } from "../../../features/plan/store";
 import { useTodayKey } from "../../../features/today/useTodayKey";
 import CardState from "../CardState";
 import UpcomingDay from "./UpcomingDay";
+import UpcomingGap from "./UpcomingGap";
 import "./Upcoming.css";
 
 /**
- * 홈 "다가오는 7일" 카드 본문 (R29–R34).
+ * 홈 "다가오는 7일" 카드 본문 (R29–R34). 항목 있는 날·오늘은 날짜 묶음, 이어진 빈 날은 한 줄로 합친다 (D19).
  * 플랜·지원 관리·캘린더 중 하나라도 불러오는 중이면 loading, 모두 못 읽었으면 error.
  * 일부만 못 읽었으면 그 항목만 빼고 보여 준다 (캘린더와 같은 규칙).
  */
@@ -47,9 +48,13 @@ function UpcomingCard() {
 
   return (
     <div className="upcoming">
-      {days.map((day) => (
-        <UpcomingDay key={day.dateKey} day={day} />
-      ))}
+      {groupUpcoming(days).map((block) =>
+        block.kind === "day" ? (
+          <UpcomingDay key={block.day.dateKey} day={block.day} todayKey={todayKey} />
+        ) : (
+          <UpcomingGap key={`gap-${block.from}`} from={block.from} to={block.to} />
+        ),
+      )}
       <div className="upcoming__fade" aria-hidden="true" />
     </div>
   );

@@ -1,25 +1,36 @@
-import { shortDateLabel, type UpcomingDay as UpcomingDayData } from "../../../features/home/upcoming";
+import { dayParts, type UpcomingDay as UpcomingDayData } from "../../../features/home/upcoming";
 import UpcomingRow from "./UpcomingRow";
 
 interface UpcomingDayProps {
   day: UpcomingDayData;
+  todayKey: string;
 }
 
-/** 하루 묶음: 날짜 머리 + 줄들. 항목이 없는 날은 머리만 흐리게 (R29, R33) */
-function UpcomingDay({ day }: UpcomingDayProps) {
-  const blank = day.rows.length === 0;
-  const date = shortDateLabel(day.dateKey);
-  // "오늘"·"내일" 머리 옆에는 날짜를 작게 붙인다
-  const named = day.label !== date;
+/**
+ * 하루 묶음: 왼쪽 날짜 열(큰 숫자 + "오늘"·"내일"·요일) + 오른쪽 칩 목록 (R29, R33).
+ * 오늘은 연한 보라 바탕이고, 비어 있으면 칩 자리에 "일정 없음"을 흐리게 보인다.
+ */
+function UpcomingDay({ day, todayKey }: UpcomingDayProps) {
+  const parts = dayParts(day.dateKey, todayKey);
+  // 오늘 색(--accent)이 토·일 색보다 먼저다
+  const labelClass = day.isToday
+    ? ""
+    : parts.weekend
+      ? ` upcoming-day__label--${parts.weekend}`
+      : "";
   return (
-    <div className={`upcoming-day${blank ? " upcoming-day--blank" : ""}`}>
-      <div className={`upcoming-day__head${day.isToday ? " upcoming-day__head--today" : ""}`}>
-        {day.label}
-        {named && <small>{date}</small>}
+    <div className={`upcoming-day${day.isToday ? " upcoming-day--today" : ""}`}>
+      <div className="upcoming-day__date">
+        <b>{parts.day}</b>
+        <small className={`upcoming-day__label${labelClass}`}>{parts.label}</small>
       </div>
-      {day.rows.map((row) => (
-        <UpcomingRow key={row.key} row={row} />
-      ))}
+      <div className="upcoming-day__list">
+        {day.rows.length === 0 ? (
+          <span className="upcoming-day__none">일정 없음</span>
+        ) : (
+          day.rows.map((row) => <UpcomingRow key={row.key} row={row} />)
+        )}
+      </div>
     </div>
   );
 }
