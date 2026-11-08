@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { isTauri } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { useSync } from "../sync/useSync";
 import { saveNotificationsFile } from "./storage";
 import type { NotificationsFile } from "./types";
 
@@ -15,6 +16,10 @@ export function useAutoSave(file: NotificationsFile | null): void {
   const lastSavedRef = useRef<NotificationsFile | null>(null); // 파일과 같은 내용
   const pendingRef = useRef<NotificationsFile | null>(null); // 아직 쓰지 않은 내용
   const timerRef = useRef<number | undefined>(undefined);
+  // 창을 닫을 때 동기화의 마지막 올리기가 끝날 때까지 이 처리기도 기다린다 (먼저 끝나면 창이 닫혀 올리기가 끊김, 데이터 동기화 R12)
+  const { closeFlush } = useSync();
+  const closeFlushRef = useRef(closeFlush);
+  closeFlushRef.current = closeFlush;
 
   // 처음 읽어 온 데이터는 파일과 같으므로 저장하지 않는다.
   useEffect(() => {
@@ -55,7 +60,7 @@ export function useAutoSave(file: NotificationsFile | null): void {
     let unlisten: (() => void) | undefined;
     void getCurrentWindow()
       .onCloseRequested(async () => {
-        await flushRef.current();
+        await closeFlushRef.current(flushRef.current());
       })
       .then((stop) => {
         if (alive) unlisten = stop;

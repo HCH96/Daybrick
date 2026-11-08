@@ -1,30 +1,15 @@
-import { invoke, isTauri } from "@tauri-apps/api/core";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useServer } from "../server/useServer";
 import { decide, type ServerSide } from "./compare";
 import { KINDS } from "./kinds";
-import { fetchDoc, pushDoc, type SyncError } from "./serverApi";
+import { fetchDoc, pushDoc } from "./serverApi";
 import { hashOf } from "./stableJson";
 import { loadSyncFile, saveSyncFile } from "./syncFile";
 import { SYNC_KINDS, type KindSync, type SyncFile, type SyncKind } from "./types";
+import { useCloseFlush } from "./useCloseFlush";
 import { SyncContext, type SyncBlocked, type SyncState } from "./useSync";
-
-/** network·auth는 연결·로그인이 돌아오면 다시 시도하므로 "대기", 그 밖은 "오류" (D11) */
-function failed(prev: KindSync, error: SyncError): KindSync {
-  const state = error.type === "network" || error.type === "auth" ? "pending" : "error";
-  return { ...prev, state, error: error.message };
-}
-
-/** 올린 기기 이름 (서버 행의 device) */
-async function deviceName(): Promise<string> {
-  if (!isTauri()) return "브라우저 미리보기";
-  try {
-    return await invoke<string>("sync_device_name");
-  } catch {
-    return "PC";
-  }
-}
+import { deviceName, failed, useUploadQueue } from "./useUploadQueue";
 
 /**
  * 켤 때 종류 하나를 서버와 비교해 처리한다 (R13, R18, D11).
@@ -77,6 +62,8 @@ export function SyncProvider({ children }: { children?: ReactNode }) {
   // 켜기 흐름은 여러 번 await하므로 최신 값을 ref로도 들고 있는다
   const fileRef = useRef<SyncFile | null>(null);
   const busyRef = useRef(false);
+  // sync.json 쓰기를 차례대로 한다 (늦게 시작한 쓰기가 먼저 끝나 옛 내용이 남지 않게)
+  const saveChainRef = useRef<Promise<void>>(Promise.resolve());
 
   useEffect(() => {
     let cancelled = false;
@@ -102,11 +89,15 @@ export function SyncProvider({ children }: { children?: ReactNode }) {
   const commit = useCallback(async (next: SyncFile) => {
     fileRef.current = next;
     setFile(next);
-    try {
-      await saveSyncFile(next);
-    } catch (e) {
-      console.error("sync.json 저장 실패", e);
-    }
+    const saving = saveChainRef.current.then(async () => {
+      try {
+        await saveSyncFile(fileRef.current ?? next);
+      } catch (e) {
+        console.error("sync.json 저장 실패", e);
+      }
+    });
+    saveChainRef.current = saving;
+    await saving;
   }, []);
 
   const enable = useCallback(async () => {
@@ -136,12 +127,21 @@ export function SyncProvider({ children }: { children?: ReactNode }) {
     await commit({ ...current, enabled: false });
   }, [commit]);
 
-  // 5단계에서 올리기 대기열에 넣는다
-  const notifySaved = useCallback((_kind: SyncKind) => {}, []);
+  // 자동 올리기 (R10–R12, R24, R26). 막혀 있으면 client가 null이라 "대기"만 남긴다
+  const { notifySaved, uploadNow, uploading } = useUploadQueue({
+    fileRef,
+    commit,
+    client: blocked === null && serverSession ? serverSession.client : null,
+    enablingRef: busyRef,
+    loaded: file !== null,
+    // 켜기 흐름이 끝났을 때도 그 사이 저장된 종류를 올린다
+    retryKey: `${status}:${busy}`,
+  });
+  const closeFlush = useCloseFlush(uploadNow);
 
   const value = useMemo<SyncState>(
-    () => ({ file, blocked, enable, disable, busy, notifySaved }),
-    [file, blocked, enable, disable, busy, notifySaved],
+    () => ({ file, blocked, enable, disable, busy, notifySaved, uploadNow, uploading, closeFlush }),
+    [file, blocked, enable, disable, busy, notifySaved, uploadNow, uploading, closeFlush],
   );
 
   return <SyncContext.Provider value={value}>{children}</SyncContext.Provider>;

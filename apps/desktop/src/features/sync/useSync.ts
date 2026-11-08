@@ -20,8 +20,17 @@ export interface SyncState {
   disable: () => Promise<void>;
   /** 켜기 흐름 등 서버와 맞추는 중인지 */
   busy: boolean;
-  /** 기능이 로컬 저장에 성공했음을 알린다 (D8). 올리기는 5단계에서 채운다 */
+  /** 기능이 로컬 저장에 성공했음을 알린다 (D8). 5초 모았다가 올린다 (D7) */
   notifySaved: (kind: SyncKind) => void;
+  /** [지금 올리기]: 타이머를 기다리지 않고 대기 종류를 올린다 (R30) */
+  uploadNow: () => Promise<void>;
+  /** 자동·수동 올리기가 도는 중인지 */
+  uploading: boolean;
+  /**
+   * 기능의 창 닫기 처리기가 부른다: 자기 로컬 저장 Promise를 넘기면, 로컬 저장들(최대 1초) 뒤
+   * 대기 종류를 최대 3초 올려 보고 끝난다 (R12). 실패해도 닫기는 막지 않는다.
+   */
+  closeFlush: (localSave: Promise<void>) => Promise<void>;
 }
 
 /** SyncProvider가 값을 넣는다 (D9: ServerProvider 안, 기능 Provider 바깥) */

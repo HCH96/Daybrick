@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { isTauri } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { useSync } from "../sync/useSync";
 import { touchRunning } from "./reducer";
 import { saveTodayData } from "./storage";
 import type { TodayData } from "./types";
@@ -22,6 +23,10 @@ export function useTodayAutoSave(data: TodayData | null, stampOnClose: boolean):
   const lastSavedRef = useRef<TodayData | null>(null); // 파일과 같은 내용
   const pendingRef = useRef<TodayData | null>(null); // 아직 쓰지 않은 내용
   const timerRef = useRef<number | undefined>(undefined);
+  // 저장 성공을 동기화에 알리고, 창을 닫을 때는 동기화의 마지막 올리기까지 기다린다 (데이터 동기화 R9, R12)
+  const { notifySaved, closeFlush } = useSync();
+  const syncRef = useRef({ notifySaved, closeFlush });
+  syncRef.current = { notifySaved, closeFlush };
   const dataRef = useRef(data); // 지금 화면의 최신 데이터
   dataRef.current = data;
   const stampRef = useRef(stampOnClose);
@@ -52,6 +57,7 @@ export function useTodayAutoSave(data: TodayData | null, stampOnClose: boolean):
     try {
       await saveTodayData(pending);
       lastSavedRef.current = pending;
+      syncRef.current.notifySaved("today");
       // 쓰는 동안 새 변경이 들어왔으면 "저장 중"을 유지한다.
       if (pendingRef.current === null) setStatus("saved");
     } catch (e) {
@@ -74,7 +80,7 @@ export function useTodayAutoSave(data: TodayData | null, stampOnClose: boolean):
         if (stampRef.current && latest !== null && latest.running !== null) {
           pendingRef.current = touchRunning(latest, new Date().toISOString());
         }
-        await flushRef.current();
+        await syncRef.current.closeFlush(flushRef.current());
       })
       .then((stop) => {
         if (alive) unlisten = stop;

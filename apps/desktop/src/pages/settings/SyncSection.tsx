@@ -11,8 +11,10 @@ import "./SyncSection.css";
  * 상태는 이 칸에만 보인다 (제목 표시줄에는 표시하지 않음).
  */
 function SyncSection() {
-  const { file, blocked, enable, disable, busy } = useSync();
+  const { file, blocked, enable, disable, busy, uploadNow, uploading } = useSync();
   const enabled = file?.enabled ?? false;
+  // [지금 올리기]는 대기 종류가 있을 때만 누를 수 있다 (R30)
+  const hasPending = file !== null && SYNC_KINDS.some((kind) => file.kinds[kind].state === "pending");
   // 막혀 있으면 켤 수는 없지만, 켜져 있으면 끄는 것은 된다 (끄기는 아무 데이터도 바꾸지 않음, R25)
   const switchDisabled = file === null || busy || (!enabled && blocked !== null);
 
@@ -51,6 +53,23 @@ function SyncSection() {
           {SYNC_KINDS.map((kind) => (
             <SyncKindRow key={kind} label={KINDS[kind].label} sync={file.kinds[kind]} />
           ))}
+        </div>
+      )}
+
+      {file !== null && enabled && (
+        <div className="sync-section__actions">
+          <button
+            type="button"
+            className="settings-btn settings-btn--sm"
+            disabled={!hasPending || busy || uploading || blocked !== null}
+            onClick={() => void uploadNow()}
+          >
+            <RefreshIcon size={16} />
+            {uploading ? "올리는 중…" : "지금 올리기"}
+          </button>
+          <span className="sync-section__help">
+            {hasPending ? "대기 중인 종류를 바로 올립니다." : "저장하면 5초쯤 뒤 자동으로 올립니다."}
+          </span>
         </div>
       )}
 

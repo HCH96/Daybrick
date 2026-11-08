@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { isTauri } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { useSync } from "../sync/useSync";
 import { saveApplicationsData } from "./storage";
 import type { ApplicationsData } from "./types";
 
@@ -18,6 +19,10 @@ export function useAutoSave(data: ApplicationsData | null): SaveStatus {
   const lastSavedRef = useRef<ApplicationsData | null>(null); // 파일과 같은 내용
   const pendingRef = useRef<ApplicationsData | null>(null); // 아직 쓰지 않은 내용
   const timerRef = useRef<number | undefined>(undefined);
+  // 저장 성공을 동기화에 알리고, 창을 닫을 때는 동기화의 마지막 올리기까지 기다린다 (데이터 동기화 R9, R12)
+  const { notifySaved, closeFlush } = useSync();
+  const syncRef = useRef({ notifySaved, closeFlush });
+  syncRef.current = { notifySaved, closeFlush };
 
   // 처음 읽어 온 데이터는 파일과 같으므로 저장하지 않는다.
   useEffect(() => {
@@ -44,6 +49,7 @@ export function useAutoSave(data: ApplicationsData | null): SaveStatus {
     try {
       await saveApplicationsData(pending);
       lastSavedRef.current = pending;
+      syncRef.current.notifySaved("applications");
       // 쓰는 동안 새 변경이 들어왔으면 "저장 중"을 유지한다.
       if (pendingRef.current === null) setStatus("saved");
     } catch (e) {
@@ -62,7 +68,7 @@ export function useAutoSave(data: ApplicationsData | null): SaveStatus {
     let unlisten: (() => void) | undefined;
     void getCurrentWindow()
       .onCloseRequested(async () => {
-        await flushRef.current();
+        await syncRef.current.closeFlush(flushRef.current());
       })
       .then((stop) => {
         if (alive) unlisten = stop;
