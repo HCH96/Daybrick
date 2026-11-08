@@ -1,0 +1,76 @@
+/* 데이터 동기화 칸. 줄·배지·버튼은 서버 연결 칸(settings-row·settings-state·settings-btn)을 그대로 쓴다 */
+
+/* 켜기 스위치 (구직 관리 js-sources__switch와 같은 모양) */
+.sync-switch {
+  display: inline-block;
+  vertical-align: middle;
+  width: 36px;
+  height: 20px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--track);
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+}
+
+.sync-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: transform var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.sync-switch--on {
+  background: var(--accent);
+}
+
+.sync-switch--on::after {
+  transform: translateX(16px);
+  background: var(--on-accent);
+}
+
+.sync-switch:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.sync-switch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.sync-section__busy {
+  color: var(--muted);
+  font-size: var(--fs-12);
+}
+
+.sync-section__off {
+  color: var(--muted);
+  font-size: var(--fs-13);
+}
+
+/* 막힌 이유 안내 (R32) */
+.sync-notice__desc {
+  margin: var(--space-4) 0 0;
+  color: var(--muted);
+  font-size: var(--fs-13);
+}
+
+/* 종류 한 줄: 상태 배지 + 보조 문구 */
+.sync-kind__v {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.sync-kind__sub {
+  min-width: 0;
+  color: var(--faint);
+  font-size: var(--fs-12);
+}

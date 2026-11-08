@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import { NAV_LABELS } from "../../app/pageLabels";
 import ServerSection from "./ServerSection";
+import SyncSection from "./SyncSection";
 import "./SettingsPage.css";
 
 interface SettingsSectionDef {
@@ -10,7 +11,10 @@ interface SettingsSectionDef {
 }
 
 /** 설정 칸 목록. 이후 기능은 여기에 칸을 추가한다 (D6). */
-const sections: SettingsSectionDef[] = [{ id: "server", label: "서버 연결", component: ServerSection }];
+const sections: SettingsSectionDef[] = [
+  { id: "server", label: "서버 연결", component: ServerSection },
+  { id: "sync", label: "데이터 동기화", component: SyncSection },
+];
 
 /** 설정 화면: 제목 + 칸 이름 줄 + 칸들 */
 function SettingsPage() {

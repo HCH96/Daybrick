@@ -21,6 +21,7 @@ import { TodayProvider } from "./features/today/store";
 import { NotificationsProvider } from "./features/notifications/NotificationsProvider";
 import { ServerProvider } from "./features/server/ServerProvider";
 import { useServer } from "./features/server/useServer";
+import { SyncProvider } from "./features/sync/SyncProvider";
 import WelcomeScreen from "./pages/server-setup/WelcomeScreen";
 import WizardShell from "./pages/server-setup/wizard/WizardShell";
 
@@ -151,10 +152,13 @@ function AppMain() {
 function App() {
   return (
     <ServerProvider>
-      {/* 알림은 제목 표시줄(종)과 전체 화면(마법사 등) 모두에서 쓰므로 그 둘을 함께 감싼다 */}
-      <NotificationsProvider>
-        <AppMain />
-      </NotificationsProvider>
+      {/* 동기화는 서버 세션을 쓰고, 기능 Provider가 저장을 알리므로 그 사이에 둔다 (데이터 동기화 D9) */}
+      <SyncProvider>
+        {/* 알림은 제목 표시줄(종)과 전체 화면(마법사 등) 모두에서 쓰므로 그 둘을 함께 감싼다 */}
+        <NotificationsProvider>
+          <AppMain />
+        </NotificationsProvider>
+      </SyncProvider>
     </ServerProvider>
   );
 }
