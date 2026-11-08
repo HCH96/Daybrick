@@ -4,6 +4,7 @@ mod notifications;
 mod plan;
 mod server;
 mod storage;
+mod sync;
 mod today;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -25,6 +26,12 @@ pub fn run() {
             calendar::save_calendar,
             today::load_today,
             today::save_today,
+            sync::load_sync_state,
+            sync::save_sync_state,
+            sync::write_sync_backup,
+            sync::has_sync_backups,
+            sync::open_sync_backup_dir,
+            sync::sync_device_name,
             server::config::load_server_config,
             server::config::save_server_config,
             server::config::clear_server_connection,

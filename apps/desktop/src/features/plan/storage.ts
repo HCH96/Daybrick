@@ -1,12 +1,13 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import type { PlanData, PlanView, Project, Task } from "./types";
 
-const CURRENT_VERSION = 1;
+/** 지금 앱이 읽고 쓰는 plan.json 버전 */
+export const PLAN_FILE_VERSION = 1;
 
 /** 파일이 아직 없을 때 쓰는 빈 데이터 */
 export function createEmptyPlanData(): PlanData {
   return {
-    version: CURRENT_VERSION,
+    version: PLAN_FILE_VERSION,
     categories: [],
     tasks: [],
     projects: [],
@@ -47,6 +48,21 @@ function hasDataShape(value: unknown): value is { version?: unknown; categories:
 }
 
 /**
+ * plan.json 내용(문자열)을 검사해 플랜 데이터로 바꾼다.
+ * 깨졌거나 모르는 버전이면 예외를 던진다. 동기화가 서버 내용을 검사할 때도 쓴다.
+ */
+export function parsePlanData(raw: string): PlanData {
+  const parsed: unknown = JSON.parse(raw);
+  if (!hasDataShape(parsed)) {
+    throw new Error("plan.json 형식이 올바르지 않습니다.");
+  }
+  if (parsed.version !== PLAN_FILE_VERSION) {
+    throw new Error(`지원하지 않는 파일 버전입니다: ${String(parsed.version)}`);
+  }
+  return fillMissing(parsed as OldPlanData);
+}
+
+/**
  * 저장된 플랜 데이터를 읽는다. 파일이 없으면 빈 데이터를 돌려준다.
  * 파일이 깨졌거나 모르는 버전이면 예외를 던진다. 이때 저장도 막아서 기존 파일을 덮어쓰지 않는다.
  * Tauri 밖(브라우저 미리보기)에서는 저장하지 않고 빈 데이터로 시작한다.
@@ -56,15 +72,7 @@ export async function loadPlanData(): Promise<PlanData> {
 
   const raw = await invoke<string | null>("load_plan");
   if (raw === null) return createEmptyPlanData();
-
-  const parsed: unknown = JSON.parse(raw);
-  if (!hasDataShape(parsed)) {
-    throw new Error("plan.json 형식이 올바르지 않습니다.");
-  }
-  if (parsed.version !== CURRENT_VERSION) {
-    throw new Error(`지원하지 않는 파일 버전입니다: ${String(parsed.version)}`);
-  }
-  return fillMissing(parsed as OldPlanData);
+  return parsePlanData(raw);
 }
 
 export async function savePlanData(data: PlanData): Promise<void> {
