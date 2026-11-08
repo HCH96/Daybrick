@@ -11,6 +11,6 @@
 - 5단계: 마무리 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- /test main-page
+- r2 사용자 테스트 (human/tests/r2-user-test.md) 결과를 받으면 테스트 기록 한 항목 더
 
 ## 확인할 문서 (경로는 docs/features/main-page/ 기준, 파일 통째로 읽기)

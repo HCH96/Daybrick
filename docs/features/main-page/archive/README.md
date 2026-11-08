@@ -9,4 +9,5 @@
 | docs/human/mockups/main-page-layouts.html, main-page-palettes.html | mockups/ |
 | docs/ai/plans/main-page-*.md | plans/ |
 | docs/ai/logs/main-page-log*.md | logs/ |
+| ai/tests/r1/, human/tests/r1-user-test.md (2026-11-09 r2 때 옮김) | tests/r1-ai/, tests/r1-user-test.md |
 | docs/ai/tests/main-page-ai-test*.md, docs/human/tests/main-page-user-test*.md | tests/ |

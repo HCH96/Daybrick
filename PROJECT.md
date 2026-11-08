@@ -23,7 +23,7 @@
 ## 기능별 상태
 | 기능 | 상태 | 문서 |
 |---|---|---|
-| 메인 페이지 | 수정 구현 완료 (테스트 대기): 홈 다듬기 수정2 (L50). 이전 수정1은 r1 AI 테스트 통과, 사용자 테스트 대기. 앱 틀·사이드바는 완료 (사이드바 메뉴 순서 변경 L46) | docs/features/main-page/index.md |
+| 메인 페이지 | 사용자 테스트 대기: 홈 다듬기 수정2 r2 AI 테스트 20개 통과 (L56), 체크리스트 28개 (r1 22개 다시 포함). 앱 틀·사이드바는 완료 (사이드바 메뉴 순서 변경 L46) | docs/features/main-page/index.md |
 | 캘린더 계획 (플랜) | 수정 구현 완료 (테스트 대기) | docs/features/plan/index.md |
 | 캘린더 (일정 관리, 스케줄러 대체) | 테스트 r1: AI 실패 1(A14 수정함), 사용자 테스트 대기 | docs/features/calendar/index.md |
 | 지원 관리 | 수정1 완료 (테스트 r2 통과) | docs/features/applications/index.md |
