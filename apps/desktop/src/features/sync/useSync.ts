@@ -1,4 +1,5 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
+import type { ChoiceInfo } from "./resolve";
 import type { SyncFile, SyncKind } from "./types";
 
 /**
@@ -31,6 +32,14 @@ export interface SyncState {
    * 대기 종류를 최대 3초 올려 보고 끝난다 (R12). 실패해도 닫기는 막지 않는다.
    */
   closeFlush: (localSave: Promise<void>) => Promise<void>;
+  /** 기능 store가 다시 읽기 함수를 등록한다 (D9). 돌려준 함수로 등록을 푼다 */
+  registerReload: (kind: SyncKind, reload: () => Promise<void>) => () => void;
+  /** 선택창에 보여줄 양쪽 시각·기기 이름 (R19) */
+  inspect: (kind: SyncKind) => Promise<ChoiceInfo>;
+  /** PC 내용 남기기 (서버를 덮음). 성공이면 null, 실패면 보여줄 문구 */
+  keepLocal: (kind: SyncKind) => Promise<string | null>;
+  /** 서버 내용 받기 (PC를 덮음, R22·R23·R31). 성공이면 null, 실패면 보여줄 문구 */
+  takeServer: (kind: SyncKind) => Promise<string | null>;
 }
 
 /** SyncProvider가 값을 넣는다 (D9: ServerProvider 안, 기능 Provider 바깥) */
@@ -42,4 +51,15 @@ export function useSync(): SyncState {
     throw new Error("useSync는 SyncProvider 안에서만 쓸 수 있다.");
   }
   return sync;
+}
+
+/**
+ * 서버 내용을 받아 로컬 파일을 바꾼 뒤 부를 다시 읽기 함수를 등록한다 (R23, D9).
+ * reload는 파일을 다시 읽어 store에 넣는다. 매 렌더 새 함수여도 마지막 것을 부른다.
+ */
+export function useSyncReload(kind: SyncKind, reload: () => Promise<void>): void {
+  const { registerReload } = useSync();
+  const reloadRef = useRef(reload);
+  reloadRef.current = reload;
+  useEffect(() => registerReload(kind, () => reloadRef.current()), [kind, registerReload]);
 }

@@ -4,6 +4,14 @@ import { useServer } from "../server/useServer";
 import { decide, type ServerSide } from "./compare";
 import { KINDS } from "./kinds";
 import { fetchDoc, pushDoc } from "./serverApi";
+import {
+  checkEmptyLocal,
+  inspectChoice,
+  keepLocal as keepLocalKind,
+  takeServer as takeServerKind,
+  type ChoiceInfo,
+  type ResolveResult,
+} from "./resolve";
 import { hashOf } from "./stableJson";
 import { loadSyncFile, saveSyncFile } from "./syncFile";
 import { SYNC_KINDS, type KindSync, type SyncFile, type SyncKind } from "./types";
@@ -13,7 +21,7 @@ import { deviceName, failed, useUploadQueue } from "./useUploadQueue";
 
 /**
  * 켤 때 종류 하나를 서버와 비교해 처리한다 (R13, R18, D11).
- * upload는 올리고, same은 rev·hash를 기록하고, ask-pull·choose는 "선택 필요"로 둔다 (고르기는 6단계).
+ * upload는 올리고, same은 rev·hash를 기록하고, ask-pull·choose는 "선택 필요"로 둔다 (설정의 [고르기]로 고른다).
  */
 async function syncKindOnEnable(
   client: SupabaseClient,
@@ -65,18 +73,6 @@ export function SyncProvider({ children }: { children?: ReactNode }) {
   // sync.json 쓰기를 차례대로 한다 (늦게 시작한 쓰기가 먼저 끝나 옛 내용이 남지 않게)
   const saveChainRef = useRef<Promise<void>>(Promise.resolve());
 
-  useEffect(() => {
-    let cancelled = false;
-    void loadSyncFile().then((loaded) => {
-      if (cancelled) return;
-      fileRef.current = loaded;
-      setFile(loaded);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   const blocked: SyncBlocked = useMemo(() => {
     if (!config?.connection || status === "off") return "off";
     if (status === "app-update") return "app-update";
@@ -99,6 +95,27 @@ export function SyncProvider({ children }: { children?: ReactNode }) {
     saveChainRef.current = saving;
     await saving;
   }, []);
+
+  // sync.json을 읽고, 꺼져 있던 사이 로컬 파일이 비었으면 "선택 필요"로 둔다 (R15)
+  useEffect(() => {
+    let cancelled = false;
+    void loadSyncFile().then(async (loaded) => {
+      if (cancelled) return;
+      fileRef.current = loaded;
+      setFile(loaded);
+      if (!loaded.enabled) return;
+      for (const kind of SYNC_KINDS) {
+        const latest = fileRef.current;
+        if (cancelled || !latest) return;
+        const changed = await checkEmptyLocal(kind, latest.kinds[kind]);
+        const after = fileRef.current;
+        if (changed && after && !cancelled) await commit({ ...after, kinds: { ...after.kinds, [kind]: changed } });
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [commit]);
 
   const enable = useCallback(async () => {
     const current = fileRef.current;
@@ -127,11 +144,67 @@ export function SyncProvider({ children }: { children?: ReactNode }) {
     await commit({ ...current, enabled: false });
   }, [commit]);
 
+  // 기능 store의 다시 읽기 함수 (R23, D9)
+  const reloadsRef = useRef(new Map<SyncKind, () => Promise<void>>());
+  const registerReload = useCallback((kind: SyncKind, reload: () => Promise<void>) => {
+    reloadsRef.current.set(kind, reload);
+    return () => {
+      if (reloadsRef.current.get(kind) === reload) reloadsRef.current.delete(kind);
+    };
+  }, []);
+
+  const client = blocked === null && serverSession ? serverSession.client : null;
+
+  const inspect = useCallback(
+    async (kind: SyncKind): Promise<ChoiceInfo> => {
+      const device = await deviceName();
+      if (!client) return { localTime: null, localDevice: device, localEmpty: false, server: null, error: "로그인이 필요합니다." };
+      return inspectChoice(client, kind, device);
+    },
+    [client],
+  );
+
+  /**
+   * 고르기·받아오기를 한 종류씩 한다. 도는 동안은 busy라 켜기·자동 올리기가 끼어들지 않는다.
+   * 결과 상태를 sync.json에 남기고, 실패 문구를 돌려준다.
+   */
+  const resolveWith = useCallback(
+    async (kind: SyncKind, run: (c: SupabaseClient, prev: KindSync) => Promise<ResolveResult>): Promise<string | null> => {
+      const current = fileRef.current;
+      if (!current || !current.enabled || !client) return "동기화를 켜고 로그인한 뒤 다시 해 주세요.";
+      if (busyRef.current) return "다른 동기화 작업이 끝난 뒤 다시 해 주세요.";
+      busyRef.current = true;
+      setBusy(true);
+      try {
+        const result = await run(client, current.kinds[kind]);
+        const after = fileRef.current ?? current;
+        await commit({ ...after, kinds: { ...after.kinds, [kind]: result.sync } });
+        return result.message;
+      } catch (e) {
+        console.error("동기화 고르기 실패", e);
+        return e instanceof Error ? e.message : "처리하지 못했습니다.";
+      } finally {
+        busyRef.current = false;
+        setBusy(false);
+      }
+    },
+    [client, commit],
+  );
+
+  const keepLocal = useCallback(
+    (kind: SyncKind) => resolveWith(kind, async (c, prev) => keepLocalKind(c, kind, prev, await deviceName())),
+    [resolveWith],
+  );
+  const takeServer = useCallback(
+    (kind: SyncKind) => resolveWith(kind, (c, prev) => takeServerKind(c, kind, prev, reloadsRef.current.get(kind))),
+    [resolveWith],
+  );
+
   // 자동 올리기 (R10–R12, R24, R26). 막혀 있으면 client가 null이라 "대기"만 남긴다
   const { notifySaved, uploadNow, uploading } = useUploadQueue({
     fileRef,
     commit,
-    client: blocked === null && serverSession ? serverSession.client : null,
+    client,
     enablingRef: busyRef,
     loaded: file !== null,
     // 켜기 흐름이 끝났을 때도 그 사이 저장된 종류를 올린다
@@ -140,8 +213,22 @@ export function SyncProvider({ children }: { children?: ReactNode }) {
   const closeFlush = useCloseFlush(uploadNow);
 
   const value = useMemo<SyncState>(
-    () => ({ file, blocked, enable, disable, busy, notifySaved, uploadNow, uploading, closeFlush }),
-    [file, blocked, enable, disable, busy, notifySaved, uploadNow, uploading, closeFlush],
+    () => ({
+      file,
+      blocked,
+      enable,
+      disable,
+      busy,
+      notifySaved,
+      uploadNow,
+      uploading,
+      closeFlush,
+      registerReload,
+      inspect,
+      keepLocal,
+      takeServer,
+    }),
+    [file, blocked, enable, disable, busy, notifySaved, uploadNow, uploading, closeFlush, registerReload, inspect, keepLocal, takeServer],
   );
 
   return <SyncContext.Provider value={value}>{children}</SyncContext.Provider>;

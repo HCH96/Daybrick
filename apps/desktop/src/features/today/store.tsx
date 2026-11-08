@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import { usePlan } from "../plan/store";
 import { loadTodayData } from "./storage";
+import { useSyncReload } from "../sync/useSync";
 import { reducer, type TodayState } from "./reducer";
 import { runStartFlow } from "./startFlow";
 import { useTodayAutoSave, type SaveStatus } from "./useAutoSave";
@@ -59,6 +60,13 @@ export function TodayProvider({ children }: { children: ReactNode }) {
       alive = false;
     };
   }, []);
+
+  // 서버 내용을 받아 파일이 바뀌면 다시 읽고, 받은 타이머도 시작 때처럼 복구한다 (동기화 R23)
+  useSyncReload("today", async () => {
+    const data = await loadTodayData();
+    dispatch({ type: "loaded", data });
+    setRecovered(false);
+  });
 
   // 시작 때 복구 (R24, R25, D9): 투데이 데이터가 준비되고 플랜이 읽기를 마치면 한 번.
   // 남은 타이머를 lastSeenAt에서 닫아 기록하고, 태스크가 아직 있고 완료가 아니면 시작 전으로 되돌린다.

@@ -36,6 +36,8 @@ export interface KindDef<T> {
   fileVersion: number;
   /** 로컬 파일을 읽어 검사한다. 파일이 없으면 빈 데이터 (D8, D10) */
   readLocal(): Promise<LocalRead<T>>;
+  /** 로컬 파일 글자 그대로 (덮기 전 백업용, R21). 파일이 없으면 null, 읽기 실패는 예외 */
+  readRaw(): Promise<string | null>;
   /** 검사를 통과한 데이터로 로컬 파일을 덮는다 (기존 저장 명령) */
   writeLocal(data: T): Promise<void>;
   /** 서버에서 받은 data(JSON 값)를 검사해 쓸 수 있는 데이터로 바꾼다. 틀리면 예외 (R22) */
@@ -74,6 +76,10 @@ function defineKind<T>(parts: KindParts<T>): KindDef<T> {
       } catch (e) {
         return { kind: "unreadable", message: errorMessage(e) };
       }
+    },
+    async readRaw() {
+      if (!isTauri()) return null;
+      return invoke<string | null>(parts.loadCommand);
     },
     writeLocal(data) {
       return parts.save(data);

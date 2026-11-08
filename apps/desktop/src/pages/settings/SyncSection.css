@@ -89,3 +89,61 @@
   font-size: var(--fs-12);
   color: var(--faint);
 }
+
+/* 종류 줄 오른쪽: [고르기]·⋯ 메뉴 (R19, R31) */
+.sync-kind__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.sync-kind__more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.sync-kind__more:hover:not(:disabled) {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.sync-kind__more:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.sync-kind__more:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.sync-kind__sub--bad {
+  color: var(--red);
+}
+
+/* 백업 폴더 열기 (R33) */
+.sync-section__backups {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  font-size: var(--fs-13);
+}
+
+/* 선택창 (R19): 양쪽 시각 줄과 실패 문구 */
+.sync-choice__rows {
+  padding: 0;
+}
+
+.set-dialog__body .sync-choice__error {
+  color: var(--red);
+}

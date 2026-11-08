@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from "react";
 import { loadPlanData } from "./storage";
+import { useSyncReload } from "../sync/useSync";
 import {
   reducer,
   type CategoryPatch,
@@ -149,6 +150,12 @@ export function PlanProvider({ children }: { children: ReactNode }) {
       alive = false;
     };
   }, []);
+
+  // 서버 내용을 받아 파일이 바뀌면 다시 읽는다 (동기화 R23). 자동 저장이 같은 내용을 써도 해시가 같아 다시 올라가지 않는다
+  useSyncReload("plan", async () => {
+    const data = await loadPlanData();
+    dispatch({ type: "loaded", data });
+  });
 
   const ready = state.kind === "ready";
   const store = useMemo<PlanStore>(

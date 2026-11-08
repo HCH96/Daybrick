@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { RefreshIcon } from "../../components/icons/ServerIcons";
 import { KINDS } from "../../features/sync/kinds";
+import { hasSyncBackups, openSyncBackupDir } from "../../features/sync/resolve";
 import { SYNC_KINDS } from "../../features/sync/types";
 import { useSync } from "../../features/sync/useSync";
 import SyncKindRow from "./SyncKindRow";
@@ -17,6 +19,19 @@ function SyncSection() {
   const hasPending = file !== null && SYNC_KINDS.some((kind) => file.kinds[kind].state === "pending");
   // 막혀 있으면 켤 수는 없지만, 켜져 있으면 끄는 것은 된다 (끄기는 아무 데이터도 바꾸지 않음, R25)
   const switchDisabled = file === null || busy || (!enabled && blocked !== null);
+  const canAct = enabled && blocked === null && !busy;
+
+  // 백업 파일이 있으면 폴더 열기 링크 (R33). 고르기·받아오기로 sync.json이 바뀔 때마다 다시 본다
+  const [hasBackups, setHasBackups] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    void hasSyncBackups().then((has) => {
+      if (alive) setHasBackups(has);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [file]);
 
   const onToggle = () => {
     if (enabled) void disable();
@@ -51,7 +66,7 @@ function SyncSection() {
       {file !== null && enabled && (
         <div className="settings-rows">
           {SYNC_KINDS.map((kind) => (
-            <SyncKindRow key={kind} label={KINDS[kind].label} sync={file.kinds[kind]} />
+            <SyncKindRow key={kind} kind={kind} label={KINDS[kind].label} sync={file.kinds[kind]} canAct={canAct} />
           ))}
         </div>
       )}
@@ -70,6 +85,21 @@ function SyncSection() {
           <span className="sync-section__help">
             {hasPending ? "대기 중인 종류를 바로 올립니다." : "저장하면 5초쯤 뒤 자동으로 올립니다."}
           </span>
+        </div>
+      )}
+
+      {hasBackups && (
+        <div className="settings-card__pad sync-section__backups">
+          <button
+            type="button"
+            className="settings-link"
+            onClick={() => {
+              openSyncBackupDir().catch((e: unknown) => console.error("백업 폴더 열기 실패", e));
+            }}
+          >
+            백업 폴더 열기
+          </button>
+          <span className="sync-section__help">덮기 전 내용이 남아 있습니다.</span>
         </div>
       )}
 
