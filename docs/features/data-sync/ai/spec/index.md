@@ -18,10 +18,10 @@ PC 앱의 로컬 JSON(플랜·캘린더·지원 관리·투데이)을 사용자 
 | [data.md](data.md) | 서버 테이블, 로컬 동기화 상태, 백업 파일 |
 | [scope.md](scope.md) | 제외, 나중에 고려할 것, 계획 단계에서 확인할 것 |
 | mockup.md | (아직 없음) |
-| [decisions.md](decisions.md) | 결정 사항 D1–D5 |
+| [decisions.md](decisions.md) | 결정 사항 D1–D9 |
 
 ## 다른 문서
-- 구현 계획: (아직 없음)
+- 구현 계획: [../plan/index.md](../plan/index.md) (2026-11-08 승인). 서버 쓰기는 RPC `daybrick_sync_push`(리비전 비교), 자동 올리기는 저장 뒤 5초, 같음 판정은 키 정렬 JSON 해시 (D6–D8)
 - 테스트 문서: (아직 없음)
 - 진행 기록: [../logs/index.md](../logs/index.md)
 - 선행 기능: [server-setup 명세](../../../server-setup/ai/spec/index.md) (세션·서버 구조 번호·RLS 규칙)
