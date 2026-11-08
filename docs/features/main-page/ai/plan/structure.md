@@ -1,65 +1,51 @@
-# 메인 페이지 수정1: 파일·데이터·컴포넌트 구조
+# 메인 페이지 수정2: 파일·데이터·컴포넌트 구조
 경로 기준: `apps/desktop/src/`. 괄호는 만들거나 고치는 단계.
 
 ## 파일 목록
 ```
-features/home/                     새 폴더, 화면 없는 순수 함수
-  upcoming.ts        (2)  buildUpcoming(src, todayKey): UpcomingDay[]   캘린더 buildCalItems 재사용
-  summary.ts         (3)  nextEvent, nearestDeadline, todayDone, shortDayLabel
-  weekFocus.ts       (5)  weekFocus(today, todayKey, now): WeekFocusDay[]  dayTotals·startOfWeek
-  projectRows.ts     (6)  projectRows(plan, today, todayKey, now)        projects progress·weeks·time
-  newPostings.ts     (7)  newPostings(postings, openedAt, now)           마감 지남 제외, 점수순 상위 3
-features/today/kanbanOrder.ts (4)  새: Kanban.tsx의 sortLikePlanList를 옮겨 export
-pages/today/kanban/Kanban.tsx (4)  고침: 옮긴 함수를 import (동작 그대로)
-pages/job-search/recommend/useOpenedAt.ts (7)  고침: readOpenedAt() 추가 (읽기 전용)
+styles/theme.css                       (1)  고침: --bg, --surface, --surface-2, --border, --border-2, --track 값
+pages/home/ApplicationsSummaryCard.tsx (1)  고침: 칸 style을 { "--tc": item.color }로 (softColor 바탕 안 씀)
+pages/home/ApplicationsSummaryCard.css (1)  고침: 회색 칸 + 왼쪽 3px 띠 + 숫자만 상태색
 
-pages/home/
-  HomePage.tsx/.css           (1)  고침: 6카드 그리드, todayKey 전달
-  dashboardCards.tsx          (1, 이후 단계마다 body 교체)
-  DashboardCard.tsx/.css      (1)  고침: 크기 large·narrow·quarter
-  CardState.tsx/.css          (1)  새: loading / error / empty (아이콘 + 두 줄 + 이동 버튼)
-  WeeklyFocusEmpty.tsx/.css   (1)  지움
-  HomeHeader.tsx              (3)  고침: todayKey로 날짜
-  QuickAdd.tsx/.css           (3)  고침: 실제 입력 + 안내 문구
-  SummaryStrip.tsx/.css       (3)  고침: 4칸 값 연결, 누르면 이동
-  upcoming/UpcomingCard.tsx, UpcomingDay.tsx, UpcomingRow.tsx, Upcoming.css   (2)
-  now/NowCard.tsx, NowTimer.tsx, NowTaskList.tsx, Now.css                     (4)
-  week/WeekFocusCard.tsx, WeekFocus.css                                       (5)
-  projects/ProjectProgressCard.tsx, ProjectRow.tsx, Projects.css              (6)
-  ApplicationsSummaryCard.tsx/.css   (6)  고침: 2×2 타일
-  jobs/NewPostingsCard.tsx, PostingRow.tsx, useHomeRecommend.ts, Jobs.css    (7)
+features/home/upcoming.ts              (2)  고침: dayParts(dateKey, todayKey), groupUpcoming(days) 추가
+
+pages/home/upcoming/
+  UpcomingCard.tsx   (3)  고침: groupUpcoming 결과를 Day / Gap으로 그림
+  UpcomingDay.tsx    (3)  고침: 왼쪽 날짜 열 + 오른쪽 칩 목록, 오늘은 연한 보라 바탕
+  UpcomingRow.tsx    (3)  고침: 높이 36 칩 (색 띠·배지·점, 제목, 시각, 종류 아이콘)
+  UpcomingGap.tsx    (3)  새: "11/11 – 11/13 · 일정 없음" 점선 줄
+  Upcoming.css       (3)  다시 씀
+
+pages/home/now/
+  NowTimer.tsx       (4)  고침: 배치 다시 짜기, 프로젝트 색(--tc), 오늘 집중 막대
+  Now.css            (4)  고침: .now-timer 부분 (목록 부분은 그대로)
 ```
-문서 (8): `docs/features/main-page/ai/spec/files.md`, `extension.md` (CardSize).
+문서 (5): `docs/features/main-page/ai/spec/files.md` (UpcomingGap 추가).
 
 ## 데이터 모양 (새로 저장하는 것 없음, 화면용 계산 결과만)
 ```ts
-type UpcomingRow =
-  | { kind: "task"; key: string; title: string; color: string }
-  | { kind: "app"; key: string; title: string; company: string; eventKind: EventKind; time: string | null }
-  | { kind: "flag"; key: string; title: string; color: string }
-  | { kind: "personal"; key: string; title: string; time: string | null; endLabel: string | null }; // "~11/12"
-interface UpcomingDay { dateKey: string; label: string; isToday: boolean; rows: UpcomingRow[] }
-interface WeekFocusDay { dateKey: string; ms: number; state: "past" | "today" | "future" }
-interface ProjectRowView { id: string; name: string; color: string; place: string; progress: number; totalMs: number }
-interface HomeRecommend { status: "off" | "loading" | "error" | "ready"; items: RecommendPosting[]; newCount: number; lastCollectAt: string | null }
+// upcoming.ts에 추가
+interface DayParts { day: number; label: string; weekend: "sat" | "sun" | null } // label: "오늘" | "내일" | "토"
+type UpcomingBlock =
+  | { kind: "day"; day: UpcomingDay }                    // 항목 있는 날, 또는 오늘
+  | { kind: "gap"; from: string; to: string };           // 이어진 빈 날 (from === to면 하루)
+function groupUpcoming(days: readonly UpcomingDay[]): UpcomingBlock[];
+function gapLabel(from: string, to: string): string;     // "11/11 – 11/13" 또는 "11/12"
 ```
+기존 `UpcomingDay`, `UpcomingRow`, `buildUpcoming`은 그대로 쓴다.
 
 ## 컴포넌트 구조
 ```
-HomePage (todayKey)
-├ HomeHeader ─ QuickAdd            usePlan().addTask(title, null, { start: today, end: today })
-├ SummaryStrip                     오늘 집중 · 오늘 완료 · 다음 일정 · 가까운 마감
-└ home-page__grid
-  ├ DashboardCard large    UpcomingCard → UpcomingDay → UpcomingRow
-  ├ DashboardCard narrow   NowCard → NowTimer | NowTaskList | CardState
-  ├ DashboardCard narrow   WeekFocusCard
-  ├ DashboardCard quarter  ProjectProgressCard → ProjectRow
-  ├ DashboardCard quarter  ApplicationsSummaryCard
-  └ DashboardCard quarter  NewPostingsCard (useHomeRecommend) → PostingRow
+UpcomingCard
+  ├ UpcomingDay (kind "day")  ─ 날짜 열(dayParts) + UpcomingRow × n  (오늘이 비면 "일정 없음" 흐린 글자)
+  └ UpcomingGap (kind "gap")
+NowCard → NowTimer
+  ├ 위: 색 점 + 묶음 이름 · 상태 배지
+  ├ 제목
+  ├ LiveTimes: 시계(H:MM + 초는 --tc) · 오늘 집중 막대와 글자 (1초마다 다시 그림)
+  └ 버튼 줄: [일시정지/재개] [완료] (너비 나눔) + [중단] 아이콘
 ```
-- 본문은 각 저장소(usePlan·useToday·useCalendar·useApplications·useServer)의 읽기 상태를 보고 CardState를 먼저 고른다.
 
 ## C++ 비유
-- `features/home/*.ts`는 멤버 없는 자유 함수(free function)다. 입력(저장소 데이터, 오늘 날짜)만 받아 화면용 구조체를 돌려주고 아무것도 바꾸지 않는다. 그래서 Node로 따로 불러 확인할 수 있다.
-- 카드 본문은 각 저장소의 `const&` 참조만 받는 뷰다. 쓰기는 빠른 추가·타이머 버튼에서 그 기능의 공용 함수(멤버 함수)를 부를 때만 한다 (R27).
-- `dashboardCards` 배열은 지금처럼 함수 포인터 테이블이다. 단계마다 표의 body 칸만 바꿔 끼운다.
+- `groupUpcoming`은 정렬된 배열을 한 번 훑으며 연속 구간을 묶는 run-length 묶기와 같다 (`std::vector<Block>` 반환, 입력은 const 참조).
+- `--tc` 인라인 변수는 CSS에 넘기는 함수 인자 하나다. 같은 CSS가 인자에 따라 색만 바꾼다.

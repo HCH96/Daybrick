@@ -1,28 +1,26 @@
-# 메인 페이지 수정1 4단계: 지금 하는 것
+# 메인 페이지 수정2 4단계: 지금 하는 것 타이머 (T1 프로젝트 색)
 
-- 요구사항: R35–R37
-- 목업: `part-now.html` now-running·now-paused·now-tasks·now-empty 구역, `dash.html` dash-now 구역 (CSS: dash.css·common.css에서 `.now-`, `.pill`, `.clock` 검색)
+- 요구사항: R35
+- 목업: `compare-home-timer.html` tm-running·tm-paused 구역, `compare-home-cards.html` cmp-v1-now 구역 (CSS: compare.css에서 `.n1-`, `.tm-` 검색)
 - 경로 기준: [index.md](index.md) 맨 위
 
 ## 할 일
-- 새 `features/today/kanbanOrder.ts`: `pages/today/kanban/Kanban.tsx` 안의 `sortLikePlanList`를 그대로 옮겨 export하고, `Kanban.tsx`는 import해서 쓴다 (D11, 동작 그대로).
-- `now/NowCard.tsx`: `useToday().state`의 실행 중 타이머가 있으면 `NowTimer`, 없으면 `NowTaskList`.
-- `NowTimer` (R35): 태스크 제목, 카테고리·프로젝트 색 점(`taskGroupInfo`), 이번 세션 경과(`sessionElapsed` + `useNow`, `formatClock`, 고정폭 큰 숫자), 상태 알약(진행 중 초록, 일시정지 주황).
-  - 버튼 [일시정지/재개]·[완료]·[중단] = `pause`·`resume`·`complete`·`stop`. 실행 중엔 [완료], 일시정지엔 [재개]를 강조. 트랙 그림 없음.
-- `NowTaskList` (R36–R37): `tasksOnDate(plan, todayKey)`에서 미완료만 → 칸반 순서(진행 중 → 시작 전, `sortLikePlanList`) → 최대 3개.
-  - 줄마다 상태 + [▶ 시작](`requestStart`, 시작 흐름 거침). 첫 줄만 강조.
-  - 3개를 넘으면 "외 N개 · 투데이에서 보기" (누르면 투데이).
-  - 0개면 CardState empty("오늘 할 태스크가 없어요" + [투데이로 가기]).
+- `NowTimer.tsx` 배치 (위에서 아래로):
+  - 위 줄: 색 점 + 묶음 이름(12 `--muted`) · 오른쪽 상태 배지(진행 중 초록 / 일시정지 주황)
+  - 제목 16/500 (넘치면 말줄임)
+  - `LiveTimes`: 가운데 mono 56 시계 "H:MM" + 초(D15). 그 아래 4px 막대(오늘 집중 / 하루 목표, 100%에서 멈춤)와 "오늘 집중 1:20 · 목표 6:00" 12px
+  - 바닥 버튼 줄(`margin-top: auto`): [일시정지/재개]·[완료]는 높이 36 너비 나눔, [중단]은 36×36 아이콘(제목 "중단"). 강조 규칙은 그대로.
+  - "오늘 이 태스크" 줄은 뺀다.
+- 색 (D18): 카드 본문 바깥 요소에 `--tc`(묶음 색, 미분류는 `--muted`)를 넘기고, 실행 중일 때만 카드 위 3px 띠, 시계 칸 8% 바탕(`color-mix`), 초, 막대, 오늘 집중 숫자에 쓴다. 일시정지면 띠·바탕·색을 빼고 시계는 `--muted`.
+  - 위 띠는 카드(`DashboardCard`) 테두리 안쪽에 그려야 한다. 카드 틀을 고치지 않고 본문에서 그릴 수 있는지 먼저 보고, 안 되면 본문 위쪽에 3px 줄로 그린다.
+- `Now.css`: `.now-timer` 부분만 고친다. `NowTaskList` 부분은 그대로.
 
 ## 확인할 결과
 - `npm run build` 성공.
-- 투데이 칸반의 카드 순서가 바뀌기 전과 같다 (진행 중·시작 전 열, 같은 데이터로 비교).
-- 오늘 태스크 5개(진행 중 1, 시작 전 3, 완료 1) → 진행 중 1 + 시작 전 2, "외 1개 · 투데이에서 보기".
-- [▶ 시작] → 카드가 실행 중으로 바뀌고 경과가 1초마다 오른다. 투데이 화면 타이머와 같은 태스크·시간.
-- [일시정지] → 주황 알약, [재개] 강조. [완료] → 투데이에 기록이 남고 태스크 완료, 카드는 목록으로. [중단] → 기록 남고 시작 전.
-- 오늘 태스크가 없으면 빈 상태와 [투데이로 가기].
+- Daybrick(보라) 태스크 시작 → 띠·초·막대가 보라. TrialGround(청록) 태스크로 바꾸면 청록. 미분류 태스크는 회색.
+- 오늘 집중 숫자가 요약 줄 "오늘 집중"과 같고, 1초마다 함께 오른다. 목표를 넘으면 막대가 꽉 찬 채로 멈춘다.
+- [일시정지] → 색이 빠지고 시계가 흐려지며 주황 배지, [재개] 강조. [완료]·[중단] → 지금처럼 목록으로.
+- 이전 사용자 테스트 r1 11번(타이머 조작)의 내용이 새 모양에서도 맞는다.
 
 ## 이 단계에서 만들거나 고칠 파일
-- 새 `features/today/kanbanOrder.ts`, `pages/today/kanban/Kanban.tsx`
-- 새 `pages/home/now/NowCard.tsx`, `NowTimer.tsx`, `NowTaskList.tsx`, `Now.css`
-- `pages/home/dashboardCards.tsx` (지금 하는 것 body)
+- `pages/home/now/NowTimer.tsx`, `Now.css`

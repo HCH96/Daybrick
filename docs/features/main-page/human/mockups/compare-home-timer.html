@@ -1,0 +1,74 @@
+<!doctype html>
+<!-- 목업: 메인 페이지 / 9. 지금 하는 것 타이머 색 비교
+  목차와 다른 화면: index.html
+  CSS: common.css(토큰), compare.css (n1-* = 1안 카드, tm-* = 타이머 색, pal-a = 색 A안)
+  카드 내용은 compare-home-cards.html의 cmp-v1-now와 같다. <template>에 한 번 두고 스크립트로 복사한다.
+  ID                  화면                                  요구사항
+  tm-running          9-1. 진행 중 (T1 프로젝트 색 · T2 진행 초록 · T3 보라)   R35
+  tm-paused           9-2. 일시정지 (세 안 같음)                               R35
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>타이머 색 비교</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="compare.css" />
+<script src="icons.js"></script>
+</head>
+<body class="cmp">
+<div class="doc pal-a">
+  <h1>지금 하는 것: 타이머 색 비교</h1>
+  <p class="lead">정적 화면이며 값은 예시입니다. 카드 모양은 1안, 바탕은 색 A안입니다. 세 안 모두 색을 시계의 초, 오늘 집중 막대, 카드 테두리(또는 위 띠) 세 곳에만 씁니다. 실제 크기의 85%입니다.</p>
+
+  <section class="screen" id="tm-running">
+    <div class="screen-head"><h2>9-1. 진행 중</h2><span class="tag">R35</span></div>
+    <p class="screen-desc">T1은 태스크의 프로젝트·카테고리 색을 따라가서 태스크마다 색이 바뀝니다. T2는 언제나 "진행 중" 초록입니다. T3는 오늘 집중을 이번 주 집중 막대와 같은 보라로 잇습니다 (홈의 보라 규칙을 바꿔야 함).</p>
+    <div class="tm-row">
+      <div><p class="tm-cap"><b>T1. 프로젝트 색</b> · Daybrick 보라</p><div class="card tm tm-proj" style="--tc:var(--violet)" data-now></div></div>
+      <div><p class="tm-cap"><b>T1. 프로젝트 색</b> · TrialGround 청록일 때</p><div class="card tm tm-proj" style="--tc:var(--teal)" data-now data-title="매칭 서버 마무리" data-proj="TrialGround"></div></div>
+      <div><p class="tm-cap"><b>T2. 진행 초록</b> · 태스크와 상관없이 같음</p><div class="card tm tm-run" style="--tc:var(--green)" data-now></div></div>
+    </div>
+    <div class="tm-row" style="margin-top:20px">
+      <div><p class="tm-cap"><b>T3. 보라</b> · 이번 주 집중과 같은 색</p><div class="card tm tm-acc" style="--tc:var(--accent)" data-now></div></div>
+      <div><p class="tm-cap"><b>참고: 1안 그대로</b> · 무채색</p><div class="card tm" style="--tc:var(--neutral)" data-now></div></div>
+      <div></div>
+    </div>
+  </section>
+
+  <section class="screen" id="tm-paused">
+    <div class="screen-head"><h2>9-2. 일시정지</h2><span class="tag">R35</span></div>
+    <p class="screen-desc">멈췄을 때는 세 안 모두 색을 빼고 시계를 흐리게, 배지만 주황으로 바꿔 "멈춤"이 바로 보이게 합니다.</p>
+    <div class="tm-row">
+      <div><p class="tm-cap"><b>일시정지</b> · 세 안 같음</p><div class="card tm tm-proj paused" style="--tc:var(--violet)" data-now data-paused></div></div>
+      <div></div><div></div>
+    </div>
+  </section>
+</div>
+
+<template id="now">
+  <div class="chead">지금 하는 것<span>투데이 ›</span></div>
+  <div class="n1">
+    <div class="n1-top"><span class="n1-cat"><i class="ddot" style="--c:var(--tc)"></i><span data-f="proj">Daybrick</span></span><span class="badge run" data-f="badge">진행 중</span></div>
+    <div class="n1-title" data-f="title">홈 카드 다듬기</div>
+    <div class="n1-clock">0:24<span>:17</span></div>
+    <div class="bar"><i style="width:22%"></i></div>
+    <div class="n1-goal"><span>오늘 집중 <b>1:20</b></span><span>목표 6:00</span></div>
+    <div class="n1-acts"><span class="btn tall" data-f="pause"><svg class="ico"><use href="#t-pause"/></svg>일시정지</span><span class="btn tall pri"><svg class="ico"><use href="#t-check"/></svg>완료</span><span class="btn sq tall" style="flex:none" title="중단"><svg class="ico s12"><use href="#t-stop"/></svg></span></div>
+  </div>
+</template>
+<script>
+  const tpl = document.getElementById("now");
+  for (const card of document.querySelectorAll("[data-now]")) {
+    card.appendChild(tpl.content.cloneNode(true));
+    const f = (k) => card.querySelector(`[data-f="${k}"]`);
+    if (card.dataset.title) f("title").textContent = card.dataset.title;
+    if (card.dataset.proj) f("proj").textContent = card.dataset.proj;
+    if ("paused" in card.dataset) {
+      f("badge").className = "badge pause"; f("badge").textContent = "일시정지";
+      f("pause").innerHTML = '<svg class="ico"><use href="#t-play"/></svg>재개';
+    }
+  }
+</script>
+</body>
+</html>

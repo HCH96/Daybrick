@@ -1,0 +1,216 @@
+/* 홈 카드·색 비교 목업 (compare-home-cards.html, compare-home-colors.html) 전용
+   값은 common.css 토큰(= theme.css). 앱 화면 기준: apps/desktop/src/pages/home/ (2026-11-09) */
+
+.cmp { font-family: var(--font); }
+.cmp .doc { max-width: 1240px; }
+.cmp h2 { font-weight: 600; }
+
+/* ===== 홈 본문 틀 (사이드바 없이 본문만, 1280 폭을 70%로 줄여 보여줌) ===== */
+.hframe {
+  zoom: 0.7; width: 1280px; padding: 28px 32px;
+  background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 16px;
+  font-size: 14px; line-height: 1.5;
+}
+.hhead { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
+.hhead small { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+.hhead h1 { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.3px; }
+.qadd { width: 360px; height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 12px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--faint); font-size: 13px; }
+.qadd kbd { margin-left: auto; font: 11px var(--font); padding: 0 4px; border: 1px solid var(--border-2); border-radius: 4px; color: var(--muted); }
+
+.strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 20px; }
+.strip > div { padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+.strip label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.strip label span { color: var(--faint); }
+.strip b { display: block; margin-top: 4px; font-size: 20px; font-weight: 600; line-height: 28px; font-variant-numeric: tabular-nums; }
+.strip b small { margin-left: 4px; font-size: 14px; font-weight: 500; color: var(--muted); }
+.strip b em { font-style: normal; font-size: 14px; font-weight: 500; margin-left: 8px; }
+.strip b.none { font-size: 14px; font-weight: 500; color: var(--faint); }
+
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: minmax(200px, auto); gap: 20px; }
+.card { min-width: 0; padding: 20px; display: flex; flex-direction: column;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+.card.lg { grid-column: span 7; grid-row: span 2; }
+.card.nr { grid-column: span 5; }
+.card.qt { grid-column: span 4; }
+.chead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; font-weight: 600; }
+.chead span { font-size: 12px; font-weight: 400; color: var(--muted); }
+.ico { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.ico.s12 { width: 12px; height: 12px; stroke-width: 2; }
+
+/* ===== 공통 작은 부품 ===== */
+.ddot { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--muted)); flex-shrink: 0; }
+.iniB { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+  font-size: 11px; font-weight: 600; color: var(--on-accent); }
+.i1 { background: var(--initial-1); } .i3 { background: var(--initial-3); } .i5 { background: var(--initial-5); }
+.badge { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 6px; font-size: 12px; font-weight: 500; }
+.badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.badge.run { background: var(--green-soft); color: var(--green); }
+.badge.run::before { animation: breathe 1.6s var(--ease) infinite; }
+@keyframes breathe { 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .badge.run::before { animation: none; } }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 32px; padding: 0 12px;
+  border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text); font-size: 13px; font-weight: 500; }
+.btn.pri { background: var(--text); border-color: var(--text); color: var(--bg); }
+.btn.quiet { background: transparent; border-color: transparent; color: var(--muted); }
+.btn.sq { width: 36px; padding: 0; }
+.btn.tall { height: 36px; flex: 1; }
+.bar { height: 4px; border-radius: 2px; background: var(--track); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--neutral); border-radius: 2px; }
+
+/* ===== 다가오는 7일: 지금 (앱 그대로) ===== */
+.u0-day + .u0-day { margin-top: 8px; }
+.u0-head { padding: 8px 0 4px; border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 500; color: var(--muted); }
+.u0-head.today { color: var(--text); }
+.u0-head small { margin-left: 8px; font-size: 12px; font-weight: 400; color: var(--faint); }
+.u0-head.blank { font-weight: 400; color: var(--faint); }
+.u0-row { display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 8px; font-size: 13px; }
+.u0-row time { width: 40px; font-size: 12px; font-weight: 500; color: var(--muted); }
+.u0-row .mk { width: 20px; display: grid; place-items: center; }
+
+/* ===== 다가오는 7일 1안: 날짜 열 + 칩, 빈 날 합치기 ===== */
+.u1-day { display: grid; grid-template-columns: 48px 1fr; gap: 16px; padding: 12px; border-radius: 8px; }
+.u1-day.today { background: var(--accent-wash); }
+.u1-date { text-align: center; padding-top: 2px; }
+.u1-date b { display: block; font-size: 20px; font-weight: 600; line-height: 24px; font-variant-numeric: tabular-nums; }
+.u1-date small { font-size: 12px; color: var(--muted); }
+.u1-day.today .u1-date b, .u1-day.today .u1-date small { color: var(--accent); }
+.u1-list { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.chip { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; min-width: 0;
+  background: var(--surface-2); border-radius: 8px; box-shadow: inset 3px 0 0 var(--c, var(--border-2)); font-size: 13px; }
+.chip .t { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.chip .t em { font-style: normal; color: var(--muted); }
+.chip time { margin-left: auto; flex-shrink: 0; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip.app { box-shadow: none; }
+.chip .kind { color: var(--text); }
+.u1-gap { display: flex; align-items: center; gap: 12px; margin: 0 12px; padding: 4px 0; font-size: 12px; color: var(--faint); }
+.u1-gap::before, .u1-gap::after { content: ""; flex: 1; border-top: 1px dashed var(--border); }
+
+/* ===== 다가오는 7일 2안: 일주일 띠 (7칸) ===== */
+.u2 { flex: 1; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+.u2-col { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 8px; border-radius: 8px; background: var(--hover-faint); }
+.u2-col.today { background: var(--accent-wash); box-shadow: inset 0 0 0 1px var(--accent-line); }
+.u2-h { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.u2-h b { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.u2-h small { font-size: 12px; color: var(--muted); }
+.u2-col.today .u2-h b, .u2-col.today .u2-h small { color: var(--accent); }
+.u2-col.sat .u2-h small { color: var(--blue); }
+.u2-col.sun .u2-h small { color: var(--red); }
+.u2-none { margin-top: 8px; font-size: 12px; color: var(--faint); text-align: center; }
+.mini { padding: 8px; border-radius: 6px; background: var(--surface-2); box-shadow: inset 3px 0 0 var(--c, var(--border-2)); font-size: 12px; line-height: 16px; }
+.mini time { display: block; color: var(--muted); font-variant-numeric: tabular-nums; }
+.mini .t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.mini.app { box-shadow: none; }
+.mini.app .t { display: flex; align-items: center; gap: 4px; }
+.mini .iniB { width: 16px; height: 16px; font-size: 11px; }
+
+/* ===== 지금 하는 것: 지금 (앱 그대로) ===== */
+.n0-task { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
+.n0-sub { margin: 2px 0 0 16px; font-size: 12px; color: var(--muted); }
+.n0-row { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+.n0-clock { font-family: var(--mono); font-size: 34px; font-weight: 600; letter-spacing: -0.5px; }
+.n0-acts { display: flex; gap: 8px; }
+
+/* ===== 지금 하는 것 1안: 가운데 큰 시계 + 오늘 집중 막대 ===== */
+.n1 { flex: 1; display: flex; flex-direction: column; }
+.n1-top { display: flex; align-items: center; justify-content: space-between; }
+.n1-cat { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.n1-title { margin-top: 8px; font-size: 16px; font-weight: 500; }
+.n1-clock { margin: 12px 0 16px; text-align: center; font-family: var(--mono); font-size: 56px; font-weight: 500; line-height: 64px; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.n1-clock span { color: var(--faint); }
+.n1-goal { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.n1-goal b { font-weight: 500; color: var(--text); }
+.n1-acts { display: flex; gap: 8px; margin-top: auto; padding-top: 20px; }
+
+/* ===== 지금 하는 것 2안: 왼쪽 시계 + 오른쪽 정보, 버튼은 아래 한 줄 ===== */
+.n2 { flex: 1; display: flex; flex-direction: column; }
+.n2-main { flex: 1; display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; }
+.n2-clock { font-family: var(--mono); font-size: 56px; font-weight: 500; line-height: 64px; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.n2-clock span { color: var(--faint); }
+.n2-info { min-width: 0; padding-left: 24px; border-left: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
+.n2-info .ttl { font-size: 14px; font-weight: 500; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.n2-info .sub { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.n2-info .bar { margin-top: 8px; }
+.n2-acts { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; padding-top: 16px; border-top: 1px solid var(--border); }
+
+/* ===== 이번 주 집중 (앱 그대로, 값만 예시) ===== */
+.wk-total { margin: -4px 0 12px; font-size: 13px; color: var(--muted); }
+.wk-total b { margin-right: 2px; font-size: 20px; font-weight: 600; color: var(--text); }
+.wk { position: relative; flex: 1; min-height: 112px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; align-items: end; padding-bottom: 20px; }
+.wk-goal { position: absolute; left: 0; right: 0; bottom: calc(20px + (100% - 20px) * 0.75); border-top: 1px dashed var(--faint); }
+.wk-goal span { position: absolute; right: 0; top: -16px; font-size: 11px; color: var(--faint); }
+.wk-col { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
+.wk-col i { width: 100%; max-width: 24px; border-radius: 4px 4px 2px 2px; background: var(--accent-dim); }
+.wk-col.today i { background: var(--accent); }
+.wk-col.future i { height: 4px; border-radius: 2px; background: var(--neutral-soft); }
+.wk-col span { position: absolute; bottom: -20px; font-size: 12px; color: var(--muted); }
+.wk-col.today span { color: var(--accent); font-weight: 500; }
+
+/* ===== 프로젝트·지원·공고 (앱 그대로) ===== */
+.pj { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.pj:last-child { border-bottom: none; }
+.pj-top { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; }
+.pj-top time { margin-left: auto; font-size: 12px; font-weight: 400; color: var(--muted); }
+.pj-sub { display: flex; align-items: center; gap: 12px; margin: 4px 0 0 16px; font-size: 12px; color: var(--muted); }
+.pj-sub .bar { flex: 1; }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.tile { padding: 8px 12px; border-radius: 8px; }
+.tile b { display: block; font-size: 20px; font-weight: 600; line-height: 28px; }
+.tile span { font-size: 12px; font-weight: 500; }
+.tile.n { background: var(--neutral-soft); color: var(--neutral); }
+.tile.b { background: var(--blue-soft); color: var(--blue); }
+.tile.a { background: var(--amber-soft); color: var(--amber); }
+.tile.g { background: var(--green-soft); color: var(--green); }
+.tiles-total { margin-top: auto; padding-top: 12px; font-size: 12px; color: var(--muted); }
+.jb { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.jb:last-child { border-bottom: none; }
+.jb-top { display: flex; align-items: center; gap: 8px; }
+.jb-top .sc { margin-left: auto; height: 22px; padding: 0 6px; border-radius: 6px; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 500; line-height: 22px; }
+.jb-sub { margin: 2px 0 0 28px; font-size: 12px; color: var(--muted); }
+.jb-new { margin: -4px 0 4px; font-size: 13px; color: var(--muted); }
+.jb-new b { color: var(--text); font-weight: 500; }
+
+/* ===== 색 조정안 (compare-home-colors.html). 프레임에 붙여 토큰만 바꾼다 ===== */
+.pal-a {
+  --bg: #131316; --surface: #1f1f24; --surface-2: #29292f; --border: #2e2e35; --border-2: #3c3c45; --track: #34343c;
+  --hover-faint: rgba(255, 255, 255, 0.025);
+}
+/* A안 지원 현황: 색 바탕 대신 회색 칸 + 왼쪽 색 띠 + 숫자만 상태색 */
+.pal-a .tile { background: var(--surface-2); color: var(--muted); box-shadow: inset 3px 0 0 var(--tc); }
+.pal-a .tile b { color: var(--tc); }
+.pal-a .tile.n { --tc: var(--neutral); } .pal-a .tile.b { --tc: var(--blue); }
+.pal-a .tile.a { --tc: var(--amber); } .pal-a .tile.g { --tc: var(--green); }
+
+.pal-b {
+  --bg: #18161a; --sidebar: #1d1b1f; --surface: #232026; --surface-2: #2b282e; --border: #36323a; --border-2: #423d47; --track: #36323a;
+  --text: #eeebe6; --muted: #a29d9c; --faint: #6f6a6d; --neutral: #d4d0cb; --neutral-soft: #2d2a2f;
+  --accent: #b39cff; --accent-soft: #2e2840; --accent-line: #40375c; --accent-dim: #62568a;
+  --accent-wash: color-mix(in srgb, var(--accent) 6%, transparent);
+  --blue-soft: #222631; --amber-soft: #332b20; --green-soft: #1f2d26;
+}
+
+/* 비교 화면 사이 라벨 */
+.vlabel { display: inline-block; margin: 0 0 8px; padding: 2px 8px; border-radius: 6px; background: var(--surface-2); font-size: 12px; color: var(--muted); }
+.vlabel.rec { background: var(--accent-soft); color: var(--accent); }
+
+/* ===== 타이머 색 비교 (compare-home-timer.html). 1안 지금 하는 것 카드 + A안 색 위에 색만 얹는다 ===== */
+.tm-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; zoom: 0.85; padding: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: 16px; }
+.tm-row .card { min-height: 300px; }
+.tm-cap { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+.tm-cap b { color: var(--text); font-weight: 500; }
+/* 공통: 색 하나(--tc)를 받아 시계 초·진행 막대·위 띠에 쓴다 */
+.tm .n1-clock span { color: var(--tc); }
+.tm .bar i { background: var(--tc); }
+.tm .n1-goal b { color: var(--tc); }
+/* T1 프로젝트 색: 카드 위쪽 3px 띠 + 시계 칸 연한 바탕 */
+.tm-proj { box-shadow: inset 0 3px 0 var(--tc); }
+.tm-proj .n1-clock { margin: 12px -8px 16px; padding: 8px 0; border-radius: 8px; background: color-mix(in srgb, var(--tc) 8%, transparent); }
+/* T2 진행 초록: 타이머가 도는 동안 카드 테두리가 초록 */
+.tm-run { border-color: var(--green-line); background: color-mix(in srgb, var(--green) 3%, var(--surface)); }
+/* T3 보라: 오늘 집중을 이번 주 집중 막대와 같은 보라로 잇는다 */
+.tm-acc .n1-goal span:first-child { color: var(--accent); }
+/* 일시정지: 색을 빼고 주황 배지만 */
+.tm.paused .n1-clock, .tm.paused .n1-clock span { color: var(--muted); }
+.tm.paused .bar i { background: var(--neutral); }
+.tm.paused { box-shadow: none; border-color: var(--border); background: var(--surface); }
+.badge.pause { background: var(--amber-soft); color: var(--amber); }

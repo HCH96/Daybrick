@@ -1,0 +1,104 @@
+<!doctype html>
+<!-- 목업: 메인 페이지 / 8. 홈 색 조정안 비교
+  목차와 다른 화면: index.html
+  CSS: common.css(토큰), compare.css (색 조정안은 .pal-a, .pal-b 클래스가 토큰만 바꾼다)
+  홈 화면은 compare-home-cards.html의 1안과 같은 내용이다. <template>에 한 번 두고 스크립트로 세 번 복사한다.
+  ID                  화면                                  요구사항
+  pal-now             8-0. 지금 색 (그라파이트 바이올렛)      -
+  pal-a               8-1. A안: 대비 정리 + 지원 현황 무채색   -
+  pal-b               8-2. B안: 따뜻한 먹색                  -
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>홈 색 비교</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="compare.css" />
+<script src="icons.js"></script>
+</head>
+<body class="cmp">
+<div class="doc">
+  <h1>홈 색 조정안 비교</h1>
+  <p class="lead">정적 화면이며 값은 예시입니다. 세 화면 모두 카드 모양은 <a href="compare-home-cards.html#cmp-v1" style="color:var(--accent)">1안</a>이고 색만 다릅니다. 보라는 세 안 모두 이번 주 집중 막대·오늘 표시·빠른 추가에만 씁니다.</p>
+
+  <section class="screen" id="pal-now">
+    <div class="screen-head"><h2>8-0. 지금 색</h2></div>
+    <p class="screen-desc">바탕(#17171a)과 카드(#222227)의 차이가 작아 화면이 한 덩어리로 보이고, 지원 현황의 갈색·남색·초록 칸이 탁해 보입니다.</p>
+    <div class="hframe" data-home></div>
+  </section>
+
+  <section class="screen" id="pal-a">
+    <div class="screen-head"><h2>8-1. A안: 대비 정리 + 지원 현황 무채색</h2><span class="tag">추천</span></div>
+    <p class="screen-desc">그라파이트와 보라는 그대로 두고, 바탕은 한 단계 어둡게·카드는 조금 밝게 해서 카드가 또렷이 떠 보이게 합니다. 지원 현황은 색 바탕 대신 회색 칸 + 왼쪽 색 띠 + 숫자만 상태색으로 바꿉니다. 바뀌는 토큰: --bg, --surface, --surface-2, --border, --border-2, --track.</p>
+    <div class="hframe pal-a" data-home></div>
+  </section>
+
+  <section class="screen" id="pal-b">
+    <div class="screen-head"><h2>8-2. B안: 따뜻한 먹색</h2></div>
+    <p class="screen-desc">바탕 회색에 붉은 기를 아주 조금 넣고 글자를 따뜻한 흰색으로 바꿉니다. 보라도 살짝 밝게 맞춥니다. 지원 현황은 색 바탕을 유지하되 채도를 낮춥니다. 앱 전체 분위기가 바뀌므로 다른 페이지도 같이 바뀝니다.</p>
+    <div class="hframe pal-b" data-home></div>
+  </section>
+</div>
+
+<template id="home">
+  <div class="hhead"><div><small>2026년 11월 9일 (월)</small><h1>좋은 하루예요</h1></div>
+    <div class="qadd"><svg class="ico" style="color:var(--accent)"><use href="#i-plus"/></svg>할 일 추가<kbd>Enter</kbd></div></div>
+  <div class="strip">
+    <div><label>오늘 집중<span>투데이 ›</span></label><b>1:20<small>/ 6:00</small></b></div>
+    <div><label>오늘 완료<span>투데이 ›</span></label><b>2<small>/ 5</small></b></div>
+    <div><label>다음 일정<span>캘린더 ›</span></label><b>14:00<em>넥슨 1차 면접</em></b></div>
+    <div><label>가까운 마감<span>지원 관리 ›</span></label><b>D-1<em>카카오게임즈 서류</em></b></div>
+  </div>
+  <div class="grid">
+    <div class="card lg">
+      <div class="chead">다가오는 7일<span>캘린더 ›</span></div>
+      <div class="u1-day today"><div class="u1-date"><b>9</b><small>오늘</small></div><div class="u1-list">
+        <div class="chip app"><i class="iniB i1">넥</i><span class="t">넥슨 <em>· 1차 면접</em></span><time>14:00</time><svg class="ico kind"><use href="#k-int"/></svg></div>
+        <div class="chip" style="--c:var(--violet)"><span class="t">홈 카드 다듬기</span><time>Daybrick</time></div>
+        <div class="chip" style="--c:var(--faint)"><span class="t">테스트</span><time>미분류</time></div></div></div>
+      <div class="u1-day"><div class="u1-date"><b>10</b><small>내일</small></div><div class="u1-list">
+        <div class="chip app"><i class="iniB i3">카</i><span class="t">카카오게임즈 <em>· 서류 마감</em></span><time>23:59</time><svg class="ico" style="color:var(--faint)"><use href="#k-doc"/></svg></div></div></div>
+      <div class="u1-gap">11/11 – 11/13 · 일정 없음</div>
+      <div class="u1-day"><div class="u1-date"><b>14</b><small style="color:var(--blue)">토</small></div><div class="u1-list">
+        <div class="chip"><i class="ddot"></i><span class="t">인호 취업턱</span><time>18:00</time></div></div></div>
+      <div class="u1-day"><div class="u1-date"><b>15</b><small style="color:var(--red)">일</small></div><div class="u1-list">
+        <div class="chip"><i class="ddot"></i><span class="t">건희랑 영등포 갈비</span><time>12:30</time></div></div></div>
+    </div>
+    <div class="card nr">
+      <div class="chead">지금 하는 것<span>투데이 ›</span></div>
+      <div class="n1">
+        <div class="n1-top"><span class="n1-cat"><i class="ddot" style="--c:var(--violet)"></i>Daybrick</span><span class="badge run">진행 중</span></div>
+        <div class="n1-title">홈 카드 다듬기</div>
+        <div class="n1-clock">0:24<span>:17</span></div>
+        <div class="bar"><i style="width:22%"></i></div>
+        <div class="n1-goal"><span>오늘 집중 <b>1:20</b></span><span>목표 6:00</span></div>
+        <div class="n1-acts"><span class="btn tall"><svg class="ico"><use href="#t-pause"/></svg>일시정지</span><span class="btn tall pri"><svg class="ico"><use href="#t-check"/></svg>완료</span><span class="btn sq tall" style="flex:none" title="중단"><svg class="ico s12"><use href="#t-stop"/></svg></span></div>
+      </div>
+    </div>
+    <div class="card nr"><div class="chead">이번 주 집중<span>투데이 ›</span></div>
+      <div class="wk-total">이번 주 <b>1</b>시간 <b>20</b>분</div>
+      <div class="wk"><div class="wk-goal"><span>목표 6시간</span></div>
+        <div class="wk-col today"><i style="height:17%"></i><span>월</span></div>
+        <div class="wk-col future"><i></i><span>화</span></div><div class="wk-col future"><i></i><span>수</span></div>
+        <div class="wk-col future"><i></i><span>목</span></div><div class="wk-col future"><i></i><span>금</span></div>
+        <div class="wk-col future"><i></i><span>토</span></div><div class="wk-col future"><i></i><span>일</span></div></div></div>
+    <div class="card qt"><div class="chead">프로젝트 진행<span>프로젝트 ›</span></div>
+      <div class="pj"><div class="pj-top"><i class="ddot" style="--c:var(--violet)"></i>Daybrick<time>12:40</time></div><div class="pj-sub">1단계 · 데스크톱 앱<div class="bar"><i style="width:30%"></i></div></div></div>
+      <div class="pj"><div class="pj-top"><i class="ddot" style="--c:var(--teal)"></i>TrialGround<time>8:10</time></div><div class="pj-sub">3주차 / 8<div class="bar"><i style="width:40%"></i></div></div></div></div>
+    <div class="card qt"><div class="chead">지원 현황<span>지원 관리 ›</span></div>
+      <div class="tiles"><div class="tile n"><b>1</b><span>지원 준비</span></div><div class="tile b"><b>2</b><span>지원 완료</span></div>
+        <div class="tile a"><b>1</b><span>전형 준비</span></div><div class="tile g"><b>1</b><span>결과 대기</span></div></div>
+      <div class="tiles-total">진행 중 5곳</div></div>
+    <div class="card qt"><div class="chead">새 추천 공고<span>구직 관리 ›</span></div>
+      <div class="jb-new">새 공고 <b>2개</b></div>
+      <div class="jb"><div class="jb-top"><i class="iniB i1">넥</i>서버 프로그래머<span class="sc">87</span></div><div class="jb-sub">넥슨 · D-12</div></div>
+      <div class="jb"><div class="jb-top"><i class="iniB i5">크</i>게임 클라이언트 개발<span class="sc">81</span></div><div class="jb-sub">크래프톤 · D-20</div></div></div>
+  </div>
+</template>
+<script>
+  const tpl = document.getElementById("home");
+  for (const frame of document.querySelectorAll("[data-home]")) frame.appendChild(tpl.content.cloneNode(true));
+</script>
+</body>
+</html>

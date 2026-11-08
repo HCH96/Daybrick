@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { useApplications } from "../../features/applications/store";
 import { summarizeApplications, type StatusCount } from "../../features/applications/summary";
 import CardState from "./CardState";
@@ -7,7 +8,7 @@ import "./ApplicationsSummaryCard.css";
 function StatusTile({ item }: { item: StatusCount }) {
   const stages = item.stages.map((s) => `${s.label} ${s.count}`).join(" · ");
   return (
-    <div className="apps-summary__tile" style={{ background: item.softColor, color: item.color }}>
+    <div className="apps-summary__tile" style={{ "--tc": item.color } as CSSProperties}>
       <div className="apps-summary__count">{item.count}</div>
       <div className="apps-summary__label">{item.label}</div>
       {stages && (

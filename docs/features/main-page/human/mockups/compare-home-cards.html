@@ -1,0 +1,188 @@
+<!doctype html>
+<!-- 목업: 메인 페이지 / 7. 홈 카드 비교 (다가오는 7일 · 지금 하는 것)
+  목차와 다른 화면: index.html
+  CSS: common.css(토큰), compare.css (u0·u1·u2 = 다가오는 7일 지금·1안·2안, n0·n1·n2 = 지금 하는 것 지금·1안·2안)
+  아래 공통 칸(요약 줄·이번 주 집중·아래 줄 카드)은 <template>에 한 번만 두고 스크립트로 복사한다. 비교 대상이 아니라 앱 그대로다.
+  ID                  화면                                  요구사항
+  cmp-now             7-0. 지금 앱                           R29–R37
+  cmp-v1              7-1. 1안: 날짜 열 + 칩 / 가운데 시계    R29–R37
+    cmp-v1-upcoming     다가오는 7일 1안                      R29–R34
+    cmp-v1-now          지금 하는 것 1안                      R35
+  cmp-v2              7-2. 2안: 일주일 띠 / 왼쪽 시계         R29–R37
+    cmp-v2-upcoming     다가오는 7일 2안                      R29–R34
+    cmp-v2-now          지금 하는 것 2안                      R35
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>홈 카드 비교</title>
+<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="compare.css" />
+<script src="icons.js"></script>
+</head>
+<body class="cmp">
+<div class="doc">
+  <h1>홈 카드 비교: 다가오는 7일 · 지금 하는 것</h1>
+  <p class="lead">정적 화면이며 값은 예시입니다. 지금 앱 → 1안 → 2안 순서로, 실제 홈 배치 안에서 두 카드만 바뀝니다. 색은 지금 색 그대로이고, 색 조정안은 <a href="compare-home-colors.html" style="color:var(--accent)">compare-home-colors.html</a>에 따로 있습니다.</p>
+
+  <!-- ===== 7-0. 지금 앱 ===== -->
+  <section class="screen" id="cmp-now">
+    <div class="screen-head"><h2>7-0. 지금 앱</h2><span class="tag">R29–R37</span></div>
+    <p class="screen-desc">날마다 밑줄 머리가 붙어 공책처럼 보이고, 빈 날 4개가 카드 절반을 차지합니다. 지금 하는 것은 왼쪽에 몰려 오른쪽이 비어 있습니다.</p>
+    <div class="hframe">
+      <div data-part="head"></div>
+      <div class="grid">
+        <div class="card lg">
+          <div class="chead">다가오는 7일<span>캘린더 ›</span></div>
+          <div class="u0-day"><div class="u0-head today">오늘<small>11/9 (월)</small></div>
+            <div class="u0-row"><time>14:00</time><span class="mk"><i class="iniB i1">넥</i></span>넥슨 · 1차 면접</div>
+            <div class="u0-row"><time></time><span class="mk"><i class="ddot" style="--c:var(--muted)"></i></span>테스트</div>
+            <div class="u0-row"><time></time><span class="mk"><i class="ddot" style="--c:var(--violet)"></i></span>홈 카드 다듬기</div></div>
+          <div class="u0-day"><div class="u0-head">내일<small>11/10 (화)</small></div>
+            <div class="u0-row"><time></time><span class="mk"><i class="iniB i3">카</i></span>카카오게임즈 · 서류 마감</div></div>
+          <div class="u0-day"><div class="u0-head blank">11/11 (수)</div></div>
+          <div class="u0-day"><div class="u0-head blank">11/12 (목)</div></div>
+          <div class="u0-day"><div class="u0-head blank">11/13 (금)</div></div>
+          <div class="u0-day"><div class="u0-head">11/14 (토)</div>
+            <div class="u0-row"><time>18:00</time><span class="mk"><i class="ddot"></i></span>인호 취업턱</div></div>
+          <div class="u0-day"><div class="u0-head">11/15 (일)</div>
+            <div class="u0-row"><time>12:30</time><span class="mk"><i class="ddot"></i></span>건희랑 영등포 갈비</div></div>
+        </div>
+        <div class="card nr">
+          <div class="chead">지금 하는 것<span>투데이 ›</span></div>
+          <div class="n0-task"><i class="ddot" style="--c:var(--violet)"></i>홈 카드 다듬기</div>
+          <div class="n0-sub">Daybrick · 오늘 이 태스크 1:20</div>
+          <div class="n0-row"><span class="n0-clock">0:24:17</span><span class="badge run">진행 중</span></div>
+          <div class="n0-acts"><span class="btn"><svg class="ico"><use href="#t-pause"/></svg>일시정지</span><span class="btn pri"><svg class="ico"><use href="#t-check"/></svg>완료</span><span class="btn quiet"><svg class="ico s12"><use href="#t-stop"/></svg>중단</span></div>
+        </div>
+        <div data-part="week"></div>
+        <div data-part="bottom"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 7-1. 1안 ===== -->
+  <section class="screen" id="cmp-v1">
+    <div class="screen-head"><h2>7-1. 1안: 날짜 열 + 칩 / 가운데 시계</h2><span class="tag">R29–R37</span></div>
+    <p class="screen-desc">다가오는 7일: 왼쪽에 큰 날짜, 오른쪽에 캘린더와 같은 칩. 일정 없는 날이 이어지면 한 줄로 합칩니다. 지금 하는 것: 시계를 가운데 크게, 아래에 오늘 집중 막대, 버튼은 카드 바닥에 너비를 나눠 붙입니다.</p>
+    <div class="hframe">
+      <div data-part="head"></div>
+      <div class="grid">
+        <div class="card lg" id="cmp-v1-upcoming">
+          <div class="chead">다가오는 7일<span>캘린더 ›</span></div>
+          <div class="u1-day today"><div class="u1-date"><b>9</b><small>오늘</small></div><div class="u1-list">
+            <div class="chip app"><i class="iniB i1">넥</i><span class="t">넥슨 <em>· 1차 면접</em></span><time>14:00</time><svg class="ico kind"><use href="#k-int"/></svg></div>
+            <div class="chip" style="--c:var(--violet)"><span class="t">홈 카드 다듬기</span><time>Daybrick</time></div>
+            <div class="chip" style="--c:var(--faint)"><span class="t">테스트</span><time>미분류</time></div></div></div>
+          <div class="u1-day"><div class="u1-date"><b>10</b><small>내일</small></div><div class="u1-list">
+            <div class="chip app"><i class="iniB i3">카</i><span class="t">카카오게임즈 <em>· 서류 마감</em></span><time>23:59</time><svg class="ico" style="color:var(--faint)"><use href="#k-doc"/></svg></div></div></div>
+          <div class="u1-gap">11/11 – 11/13 · 일정 없음</div>
+          <div class="u1-day"><div class="u1-date"><b>14</b><small style="color:var(--blue)">토</small></div><div class="u1-list">
+            <div class="chip"><i class="ddot"></i><span class="t">인호 취업턱</span><time>18:00</time></div></div></div>
+          <div class="u1-day"><div class="u1-date"><b>15</b><small style="color:var(--red)">일</small></div><div class="u1-list">
+            <div class="chip"><i class="ddot"></i><span class="t">건희랑 영등포 갈비</span><time>12:30</time></div></div></div>
+        </div>
+        <div class="card nr" id="cmp-v1-now">
+          <div class="chead">지금 하는 것<span>투데이 ›</span></div>
+          <div class="n1">
+            <div class="n1-top"><span class="n1-cat"><i class="ddot" style="--c:var(--violet)"></i>Daybrick</span><span class="badge run">진행 중</span></div>
+            <div class="n1-title">홈 카드 다듬기</div>
+            <div class="n1-clock">0:24<span>:17</span></div>
+            <div class="bar"><i style="width:22%"></i></div>
+            <div class="n1-goal"><span>오늘 집중 <b>1:20</b></span><span>목표 6:00</span></div>
+            <div class="n1-acts"><span class="btn tall"><svg class="ico"><use href="#t-pause"/></svg>일시정지</span><span class="btn tall pri"><svg class="ico"><use href="#t-check"/></svg>완료</span><span class="btn sq tall" style="flex:none" title="중단"><svg class="ico s12"><use href="#t-stop"/></svg></span></div>
+          </div>
+        </div>
+        <div data-part="week"></div>
+        <div data-part="bottom"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 7-2. 2안 ===== -->
+  <section class="screen" id="cmp-v2">
+    <div class="screen-head"><h2>7-2. 2안: 일주일 띠 / 왼쪽 시계</h2><span class="tag">R29–R37</span></div>
+    <p class="screen-desc">다가오는 7일: 7일을 세로 칸 7개로 나란히 놓아 일주일이 한눈에 보입니다. 제목은 두 줄까지 보이고 넘치면 줄입니다. 지금 하는 것: 왼쪽에 시계, 오른쪽에 태스크와 오늘 집중, 버튼은 구분선 아래 한 줄입니다.</p>
+    <div class="hframe">
+      <div data-part="head"></div>
+      <div class="grid">
+        <div class="card lg" id="cmp-v2-upcoming">
+          <div class="chead">다가오는 7일<span>캘린더 ›</span></div>
+          <div class="u2">
+            <div class="u2-col today"><div class="u2-h"><b>9</b><small>오늘</small></div>
+              <div class="mini app"><time>14:00</time><span class="t"><i class="iniB i1">넥</i>넥슨 면접</span></div>
+              <div class="mini" style="--c:var(--violet)"><span class="t">홈 카드 다듬기</span></div>
+              <div class="mini" style="--c:var(--faint)"><span class="t">테스트</span></div></div>
+            <div class="u2-col"><div class="u2-h"><b>10</b><small>화</small></div>
+              <div class="mini app"><time>서류 마감</time><span class="t"><i class="iniB i3">카</i>카카오게임즈</span></div></div>
+            <div class="u2-col"><div class="u2-h"><b>11</b><small>수</small></div><div class="u2-none">없음</div></div>
+            <div class="u2-col"><div class="u2-h"><b>12</b><small>목</small></div><div class="u2-none">없음</div></div>
+            <div class="u2-col"><div class="u2-h"><b>13</b><small>금</small></div><div class="u2-none">없음</div></div>
+            <div class="u2-col sat"><div class="u2-h"><b>14</b><small>토</small></div>
+              <div class="mini"><time>18:00</time><span class="t">인호 취업턱</span></div></div>
+            <div class="u2-col sun"><div class="u2-h"><b>15</b><small>일</small></div>
+              <div class="mini"><time>12:30</time><span class="t">건희랑 영등포 갈비</span></div></div>
+          </div>
+        </div>
+        <div class="card nr" id="cmp-v2-now">
+          <div class="chead">지금 하는 것<span>투데이 ›</span></div>
+          <div class="n2">
+            <div class="n2-main">
+              <div class="n2-clock">0:24<span>:17</span></div>
+              <div class="n2-info"><span class="badge run" style="align-self:flex-start">진행 중</span>
+                <span class="ttl">홈 카드 다듬기</span>
+                <span class="sub"><i class="ddot" style="--c:var(--violet)"></i>Daybrick · 오늘 1:20 / 6:00</span>
+                <div class="bar"><i style="width:22%"></i></div></div>
+            </div>
+            <div class="n2-acts"><span class="btn"><svg class="ico"><use href="#t-pause"/></svg>일시정지</span><span class="btn pri"><svg class="ico"><use href="#t-check"/></svg>완료</span><span class="btn sq" title="중단"><svg class="ico s12"><use href="#t-stop"/></svg></span></div>
+          </div>
+        </div>
+        <div data-part="week"></div>
+        <div data-part="bottom"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== 공통 칸 (앱 그대로) ===== -->
+<template id="part-head">
+  <div class="hhead"><div><small>2026년 11월 9일 (월)</small><h1>좋은 하루예요</h1></div>
+    <div class="qadd"><svg class="ico"><use href="#i-plus"/></svg>할 일 추가<kbd>Enter</kbd></div></div>
+  <div class="strip">
+    <div><label>오늘 집중<span>투데이 ›</span></label><b>1:20<small>/ 6:00</small></b></div>
+    <div><label>오늘 완료<span>투데이 ›</span></label><b>2<small>/ 5</small></b></div>
+    <div><label>다음 일정<span>캘린더 ›</span></label><b>14:00<em>넥슨 1차 면접</em></b></div>
+    <div><label>가까운 마감<span>지원 관리 ›</span></label><b>D-1<em>카카오게임즈 서류</em></b></div>
+  </div>
+</template>
+<template id="part-week">
+  <div class="card nr"><div class="chead">이번 주 집중<span>투데이 ›</span></div>
+    <div class="wk-total">이번 주 <b>1</b>시간 <b>20</b>분</div>
+    <div class="wk"><div class="wk-goal"><span>목표 6시간</span></div>
+      <div class="wk-col today"><i style="height:17%"></i><span>월</span></div>
+      <div class="wk-col future"><i></i><span>화</span></div><div class="wk-col future"><i></i><span>수</span></div>
+      <div class="wk-col future"><i></i><span>목</span></div><div class="wk-col future"><i></i><span>금</span></div>
+      <div class="wk-col future"><i></i><span>토</span></div><div class="wk-col future"><i></i><span>일</span></div></div></div>
+</template>
+<template id="part-bottom">
+  <div class="card qt"><div class="chead">프로젝트 진행<span>프로젝트 ›</span></div>
+    <div class="pj"><div class="pj-top"><i class="ddot" style="--c:var(--violet)"></i>Daybrick<time>12:40</time></div><div class="pj-sub">1단계 · 데스크톱 앱<div class="bar"><i style="width:30%"></i></div></div></div>
+    <div class="pj"><div class="pj-top"><i class="ddot" style="--c:var(--teal)"></i>TrialGround<time>8:10</time></div><div class="pj-sub">3주차 / 8<div class="bar"><i style="width:40%"></i></div></div></div></div>
+  <div class="card qt"><div class="chead">지원 현황<span>지원 관리 ›</span></div>
+    <div class="tiles"><div class="tile n"><b>1</b><span>지원 준비</span></div><div class="tile b"><b>2</b><span>지원 완료</span></div>
+      <div class="tile a"><b>1</b><span>전형 준비</span></div><div class="tile g"><b>1</b><span>결과 대기</span></div></div>
+    <div class="tiles-total">진행 중 5곳</div></div>
+  <div class="card qt"><div class="chead">새 추천 공고<span>구직 관리 ›</span></div>
+    <div class="jb-new">새 공고 <b>2개</b></div>
+    <div class="jb"><div class="jb-top"><i class="iniB i1">넥</i>서버 프로그래머<span class="sc">87</span></div><div class="jb-sub">넥슨 · D-12</div></div>
+    <div class="jb"><div class="jb-top"><i class="iniB i5">크</i>게임 클라이언트 개발<span class="sc">81</span></div><div class="jb-sub">크래프톤 · D-20</div></div></div>
+</template>
+<script>
+  for (const slot of document.querySelectorAll("[data-part]")) {
+    const tpl = document.getElementById("part-" + slot.dataset.part);
+    slot.replaceWith(tpl.content.cloneNode(true));
+  }
+</script>
+</body>
+</html>

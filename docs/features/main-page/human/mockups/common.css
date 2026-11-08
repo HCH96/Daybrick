@@ -1,18 +1,131 @@
 /* 공통: 색 토큰(그라파이트 바이올렛), 문서 부분, 앱 창 틀, 아이콘 상자, 카테고리·프로젝트 색, 이니셜 배지, 조각 화면 */
-/* 색: 그라파이트 바이올렛 (apps/desktop/src/styles/theme.css와 같은 값) */
+/* 색: 그라파이트 바이올렛 (apps/desktop/src/styles/theme.css에서 2026-11-09에 옮김) */
 :root {
-  --bg: #17171a; --sidebar: #1c1c20; --surface: #222227;
-  --border: #33333b; --track: #33333b;
-  --text: #ededf2; --muted: #9b9ba8; --faint: #6b6b78;
-  --accent: #a68cff; --accent-soft: #2d2745; --on-accent: #17171a;
-  --neutral: #cdcdd6; --neutral-soft: #2b2b31;
-  --blue: #7aa8ff; --blue-soft: #1e2740;
-  --amber: #f0b860; --amber-soft: #3a2f1c;
-  --green: #66cf95; --green-soft: #1a3428;
-  --red: #ff8a8a; --red-soft: #3a1f22;
-  --surface-2: #28282e;
-  --mono: "Cascadia Mono", "Consolas", monospace;
-  --radius: 12px;
+  --bg: #17171a;
+  --sidebar: #1c1c20;
+  --surface: #222227;
+  --surface-2: #28282e; /* 눌린 버튼 등 한 단계 밝은 바탕 */
+  --popup: #1f1f24; /* 팝업·작은 창 바탕 */
+  --border: #33333b;
+  --border-2: #3d3d46; /* 한 단계 밝은 테두리 */
+  --track: #33333b;
+
+  --hover: rgba(255, 255, 255, 0.06);
+  --hover-faint: rgba(255, 255, 255, 0.03);
+  --pressed: rgba(255, 255, 255, 0.08);
+  --scrim: rgba(8, 8, 10, 0.62); /* 모달 뒤를 어둡게 */
+  --scrim-light: rgba(8, 8, 10, 0.45); /* 확인 창 뒤 (이미 모달 위일 수 있어 옅게) */
+  --foot-tint: rgba(0, 0, 0, 0.12); /* 창 아래 버튼 줄 */
+  --scrim-solid: color-mix(in srgb, var(--bg) 92%, transparent); /* 이미지 확대 뒤 */
+  --text-line: color-mix(in srgb, var(--text) 25%, transparent); /* 타이머 작동 중 오늘 잔디 칸의 숨쉬는 테두리 */
+
+  --text: #ededf2;
+  --muted: #9b9ba8;
+  --faint: #6b6b78;
+
+  --accent: #a68cff;
+  --accent-soft: #2d2745;
+  --accent-line: #3d345e;
+  --accent-dim: #5e5289; /* 흐린 보라: 홈 이번 주 집중의 지난 요일 막대 */
+  --accent-wash: color-mix(in srgb, var(--accent) 6%, transparent); /* 오늘 칸 바탕 */
+  --accent-drop: color-mix(in srgb, var(--accent) 10%, transparent); /* 끌어서 놓일 곳, 점선 추가 칸 */
+  --accent-ring: color-mix(in srgb, var(--accent) 18%, transparent); /* 입력칸 포커스 바깥 링 */
+  --on-accent: #17171a;
+
+  --neutral: #cdcdd6;
+  --neutral-soft: #2b2b31;
+  --blue: #7aa8ff;
+  --blue-soft: #1e2740;
+  --amber: #f0b860;
+  --amber-soft: #3a2f1c;
+  --amber-line: #4d3d22;
+  --green: #66cf95;
+  --green-soft: #1a3428;
+  --green-line: #2f6b4b; /* 끝난 단계 진행선, 확인된 입력칸 테두리 */
+
+  --red: #ff8a8a;
+  --red-soft: #3a1f22;
+  --red-line: #4d2a2e;
+  --violet: #c4b2ff;
+  --violet-soft: #2d2745;
+  --teal: #5fd0c8;
+  --teal-soft: #173230;
+  --pink: #f29ad3;
+  --pink-soft: #3a1f33;
+
+  --initial-1: #f2d36b;
+  --initial-2: #6fd19a;
+  --initial-3: #7fa9ff;
+  --initial-4: #f5a46a;
+  --initial-5: #67d3c8;
+  --initial-6: #f58d9c;
+  --initial-7: #c4a3ff;
+
+  --danger: #d9534f;
+  --danger-hover: #e0625e;
+  --on-danger: #ffffff;
+
+  --badge: #f0524f;
+  --on-badge: #ffffff;
+
+  --close-hover: #c42b1c;
+  --on-close: #ffffff;
+
+  --logo-cell: rgba(255, 255, 255, 0.85);
+
+  --font: "Pretendard Variable", Pretendard, "Malgun Gothic", "Segoe UI", sans-serif;
+  --mono: "Cascadia Mono", "Consolas", monospace; /* 타이머 시계, 코드 상자에만 */
+
+  --fs-11: 11px;
+  --fs-12: 12px;
+  --fs-13: 13px;
+  --fs-14: 14px;
+  --fs-16: 16px;
+  --fs-20: 20px;
+  --fs-26: 26px;
+  --fs-34: 34px; /* 큰 숫자 표시만 */
+  --fs-56: 56px; /* 큰 숫자 표시만 */
+
+  --fw-regular: 400;
+  --fw-medium: 500; /* 라벨·강조 */
+  --fw-semibold: 600; /* 제목 */
+
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px; /* 작은 패널·팝업 안쪽 */
+  --space-20: 20px; /* 카드 안쪽, 카드 사이 */
+  --space-24: 24px;
+  --space-28: 28px;
+  --space-32: 32px;
+
+  --row-h: 36px; /* 목록 한 줄 */
+  --row-h-dense: 32px; /* 촘촘한 목록 한 줄 */
+
+  --radius-xs: 4px; /* 안쪽 최소 */
+  --radius-sm: 6px; /* 상태 배지, 작은 칸 */
+  --radius-control: 8px; /* 버튼·입력 */
+  --radius: 12px; /* 카드·팝업 */
+  --radius-lg: 16px; /* 모달·큰 패널 */
+  --radius-pill: 999px; /* 알림 숫자 배지·스위치에만 */
+
+  --shadow-pop: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.45);
+
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --dur-fast: 120ms; /* 반응 */
+  --dur-enter: 200ms; /* 들어오는 것 */
+  --dur-slide: 150ms; /* 자리를 옮기는 것 (사이드바 접기·펴기) */
+
+  --content-max: 1280px;
+  --content-max-narrow: 880px; /* 설정 */
+  --sidebar-width: 200px;
+
+  --modal-sm: 360px; /* 확인 창 */
+  --modal-md: 560px; /* 입력 몇 개인 작은 창 */
+  --modal-lg: 760px; /* 기본 모달·목록 창 */
+  --modal-xl: 1080px; /* 두 단 구성의 큰 창 */
 }
 * { box-sizing: border-box; }
 body {

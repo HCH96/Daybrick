@@ -13,7 +13,11 @@
   dash.html       4. 홈 개편 (모든 기능이 연결된 모습)         R10–R16, R22–R47 부분 ID: dash-head, -summary, -upcoming, -now, -week, -projects, -apps, -jobs, -notes
   part-now.html   5. 지금 하는 것 카드의 상태                  R35–R37          부분 ID: now-running, now-paused, now-tasks, now-empty
   part-empty.html 6. 빈 상태·불러오는 중·못 읽음               R13, R17, R22, R34, R41, R46  부분 ID: empty-head, -upcoming, -projects, -jobs-zero, -jobs-off, -loading, -error
-  CSS: common.css(색 토큰·앱 틀·아이콘 상자·카테고리 색·이니셜 배지·조각 화면), home.css(1–3번), dash.css(4–6번)
+  -- 홈 다듬기 (2026-11-09 승인, L49): 7번 1안 + 8번 A안 + 9번 T1. 나머지 안은 고르지 않은 후보. 구현이 끝나면 ../../archive/mockups/로 옮긴다 --
+  compare-home-cards.html  7. 홈 카드 비교 (지금·1안·2안)      R29–R37          부분 ID: cmp-now, cmp-v1(-upcoming, -now), cmp-v2(-upcoming, -now)
+  compare-home-colors.html 8. 홈 색 조정안 (지금·A·B)           -                부분 ID: pal-now, pal-a, pal-b
+  compare-home-timer.html  9. 지금 하는 것 타이머 색 (T1·T2·T3) R35              부분 ID: tm-running, tm-paused
+  CSS: common.css(색 토큰·앱 틀·아이콘 상자·카테고리 색·이니셜 배지·조각 화면), home.css(1–3번), dash.css(4–6번), compare.css(7–9번)
 -->
 <html lang="ko">
 <head>
@@ -41,6 +45,13 @@
     <a href="dash.html">4. 홈 개편 (모든 기능이 연결된 모습)<small>R10–R16, R22–R47</small></a>
     <a href="part-now.html">5. 지금 하는 것 카드의 상태<small>R35–R37</small></a>
     <a href="part-empty.html">6. 빈 상태 · 불러오는 중 · 못 읽음<small>R13, R17, R22, R34, R41, R46</small></a>
+  </div>
+  <h2 style="margin:36px 0 4px;font-size:18px">홈 다듬기 (2026-11-09 승인: 1안 + 색 A안 + 타이머 T1)</h2>
+  <p class="lead">다가오는 7일·지금 하는 것 카드의 새 모양, 홈 색 조정, 타이머 색입니다. 고른 안은 1안, A안, T1입니다.</p>
+  <div class="idx">
+    <a href="compare-home-cards.html">7. 홈 카드 비교 (지금 · 1안 · 2안)<small>R29–R37</small></a>
+    <a href="compare-home-colors.html">8. 홈 색 조정안 (지금 · A안 · B안)<small>-</small></a>
+    <a href="compare-home-timer.html">9. 지금 하는 것 타이머 색 (T1 · T2 · T3)<small>R35</small></a>
   </div>
 </div>
 </body>

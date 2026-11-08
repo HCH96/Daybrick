@@ -1,4 +1,4 @@
-/* 홈 "지원 현황" 카드 (R42): 4칸 폭에 맞춘 2×2 타일. 타일 색은 지원 상태색(연한 바탕 + 글자) */
+/* 홈 "지원 현황" 카드 (R42): 4칸 폭에 맞춘 2×2 타일. 타일은 회색 칸 + 왼쪽 상태색 띠 + 상태색 숫자 (--tc = 지원 상태색) */
 
 .apps-summary {
   flex: 1;
@@ -17,9 +17,13 @@
   min-width: 0;
   padding: var(--space-8) var(--space-12);
   border-radius: var(--radius-control);
+  background: var(--surface-2);
+  color: var(--muted);
+  box-shadow: inset 3px 0 0 var(--tc);
 }
 
 .apps-summary__count {
+  color: var(--tc);
   font-size: var(--fs-20);
   font-weight: var(--fw-semibold);
   line-height: 28px;
@@ -33,7 +37,7 @@
 
 .apps-summary__stages {
   font-size: var(--fs-11);
-  opacity: 0.85;
+  color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
