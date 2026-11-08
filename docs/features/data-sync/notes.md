@@ -11,6 +11,6 @@
 - 7단계: 계정 확인·안전 점검·전체 빌드 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- /test data-sync
+- 사용자 테스트 r1 진행 (human/tests/r1-user-test.md), 결과를 받으면 기록
 
 ## 확인할 문서 (경로는 docs/features/data-sync/ 기준, 파일 통째로 읽기)

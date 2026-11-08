@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import { NAV_LABELS } from "../../app/pageLabels";
 import ServerSection from "./ServerSection";
 import SyncSection from "./SyncSection";
+import { useSectionAnchors } from "./useSectionAnchors";
 import "./SettingsPage.css";
 
 interface SettingsSectionDef {
@@ -16,8 +17,11 @@ const sections: SettingsSectionDef[] = [
   { id: "sync", label: "데이터 동기화", component: SyncSection },
 ];
 
-/** 설정 화면: 제목 + 칸 이름 줄 + 칸들 */
+const SECTION_IDS = sections.map((section) => section.id);
+
+/** 설정 화면: 제목 + 칸 이름 줄(누르면 그 칸으로 이동) + 칸들 */
 function SettingsPage() {
+  const { activeId, register, scrollTo } = useSectionAnchors(SECTION_IDS);
   return (
     <div className="settings-page">
       <div>
@@ -25,19 +29,27 @@ function SettingsPage() {
         <div className="settings-page__sub">앱 설정</div>
       </div>
 
-      <div className="settings-page__anchors">
-        {sections.map((section, i) => (
-          <span
-            key={section.id}
-            className={`settings-page__anchor${i === 0 ? " settings-page__anchor--on" : ""}`}
-          >
-            {section.label}
-          </span>
-        ))}
-      </div>
+      <nav className="settings-page__anchors" aria-label="설정 칸 바로 가기">
+        {sections.map((section) => {
+          const on = section.id === activeId;
+          return (
+            <button
+              key={section.id}
+              type="button"
+              className={`settings-page__anchor${on ? " settings-page__anchor--on" : ""}`}
+              aria-current={on ? "true" : undefined}
+              onClick={() => scrollTo(section.id)}
+            >
+              {section.label}
+            </button>
+          );
+        })}
+      </nav>
 
       {sections.map(({ id, component: Section }) => (
-        <Section key={id} />
+        <div key={id} ref={register(id)} className="settings-page__section">
+          <Section />
+        </div>
       ))}
     </div>
   );
