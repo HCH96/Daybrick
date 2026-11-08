@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Daybrick 개인정보처리방침</title>
+    <meta name="description" content="Daybrick이 어떤 정보를 어떻게 쓰고 저장하는지에 대한 안내" />
+    <link rel="stylesheet" href="/site.css" />
+  </head>
+  <body>
+    <main>
+      <a class="brand" href="/"><span class="brick"></span>Daybrick</a>
+
+      <h1>개인정보처리방침</h1>
+      <p class="meta">시행일: 2026년 11월 8일</p>
+
+      <p>
+        Daybrick(이하 "앱")은 개인용 일정·지원·집중 관리 앱입니다. 이 문서는 앱이 어떤 정보를 받고, 어디에 저장하며,
+        누구에게 전달하는지 설명합니다.
+      </p>
+
+      <h2>1. 저장 위치</h2>
+      <p>
+        앱이 다루는 데이터는 사용자의 컴퓨터와, 사용자가 직접 만들고 연결한 Supabase 프로젝트에만 저장됩니다.
+        앱 개발자가 운영하는 별도의 서버는 없으며, 개발자는 사용자의 데이터에 접근하지 않습니다.
+      </p>
+
+      <h2>2. Google 계정 정보</h2>
+      <p>
+        Google 로그인은 사용자 본인을 확인하는 데 쓰입니다. 로그인 과정에서 이메일 주소와 기본 프로필 정보를 받으며,
+        Google 비밀번호는 앱이 받지 않습니다.
+      </p>
+
+      <h2>3. Gmail 데이터</h2>
+      <ul>
+        <li>사용자가 직접 Gmail을 연결한 경우에만, 읽기 전용 권한(<code>gmail.readonly</code>)으로 메일을 확인합니다.</li>
+        <li>메일은 취업 지원과 관련된 메일(서류 결과, 면접 안내 등)을 찾아 지원 현황에 반영하는 데에만 씁니다.</li>
+        <li>앱은 메일을 보내거나, 수정하거나, 삭제하지 않습니다.</li>
+        <li>Gmail 권한 토큰은 사용자의 Supabase 프로젝트에 저장됩니다.</li>
+      </ul>
+
+      <h2>4. AI 분석을 위한 전송</h2>
+      <p>
+        지원 관련 메일과 채용 공고를 분류·요약하기 위해, 해당 내용이 Anthropic의 Claude API로 전송됩니다.
+        이 전송은 사용자가 직접 입력한 사용자 본인의 Anthropic API 키로 이루어집니다. 전송된 데이터의 처리는
+        Anthropic의 이용 약관과 개인정보 정책을 따릅니다.
+      </p>
+
+      <h2>5. 제3자 제공</h2>
+      <p>
+        위 4번의 AI 분석을 제외하고, 앱은 사용자의 데이터를 제3자에게 판매하거나 제공하지 않습니다.
+        Google API로 받은 정보는 광고에 쓰지 않으며, 위에 적은 기능을 제공하는 목적 밖으로 쓰거나 옮기지 않습니다.
+        앱이 Google API에서 받은 정보를 쓰는 방식은
+        <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API 서비스 사용자 데이터 정책</a>(제한적 사용
+        요건 포함)을 따릅니다.
+      </p>
+
+      <h2>6. 연결 해제와 삭제</h2>
+      <ul>
+        <li>앱의 구직 관리 설정에서 Gmail 연결을 해제하면, 저장된 Gmail 토큰을 지우고 Google 권한을 취소합니다.</li>
+        <li>
+          <a href="https://myaccount.google.com/permissions">Google 계정의 서드파티 앱 관리</a>에서도 언제든 권한을 취소할 수 있습니다.
+        </li>
+        <li>사용자의 Supabase 프로젝트를 삭제하면 서버에 저장된 데이터가 모두 삭제됩니다.</li>
+      </ul>
+
+      <h2>7. 문의</h2>
+      <p>이 방침에 대한 문의는 <a href="mailto:sjrnfl0412@gmail.com">sjrnfl0412@gmail.com</a>으로 보내 주세요.</p>
+
+      <footer><a href="/">Daybrick 홈</a></footer>
+    </main>
+  </body>
+</html>

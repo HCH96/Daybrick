@@ -1,0 +1,91 @@
+/* 홈·개인정보처리방침 공용 스타일. 색은 데스크톱 앱 토큰과 맞춘다. */
+:root {
+  --bg: #17171a;
+  --surface: #222227;
+  --text: #ededf2;
+  --text-dim: #a3a3ad;
+  --line: #2e2e35;
+  --accent: #a68cff;
+  --font: "Pretendard Variable", Pretendard, "Malgun Gothic", "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 64px 16px 96px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brick {
+  width: 18px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+h1 {
+  margin: 40px 0 8px;
+  font-size: 28px;
+  line-height: 1.3;
+}
+
+h2 {
+  margin: 36px 0 8px;
+  font-size: 17px;
+}
+
+p,
+li {
+  color: var(--text-dim);
+}
+
+ul {
+  padding-left: 20px;
+}
+
+a {
+  color: var(--accent);
+}
+
+.meta {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.card {
+  margin-top: 32px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+footer {
+  margin-top: 56px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--text-dim);
+}
