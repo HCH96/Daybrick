@@ -15,7 +15,12 @@ export interface SyncState {
   /** sync.json 내용. 다 읽기 전에는 null */
   file: SyncFile | null;
   blocked: SyncBlocked;
-  /** 켜기: 켜짐을 저장하고 종류마다 서버와 비교해 처리한다 (R17, R18) */
+  /** 켜져 있는데 지금 계정이 마지막으로 동기화한 계정과 다른지 (R16). 이때는 자동으로 올리지 않는다 */
+  accountMismatch: boolean;
+  /**
+   * 켜기: 켜짐을 저장하고 종류마다 서버와 비교해 처리한다 (R17, R18).
+   * 계정이 바뀌었으면 rev·hash를 비우고 지금 계정 서버와 다시 비교한다 (R16, [이 계정으로 동기화]도 이것을 쓴다).
+   */
   enable: () => Promise<void>;
   /** 끄기: 켜짐만 끈다. rev·hash와 서버·로컬 데이터는 그대로 둔다 (R25, R27) */
   disable: () => Promise<void>;

@@ -62,6 +62,15 @@ async function syncKindOnEnable(
   return { ...prev, state: "choice", error: null };
 }
 
+/** 계정을 바꿀 때 종류마다 마지막으로 맞춘 rev·hash를 비운다 (R16). 로컬·서버 데이터는 건드리지 않는다 */
+function forgetServerSide(file: SyncFile, userId: string): SyncFile {
+  const kinds = { ...file.kinds };
+  for (const kind of SYNC_KINDS) {
+    kinds[kind] = { rev: null, hash: null, syncedAt: null, state: "pending", error: null };
+  }
+  return { ...file, userId, kinds };
+}
+
 /** 앱 전체에 하나뿐인 동기화 관리자. sync.json을 읽고 켜기·끄기를 맡는다 */
 export function SyncProvider({ children }: { children?: ReactNode }) {
   const { config, status, serverSession } = useServer();
@@ -80,6 +89,10 @@ export function SyncProvider({ children }: { children?: ReactNode }) {
     if (!serverSession) return "login";
     return null;
   }, [config, status, serverSession]);
+
+  // 마지막으로 동기화한 계정과 지금 로그인한 계정이 다르면 자동으로 올리지 않고 묻는다 (R16)
+  const accountMismatch =
+    file !== null && file.enabled && serverSession !== null && file.userId !== serverSession.userId;
 
   /** 메모리·화면·sync.json을 함께 바꾼다. 저장이 실패해도 이번 실행 동안은 메모리 값을 쓴다 */
   const commit = useCallback(async (next: SyncFile) => {
@@ -123,7 +136,9 @@ export function SyncProvider({ children }: { children?: ReactNode }) {
     busyRef.current = true;
     setBusy(true);
     try {
-      await commit({ ...current, enabled: true, userId: serverSession.userId });
+      // 다른 계정의 rev·hash로 이 계정 서버와 비교하지 않게, 계정이 바뀌었으면 비우고 처음부터 비교한다 (R16)
+      const base = current.userId === serverSession.userId ? current : forgetServerSide(current, serverSession.userId);
+      await commit({ ...base, enabled: true, userId: serverSession.userId });
       const device = await deviceName();
       for (const kind of SYNC_KINDS) {
         const latest = fileRef.current;
@@ -153,7 +168,8 @@ export function SyncProvider({ children }: { children?: ReactNode }) {
     };
   }, []);
 
-  const client = blocked === null && serverSession ? serverSession.client : null;
+  // 막혀 있거나 계정이 다르면 null: 자동 올리기·고르기가 서버를 부르지 않고 "대기"만 남긴다 (R16, R24)
+  const client = blocked === null && serverSession && !accountMismatch ? serverSession.client : null;
 
   const inspect = useCallback(
     async (kind: SyncKind): Promise<ChoiceInfo> => {
@@ -216,6 +232,7 @@ export function SyncProvider({ children }: { children?: ReactNode }) {
     () => ({
       file,
       blocked,
+      accountMismatch,
       enable,
       disable,
       busy,
@@ -228,7 +245,7 @@ export function SyncProvider({ children }: { children?: ReactNode }) {
       keepLocal,
       takeServer,
     }),
-    [file, blocked, enable, disable, busy, notifySaved, uploadNow, uploading, closeFlush, registerReload, inspect, keepLocal, takeServer],
+    [file, blocked, accountMismatch, enable, disable, busy, notifySaved, uploadNow, uploading, closeFlush, registerReload, inspect, keepLocal, takeServer],
   );
 
   return <SyncContext.Provider value={value}>{children}</SyncContext.Provider>;

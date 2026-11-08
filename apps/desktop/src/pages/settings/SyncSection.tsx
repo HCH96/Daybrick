@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { RefreshIcon } from "../../components/icons/ServerIcons";
+import { useServer } from "../../features/server/useServer";
 import { KINDS } from "../../features/sync/kinds";
 import { hasSyncBackups, openSyncBackupDir } from "../../features/sync/resolve";
 import { SYNC_KINDS } from "../../features/sync/types";
 import { useSync } from "../../features/sync/useSync";
+import SyncAccountDialog from "./SyncAccountDialog";
 import SyncKindRow from "./SyncKindRow";
 import SyncNotice from "./SyncNotice";
 import "./SyncSection.css";
@@ -13,13 +15,16 @@ import "./SyncSection.css";
  * 상태는 이 칸에만 보인다 (제목 표시줄에는 표시하지 않음).
  */
 function SyncSection() {
-  const { file, blocked, enable, disable, busy, uploadNow, uploading } = useSync();
+  const { file, blocked, accountMismatch, enable, disable, busy, uploadNow, uploading } = useSync();
+  const { serverSession } = useServer();
   const enabled = file?.enabled ?? false;
+  const [askingAccount, setAskingAccount] = useState(false);
   // [지금 올리기]는 대기 종류가 있을 때만 누를 수 있다 (R30)
   const hasPending = file !== null && SYNC_KINDS.some((kind) => file.kinds[kind].state === "pending");
   // 막혀 있으면 켤 수는 없지만, 켜져 있으면 끄는 것은 된다 (끄기는 아무 데이터도 바꾸지 않음, R25)
   const switchDisabled = file === null || busy || (!enabled && blocked !== null);
-  const canAct = enabled && blocked === null && !busy;
+  // 계정이 다르면 고르기·받아오기·지금 올리기도 막는다 (R16)
+  const canAct = enabled && blocked === null && !busy && !accountMismatch;
 
   // 백업 파일이 있으면 폴더 열기 링크 (R33). 고르기·받아오기로 sync.json이 바뀔 때마다 다시 본다
   const [hasBackups, setHasBackups] = useState(false);
@@ -63,6 +68,36 @@ function SyncSection() {
 
       {blocked !== null && <SyncNotice blocked={blocked} />}
 
+      {blocked === null && accountMismatch && (
+        <div className="settings-empty sync-notice">
+          <div className="settings-empty__txt">
+            <b>다른 계정으로 로그인했습니다</b>
+            <p className="sync-notice__desc">
+              마지막으로 동기화한 계정과 달라 자동으로 올리지 않습니다. 고친 내용은 "대기"로 남아 있습니다.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="settings-btn settings-btn--primary"
+            disabled={busy}
+            onClick={() => setAskingAccount(true)}
+          >
+            이 계정으로 동기화
+          </button>
+        </div>
+      )}
+
+      {askingAccount && (
+        <SyncAccountDialog
+          email={serverSession?.email ?? null}
+          onCancel={() => setAskingAccount(false)}
+          onConfirm={() => {
+            setAskingAccount(false);
+            void enable();
+          }}
+        />
+      )}
+
       {file !== null && enabled && (
         <div className="settings-rows">
           {SYNC_KINDS.map((kind) => (
@@ -76,7 +111,7 @@ function SyncSection() {
           <button
             type="button"
             className="settings-btn settings-btn--sm"
-            disabled={!hasPending || busy || uploading || blocked !== null}
+            disabled={!hasPending || busy || uploading || blocked !== null || accountMismatch}
             onClick={() => void uploadNow()}
           >
             <RefreshIcon size={16} />
