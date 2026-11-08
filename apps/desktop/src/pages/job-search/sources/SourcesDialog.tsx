@@ -9,8 +9,6 @@ import "./SourcesDialog.css";
 interface SourcesDialogProps {
   title: string;
   icon: ReactNode;
-  /** 창 너비(px). 높이는 창을 꽉 채운다 (목업 .add-site 1100px, .guide 1080px) */
-  width: number;
   /** 닫기 ([×]·Esc·바깥 클릭). 시험 수집·저장 중이라 닫을 수 없으면 null */
   onClose: (() => void) | null;
   /** 제목 오른쪽 (단계 표시 등) */
@@ -20,7 +18,7 @@ interface SourcesDialogProps {
 }
 
 /** 수집 사이트 탭의 큰 창 틀 (사이트 추가·어댑터 가이드). 목업 common.css의 modal·modal-head·modal-foot 기준 */
-function SourcesDialog({ title, icon, width, onClose, headExtra, children, footer }: SourcesDialogProps) {
+function SourcesDialog({ title, icon, onClose, headExtra, children, footer }: SourcesDialogProps) {
   const root = useOverlayRoot();
   const boxRef = useRef<HTMLDivElement>(null);
   useEscapeLayer(() => onClose?.());
@@ -37,7 +35,6 @@ function SourcesDialog({ title, icon, width, onClose, headExtra, children, foote
       <div
         ref={boxRef}
         className="js-dlg"
-        style={{ width: `min(${width}px, 100%)` }}
         role="dialog"
         aria-modal="true"
         aria-label={title}

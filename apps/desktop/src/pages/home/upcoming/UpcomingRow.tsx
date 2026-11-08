@@ -45,6 +45,7 @@ function UpcomingRow({ row }: UpcomingRowProps) {
       {row.kind === "personal" && row.endLabel && <span className="upcoming-row__end">{row.endLabel}</span>}
       {row.kind === "app" && (
         <AppKindIcon
+          size={16}
           kind={row.eventKind}
           className={`upcoming-row__kind${row.eventKind === "interview" ? " upcoming-row__kind--on" : ""}`}
         />

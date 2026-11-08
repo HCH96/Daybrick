@@ -11,7 +11,7 @@
 }
 
 .confirm {
-  width: min(340px, 100%);
+  width: min(var(--modal-sm), 100%);
   padding: var(--space-20);
   background: var(--surface-2);
   border: 1px solid var(--border-2);

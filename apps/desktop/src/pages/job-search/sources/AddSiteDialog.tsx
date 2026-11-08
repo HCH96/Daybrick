@@ -176,7 +176,6 @@ function AddSiteDialog({ mode, adapters, sites, onClose, onSaved }: AddSiteDialo
     <SourcesDialog
       title={replacing ? `${replacing.name} 새 버전 올리기` : "사이트 추가"}
       icon={replacing ? <UploadIcon /> : <PlusIcon size={16} />}
-      width={1100}
       onClose={busy ? null : onClose}
       headExtra={<Steps step={step} />}
       footer={footer}

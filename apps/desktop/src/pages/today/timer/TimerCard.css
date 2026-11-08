@@ -158,3 +158,52 @@
     opacity: 0.2;
   }
 }
+
+/*
+ * 좁은 카드 (안쪽 폭 310 미만, 창 너비 약 1160 미만): 카드 높이가 고정이라 트랙을 아래로 내릴 수 없다.
+ * 기준 310 = 큰 숫자 "H:MM" 56px 폭(약 135) + 간격 12 + 트랙 160.
+ * 트랙 그림을 70%로 줄이고 큰 숫자를 34px로, 버튼은 아이콘만 남겨 겹침·줄바꿈을 막는다.
+ */
+.timer-card {
+  container-type: inline-size;
+}
+
+@container (max-width: 309px) {
+  /* 보조 문구는 낱말 단위로 꺾이게, 숫자 위아래 여백은 줄여 고정 높이 안에 넣는다 */
+  .timer-card__sub {
+    margin-top: var(--space-4);
+    white-space: normal;
+    word-break: keep-all;
+  }
+
+  /* 빈 상태는 버튼이 없어 자리가 남는다: 프로젝트 줄은 꺾이게, 제목은 두 줄까지 */
+  .timer-card--empty .timer-card__proj {
+    white-space: normal;
+    word-break: keep-all;
+  }
+
+  .timer-card--empty .timer-card__title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+    word-break: keep-all;
+  }
+
+  .timer-card__side {
+    width: 112px;
+  }
+
+  .timer-card__side .track-scene {
+    zoom: 0.7;
+  }
+
+  .timer-card__time {
+    font-size: var(--fs-34);
+    margin-top: var(--space-8);
+  }
+
+  .timer-card__btn-label {
+    display: none;
+  }
+}

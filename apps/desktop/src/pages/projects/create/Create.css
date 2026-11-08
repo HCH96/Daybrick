@@ -1,6 +1,6 @@
 /* 프로젝트 만들기 창 (목업 part-create.html의 .dialog 아래, parts.css) */
 .modal.proj-create {
-  width: min(480px, 100%);
+  width: min(var(--modal-md), 100%);
   height: auto;
   max-height: 100%;
 }

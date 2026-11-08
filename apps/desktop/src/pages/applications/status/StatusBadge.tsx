@@ -30,7 +30,7 @@ function StatusBadge({ status, stage, size = "normal", chevron = false }: Status
       {stageLabel && <span className="status-badge__stage">{stageLabel}</span>}
       {chevron && (
         <span className="status-badge__chev">
-          <ChevronDownIcon size={14} />
+          <ChevronDownIcon size={12} />
         </span>
       )}
     </span>

@@ -32,7 +32,7 @@ function PropertyTypeList({ current, disabled = false, onPick }: PropertyTypeLis
           </span>
           {t.type === current && (
             <span className="pop-row__check">
-              <SmallCheckIcon size={14} />
+              <SmallCheckIcon size={16} />
             </span>
           )}
         </button>

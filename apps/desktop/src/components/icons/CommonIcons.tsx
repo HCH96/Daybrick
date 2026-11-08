@@ -26,6 +26,15 @@ export function ChevronDownIcon({ size = 16 }: { size?: number }) {
   );
 }
 
+/** 빼기: 더하기와 같은 가로선 (주 수 줄이기 등) */
+export function MinusIcon({ size = 16 }: { size?: number }) {
+  return (
+    <LineIcon size={size}>
+      <path d="M5 12h14" />
+    </LineIcon>
+  );
+}
+
 export function PlusIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
@@ -85,7 +94,7 @@ export function DotsIcon({ size = 16 }: { size?: number }) {
 }
 
 /** 바깥으로 열기: 상자 + 오른쪽 위 화살표 */
-export function ExternalLinkIcon({ size = 14 }: { size?: number }) {
+export function ExternalLinkIcon({ size = 16 }: { size?: number }) {
   return (
     <LineIcon size={size}>
       <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />

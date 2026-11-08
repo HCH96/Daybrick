@@ -255,10 +255,11 @@
   padding: 0 var(--space-4);
 }
 
-/* 지원 일정 칩: 종류 색 연한 바탕 + 글자. 끌 수 없으므로 손잡이·그림자가 없다 */
+/*
+ * 지원 일정 칩: 캘린더 지원 칩(Chips.css .cal-chip--app)과 같은 모양.
+ * 회색 바탕 + 배지 + 시각, 오른쪽 끝 종류 아이콘 (면접만 보라). 끌 수 없으므로 손잡이·그림자가 없다
+ */
 .plan-ev {
-  --k: var(--muted);
-  --k-soft: var(--surface);
   display: flex;
   align-items: center;
   gap: var(--space-4);
@@ -267,11 +268,10 @@
   padding: 0 var(--space-8) 0 var(--space-4);
   border: none;
   border-radius: var(--radius-xs);
-  background: var(--k-soft);
-  color: var(--k);
+  background: var(--surface-2);
+  color: var(--text);
   font: inherit;
   font-size: var(--fs-12);
-  font-weight: var(--fw-medium);
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
@@ -280,16 +280,12 @@
 }
 
 .plan-ev:hover {
-  background: color-mix(in srgb, var(--k) 22%, var(--k-soft));
+  background: var(--border);
 }
 
 .plan-ev:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
-}
-
-.plan-ev svg {
-  flex-shrink: 0;
 }
 
 .plan-ev__text {
@@ -300,32 +296,46 @@
 
 .plan-ev em {
   flex-shrink: 0;
-  margin-left: auto;
-  padding-left: var(--space-4);
   font-style: normal;
+  font-size: var(--fs-11);
   font-variant-numeric: tabular-nums;
-  opacity: 0.8;
+  color: var(--muted);
 }
 
-.plan-ev--deadline {
-  --k: var(--red);
-  --k-soft: var(--red-soft);
+.plan-ev__kind {
+  width: 12px;
+  height: 12px;
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--faint);
 }
 
-.plan-ev--task {
-  --k: var(--amber);
-  --k-soft: var(--amber-soft);
+.plan-ev__kind--on {
+  color: var(--accent);
 }
 
-.plan-ev--coding {
-  --k: var(--violet);
-  --k-soft: var(--violet-soft);
+/* 회사 머리글자 배지 (badge.ts의 색 번호, 캘린더 .cal-ini와 같은 값) */
+.plan-ev__ini {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: var(--fs-11);
+  font-weight: var(--fw-semibold);
+  font-style: normal;
+  line-height: 1;
+  color: var(--on-accent);
 }
 
-.plan-ev--interview {
-  --k: var(--teal);
-  --k-soft: var(--teal-soft);
-}
+.plan-ev__ini--1 { background: var(--initial-1); }
+.plan-ev__ini--2 { background: var(--initial-2); }
+.plan-ev__ini--3 { background: var(--initial-3); }
+.plan-ev__ini--4 { background: var(--initial-4); }
+.plan-ev__ini--5 { background: var(--initial-5); }
+.plan-ev__ini--6 { background: var(--initial-6); }
+.plan-ev__ini--7 { background: var(--initial-7); }
 
 /* 칩 풍선 (목업 제안). body에 포털로 띄운다 */
 .plan-ev-tip {

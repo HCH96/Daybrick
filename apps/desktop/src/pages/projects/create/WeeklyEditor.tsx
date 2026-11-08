@@ -1,4 +1,4 @@
-import { PlusIcon } from "../../../components/icons/CommonIcons";
+import { MinusIcon, PlusIcon } from "../../../components/icons/CommonIcons";
 import { formatDateRange } from "../../../features/today/format";
 import { addDays } from "../../../utils/date";
 
@@ -63,7 +63,7 @@ function WeeklyEditor({ thisWeek, startWeek, weekCount, weekNames, onStartWeek, 
               disabled={weekCount <= MIN_WEEKS}
               onClick={() => onWeekCount(weekCount - 1)}
             >
-              −
+              <MinusIcon size={16} />
             </button>
             <b>{weekCount}</b>
             <button

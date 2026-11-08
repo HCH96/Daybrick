@@ -136,7 +136,7 @@ function OptionPicker({ property, selected, multi, onChange, onDone }: OptionPic
               <span className="option-picker__tail">
                 {selected.includes(row.option.id) && (
                   <span className="pop-row__check">
-                    <SmallCheckIcon size={14} />
+                    <SmallCheckIcon size={16} />
                   </span>
                 )}
                 <button

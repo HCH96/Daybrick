@@ -1,8 +1,8 @@
 /* 끝내지 못한 태스크 팝업 (R35–R39, 목업 part-overdue.html의 popup·od-*·picker) */
 
-/* Modal 기본 크기(760×760) 대신 폭 720, 높이는 내용만큼 */
+/* Modal 기본 폭(--modal-lg) 그대로, 높이는 내용만큼 */
 .modal.overdue-modal {
-  width: min(720px, 100%);
+  width: min(var(--modal-lg), 100%);
   height: auto;
   max-height: 100%;
 }

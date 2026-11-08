@@ -98,7 +98,7 @@ function StatusPicker({ status, stage, onPick }: StatusPickerProps) {
                 {s.label}
                 {current && (
                   <span className="pop-row__check">
-                    <SmallCheckIcon size={14} />
+                    <SmallCheckIcon size={16} />
                   </span>
                 )}
               </button>

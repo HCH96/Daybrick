@@ -29,15 +29,18 @@
   --overlay-main-left: 0px;
 }
 
-/* 접고 펴기는 바로 바뀐다 (너비 애니메이션을 쓰지 않는다) */
 .app-layout__sidebar {
   width: var(--sidebar-width);
   flex-shrink: 0;
   overflow: hidden;
   background: var(--sidebar);
   border-right: 1px solid var(--border);
+  transition:
+    width var(--dur-slide) var(--ease),
+    border-right-width var(--dur-slide) var(--ease);
 }
 
+/* 접으면 폭 0. 안쪽은 원래 폭을 유지해서 글자가 찌그러지지 않고 밀려 나간다 */
 .app-layout__sidebar--collapsed {
   width: 0;
   border-right-width: 0;

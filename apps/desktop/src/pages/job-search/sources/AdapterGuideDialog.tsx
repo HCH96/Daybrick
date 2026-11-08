@@ -53,7 +53,7 @@ function AdapterGuideDialog({ onClose }: AdapterGuideDialogProps) {
   const section = GUIDE_SECTIONS.find((s) => s.id === sectionId) ?? GUIDE_SECTIONS[0];
 
   return (
-    <SourcesDialog title="어댑터 작성 가이드" icon={<BookIcon />} width={1080} onClose={onClose}>
+    <SourcesDialog title="어댑터 작성 가이드" icon={<BookIcon />} onClose={onClose}>
       <div className="js-guide">
         <nav className="js-guide__toc" aria-label="가이드 목차">
           {GUIDE_SECTIONS.map((s) => (

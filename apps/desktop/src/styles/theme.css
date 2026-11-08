@@ -134,9 +134,16 @@
   --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
   --dur-fast: 120ms; /* 반응 */
   --dur-enter: 200ms; /* 들어오는 것 */
+  --dur-slide: 150ms; /* 자리를 옮기는 것 (사이드바 접기·펴기) */
 
   /* ===== 틀 ===== */
   --content-max: 1280px;
   --content-max-narrow: 880px; /* 설정 */
   --sidebar-width: 200px;
+
+  /* ===== 모달 너비 (네 단계) ===== */
+  --modal-sm: 360px; /* 확인 창 */
+  --modal-md: 560px; /* 입력 몇 개인 작은 창 */
+  --modal-lg: 760px; /* 기본 모달·목록 창 */
+  --modal-xl: 1080px; /* 두 단 구성의 큰 창 */
 }

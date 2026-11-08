@@ -15,7 +15,7 @@ function TimerEmpty({ data, todayKey }: { data: TodayData; todayKey: string }) {
   const style = { "--c": "var(--accent)" } as CSSProperties;
 
   return (
-    <div className="timer-card" style={style}>
+    <div className="timer-card timer-card--empty" style={style}>
       <div className="timer-card__top">
         <div className="timer-card__info">
           <div className="timer-card__proj">돌고 있는 타이머 없음</div>

@@ -28,7 +28,7 @@ function ResultPicker({ property, value, onPick, onLater }: ResultPickerProps) {
           <OptionChip name={o.name} color={o.color} />
           {o.id === value && (
             <span className="pop-row__check">
-              <SmallCheckIcon size={14} />
+              <SmallCheckIcon size={16} />
             </span>
           )}
         </button>

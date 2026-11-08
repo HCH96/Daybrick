@@ -37,7 +37,7 @@ export function UndoIcon({ size = 16 }: IconProps) {
 }
 
 /** [모두 확인] 두 겹 체크 */
-export function CheckAllIcon({ size = 14 }: IconProps) {
+export function CheckAllIcon({ size = 16 }: IconProps) {
   return (
     <LineIcon size={size}>
       <path d="M2 12.5l4.5 4.5L16 7.5" />

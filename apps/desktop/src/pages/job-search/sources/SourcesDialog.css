@@ -10,6 +10,7 @@
 }
 
 .js-dlg {
+  width: min(var(--modal-xl), 100%); /* 높이는 창을 꽉 채운다 */
   height: 100%;
   display: flex;
   flex-direction: column;

@@ -1,8 +1,8 @@
 /* 공고 상세 팝업 (R10–R15). 목업 popup.css의 .detail·.warn-bar·.d-head·.d-body·.d-col·.d-score·.reason·.ev·.fields·.source-text·.poster-wrap·.zoom-hint·.d-foot 기준 */
 
-/* 공용 Modal 상자를 1040px·창 높이로 넓힌다 */
+/* 공용 Modal 상자를 가장 큰 단계(--modal-xl)·창 높이로 넓힌다 */
 .modal:has(> .js-popup) {
-  width: min(1040px, 100%);
+  width: min(var(--modal-xl), 100%);
   height: 100%;
 }
 

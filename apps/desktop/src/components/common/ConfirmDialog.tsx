@@ -54,7 +54,7 @@ function ConfirmDialog({
         <p className="confirm__message">{message}</p>
         {note && (
           <div className="confirm__note">
-            <SmallCheckIcon size={14} />
+            <SmallCheckIcon size={12} />
             {note}
           </div>
         )}

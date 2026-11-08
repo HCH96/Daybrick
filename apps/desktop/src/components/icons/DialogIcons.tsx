@@ -41,7 +41,7 @@ export function CloseIcon() {
 /** 저장됨: 체크 */
 export function CheckIcon() {
   return (
-    <LineIcon size={14}>
+    <LineIcon size={12}>
       <path d="M5 12l5 5 9-10" />
     </LineIcon>
   );

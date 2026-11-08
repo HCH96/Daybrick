@@ -135,7 +135,7 @@ function ResumeDialog({ onClose }: { onClose: () => void }) {
             <>
               <p>{RESUME_REASON}</p>
               <button type="button" className="setup-btn resume-dialog__dash" onClick={onDashboard}>
-                <ExternalLinkIcon size={14} />
+                <ExternalLinkIcon size={16} />
                 Supabase 대시보드에서 재개
               </button>
               <div className="resume-dialog__or">또는 앱에서 바로</div>

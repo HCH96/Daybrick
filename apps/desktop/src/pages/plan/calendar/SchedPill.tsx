@@ -1,7 +1,7 @@
-import { useState, type ReactNode } from "react";
-import { CodeIcon, FileIcon, FlagIcon, PeopleIcon } from "../../../components/icons/PlanIcons";
+import { useState } from "react";
+import { AppKindIcon } from "../../../components/icons/CalendarIcons";
+import { badgeColor, badgeInitial } from "../../../features/calendar/badge";
 import type { SchedPillData } from "../../../features/plan/applicationEvents";
-import type { EventKind } from "../../../features/applications/types";
 import SchedTooltip from "./SchedTooltip";
 
 interface SchedPillProps {
@@ -10,27 +10,20 @@ interface SchedPillProps {
   onOpen: (applicationId: string) => void;
 }
 
-/** 종류별 아이콘·색 클래스: 지원 마감 빨강 깃발, 과제 주황 문서, 코딩테스트 보라 코드, 면접 청록 사람 */
-const KIND_STYLE: Record<EventKind, { icon: ReactNode; className: string }> = {
-  "application-due": { icon: <FlagIcon />, className: "plan-ev--deadline" },
-  "assignment-due": { icon: <FileIcon />, className: "plan-ev--task" },
-  "coding-test": { icon: <CodeIcon />, className: "plan-ev--coding" },
-  interview: { icon: <PeopleIcon />, className: "plan-ev--interview" },
-};
-
 /**
- * 지원 일정 알약 하나 (R31·R32): 아이콘 + 회사(또는 카드 제목) + 있으면 시간.
+ * 지원 일정 알약 하나 (R31·R32). 캘린더 지원 칩과 같은 모양:
+ * 회색 바탕 + 회사 머리글자 배지 → 회사(또는 카드 제목) → 있으면 시간 → 오른쪽 종류 아이콘 (면접만 보라).
  * 끌기를 시작하지 않으므로 끌리지 않고(D22), 누르면 지원관리 상세 팝업을 연다 (D8·D16).
  */
 function SchedPill({ pill, dragging, onOpen }: SchedPillProps) {
   const [anchor, setAnchor] = useState<DOMRect | null>(null);
-  const kind = KIND_STYLE[pill.kind];
+  const isInterview = pill.kind === "interview";
 
   return (
     <>
       <button
         type="button"
-        className={`plan-ev ${kind.className}`}
+        className="plan-ev"
         aria-label={`${pill.kindLabel} ${pill.heading}${pill.time ? ` ${pill.time}` : ""}`}
         onMouseEnter={(e) => setAnchor(e.currentTarget.getBoundingClientRect())}
         onMouseLeave={() => setAnchor(null)}
@@ -39,9 +32,12 @@ function SchedPill({ pill, dragging, onOpen }: SchedPillProps) {
           onOpen(pill.applicationId);
         }}
       >
-        {kind.icon}
+        <i className={`plan-ev__ini plan-ev__ini--${badgeColor(pill.text)}`} aria-hidden="true">
+          {badgeInitial(pill.text)}
+        </i>
         <span className="plan-ev__text">{pill.text}</span>
         {pill.time && <em>{pill.time}</em>}
+        <AppKindIcon kind={pill.kind} className={`plan-ev__kind${isInterview ? " plan-ev__kind--on" : ""}`} />
       </button>
       {anchor && !dragging && <SchedTooltip pill={pill} anchor={anchor} />}
     </>

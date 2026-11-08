@@ -1,6 +1,6 @@
 /* 일정 제안 창 (목업 part-schedule.html, popup.css .sched·.done-line·.check-list·.vague) */
 .modal:has(> .js-sched) {
-  width: min(600px, 100%);
+  width: min(var(--modal-md), 100%);
   height: auto;
   max-height: 100%;
 }
