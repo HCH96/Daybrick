@@ -11,8 +11,6 @@
 - 7단계: 계정 확인·안전 점검·전체 빌드 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 모든 단계 완료
-- 관련 결정: D1–D15 (ai/spec/decisions.md)
+- /test data-sync
 
 ## 확인할 문서 (경로는 docs/features/data-sync/ 기준, 파일 통째로 읽기)
-- ai/logs/L09.md

@@ -32,6 +32,6 @@
 | 구직 관리 | 수정 구현 완료 (테스트 대기) (수정2, 수정1 사용자 테스트 r2는 수정2 뒤 함께) (선행: server-setup, notifications) | docs/features/job-search/index.md |
 | 투데이 (집중 타이머 합침) | AI 테스트 통과, 사용자 테스트 대기 (r1) | docs/features/today/index.md |
 | 프로젝트 | AI 테스트 통과 (A11 수정), 사용자 테스트 대기 (r1) | docs/features/projects/index.md |
-| 데이터 동기화 | 구현 중 (7/7 단계 완료) (선행: server-setup) | docs/features/data-sync/index.md |
+| 데이터 동기화 | 구현 완료 (테스트 대기) (선행: server-setup) | docs/features/data-sync/index.md |
 | 집중 모드 | 시작 전 | - |
 | 공유 웹 | 시작 전 | - |
