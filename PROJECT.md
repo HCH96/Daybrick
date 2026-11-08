@@ -29,7 +29,7 @@
 | 지원 관리 | 수정1 완료 (테스트 r2 통과) | docs/features/applications/index.md |
 | 서버 연결 | 완료 (AI·사용자 테스트 r1 통과, 일시정지 재개 U31만 미확인) (notifications·job-search의 선행) | docs/features/server-setup/index.md |
 | 알림 | 완료 (r1 사용자 테스트 통과, 수정1은 AI 테스트 r2 통과·사용자 테스트 보류) (선행: server-setup, job-search의 선행) | docs/features/notifications/index.md |
-| 구직 관리 | 수정 구현 완료 (테스트 대기) (수정2, 수정1 사용자 테스트 r2는 수정2 뒤 함께) (선행: server-setup, notifications) | docs/features/job-search/index.md |
+| 구직 관리 | 수정 구현 완료 (테스트 대기) (수정2, 수정1 사용자 테스트 r2는 수정2 뒤 함께) (Gmail 상태 보기 보안 수정 L63, 서버 업데이트 필요) (선행: server-setup, notifications) | docs/features/job-search/index.md |
 | 투데이 (집중 타이머 합침) | AI 테스트 통과, 사용자 테스트 대기 (r1) | docs/features/today/index.md |
 | 프로젝트 | AI 테스트 통과 (A11 수정), 사용자 테스트 대기 (r1) | docs/features/projects/index.md |
 | 데이터 동기화 | 테스트 중 (AI r1 통과, 사용자 테스트 대기) (선행: server-setup) | docs/features/data-sync/index.md |

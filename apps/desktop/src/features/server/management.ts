@@ -150,7 +150,7 @@ export async function requestResume(pat: string, projectRef: string): Promise<Re
 }
 
 /** Tauri 밖(브라우저 미리보기)에서 쓰는 최신 서버 구조 번호. 기준은 Rust `migrations.rs` (D15). */
-const PREVIEW_SCHEMA_VERSION = 5;
+const PREVIEW_SCHEMA_VERSION = 11;
 let appSchemaVersion: Promise<number> | null = null;
 
 /** 앱의 최신 서버 구조 번호를 Rust에서 한 번 받아 와 기억한다 (D24) */
