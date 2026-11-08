@@ -5,7 +5,7 @@
 import { EVENT_KIND_LABELS } from "../applications/statuses";
 import type { EventKind } from "../applications/types";
 import { buildCalItems, type CalItem, type CalSources } from "../calendar/items";
-import { addDays, parseDateKey } from "../../utils/date";
+import { addDays, diffDays, parseDateKey } from "../../utils/date";
 
 /** 앞으로 보여 줄 날 수 (오늘 포함) */
 export const UPCOMING_DAYS = 7;
@@ -139,4 +139,48 @@ export function buildUpcoming(src: CalSources, todayKey: string): UpcomingDay[] 
     });
   }
   return days;
+}
+
+/** 날짜 열 글자 (R33): 큰 날짜 숫자, "오늘"·"내일"·요일 한 글자, 토·일 표시 */
+export interface DayParts {
+  day: number;
+  label: string; // "오늘" | "내일" | "토"
+  weekend: "sat" | "sun" | null;
+}
+
+export function dayParts(dateKey: string, todayKey: string): DayParts {
+  const d = parseDateKey(dateKey);
+  const offset = diffDays(todayKey, dateKey);
+  const label = offset === 0 ? "오늘" : offset === 1 ? "내일" : WEEKDAYS[d.getDay()];
+  const weekend = d.getDay() === 6 ? "sat" : d.getDay() === 0 ? "sun" : null;
+  return { day: d.getDate(), label, weekend };
+}
+
+/** 7일 목록을 화면 묶음으로 (R33, D19): 항목 있는 날 또는 오늘은 day, 이어진 빈 날은 gap 하나 */
+export type UpcomingBlock =
+  | { kind: "day"; day: UpcomingDay }
+  | { kind: "gap"; from: string; to: string }; // from === to면 하루
+
+export function groupUpcoming(days: readonly UpcomingDay[]): UpcomingBlock[] {
+  const blocks: UpcomingBlock[] = [];
+  for (const day of days) {
+    if (day.rows.length > 0 || day.isToday) {
+      blocks.push({ kind: "day", day });
+      continue;
+    }
+    const last = blocks[blocks.length - 1];
+    // 바로 앞이 빈 날 묶음이면 늘린다 (days는 하루씩 이어진 순서)
+    if (last?.kind === "gap") last.to = day.dateKey;
+    else blocks.push({ kind: "gap", from: day.dateKey, to: day.dateKey });
+  }
+  return blocks;
+}
+
+/** "11/11 – 11/13", 하루면 "11/12" */
+export function gapLabel(from: string, to: string): string {
+  const md = (key: string) => {
+    const d = parseDateKey(key);
+    return `${d.getMonth() + 1}/${d.getDate()}`;
+  };
+  return from === to ? md(from) : `${md(from)} – ${md(to)}`;
 }
