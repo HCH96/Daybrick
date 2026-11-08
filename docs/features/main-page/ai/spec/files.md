@@ -1,4 +1,4 @@
-# 메인 페이지: 파일 구조 (2026-11-07 홈 개편 구현 기준)
+# 메인 페이지: 파일 구조 (2026-11-09 홈 다듬기 수정2 기준)
 ```
 apps/desktop/src/
   App.tsx                       // 방문 기록·사이드바 접힘 상태 + NavigationContext + 레이아웃
@@ -20,7 +20,7 @@ apps/desktop/src/
   components/icons/
     LineIcon.tsx, NavIcons.tsx, StatusIcons.tsx, TitleBarIcons.tsx
   features/home/                // 화면 없는 순수 함수 (D11). 다른 기능의 함수를 재사용
-    upcoming.ts                 // buildUpcoming: 다가오는 7일 (캘린더 buildCalItems)
+    upcoming.ts                 // buildUpcoming: 다가오는 7일 (캘린더 buildCalItems), groupUpcoming: 빈 날 합치기 (D19)
     summary.ts                  // nextEvent·nearestDeadline·todayDone·shortDayLabel (요약 줄)
     weekFocus.ts                // weekFocus: 이번 주 요일별 집중 시간
     projectRows.ts              // projectRows: 진행 중 프로젝트 줄
@@ -31,7 +31,7 @@ apps/desktop/src/
     DashboardCard.tsx, dashboardCards.tsx   // 카드 틀, 카드 6개 목록
     CardState.tsx               // 불러오는 중·못 읽음·비었음 (R17)
     ApplicationsSummaryCard.tsx // 지원 현황
-    upcoming/  UpcomingCard, UpcomingDay, UpcomingRow
+    upcoming/  UpcomingCard, UpcomingDay, UpcomingRow, UpcomingGap   // UpcomingGap: 이어진 빈 날 한 줄 (D19)
     now/       NowCard, NowTimer, NowTaskList
     week/      WeekFocusCard
     projects/  ProjectProgressCard, ProjectRow

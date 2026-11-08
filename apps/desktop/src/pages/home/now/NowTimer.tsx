@@ -36,8 +36,10 @@ function LiveTimes({ today, running, todayKey }: Omit<NowTimerProps, "plan">) {
   return (
     <>
       <div className="now-timer__clock">
-        {formatClock(elapsed)}
-        <span className="now-timer__sec">{formatSeconds(elapsed)}</span>
+        <span className="now-timer__digits">
+          {formatClock(elapsed)}
+          <span className="now-timer__sec">{formatSeconds(elapsed)}</span>
+        </span>
       </div>
       <div className="now-timer__bar" aria-hidden="true">
         <i style={{ width: `${ratio * 100}%` }} />

@@ -189,10 +189,10 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* 전형 종류 아이콘: 면접만 글자색으로 한 단계 밝게 */
+/* 전형 종류 아이콘: 칩 옆이라 12 (캘린더 cal-chip__kind와 같게), 면접만 글자색으로 한 단계 밝게 */
 .upcoming-row__kind {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   flex-shrink: 0;
   color: var(--faint);
 }

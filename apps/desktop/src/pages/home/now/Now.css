@@ -75,18 +75,34 @@
   font-weight: var(--fw-medium);
 }
 
-/* 가운데 큰 시계 "H:MM" + 초. 실행 중엔 묶음 색 8% 바탕 */
+/* 가운데 큰 시계 "H:MM" + 초. 실행 중엔 묶음 색 8% 바탕.
+ * 시계 칸을 크기 기준(container)으로 두고, 좁으면(960 창 등) 숫자를 34로 줄여 넘치지 않게 한다 (투데이 좁은 타이머와 같은 방식) */
 .now-timer__clock {
+  container-type: inline-size;
   margin: var(--space-12) calc(-1 * var(--space-8)) var(--space-16);
   padding: var(--space-8) 0;
   border-radius: var(--radius-control);
   text-align: center;
+}
+
+.now-timer__digits {
+  display: block;
+  white-space: nowrap;
   font-family: var(--mono);
   font-size: var(--fs-56);
   font-weight: var(--fw-medium);
   line-height: 64px;
   letter-spacing: -1px;
   font-variant-numeric: tabular-nums;
+}
+
+/* "10:42:15"(8자, mono 56 ≈ 262px)가 들어가지 않는 폭 */
+@container (max-width: 271px) {
+  .now-timer__digits {
+    font-size: var(--fs-34);
+    line-height: 44px;
+    letter-spacing: 0;
+  }
 }
 
 .now-timer--run .now-timer__clock {
