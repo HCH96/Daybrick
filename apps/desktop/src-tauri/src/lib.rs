@@ -16,6 +16,11 @@ pub fn run() {
             background::show_main_window(app);
         }))
         .plugin(tauri_plugin_opener::init())
+        // 자동 시작 (R13, R15): 로그인 때 --autostart 인자를 붙여 켠다.
+        .plugin(tauri_plugin_autostart::init(
+            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+            Some(vec![background::autostart::AUTOSTART_ARG]),
+        ))
         .on_window_event(background::on_window_event)
         .setup(|app| {
             background::setup(app.handle())?;
@@ -30,6 +35,8 @@ pub fn run() {
             background::quit::ack_quit_request,
             background::app_settings::load_app_settings,
             background::app_settings::mark_close_notice_seen,
+            background::autostart::autostart_status,
+            background::autostart::set_autostart,
             storage::load_applications,
             storage::save_applications,
             storage::save_image,

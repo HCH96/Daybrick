@@ -1,0 +1,37 @@
+/* 설정 "앱" 칸. 머리는 settings-card, 스위치는 데이터 동기화 칸의 sync-switch를 그대로 쓴다 */
+
+.app-section__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-20);
+}
+
+.app-section__txt {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-section__txt b {
+  display: block;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
+}
+
+.app-section__desc,
+.app-section__note,
+.app-section__error {
+  margin: var(--space-4) 0 0;
+  font-size: var(--fs-13);
+}
+
+.app-section__desc {
+  color: var(--muted);
+}
+
+.app-section__note {
+  color: var(--faint);
+}
+
+.app-section__error {
+  color: var(--red);
+}

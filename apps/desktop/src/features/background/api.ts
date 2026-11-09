@@ -46,3 +46,18 @@ export function loadAppSettings(): Promise<AppSettings> {
 export function markCloseNoticeSeen(): Promise<void> {
   return invoke("mark_close_notice_seen");
 }
+
+/** 자동 시작 상태 (R14). available은 개발 모드에서 false (D6) */
+export interface AutostartStatus {
+  enabled: boolean;
+  available: boolean;
+}
+
+export function autostartStatus(): Promise<AutostartStatus> {
+  return invoke<AutostartStatus>("autostart_status");
+}
+
+/** 자동 시작을 켜거나 끈다. 윈도우 등록에 실패하면 오류 (R17) */
+export function setAutostart(enabled: boolean): Promise<void> {
+  return invoke("set_autostart", { enabled });
+}

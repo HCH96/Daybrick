@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import { NAV_LABELS } from "../../app/pageLabels";
+import AppSection from "./AppSection";
 import ServerSection from "./ServerSection";
 import SyncSection from "./SyncSection";
 import { useSectionAnchors } from "./useSectionAnchors";
@@ -15,6 +16,7 @@ interface SettingsSectionDef {
 const sections: SettingsSectionDef[] = [
   { id: "server", label: "서버 연결", component: ServerSection },
   { id: "sync", label: "데이터 동기화", component: SyncSection },
+  { id: "app", label: "앱", component: AppSection },
 ];
 
 const SECTION_IDS = sections.map((section) => section.id);
