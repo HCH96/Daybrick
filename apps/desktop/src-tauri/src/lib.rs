@@ -1,3 +1,4 @@
+mod background;
 mod calendar;
 mod job_search;
 mod notifications;
@@ -10,7 +11,15 @@ mod today;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        // 중복 실행 막기 (R19): 다른 플러그인보다 먼저 등록해야 한다.
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            background::show_main_window(app);
+        }))
         .plugin(tauri_plugin_opener::init())
+        .setup(|app| {
+            background::setup(app.handle())?;
+            Ok(())
+        })
         .manage(server::oauth_listener::OAuthListenerState::default())
         .invoke_handler(tauri::generate_handler![
             storage::load_applications,
