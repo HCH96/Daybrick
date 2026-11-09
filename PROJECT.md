@@ -33,5 +33,6 @@
 | 투데이 (집중 타이머 합침) | AI 테스트 통과, 사용자 테스트 대기 (r1) | docs/features/today/index.md |
 | 프로젝트 | AI 테스트 통과 (A11 수정), 사용자 테스트 대기 (r1) | docs/features/projects/index.md |
 | 데이터 동기화 | 테스트 중 (AI r1 통과, 사용자 테스트 대기) (선행: server-setup) | docs/features/data-sync/index.md |
+| 백그라운드 실행 | 계획 승인 (구현 대기) | docs/features/background/index.md |
 | 집중 모드 | 시작 전 | - |
 | 공유 웹 | 시작 전 | - |
