@@ -6,16 +6,14 @@
 - 2단계: 닫기와 종료 나누기 (자동 진행, 최종 테스트 대기)
 - 3단계: 첫 닫기 안내·타이머 종료 확인 (자동 진행, 최종 테스트 대기)
 - 4단계: 자동 시작 (자동 진행, 최종 테스트 대기)
+- 5단계: 설치본 확인 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 5단계: 설치본 확인 (`npm run tauri build`로 설치본을 만들어 R1–R19 확인, 숨김 상태 타이머 갱신 확인)
+- 모든 단계 완료
 - 관련 결정: D1, D2, D3, D4, D5, D6, D7 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 자동 시작 인자는 `background/autostart.rs`의 `AUTOSTART_ARG`("--autostart"). 개발 빌드(`target/debug`)는 자동 시작을 건드리지 않으므로 Run 키 확인은 release 빌드로만 한다.
-- 주의: 타이머 느려짐 때문에 `additionalBrowserArgs`를 넣게 되면 결정으로 올린다 (step-05.md).
+- 주의: 설치본 실행 확인(Run 키, 숨김 상태 lastSeenAt 1분 갱신 R3, 두 번째 실행 R19)은 하지 않았다. 사용자 최종 테스트에서 확인한다 (L07 테스트 메모).
 
 ## 확인할 문서 (경로는 docs/features/background/ 기준, 파일 통째로 읽기)
 - ai/plan/step-05.md
 - ai/spec/done.md
-- ai/spec/req-tray.md
-- ai/spec/req-startup.md
-- ai/logs/L06.md
+- ai/logs/L07.md
