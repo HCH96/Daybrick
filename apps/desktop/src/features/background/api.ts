@@ -31,3 +31,18 @@ export function listenCloseRequested(fn: () => void): Promise<UnlistenFn> {
 export function listenQuitRequested(fn: () => void): Promise<UnlistenFn> {
   return listen(QUIT_REQUESTED, () => fn());
 }
+
+/** 이 PC에만 두는 앱 설정 (app-settings.json, structure.md 2절). 파일이 없으면 모두 false. */
+export interface AppSettings {
+  autostartInitialized: boolean;
+  closeNoticeSeen: boolean;
+}
+
+export function loadAppSettings(): Promise<AppSettings> {
+  return invoke<AppSettings>("load_app_settings");
+}
+
+/** 첫 닫기 안내를 봤다고 적는다 (R4) */
+export function markCloseNoticeSeen(): Promise<void> {
+  return invoke("mark_close_notice_seen");
+}

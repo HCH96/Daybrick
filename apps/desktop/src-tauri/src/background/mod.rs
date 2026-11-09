@@ -1,3 +1,4 @@
+pub mod app_settings;
 pub mod quit;
 mod tray;
 mod window;

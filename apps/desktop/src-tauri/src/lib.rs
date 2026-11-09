@@ -28,6 +28,8 @@ pub fn run() {
             background::quit::hide_main_window,
             background::quit::quit_app,
             background::quit::ack_quit_request,
+            background::app_settings::load_app_settings,
+            background::app_settings::mark_close_notice_seen,
             storage::load_applications,
             storage::save_applications,
             storage::save_image,

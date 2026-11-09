@@ -1,5 +1,6 @@
 import { useNavigation } from "../../app/navigation";
 import { BackIcon, ForwardIcon, SidebarToggleIcon } from "../icons/TitleBarIcons";
+import BackgroundDialogs from "../background/BackgroundDialogs";
 import NotificationBell from "../notifications/NotificationBell";
 import WindowControls from "./WindowControls";
 import "./TitleBar.css";
@@ -28,6 +29,7 @@ function TitleBar({ sidebarOpen = false, onToggleSidebar }: TitleBarProps) {
         <div className="titlebar__drag" data-tauri-drag-region />
         <NotificationBell />
         <WindowControls />
+        <BackgroundDialogs />
       </header>
     );
   }
@@ -71,6 +73,7 @@ function TitleBar({ sidebarOpen = false, onToggleSidebar }: TitleBarProps) {
 
       <NotificationBell />
       <WindowControls />
+      <BackgroundDialogs />
     </header>
   );
 }
