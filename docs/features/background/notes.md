@@ -9,11 +9,6 @@
 - 5단계: 설치본 확인 (자동 진행, 최종 테스트 대기)
 
 ## 다음 진행
-- 모든 단계 완료
-- 관련 결정: D1, D2, D3, D4, D5, D6, D7 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 설치본 실행 확인(Run 키, 숨김 상태 lastSeenAt 1분 갱신 R3, 두 번째 실행 R19)은 하지 않았다. 사용자 최종 테스트에서 확인한다 (L07 테스트 메모).
+- /test background
 
-## 확인할 문서 (경로는 docs/features/background/ 기준, 파일 통째로 읽기)
-- ai/plan/step-05.md
-- ai/spec/done.md
-- ai/logs/L07.md
+## 확인할 문서
