@@ -2,6 +2,7 @@ use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
 use tauri::{AppHandle, Runtime};
 
+use super::quit::request_quit;
 use super::window::show_main_window;
 
 const MENU_OPEN: &str = "tray-open";
@@ -19,8 +20,8 @@ pub fn create_tray<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id().as_ref() {
             MENU_OPEN => show_main_window(app),
-            // 1단계 임시: 바로 끈다. 2단계에서 종료 흐름(D1, D2)으로 바꾼다.
-            MENU_QUIT => app.exit(0),
+            // 바로 끄지 않고 프론트에 알려 저장·확인 뒤 끈다 (R9, D1, D2)
+            MENU_QUIT => request_quit(app),
             _ => {}
         })
         .on_tray_icon_event(|tray, event| {

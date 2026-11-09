@@ -1,10 +1,10 @@
 import { useCallback, useRef } from "react";
 
-/** 닫기 전에 다른 기능의 로컬 저장을 기다리는 최대 시간 */
+/** 종료 전에 다른 기능의 로컬 저장을 기다리는 최대 시간 */
 const LOCAL_WAIT_MS = 1_000;
-/** 창을 닫을 때 올리기를 시도하는 최대 시간 (D7) */
+/** 종료할 때 올리기를 시도하는 최대 시간 (D7) */
 const UPLOAD_WAIT_MS = 3_000;
-/** 같은 닫기 요청을 받은 다른 처리기가 합류할 짧은 틈 */
+/** 같은 종료 요청을 받은 다른 처리기가 합류할 짧은 틈 */
 const JOIN_MS = 50;
 
 function sleep(ms: number): Promise<void> {
@@ -12,12 +12,11 @@ function sleep(ms: number): Promise<void> {
 }
 
 /**
- * 창을 닫을 때 남은 올리기를 한 번만 짧게 시도한다 (R12).
+ * 앱을 종료할 때(트레이 "종료") 남은 올리기를 한 번만 짧게 시도한다 (R12).
  *
- * Tauri의 onCloseRequested 처리기는 각자 끝나는 대로 창을 없앤다. 그래서 동기화가 따로 처리기를 두면
- * 기능의 빠른 로컬 저장 처리기가 먼저 창을 닫아 올리기가 끊긴다. 대신 각 기능의 닫기 처리기가
- * 자기 로컬 저장 Promise를 `closeFlush`에 넘기고 그 결과를 기다린다:
- * 로컬 저장들(최대 1초) → 대기 종류 올리기(최대 3초). 시간이 지나거나 실패해도 닫기는 막지 않고,
+ * 창 닫기(X)는 창을 숨기기만 하므로 여기를 타지 않는다. 각 기능의 종료 처리기(app/quit.ts의
+ * onQuitRequested, 백그라운드 실행 D4)가 자기 로컬 저장 Promise를 `closeFlush`에 넘기고 그 결과를 기다린다:
+ * 로컬 저장들(최대 1초) → 대기 종류 올리기(최대 3초). 시간이 지나거나 실패해도 종료는 막지 않고,
  * "대기" 표시는 sync.json에 남아 다음 실행 때 올라간다.
  */
 export function useCloseFlush(uploadPending: () => Promise<void>): (localSave: Promise<void>) => Promise<void> {

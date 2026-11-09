@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { isTauri } from "@tauri-apps/api/core";
-import { getCurrentWindow } from "@tauri-apps/api/window";
+import { onQuitRequested } from "../../app/quit";
 import { useSync } from "../sync/useSync";
 import { touchRunning } from "./reducer";
 import { saveTodayData } from "./storage";
@@ -12,10 +11,10 @@ const SAVE_DELAY_MS = 500;
 
 /**
  * 데이터가 바뀌면 0.5초 기다렸다가 파일에 쓴다. 그 사이 또 바뀌면 타이머를 다시 건다.
- * 창을 닫을 때 기다리던 저장이 있으면 바로 쓰고 닫는다.
- * 앱 종료 처리(R24, D9)도 여기 한 곳에 둔다: stampOnClose가 켜져 있으면 닫을 때 실행 중 타이머의
+ * 앱을 종료할 때(트레이 "종료") 기다리던 저장이 있으면 바로 쓰고 끈다.
+ * 앱 종료 처리(R24, D9)도 여기 한 곳에 둔다: stampOnClose가 켜져 있으면 종료할 때 실행 중 타이머의
  * lastSeenAt만 지금으로 적어 바로 쓴다. 기록 옮기기·태스크 상태 바꾸기는 다음 실행 때 복구가 한다.
- * (나중 백그라운드 상주가 생기면 이 지점만 옮긴다, extension.md)
+ * (백그라운드 실행 이후 창 닫기는 숨기기라 여기를 타지 않고, 트레이 "종료"에서만 돈다)
  * data가 null이면(아직 읽는 중이거나 읽기 실패) 아무것도 저장하지 않는다.
  */
 export function useTodayAutoSave(data: TodayData | null, stampOnClose: boolean): SaveStatus {
@@ -23,7 +22,7 @@ export function useTodayAutoSave(data: TodayData | null, stampOnClose: boolean):
   const lastSavedRef = useRef<TodayData | null>(null); // 파일과 같은 내용
   const pendingRef = useRef<TodayData | null>(null); // 아직 쓰지 않은 내용
   const timerRef = useRef<number | undefined>(undefined);
-  // 저장 성공을 동기화에 알리고, 창을 닫을 때는 동기화의 마지막 올리기까지 기다린다 (데이터 동기화 R9, R12)
+  // 저장 성공을 동기화에 알리고, 종료할 때는 동기화의 마지막 올리기까지 기다린다 (데이터 동기화 R9, R12)
   const { notifySaved, closeFlush } = useSync();
   const syncRef = useRef({ notifySaved, closeFlush });
   syncRef.current = { notifySaved, closeFlush };
@@ -66,31 +65,21 @@ export function useTodayAutoSave(data: TodayData | null, stampOnClose: boolean):
     }
   }
 
-  // flush를 최신 상태로 부를 수 있게 ref에 담아 둔다 (창 닫기 처리기는 한 번만 등록).
+  // flush를 최신 상태로 부를 수 있게 ref에 담아 둔다 (종료 처리기는 한 번만 등록).
   const flushRef = useRef(flush);
   flushRef.current = flush;
 
-  useEffect(() => {
-    if (!isTauri()) return;
-    let alive = true;
-    let unlisten: (() => void) | undefined;
-    void getCurrentWindow()
-      .onCloseRequested(async () => {
+  useEffect(
+    () =>
+      onQuitRequested(async () => {
         const latest = dataRef.current;
         if (stampRef.current && latest !== null && latest.running !== null) {
           pendingRef.current = touchRunning(latest, new Date().toISOString());
         }
         await syncRef.current.closeFlush(flushRef.current());
-      })
-      .then((stop) => {
-        if (alive) unlisten = stop;
-        else stop();
-      });
-    return () => {
-      alive = false;
-      unlisten?.();
-    };
-  }, []);
+      }),
+    [],
+  );
 
   return status;
 }

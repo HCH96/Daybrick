@@ -16,12 +16,18 @@ pub fn run() {
             background::show_main_window(app);
         }))
         .plugin(tauri_plugin_opener::init())
+        .on_window_event(background::on_window_event)
         .setup(|app| {
             background::setup(app.handle())?;
             Ok(())
         })
         .manage(server::oauth_listener::OAuthListenerState::default())
+        .manage(background::quit::QuitState::default())
         .invoke_handler(tauri::generate_handler![
+            background::quit::show_main_window,
+            background::quit::hide_main_window,
+            background::quit::quit_app,
+            background::quit::ack_quit_request,
             storage::load_applications,
             storage::save_applications,
             storage::save_image,
