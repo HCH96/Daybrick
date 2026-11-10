@@ -1,8 +1,9 @@
 # 알려진 깨진 링크 (파일 → 링크). check-links.mjs가 이 목록에 없는 것만 실패로 본다.
-# 고치면 줄을 지운다. 새로 깨진 링크를 여기 넣어 덮지 않는다.
+# 넣어도 되는 것: 아직 만들지 않은 예정 경로(만들면 저절로 빠짐), 원본이 사라진 보관 문서 링크, 다른 저장소 언급.
+# 옮기거나 잘못 적어서 깨진 링크는 넣지 않고 고친다.
+CLAUDE.md → docs/web/index.md
 CLAUDE.md → docs/common/ai/contracts/
 CLAUDE.md → docs/common/ai/contracts/
-CLAUDE.md → docs/android/common/
 DOCS_INDEX.md → docs/web/index.md
 DOCS_INDEX.md → docs/common/ai/contracts/
 docs/android/index.md → docs/android/features/
@@ -19,3 +20,6 @@ docs/desktop/features/main-page/archive/tests/main-page-user-test-v1.md → ../m
 docs/desktop/features/main-page/archive/tests/main-page-user-test.md → ../../ai/features/main-page.md
 docs/desktop/features/main-page/archive/tests/r1-user-test.md → ../../ai/tests/r1/
 .claude/commands/spec.md → docs/common/ai/contracts/
+apps/android/CLAUDE.md → docs/common/ai/contracts/
+apps/android/CLAUDE.md → docs/android/common/
+apps/web/CLAUDE.md → docs/web/index.md

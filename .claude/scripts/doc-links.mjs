@@ -28,14 +28,14 @@ function walk(dir, out) {
   return out;
 }
 
-// 검사 대상 파일: docs/, .claude/, 최상위 md, 앱 소스(src)
+// 검사 대상 파일: docs/, .claude/, supabase/의 문서, 최상위 md, 앱별 CLAUDE.md, 앱 소스(src)
 export function listFiles() {
   const top = fs.readdirSync(ROOT).filter((n) => n.endsWith(".md"));
-  const docs = [...walk("docs", []), ...walk(".claude", [])].filter((f) => DOC_EXT.test(f));
-  const apps = fs.existsSync(abs("apps"))
-    ? fs.readdirSync(abs("apps")).flatMap((a) => walk(`apps/${a}/src`, [])).filter((f) => CODE_EXT.test(f))
-    : [];
-  return [...top, ...docs, ...apps];
+  const docs = [...walk("docs", []), ...walk(".claude", []), ...walk("supabase", [])].filter((f) => DOC_EXT.test(f));
+  const appNames = fs.existsSync(abs("apps")) ? fs.readdirSync(abs("apps")) : [];
+  const appDocs = appNames.map((a) => `apps/${a}/CLAUDE.md`).filter(exists);
+  const apps = appNames.flatMap((a) => walk(`apps/${a}/src`, [])).filter((f) => CODE_EXT.test(f));
+  return [...top, ...docs, ...appDocs, ...apps];
 }
 
 // 링크로 볼 만한 모양인지: 공백·자리표시 없음, 확장자가 있거나 /로 끝남
@@ -56,11 +56,14 @@ export function extractRefs(file, text) {
   }
   // 기록·AI 테스트 보고서·보관 문서에 글로 적힌 경로는 당시 기록이라 보지 않는다 (링크는 본다)
   const history = /\/(logs|archive)\/|\/ai\/tests\//.test(file);
+  const ruleFile = !file.includes("/") || file.startsWith(".claude/") || /(^|\/)CLAUDE\.md$/.test(file);
   const add = (kind, raw, start) => {
     const clean = raw.replace(/[?#].*$/, "");
     if (!pathLike(clean)) return;
     if (fences.some(([a, b]) => start >= a && start < b)) return;
     if (kind === "root" && history) return;
+    // 코드·서버 경로(apps/, supabase/)는 규칙 문서에서만 본다. 기능 문서의 코드 경로는 리팩터링으로 자연히 낡는다.
+    if (kind === "root" && /^(apps|supabase)\//.test(clean) && !ruleFile) return;
     const target = kind === "root" ? P.normalize(clean.replace(/^\//, "")) : P.normalize(P.join(P.dirname(file), clean));
     if (target.startsWith("..")) return;
     refs.push({ kind, raw: clean, start, end: start + clean.length, target: clean.endsWith("/") && !target.endsWith("/") ? target + "/" : target });
@@ -70,7 +73,7 @@ export function extractRefs(file, text) {
     for (const m of text.matchAll(/\]\(([^)\s]+)\)/g)) add("rel", m[1], m.index + 2);
     for (const m of text.matchAll(/(?:href|src)="([^"]+)"/g)) add("rel", m[1], m.index + m[0].indexOf('"') + 1);
   }
-  for (const m of text.matchAll(/(?<![A-Za-z0-9_./-])((?:docs|\.claude)\/[A-Za-z0-9_./-]*)/g)) {
+  for (const m of text.matchAll(/(?<![A-Za-z0-9_./-])((?:docs|\.claude|apps|supabase)\/[A-Za-z0-9_./-]*)/g)) {
     const raw = m[1].replace(/\.+$/, "");
     const s = m.index;
     if (taken.some(([a, b]) => s < b && s + raw.length > a)) continue;

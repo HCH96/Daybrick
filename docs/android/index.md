@@ -1,4 +1,5 @@
 # 안드로이드 앱 문서 목록
+**먼저 읽기**: apps/android/CLAUDE.md (안드로이드 규칙). 서버를 쓰는 기능이면 supabase/CLAUDE.md (모든 앱 공용 서버 규칙)도 읽는다.
 안드로이드 보조 앱(Kotlin, 접근성 서비스로 앱 차단, apps/android)의 색인. 구조는 PC 앱 색인(../desktop/index.md)과 같다.
 읽는 순서: 이 목록 → 기능 허브 → 하위 색인(spec·plan·logs·mockups) → 필요한 파일. 이어서 작업할 때는 기능의 notes.md부터.
 기능 허브나 안드로이드 공용 문서를 새로 만들거나 없앨 때만 이 목록을 고친다.

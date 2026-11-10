@@ -1,4 +1,5 @@
 # PC 앱 문서 목록
+**먼저 읽기**: apps/desktop/CLAUDE.md (PC 앱 규칙). 서버를 쓰는 기능이면 supabase/CLAUDE.md (모든 앱 공용 서버 규칙)도 읽는다.
 PC 앱(Tauri 2 + React + TS, apps/desktop)의 색인. 기능 문서는 각 기능 허브(index.md)가 관리하므로 여기에는 허브와 PC 앱 공용 문서만 둔다.
 읽는 순서: 이 목록 → 기능 허브 → 하위 색인(spec·plan·logs·mockups) → 필요한 파일. 이어서 작업할 때는 기능의 notes.md부터.
 기능 허브나 PC 앱 공용 문서를 새로 만들거나 없앨 때만 이 목록을 고친다.

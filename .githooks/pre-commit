@@ -3,7 +3,7 @@
 # 문서·스크립트·앱 소스가 커밋에 들어 있을 때만 검사하고, 새로 깨진 링크가 있으면 커밋을 막는다.
 # 검사는 작업 폴더 기준이다 (커밋에 넣지 않은 수정도 함께 본다).
 
-if git diff --cached --name-only --diff-filter=ACDMR | grep -qE '^(docs/|\.claude/|[^/]+\.md$|apps/[^/]+/src/)'; then
+if git diff --cached --name-only --diff-filter=ACDMR | grep -qE '^(docs/|\.claude/|[^/]+\.md$|apps/[^/]+/src/|apps/[^/]+/CLAUDE\.md$|supabase/.*\.md$)'; then
   if ! node .claude/scripts/check-links.mjs; then
     echo ""
     echo "커밋을 멈췄다: 새로 깨진 문서 링크가 있다. 위 목록을 고친 뒤 다시 커밋한다."

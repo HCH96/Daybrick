@@ -27,7 +27,7 @@ if (isMain) {
   const args = process.argv.slice(2);
   if (args.includes("--update-baseline")) {
     const broken = findBroken();
-    const head = "# 알려진 깨진 링크 (파일 → 링크). check-links.mjs가 이 목록에 없는 것만 실패로 본다.\n# 고치면 줄을 지운다. 새로 깨진 링크를 여기 넣어 덮지 않는다.\n";
+    const head = "# 알려진 깨진 링크 (파일 → 링크). check-links.mjs가 이 목록에 없는 것만 실패로 본다.\n# 넣어도 되는 것: 아직 만들지 않은 예정 경로(만들면 저절로 빠짐), 원본이 사라진 보관 문서 링크, 다른 저장소 언급.\n# 옮기거나 잘못 적어서 깨진 링크는 넣지 않고 고친다.\n";
     fs.writeFileSync(abs(BASELINE), head + broken.join("\n") + (broken.length ? "\n" : ""));
     console.log(`기준 목록을 ${broken.length}개로 다시 썼다.`);
   } else if (args.includes("--all")) {
