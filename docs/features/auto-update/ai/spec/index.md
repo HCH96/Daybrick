@@ -26,6 +26,6 @@ PC 앱이 GitHub Releases에서 새 버전을 확인하고, 알림센터로 알�
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (2026-11-10 승인) — 6단계. updater 플러그인은 Rust에서만 쓰고 받기·설치를 나눈다(D1, D2). 첫 버전 0.2.0, 테스트 릴리즈 0.2.1
-- 테스트: (아직 없음)
+- 테스트: r1 AI 테스트 [../tests/r1/](../tests/r1/) (16항목 통과) · 사용자 테스트 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md)
 - 진행 기록: [../logs/index.md](../logs/index.md)
 - 현재 빌드·설치 절차: [docs/common/ai/setup/desktop-release.md](../../../../common/ai/setup/desktop-release.md)

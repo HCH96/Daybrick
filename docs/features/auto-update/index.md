@@ -1,7 +1,7 @@
 # 자동 업데이트 (auto-update)
 PC 앱이 GitHub Releases에서 새 버전을 확인해 알림센터로 알리고, 설정 화면에서 받아 설치한 뒤 다시 시작한다.
 
-- 상태: 구현 완료 (테스트 대기)
+- 상태: AI 테스트 통과, 사용자 테스트 대기 (r1)
 - 선행 기능: notifications, background, today (타이머 처리)
 - 작업 노트: [notes.md](notes.md)
 
@@ -12,5 +12,5 @@ PC 앱이 GitHub Releases에서 새 버전을 확인해 알림센터로 알리�
 | 구현 계획 | [ai/plan/index.md](ai/plan/index.md) | 6단계, 파일 목록·구조(structure.md), 단계별 step 파일 (2026-11-10 승인) |
 | 진행 기록 | [ai/logs/index.md](ai/logs/index.md) | |
 | 목업 | (아직 없음) | |
-| AI 테스트 | (아직 없음) | |
-| 사용자 테스트 | (아직 없음) | |
+| AI 테스트 | [ai/tests/r1/](ai/tests/r1/) | r1 AI 테스트 보고서 (2026-11-10, A1–A16) |
+| 사용자 테스트 | [human/tests/r1-user-test.md](human/tests/r1-user-test.md) | r1 사용자 체크리스트 (16항목, 5개는 L09 실제 업데이트에서 확인) |
