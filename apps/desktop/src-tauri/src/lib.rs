@@ -21,6 +21,8 @@ pub fn run() {
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
             Some(vec![background::autostart::AUTOSTART_ARG]),
         ))
+        // 자동 업데이트 (auto-update D1): Rust에서만 쓰고 프론트 권한은 열지 않는다.
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .on_window_event(background::on_window_event)
         .setup(|app| {
             background::setup(app.handle())?;

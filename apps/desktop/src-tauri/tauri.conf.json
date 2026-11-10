@@ -33,6 +33,7 @@
   "bundle": {
     "active": true,
     "targets": ["nsis"],
+    "createUpdaterArtifacts": true,
     "windows": {
       "nsis": {
         "installMode": "currentUser",
@@ -46,5 +47,16 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEFBMEYzQzU5OUUwMEQxODAKUldTQTBRQ2VXVHdQcXVZUE1ESWtWMUUvaU9XWWJFbCtYV09rWHV4TkxsWE80U2tmdEFvRXZiKzUK",
+      "endpoints": [
+        "https://github.com/HCH96/Daybrick/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }
