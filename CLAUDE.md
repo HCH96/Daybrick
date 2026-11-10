@@ -40,6 +40,11 @@ docs/
 - 색인 파일(index)은 40줄, 일반 파일은 150줄 안팎을 넘기지 않는다. 넘을 것 같으면 같은 폴더 안에서 파일을 나누고 색인에 올린다.
 - 파일을 추가·삭제·이름 변경하면 같은 작업에서 그 폴더의 색인을 고친다. 기능 허브·플랫폼 색인·DOCS_INDEX.md는 그 아래 색인 파일이 바뀔 때만 고친다.
 
+### 링크와 이동
+- 문서(파일·폴더)를 옮기거나 이름을 바꿀 때는 `git mv`나 직접 이동 대신 `node .claude/scripts/move-doc.mjs <원래> <새 경로>`를 쓴다. 가리키는 링크와 글로 적힌 경로를 같이 고친다. 먼저 `--dry-run`으로 볼 수 있다. 색인의 설명 줄 정리와 이름만 적은 언급은 스크립트가 알려 주는 대로 직접 고친다.
+- 커밋 전 훅(.githooks/pre-commit)이 `check-links.mjs`로 새로 깨진 링크를 막는다. 알려진 깨진 링크는 .claude/scripts/link-baseline.txt에 있고, 새로 깨진 링크를 이 목록에 넣어 덮지 않는다.
+- 진행 기록·AI 테스트 보고서에는 다른 문서를 경로로 링크하지 않고 ID로 적는다 (record-format.md).
+
 ## 작업 방식
 - 한 번에 플랫폼 하나의 기능 하나씩만 작업하고, 다른 기능의 노트는 읽지 않는다.
 - 여러 앱에 걸친 기능(예: 집중 모드)은 앱 사이 약속을 docs/common/ai/contracts/에 먼저 적고, 각 앱의 기능 폴더는 그 약속을 구현하는 내용만 담는다. 약속을 바꾸면 양쪽 기능 노트에 알린다.
@@ -63,6 +68,11 @@ PC 앱 (apps/desktop에서 실행)
 - 타입 검사만: `npx tsc --noEmit`
 - Rust 쪽만 컴파일 확인 (apps/desktop/src-tauri에서): `cargo check`
 - 테스트: 아직 테스트 도구 없음 (도입 후 작성)
+
+문서 (프로젝트 루트에서)
+- 링크 검사: `node .claude/scripts/check-links.mjs` (`--all` 전부 보기)
+- 문서 이동: `node .claude/scripts/move-doc.mjs <원래> <새 경로> [--dry-run]`
+- 커밋 전 링크 검사 켜기 (저장소를 새로 받았을 때 한 번): `git config core.hooksPath .githooks`
 
 안드로이드 앱 (apps/android)
 - 개발 환경을 정한 뒤 추가 (설치·빌드 절차는 docs/android/common/에 둔다)

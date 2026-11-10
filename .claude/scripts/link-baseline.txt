@@ -1,0 +1,21 @@
+# 알려진 깨진 링크 (파일 → 링크). check-links.mjs가 이 목록에 없는 것만 실패로 본다.
+# 고치면 줄을 지운다. 새로 깨진 링크를 여기 넣어 덮지 않는다.
+CLAUDE.md → docs/common/ai/contracts/
+CLAUDE.md → docs/common/ai/contracts/
+CLAUDE.md → docs/android/common/
+DOCS_INDEX.md → docs/web/index.md
+DOCS_INDEX.md → docs/common/ai/contracts/
+docs/android/index.md → docs/android/features/
+docs/android/index.md → docs/common/ai/contracts/
+docs/desktop/features/job-search/ai/spec/ai-rules.md → .claude/agents/posting-scorer.md
+docs/desktop/features/main-page/archive/plans/main-page-layout-b-plan.md → ../features/main-page.md
+docs/desktop/features/main-page/archive/plans/main-page-plan.md → ../features/main-page.md
+docs/desktop/features/main-page/archive/plans/main-page-plan.md → ../../human/mockups/main-page.html
+docs/desktop/features/main-page/archive/plans/main-page-titlebar-plan.md → ../features/main-page.md
+docs/desktop/features/main-page/archive/tests/main-page-ai-test-v1.md → ../features/main-page.md
+docs/desktop/features/main-page/archive/tests/main-page-ai-test.md → ../features/main-page.md
+docs/desktop/features/main-page/archive/tests/main-page-user-test-v1.md → ../../ai/features/main-page.md
+docs/desktop/features/main-page/archive/tests/main-page-user-test-v1.md → ../mockups/main-page.html
+docs/desktop/features/main-page/archive/tests/main-page-user-test.md → ../../ai/features/main-page.md
+docs/desktop/features/main-page/archive/tests/r1-user-test.md → ../../ai/tests/r1/
+.claude/commands/spec.md → docs/common/ai/contracts/

@@ -1,7 +1,7 @@
 # 메인 페이지 홈 B안 배치 구현 계획
 
 - 기능 명세서: [docs/ai/features/main-page.md](../features/main-page.md)
-- 승인된 배치 목업: [docs/human/mockups/main-page-layouts.html](../../human/mockups/main-page-layouts.html) (B안)
+- 승인된 배치 목업: [docs/human/mockups/main-page-layouts.html](../mockups/main-page-layouts.html) (B안)
 - 이전 계획: [main-page-plan.md](main-page-plan.md) (1~6단계 구현 완료)
 - 작성일: 2026-10-22
 - 상태: 승인됨, 1~5단계 구현 완료 (2026-10-22)

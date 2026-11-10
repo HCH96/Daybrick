@@ -2,7 +2,7 @@
 
 - 기능 명세서: [docs/ai/features/main-page.md](../features/main-page.md)
 - 구현 계획: [main-page-plan.md](../plans/main-page-plan.md), [main-page-layout-b-plan.md](../plans/main-page-layout-b-plan.md), [main-page-titlebar-plan.md](../plans/main-page-titlebar-plan.md)
-- 사용자 테스트 체크리스트: [docs/human/tests/main-page-user-test.md](../../human/tests/main-page-user-test.md)
+- 사용자 테스트 체크리스트: [docs/human/tests/main-page-user-test.md](main-page-user-test.md)
 - 이전 보고서(1차, B안 이전): [main-page-ai-test-v1.md](main-page-ai-test-v1.md)
 - 수행일: 2026-10-22 (2차)
 - 결과 요약: **25개 항목 모두 통과, 실패 0건** (참고 사항 3건)

@@ -1,7 +1,7 @@
 # 메인 페이지 사용자 테스트 체크리스트 (r1, 홈 개편 수정1)
 
 - 명세서: [../../ai/spec/index.md](../../ai/spec/index.md) · AI 테스트 보고서: [../../ai/tests/r1/](../../ai/tests/r1/)
-- 비교할 목업: [../mockups/dash.html](../mockups/dash.html) (홈 전체), [part-now.html](../mockups/part-now.html) (지금 하는 것), [part-empty.html](../mockups/part-empty.html) (빈 상태·불러오는 중·못 읽음)
+- 비교할 목업: [../mockups/dash.html](../../human/mockups/dash.html) (홈 전체), [part-now.html](../../human/mockups/part-now.html) (지금 하는 것), [part-empty.html](../../human/mockups/part-empty.html) (빈 상태·불러오는 중·못 읽음)
 
 ## 이번 회차 범위
 - 대상 R: R12–R15, R17, R22–R47 · 영향받는 R: R4, R16

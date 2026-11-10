@@ -13,7 +13,7 @@
 ## 준비
 1. 앱이 켜져 있으면 끈다.
 2. **원래 파일 백업**: `%APPDATA%\com.daybrick.desktop\applications.json`을 다른 곳(예: 바탕화면 `applications-backup.json`)에 복사해 둔다. 14번에서 되돌릴 때 쓴다.
-3. **옛 형식 파일 넣기**: AI가 만든 [r2-data/applications.json](r2-data/applications.json)을 `%APPDATA%\com.daybrick.desktop\`에 복사해 원래 파일을 덮어쓴다. 이 파일에는 옛 형식(v1) 카드 3개가 들어 있다.
+3. **옛 형식 파일 넣기**: AI가 만든 `r2-data/applications.json`(지금은 없음: 테스트 뒤 지워졌다. 이 단계를 다시 하려면 AI에게 v1 카드 3장 파일을 다시 만들어 달라고 한다)을 `%APPDATA%\com.daybrick.desktop\`에 복사해 원래 파일을 덮어쓴다. 이 파일에는 옛 형식(v1) 카드 3개가 들어 있다.
    - **V1 지원준비**: 지원 준비, 마감일 2026-11-05
    - **V1 지원완료**: 지원 완료, 마감일 2026-10-20, 지원일 2026-10-18, "지원 완료" 일정 10/18, 면접 일정 11/10
    - **V1 종료**: 종료, 마감일 2026-10-01, 코딩테스트 일정 10/08

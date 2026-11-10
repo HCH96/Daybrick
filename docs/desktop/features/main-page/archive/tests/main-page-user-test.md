@@ -1,7 +1,7 @@
 # 메인 페이지 사용자 테스트 체크리스트 (재테스트)
 
 - 기능 명세서: [docs/ai/features/main-page.md](../../ai/features/main-page.md)
-- AI 테스트 보고서: [docs/ai/tests/main-page-ai-test.md](../../ai/tests/main-page-ai-test.md) (25개 항목 모두 통과)
+- AI 테스트 보고서: [docs/ai/tests/main-page-ai-test.md](main-page-ai-test.md) (25개 항목 모두 통과)
 - 비교할 목업: [docs/human/mockups/main-page-layouts.html](../mockups/main-page-layouts.html) (B안)
 - 이전 체크리스트(1차, B안 이전): [main-page-user-test-v1.md](main-page-user-test-v1.md)
 - 작성일: 2026-10-22 (2차 초안)

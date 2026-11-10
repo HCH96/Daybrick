@@ -4,7 +4,7 @@
 - 영향받는 R: R4, R16
 - 커밋 접두어: 메인 페이지 수정1
 
-- 기능 명세서: [../spec/index.md](../spec/index.md) · 목업: [../../human/mockups/index.html](../../human/mockups/index.html) 4–6번 (2026-11-07 승인, 목업은 고치지 않음, 계획대로면 차이 없음)
+- 기능 명세서: [../spec/index.md](../../ai/spec/index.md) · 목업: [../../human/mockups/index.html](../../human/mockups/index.html) 4–6번 (2026-11-07 승인, 목업은 고치지 않음, 계획대로면 차이 없음)
 - 작성일: 2026-11-07 · 상태: 승인됨 (2026-11-07), 구현 대기
 - 이전 계획 (보관, 모두 구현 완료): [../../archive/plans/](../../archive/plans/) 세 파일
 - 경로 기준: `apps/desktop/src/` · 파일 목록·데이터 모양·컴포넌트 구조: [structure.md](structure.md)

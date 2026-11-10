@@ -1,5 +1,5 @@
 # 알림 (notifications) 구현 계획 색인
-- 기능 명세서: [../spec/index.md](../spec/index.md) · 목업: [../../human/mockups/index.html](../../human/mockups/index.html)
+- 기능 명세서: [../spec/index.md](../../ai/spec/index.md) · 목업: [../../human/mockups/index.html](../../human/mockups/index.html)
 - 작성일: 2026-10-26 · 상태: 승인됨 (2026-10-26), 구현 대기
 - 경로 기준: `apps/desktop/src/` (Rust는 `apps/desktop/src-tauri/src/`, 서버는 저장소 `supabase/`) · 파일 목록·데이터 모양: [structure.md](structure.md)
 - 커밋 이름: "알림 N단계: …"

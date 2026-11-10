@@ -1,7 +1,7 @@
 # 메인 페이지 사용자 테스트 체크리스트
 
 - 기능 명세서: [docs/ai/features/main-page.md](../../ai/features/main-page.md)
-- AI 테스트 보고서: [docs/ai/tests/main-page-ai-test-v1.md](../../ai/tests/main-page-ai-test-v1.md) (23개 항목 모두 통과)
+- AI 테스트 보고서: [docs/ai/tests/main-page-ai-test-v1.md](main-page-ai-test-v1.md) (23개 항목 모두 통과)
 - 비교할 목업: [docs/human/mockups/main-page.html](../mockups/main-page.html) (아래쪽 "이번 구현에서 실제로 보일 모습") (2026-10-22 목업이 최종 디자인으로 다시 그려져, 이 체크리스트가 말하는 "아래쪽" 구역은 지금 파일에 없다. 비슷한 모습은 `#home-now`)
 - 작성일: 2026-10-22 (초안) · 1차, B안·제목 표시줄 이전 화면 기준. 재테스트는 main-page-user-test.md
 
