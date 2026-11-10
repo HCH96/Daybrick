@@ -1,4 +1,5 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
+import { readPreview, writePreview } from "../../dev/previewStore";
 import { createDefaultProperties } from "./defaultProperties";
 import { isV1Data, migrateV1ToV2 } from "./migrate";
 import type { ApplicationsData } from "./types";
@@ -46,12 +47,10 @@ export function parseApplicationsData(raw: string): ApplicationsData {
  * 저장된 데이터를 읽는다. 파일이 없으면 빈 데이터를 돌려준다.
  * v1 파일이면 v2로 옮기고 곧바로 저장한다 (D20, 백업 없음).
  * 파일이 깨졌거나 모르는 버전이면 예외를 던진다. 이때 저장도 막아서 기존 파일을 덮어쓰지 않는다.
- * Tauri 밖(브라우저 미리보기)에서는 저장하지 않고 빈 데이터로 시작한다.
+ * Tauri 밖(브라우저 미리보기)에서는 개발 모드일 때 dev/previewStore(localStorage)를 쓰고, 아니면 빈 데이터로 시작한다.
  */
 export async function loadApplicationsData(): Promise<ApplicationsData> {
-  if (!isTauri()) return createEmptyData();
-
-  const raw = await invoke<string | null>("load_applications");
+  const raw = isTauri() ? await invoke<string | null>("load_applications") : readPreview("applications");
   if (raw === null) return createEmptyData();
 
   const { data, migrated } = parseWithMigration(raw);
@@ -60,6 +59,9 @@ export async function loadApplicationsData(): Promise<ApplicationsData> {
 }
 
 export async function saveApplicationsData(data: ApplicationsData): Promise<void> {
-  if (!isTauri()) return;
+  if (!isTauri()) {
+    writePreview("applications", JSON.stringify(data));
+    return;
+  }
   await invoke("save_applications", { json: JSON.stringify(data, null, 2) });
 }

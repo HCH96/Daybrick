@@ -1,4 +1,5 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
+import { readPreview, writePreview } from "../../dev/previewStore";
 import type { ServerConfig, ServerConnection, ServerStatus } from "./types";
 
 const SERVER_STATUSES: readonly ServerStatus[] = [
@@ -58,7 +59,10 @@ function parseServerConfig(raw: string): ServerConfig {
 
 /** 저장된 연결 정보를 읽는다. 파일이 없거나 깨졌으면 기본값. */
 export async function loadServerConfig(): Promise<ServerConfig> {
-  if (!isTauri()) return memoryConfig ?? createDefaultServerConfig();
+  if (!isTauri()) {
+    const preview = readPreview("server");
+    return memoryConfig ?? (preview === null ? createDefaultServerConfig() : parseServerConfig(preview));
+  }
   const raw = await invoke<string | null>("load_server_config");
   return raw === null ? createDefaultServerConfig() : parseServerConfig(raw);
 }
@@ -66,6 +70,7 @@ export async function loadServerConfig(): Promise<ServerConfig> {
 export async function saveServerConfig(config: ServerConfig): Promise<void> {
   if (!isTauri()) {
     memoryConfig = config;
+    writePreview("server", JSON.stringify(config));
     return;
   }
   await invoke("save_server_config", { json: JSON.stringify(config, null, 2) });

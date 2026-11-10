@@ -1,4 +1,5 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
+import { readPreview, writePreview } from "../../dev/previewStore";
 import type { CalendarData } from "./types";
 
 /** 지금 앱이 읽고 쓰는 calendar.json 버전 */
@@ -36,14 +37,15 @@ export function parseCalendarData(raw: string): CalendarData {
  * Tauri 밖(브라우저 미리보기)에서는 저장하지 않고 빈 데이터로 시작한다.
  */
 export async function loadCalendarData(): Promise<CalendarData> {
-  if (!isTauri()) return createEmptyCalendarData();
-
-  const raw = await invoke<string | null>("load_calendar");
+  const raw = isTauri() ? await invoke<string | null>("load_calendar") : readPreview("calendar");
   if (raw === null) return createEmptyCalendarData();
   return parseCalendarData(raw);
 }
 
 export async function saveCalendarData(data: CalendarData): Promise<void> {
-  if (!isTauri()) return;
+  if (!isTauri()) {
+    writePreview("calendar", JSON.stringify(data));
+    return;
+  }
   await invoke("save_calendar", { json: JSON.stringify(data, null, 2) });
 }

@@ -24,5 +24,5 @@ PC 앱 코드를 다루거나 PC 앱 기능을 명세·계획할 때 따른다. 
 - 프론트엔드만 빌드 (타입 검사 포함): `npm run build`
 - 타입 검사만: `npx tsc --noEmit`
 - Rust 쪽만 컴파일 확인 (apps/desktop/src-tauri에서): `cargo check`
-- 테스트: 아직 테스트 도구 없음 (도입 후 작성)
+- 테스트: 자동 테스트 도구는 아직 없음. 화면 확인은 브라우저 미리보기(`desktop-web`)에 `?fixture=basic`(또는 `empty`)을 붙여 예시 데이터로 연다. 방식은 docs/desktop/common/ai/testing.md
 - 설치 파일 배포·버전 올리기 절차: docs/desktop/common/ai/setup/desktop-release.md

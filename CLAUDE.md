@@ -29,7 +29,7 @@ docs/
       index.md, notes.md              기능 허브, 작업 노트
       ai/spec/  ai/plan/  ai/logs/    명세서, 구현 계획, 진행 기록
       ai/tests/<회차>/                 AI 테스트 보고서
-      human/mockups/  human/tests/    목업, 사용자 테스트 체크리스트
+      human/mockups/                  목업 (human/tests/는 예전 사용자 체크리스트)
       archive/                        끝난 작업의 보관 문서 (평소 읽지 않음)
 ```
 

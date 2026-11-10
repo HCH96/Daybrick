@@ -1,4 +1,5 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
+import { readPreview, writePreview } from "../../dev/previewStore";
 import type { PlanData, PlanView, Project, Task } from "./types";
 
 /** 지금 앱이 읽고 쓰는 plan.json 버전 */
@@ -68,14 +69,15 @@ export function parsePlanData(raw: string): PlanData {
  * Tauri 밖(브라우저 미리보기)에서는 저장하지 않고 빈 데이터로 시작한다.
  */
 export async function loadPlanData(): Promise<PlanData> {
-  if (!isTauri()) return createEmptyPlanData();
-
-  const raw = await invoke<string | null>("load_plan");
+  const raw = isTauri() ? await invoke<string | null>("load_plan") : readPreview("plan");
   if (raw === null) return createEmptyPlanData();
   return parsePlanData(raw);
 }
 
 export async function savePlanData(data: PlanData): Promise<void> {
-  if (!isTauri()) return;
+  if (!isTauri()) {
+    writePreview("plan", JSON.stringify(data));
+    return;
+  }
   await invoke("save_plan", { json: JSON.stringify(data, null, 2) });
 }

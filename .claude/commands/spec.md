@@ -73,7 +73,7 @@ req-<묶음>.md 형식:
 | 진행 기록 | [ai/logs/index.md](ai/logs/index.md) | |
 | 목업 | (아직 없음) | |
 | AI 테스트 | (아직 없음) | |
-| 사용자 테스트 | (아직 없음) | |
+| 출시 확인 | docs/desktop/common/human/release-check.md에서 이 기능 줄 | |
 ```
 
 ## R 번호 규칙

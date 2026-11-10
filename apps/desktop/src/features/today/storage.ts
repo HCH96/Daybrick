@@ -1,4 +1,5 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
+import { readPreview, writePreview } from "../../dev/previewStore";
 import type { TodayData } from "./types";
 
 /** 지금 앱이 읽고 쓰는 today.json 버전 */
@@ -51,14 +52,15 @@ export function parseTodayData(raw: string): TodayData {
  * Tauri 밖(브라우저 미리보기)에서는 저장하지 않고 빈 데이터로 시작한다.
  */
 export async function loadTodayData(): Promise<TodayData> {
-  if (!isTauri()) return createEmptyTodayData();
-
-  const raw = await invoke<string | null>("load_today");
+  const raw = isTauri() ? await invoke<string | null>("load_today") : readPreview("today");
   if (raw === null) return createEmptyTodayData();
   return parseTodayData(raw);
 }
 
 export async function saveTodayData(data: TodayData): Promise<void> {
-  if (!isTauri()) return;
+  if (!isTauri()) {
+    writePreview("today", JSON.stringify(data));
+    return;
+  }
   await invoke("save_today", { json: JSON.stringify(data, null, 2) });
 }

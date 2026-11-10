@@ -37,6 +37,8 @@ npm run tauri build
 3. 설치본 첫 실행 때 자동 시작이 켜지고, `app-settings.json`에 `autostartInitialized: true`가 적힌다. 개발 모드에서는 자동 시작을 건드리지 않는다.
 
 ## 새 버전으로 업데이트
+출시 전에 docs/desktop/common/human/release-check.md의 "대기" 항목 중 이번 버전에 들어간 기능의 것을 골라(10개 안팎) 새 설치본으로 확인하고, 그 파일 규칙대로 "확인함"으로 옮긴다.
+
 ### 손으로 덮어 설치 (0.1.0 → 0.2.0처럼 업데이트 기능이 없는 설치본일 때)
 0.1.0에는 업데이트 기능이 없어서 0.2.0은 직접 설치해야 한다. 그다음 버전부터는 아래 "자동 업데이트로 받기"를 쓴다.
 1. `src-tauri/Cargo.toml`의 `version`을 올린다. `package.json`(+ `package-lock.json` 맨 위 두 곳, `Cargo.lock`의 `name = "daybrick"` 아래 줄)도 같이. 저장소는 이미 0.2.0으로 올라가 있다.

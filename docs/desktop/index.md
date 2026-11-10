@@ -24,3 +24,5 @@ PC 앱(Tauri 2 + React + TS, apps/desktop)의 색인. 기능 문서는 각 기�
 - [common/ai/design/design-direction.md](common/ai/design/design-direction.md): PC 앱 모든 페이지 디자인 기준 (공통 규칙 + 페이지 유형별 표현). 폴리싱 전에 읽고, 정해지지 않은 건 사용자에게 물은 뒤 이 문서에 먼저 적는다
 - [common/ai/design/polish-targets.md](common/ai/design/polish-targets.md): `/polish` 대상 페이지 목록, 페이지별 코드 범위·기록 위치·진행 상태
 - [common/ai/design/logs/index.md](common/ai/design/logs/index.md): 공통 기반(common) 폴리싱 진행 기록 목차
+- [common/ai/testing.md](common/ai/testing.md): 테스트 방식 (AI 코드·AI 화면·출시 확인), 브라우저 미리보기와 예시 데이터
+- [common/human/release-check.md](common/human/release-check.md): 출시 확인 목록 (사람만 확인할 수 있는 항목, 출시 때 확인)
