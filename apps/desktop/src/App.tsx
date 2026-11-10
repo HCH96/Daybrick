@@ -19,6 +19,7 @@ import { useJobStatusSync } from "./features/job-search/statusSync";
 import { PlanProvider } from "./features/plan/store";
 import { useGoalReset } from "./features/projects/useGoalReset";
 import { TodayProvider } from "./features/today/store";
+import { UpdaterProvider } from "./features/updater/UpdaterProvider";
 import { NotificationsProvider } from "./features/notifications/NotificationsProvider";
 import { ServerProvider } from "./features/server/ServerProvider";
 import { useServer } from "./features/server/useServer";
@@ -127,23 +128,26 @@ function AppMain() {
             <TodayProvider>
               {/* 창 닫기는 숨기기, 트레이 종료는 저장 뒤 끄기 (백그라운드 실행 D1). 종료 확인이 투데이 타이머를 보므로 TodayProvider 안 */}
               <BackgroundProvider>
-                <JobStatusSync />
-                <GoalReset />
-                <AppScreens
-                  main={
-                    // 갈 곳 이동은 평소 화면에서만 한다. 전체 화면(FullScreen)에는 Provider가 없어 이동할 수 없는 상태다 (D10)
-                    <PageIntentProvider>
-                      <AppLayout
-                        titleBar={<TitleBar sidebarOpen={!sidebarCollapsed} onToggleSidebar={toggleSidebar} />}
-                        banner={<ServerBanner />}
-                        sidebar={<Sidebar />}
-                        sidebarCollapsed={sidebarCollapsed}
-                      >
-                        {updateOpen ? <ServerUpdateScreen /> : <Page />}
-                      </AppLayout>
-                    </PageIntentProvider>
-                  }
-                />
+                {/* 새 버전 자동 확인·알림 (자동 업데이트 D4). 설치 전 타이머를 보므로 TodayProvider 안, 설정·제목 표시줄이 쓰므로 화면을 감싼다 */}
+                <UpdaterProvider>
+                  <JobStatusSync />
+                  <GoalReset />
+                  <AppScreens
+                    main={
+                      // 갈 곳 이동은 평소 화면에서만 한다. 전체 화면(FullScreen)에는 Provider가 없어 이동할 수 없는 상태다 (D10)
+                      <PageIntentProvider>
+                        <AppLayout
+                          titleBar={<TitleBar sidebarOpen={!sidebarCollapsed} onToggleSidebar={toggleSidebar} />}
+                          banner={<ServerBanner />}
+                          sidebar={<Sidebar />}
+                          sidebarCollapsed={sidebarCollapsed}
+                        >
+                          {updateOpen ? <ServerUpdateScreen /> : <Page />}
+                        </AppLayout>
+                      </PageIntentProvider>
+                    }
+                  />
+                </UpdaterProvider>
               </BackgroundProvider>
             </TodayProvider>
           </CalendarProvider>
