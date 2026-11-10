@@ -1,39 +1,34 @@
 ## Daybrick 소개
-개인용 일정·지원·집중 관리 데스크톱 앱.
-캘린더 계획, 일정 관리, 취업 지원 관리, 집중 타이머를 한곳에서 관리하고,
-안드로이드 폰과 연동한 집중 모드와 공유용 웹페이지를 제공한다.
-
-## 핵심 기능
-1. 캘린더 계획: 날짜별로 할 일을 계획한다.
-2. 일정 관리: 스케줄을 등록하고 관리한다.
-3. 지원 관리: 취업 공고를 정리하고 지원 현황을 관리한다.
-4. 집중 타이머: 공부 시작과 종료를 기록하고 집중 시간을 관리한다.
-
-## 확장 기능
-- 집중 모드: 타이머가 작동 중일 때 안드로이드 폰에서 유튜브 같은 지정 앱을 차단한다.
-- 공유 웹: 면접관용 공개 페이지(공부 통계)와
-  친구용 링크 공유 페이지(지원 현황 포함)를 나눠서 제공한다.
+개인용 일정·지원·집중 관리 프로젝트. 세 앱으로 이뤄진다.
+- **PC 앱**(중심): 플랜·캘린더·투데이(집중 타이머)·프로젝트로 할 일과 시간을 관리하고, 지원 관리·구직 관리로 취업 준비를 한곳에서 본다.
+- **안드로이드 보조 앱**: PC에서 타이머가 도는 동안 폰의 지정 앱(유튜브 등)을 막는 집중 모드.
+- **공유 웹**(읽기 전용): 면접관용 공개 페이지(공부 통계)와 친구용 링크 공유 페이지(지원 현황 포함).
+서버는 사용자마다 자기 Supabase를 연결해 쓴다 (선택, 규칙은 supabase/CLAUDE.md).
 
 ## 개발 순서
-1. PC 앱 로컬 기능
-2. Supabase 연동 (로그인, 데이터 동기화)
-3. 공유 웹
-4. 안드로이드 보조 앱과 집중 모드
+1. PC 앱 로컬 기능 (완료)
+2. 서버(Supabase) 연동: 로그인·알림·구직 관리·데이터 동기화 (완료)
+3. 안드로이드 보조 앱과 집중 모드 (다음)
+4. 공유 웹
 
 ## 기능별 상태
+상태 값: 시작 전 · 명세 · 계획 · 구현 중 · 테스트 대기 · 완료 · 수정 중.
+- 완료 = AI 테스트(코드·화면) 통과. 덧붙임은 "(출시 확인 N개)"와, 끝나지 않은 기능의 "(선행: 기능명)"만 쓴다.
+- 회차·기록 번호·테스트 개수 같은 자세한 상태는 기능 허브(index.md)의 상태 줄에 둔다.
+
 | 플랫폼 | 기능 | 상태 | 문서 |
 |---|---|---|---|
-| PC | 메인 페이지 | 사용자 테스트 대기: 홈 다듬기 수정2 r2 AI 테스트 20개 통과 (L56), 체크리스트 28개 (r1 22개 다시 포함). 앱 틀·사이드바는 완료 (사이드바 메뉴 순서 변경 L46) | docs/desktop/features/main-page/index.md |
-| PC | 캘린더 계획 (플랜) | 수정 구현 완료 (테스트 대기) | docs/desktop/features/plan/index.md |
-| PC | 캘린더 (일정 관리, 스케줄러 대체) | 테스트 r1: AI 실패 1(A14 수정함), 사용자 테스트 대기 | docs/desktop/features/calendar/index.md |
-| PC | 지원 관리 | 수정1 완료 (테스트 r2 통과) | docs/desktop/features/applications/index.md |
-| PC | 서버 연결 | 완료 (AI·사용자 테스트 r1 통과, 일시정지 재개 U31만 미확인) (notifications·job-search의 선행) | docs/desktop/features/server-setup/index.md |
-| PC | 알림 | 완료 (r1 사용자 테스트 통과, 수정1은 AI 테스트 r2 통과·사용자 테스트 보류) (선행: server-setup, job-search의 선행) | docs/desktop/features/notifications/index.md |
-| PC | 구직 관리 | 수정 구현 완료 (테스트 대기) (수정2, 수정1 사용자 테스트 r2는 수정2 뒤 함께) (Gmail 상태 보기 보안 수정 L63, 서버 업데이트 필요) (선행: server-setup, notifications) | docs/desktop/features/job-search/index.md |
-| PC | 투데이 (집중 타이머 합침) | AI 테스트 통과, 사용자 테스트 대기 (r1) | docs/desktop/features/today/index.md |
-| PC | 프로젝트 | AI 테스트 통과 (A11 수정), 사용자 테스트 대기 (r1) | docs/desktop/features/projects/index.md |
-| PC | 데이터 동기화 | 테스트 중 (AI r1 통과, 사용자 테스트 대기) (선행: server-setup) | docs/desktop/features/data-sync/index.md |
-| PC | 백그라운드 실행 | AI 테스트 통과, 사용자 테스트 대기 (r1) | docs/desktop/features/background/index.md |
-| PC | 자동 업데이트 | AI 테스트 통과, 사용자 테스트 대기 (r1) (선행: notifications, background) | docs/desktop/features/auto-update/index.md |
+| PC | 메인 페이지 (홈·사이드바) | 완료 | docs/desktop/features/main-page/index.md |
+| PC | 플랜 (캘린더 계획) | 완료 | docs/desktop/features/plan/index.md |
+| PC | 캘린더 (일정 관리) | 완료 | docs/desktop/features/calendar/index.md |
+| PC | 투데이 (집중 타이머) | 완료 | docs/desktop/features/today/index.md |
+| PC | 프로젝트 | 완료 | docs/desktop/features/projects/index.md |
+| PC | 지원 관리 | 완료 | docs/desktop/features/applications/index.md |
+| PC | 서버 연결 | 완료 | docs/desktop/features/server-setup/index.md |
+| PC | 알림 | 완료 | docs/desktop/features/notifications/index.md |
+| PC | 구직 관리 (공고 추천·Gmail) | 완료 | docs/desktop/features/job-search/index.md |
+| PC | 데이터 동기화 | 완료 | docs/desktop/features/data-sync/index.md |
+| PC | 백그라운드 실행 | 완료 | docs/desktop/features/background/index.md |
+| PC | 자동 업데이트 | 완료 | docs/desktop/features/auto-update/index.md |
 | 안드로이드·PC | 집중 모드 | 시작 전 | - |
 | 웹 | 공유 웹 | 시작 전 | - |

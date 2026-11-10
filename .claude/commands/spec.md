@@ -19,7 +19,7 @@ $ARGUMENTS
 - docs/<플랫폼>/features/<기능명>/ai/spec/ 아래에 "명세서 양식"의 파일들로 나눠 저장
 - 기능 허브 docs/<플랫폼>/features/<기능명>/index.md를 만들기 (아래 "기능 허브 양식")
 - 진행 기록 docs/<플랫폼>/features/<기능명>/ai/logs/index.md와 L01.md "명세" 항목을 남기기 (docs/common/ai/formats/record-format.md의 "진행 기록 쓰는 법")
-- PROJECT.md의 기능별 상태 표에 플랫폼과 기능 허브 경로를 기록
+- PROJECT.md의 기능별 상태 표에 플랫폼과 기능 허브 경로를 기록하고 상태를 "명세"로 쓴다 (완료된 기능을 고치는 수정 명세면 "수정 중"). 상태 값은 PROJECT.md "기능별 상태"의 규칙을 따른다
 - 플랫폼 색인 docs/<플랫폼>/index.md의 기능 허브 목록에 경로와 한 줄 설명을 추가 (DOCS_INDEX.md는 고치지 않는다)
 
 이미 있는 기능의 명세서를 고칠 때는 ai/spec/index.md에서 고칠 파일만 찾아 읽고, ai/logs/index.md(목차)를 확인한 뒤, 아래 "R 번호 규칙"을 지켜 고치고 고친 내용을 "명세" 항목으로 남겨줘.

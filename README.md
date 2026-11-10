@@ -29,7 +29,7 @@ apps/desktop   PC 앱 (Tauri 2 + React + TypeScript)
 apps/web       공유 웹 (React, Vercel 배포, 읽기 전용) - 지금은 안내·개인정보처리방침 페이지만 있음
 apps/android   안드로이드 보조 앱 (Kotlin, 예정)
 supabase/      DB 마이그레이션, 서버 함수, 채용 사이트 수집 규칙
-docs/          기능별 명세서·구현 계획·진행 기록·목업
+docs/          앱(플랫폼)별·기능별 명세서·구현 계획·진행 기록·목업
 ```
 
 ## 데이터와 서버
