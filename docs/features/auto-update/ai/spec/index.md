@@ -22,7 +22,7 @@ PC 앱이 GitHub Releases에서 새 버전을 확인하고, 알림센터로 알�
 | [scope.md](scope.md) | 이번 범위에서 제외, 나중에 고려 |
 | [done.md](done.md) | 완료 기준 (빌드, 실제 업데이트 확인) |
 | mockup.md | (아직 없음) |
-| [decisions.md](decisions.md) | 결정 사항 D1–D5 |
+| [decisions.md](decisions.md) | 결정 사항 D1–D7 |
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (2026-11-10 승인) — 6단계. updater 플러그인은 Rust에서만 쓰고 받기·설치를 나눈다(D1, D2). 첫 버전 0.2.0, 테스트 릴리즈 0.2.1
