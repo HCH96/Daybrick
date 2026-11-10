@@ -10,11 +10,6 @@
 - 6단계: 첫 버전 0.2.0·실제 업데이트 확인 (버전·문서만 자동 진행, 서명 빌드·릴리즈·실제 업데이트는 사용자 대기)
 
 ## 다음 진행
-- 모든 단계 완료
-- 관련 결정: D1, D2, D3, D4, D5, D6, D7 (ai/spec/decisions.md에서 이 줄만 읽기)
-- 주의: 실제 업데이트 확인(서명 빌드·0.2.0 설치·0.2.1 릴리즈)은 사용자가 desktop-release.md "첫 실제 확인" 절차로 한다. 확인 항목은 L08에 있다.
+- `/test auto-update`
 
 ## 확인할 문서 (경로는 docs/features/auto-update/ 기준, 파일 통째로 읽기)
-- ai/logs/L08.md
-- ai/plan/step-06.md
-- docs/common/ai/setup/desktop-release.md
