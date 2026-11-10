@@ -27,14 +27,22 @@ export function useCloseFlush(uploadPending: () => Promise<void>): (localSave: P
 
   return useCallback((localSave: Promise<void>) => {
     localsRef.current.push(localSave.catch(() => undefined));
-    if (!sessionRef.current) {
-      sessionRef.current = (async () => {
-        await sleep(JOIN_MS);
-        await Promise.race([Promise.allSettled(localsRef.current), sleep(LOCAL_WAIT_MS)]);
-        await Promise.race([uploadRef.current().catch(() => undefined), sleep(UPLOAD_WAIT_MS)]);
+    let session = sessionRef.current;
+    if (!session) {
+      session = (async () => {
+        try {
+          await sleep(JOIN_MS);
+          await Promise.race([Promise.allSettled(localsRef.current), sleep(LOCAL_WAIT_MS)]);
+          await Promise.race([uploadRef.current().catch(() => undefined), sleep(UPLOAD_WAIT_MS)]);
+        } finally {
+          // 종료가 실패해 다시 종료할 때 새로 시도하도록 비운다
+          sessionRef.current = null;
+          localsRef.current = [];
+        }
       })();
+      sessionRef.current = session;
     }
     // 자기 로컬 저장은 시간과 상관없이 끝까지 기다린다 (지금까지와 같음)
-    return Promise.allSettled([localSave, sessionRef.current]).then(() => undefined);
+    return Promise.allSettled([localSave, session]).then(() => undefined);
   }, []);
 }

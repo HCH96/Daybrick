@@ -18,7 +18,7 @@
 - [프로젝트](docs/features/projects/index.md): 주차형·단계형 프로젝트, 깃발 트랙·모닥불·누적 시간, 주간 투입 버블 그래프, 플랜 트리·투데이 연동 (계획 승인)
 - [캘린더](docs/features/calendar/index.md): 스케줄러 대체, 태스크·지원 일정·주차 깃발·개인 일정을 모아 보는 월 달력, 칩 드래그, 지난 날 회고 패널 (계획 승인)
 - [데이터 동기화](docs/features/data-sync/index.md): 플랜·캘린더·지원 관리·투데이 로컬 JSON을 본인 Supabase에 기능별 한 행으로 올리기, 첫 연결·재설치 복구, 로그인 풀림 안전 규칙 (계획 승인)
-- [백그라운드 실행](docs/features/background/index.md): 닫기 시 트레이로 숨기기·트레이 메뉴(열기/종료), 윈도우 로그인 자동 시작, 중복 실행 방지 (계획 승인)
+- [백그라운드 실행](docs/features/background/index.md): 닫기 시 트레이로 숨기기·트레이 메뉴(열기/종료), 윈도우 로그인 자동 시작, 중복 실행 방지 (AI 테스트 통과, 사용자 테스트 대기)
 
 ## 공용 문서 (docs/common)
 - [docs/common/ai/setup/desktop-setup.md](docs/common/ai/setup/desktop-setup.md): PC 앱(Tauri 2 + React + TS) 개발 환경 설치와 프로젝트 생성 기록
