@@ -1,7 +1,7 @@
 # 백그라운드 실행 (background)
 창을 닫아도 트레이에서 계속 돌고, 윈도우 로그인 때 자동 시작되며, 중복 실행을 막는 데스크톱 앱 동작.
 
-- 상태: 구현 완료 (테스트 대기)
+- 상태: AI 테스트 통과, 사용자 테스트 대기 (r1)
 - 작업 노트: [notes.md](notes.md)
 
 ## 문서 색인 (필요한 색인만 열고, 거기서 필요한 파일만 읽기)
@@ -11,5 +11,5 @@
 | 구현 계획 | [ai/plan/index.md](ai/plan/index.md) | 5단계, 파일 목록·구조(structure.md), 단계별 step 파일 |
 | 진행 기록 | [ai/logs/index.md](ai/logs/index.md) | |
 | 목업 | (아직 없음) | |
-| AI 테스트 | (아직 없음) | |
-| 사용자 테스트 | (아직 없음) | |
+| AI 테스트 | [ai/tests/r1/](ai/tests/r1/) | r1 AI 테스트 보고서 (2026-11-09, 18항목) |
+| 사용자 테스트 | [human/tests/r1-user-test.md](human/tests/r1-user-test.md) | r1 사용자 체크리스트 (26항목) |

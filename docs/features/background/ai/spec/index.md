@@ -18,5 +18,5 @@
 
 ## 다른 문서
 - 구현 계획: [../plan/index.md](../plan/index.md) (2026-11-09 승인). 닫기는 숨기기만 하고 종료 전 저장은 `app/quit.ts`에 모은다(D4). 자동 시작은 `--autostart` 인자로 창 없이 시작한다(D7).
-- 테스트: (아직 없음)
+- 테스트: AI [../tests/r1/](../tests/r1/) (r1), 사용자 [../../human/tests/r1-user-test.md](../../human/tests/r1-user-test.md) (r1)
 - 진행 기록: [../logs/index.md](../logs/index.md)

@@ -22,6 +22,7 @@
 
 ## 공용 문서 (docs/common)
 - [docs/common/ai/setup/desktop-setup.md](docs/common/ai/setup/desktop-setup.md): PC 앱(Tauri 2 + React + TS) 개발 환경 설치와 프로젝트 생성 기록
+- [docs/common/ai/setup/desktop-release.md](docs/common/ai/setup/desktop-release.md): PC 앱 설치파일 빌드·설치·버전 올려 업데이트하는 절차, 설치·데이터 위치, 주의점
 - [docs/common/ai/formats/record-format.md](docs/common/ai/formats/record-format.md): 진행 기록(logs)·결정(decisions.md) 양식, 모든 명령이 공용
 - [docs/common/ai/design/design-direction.md](docs/common/ai/design/design-direction.md): 모든 페이지 디자인 기준 (공통 규칙 + 페이지 유형별 표현). 폴리싱 전에 읽고, 정해지지 않은 건 사용자에게 물은 뒤 이 문서에 먼저 적는다
 - [docs/common/ai/design/polish-targets.md](docs/common/ai/design/polish-targets.md): `/polish` 대상 페이지 목록, 페이지별 코드 범위·기록 위치·진행 상태
