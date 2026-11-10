@@ -17,6 +17,8 @@ interface ConfirmDialogProps {
   note?: string;
   /** 확인 버튼 색: 빨강(기본, 지우는 동작) 또는 보라(바꾸는 동작) */
   confirmTone?: "danger" | "primary";
+  /** 취소 버튼 글자 (기본 "취소"). Esc·바깥 클릭도 이 버튼과 같다 */
+  cancelLabel?: string;
 }
 
 /**
@@ -32,6 +34,7 @@ function ConfirmDialog({
   onCancel,
   note,
   confirmTone = "danger",
+  cancelLabel = "취소",
 }: ConfirmDialogProps) {
   const root = useOverlayRoot();
   const boxRef = useRef<HTMLDivElement>(null);
@@ -60,7 +63,7 @@ function ConfirmDialog({
         )}
         <div className="confirm__buttons">
           <button type="button" className="confirm__cancel" onClick={onCancel} autoFocus>
-            취소
+            {cancelLabel}
           </button>
           <button
             type="button"

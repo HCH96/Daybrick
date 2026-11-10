@@ -1,6 +1,7 @@
 import { useNavigation } from "../../app/navigation";
 import { BackIcon, ForwardIcon, SidebarToggleIcon } from "../icons/TitleBarIcons";
 import BackgroundDialogs from "../background/BackgroundDialogs";
+import UpdateDialogs from "../updater/UpdateDialogs";
 import NotificationBell from "../notifications/NotificationBell";
 import WindowControls from "./WindowControls";
 import "./TitleBar.css";
@@ -30,6 +31,7 @@ function TitleBar({ sidebarOpen = false, onToggleSidebar }: TitleBarProps) {
         <NotificationBell />
         <WindowControls />
         <BackgroundDialogs />
+      <UpdateDialogs />
       </header>
     );
   }
@@ -74,6 +76,7 @@ function TitleBar({ sidebarOpen = false, onToggleSidebar }: TitleBarProps) {
       <NotificationBell />
       <WindowControls />
       <BackgroundDialogs />
+      <UpdateDialogs />
     </header>
   );
 }

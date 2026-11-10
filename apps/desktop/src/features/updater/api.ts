@@ -76,3 +76,17 @@ export function discardUpdate(): Promise<void> {
 export function markUpdateNotified(version: string): Promise<void> {
   return invoke("mark_update_notified", { version });
 }
+
+/** 설치 흐름이 쓰는 받기·설치·버리기 명령. 개발 모드에서는 흉내로 바꿔 끼운다 (devUpdater.ts) */
+export interface UpdateBackend {
+  download: (onProgress: (p: DownloadProgress) => void) => Promise<void>;
+  install: () => Promise<void>;
+  discard: () => Promise<void>;
+}
+
+/** 실제 Rust 명령 */
+export const realBackend: UpdateBackend = {
+  download: downloadUpdate,
+  install: installUpdate,
+  discard: discardUpdate,
+};
