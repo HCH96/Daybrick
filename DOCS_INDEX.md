@@ -1,31 +1,19 @@
 # 문서 목록
-전체 색인. 기능 문서는 각 기능 허브(index.md)가 관리하므로 여기에는 허브와 공용 문서만 둔다.
-읽는 순서: 이 목록 → 기능 허브 → 하위 색인(spec·plan·logs·mockups) → 필요한 파일. 이어서 작업할 때는 기능의 notes.md부터.
-기능 허브나 공용 문서를 새로 만들거나 없앨 때만 이 목록을 고친다.
+전체 색인. 문서는 플랫폼(앱)별로 나뉘고, 각 플랫폼 색인이 그 앱의 기능 허브와 공용 문서를 관리한다. 여기에는 플랫폼 색인과 모든 앱이 같이 쓰는 문서만 둔다.
+읽는 순서: 이 목록 → 플랫폼 색인 → 기능 허브 → 하위 색인(spec·plan·logs·mockups) → 필요한 파일. 이어서 작업할 때는 기능의 notes.md부터.
+플랫폼 색인이나 공용 문서를 새로 만들거나 없앨 때만 이 목록을 고친다.
 
 ## 최상위
 - [CLAUDE.md](CLAUDE.md): AI 작업 규칙, 문서 구조, 기술 스택, 명령어
 - [PROJECT.md](PROJECT.md): 프로젝트 개요, 기능 목록, 개발 순서, 기능별 상태
 
-## 기능 허브 (docs/features/<기능명>/index.md)
-- [메인 페이지](docs/features/main-page/index.md): 사이드바 레이아웃 + 홈 대시보드(앞으로 일주일·앱 전체 요약), 제목 표시줄·사이드바 접기·뒤로/앞으로 (홈 개편 명세 완료)
-- [지원 관리](docs/features/applications/index.md): 갤러리·달력, 상태 5단계와 세부 단계, 전형 일정, 속성, 마크다운 상세 팝업 (구현 중)
-- [서버 연결](docs/features/server-setup/index.md): 자기 Supabase·Anthropic 키 연결, 첫 실행 가이드, 자동 세팅·서버 구조 갱신, 로그인, 일시정지 안내, Settings 화면 (완료)
-- [알림](docs/features/notifications/index.md): 앱 공용 알림 센터, 제목 표시줄 종 아이콘·빨간 숫자 배지, 펼침 목록·체크 확인, 서버 알림 받기 (목업 승인)
-- [구직 관리](docs/features/job-search/index.md): 공고 자동 수집·AI 채점 추천, 지원 관리 연결, Gmail 상태 제안, AI 사용액·한도 (계획 승인)
-- [플랜](docs/features/plan/index.md): 카테고리별 태스크, 주간 달력에 끌어 놓아 배치·여러 날 막대, 지원 일정 표시, 메모·체크리스트·지원 카드 연결 (계획 승인)
-- [투데이](docs/features/today/index.md): 오늘 태스크 칸반, 태스크 타이머(집중 타이머 합침)·시간 기록, 오늘 요약, 미완료 태스크 처리 (계획 승인)
-- [프로젝트](docs/features/projects/index.md): 주차형·단계형 프로젝트, 깃발 트랙·모닥불·누적 시간, 주간 투입 버블 그래프, 플랜 트리·투데이 연동 (계획 승인)
-- [캘린더](docs/features/calendar/index.md): 스케줄러 대체, 태스크·지원 일정·주차 깃발·개인 일정을 모아 보는 월 달력, 칩 드래그, 지난 날 회고 패널 (계획 승인)
-- [데이터 동기화](docs/features/data-sync/index.md): 플랜·캘린더·지원 관리·투데이 로컬 JSON을 본인 Supabase에 기능별 한 행으로 올리기, 첫 연결·재설치 복구, 로그인 풀림 안전 규칙 (계획 승인)
-- [백그라운드 실행](docs/features/background/index.md): 닫기 시 트레이로 숨기기·트레이 메뉴(열기/종료), 윈도우 로그인 자동 시작, 중복 실행 방지 (AI 테스트 통과, 사용자 테스트 대기)
-- [자동 업데이트](docs/features/auto-update/index.md): GitHub Releases로 새 버전 확인·알림, 설정에서 설치·재시작, 서명 키·버전·데이터 호환 규칙 (명세 완료)
+## 플랫폼 색인 (docs/<플랫폼>/index.md)
+- [PC 앱](docs/desktop/index.md): Tauri 2 + React + TS. 기능 허브 12개, 개발 환경·릴리즈·디자인 기준
+- [안드로이드 앱](docs/android/index.md): Kotlin 보조 앱, 집중 모드 앱 차단 (시작 전)
+- 공유 웹: 시작할 때 docs/web/index.md를 같은 모양으로 만든다
 
-## 공용 문서 (docs/common)
-- [docs/common/ai/setup/desktop-setup.md](docs/common/ai/setup/desktop-setup.md): PC 앱(Tauri 2 + React + TS) 개발 환경 설치와 프로젝트 생성 기록
-- [docs/common/ai/setup/desktop-release.md](docs/common/ai/setup/desktop-release.md): PC 앱 설치파일 빌드·설치·버전 올려 업데이트하는 절차, 설치·데이터 위치, 주의점
+## 모든 앱 공용 문서 (docs/common)
 - [docs/common/ai/formats/record-format.md](docs/common/ai/formats/record-format.md): 진행 기록(logs)·결정(decisions.md) 양식, 모든 명령이 공용
-- [docs/common/ai/design/design-direction.md](docs/common/ai/design/design-direction.md): 모든 페이지 디자인 기준 (공통 규칙 + 페이지 유형별 표현). 폴리싱 전에 읽고, 정해지지 않은 건 사용자에게 물은 뒤 이 문서에 먼저 적는다
-- [docs/common/ai/design/polish-targets.md](docs/common/ai/design/polish-targets.md): `/polish` 대상 페이지 목록, 페이지별 코드 범위·기록 위치·진행 상태
-- [docs/common/ai/design/logs/index.md](docs/common/ai/design/logs/index.md): 공통 기반(common) 폴리싱 진행 기록 목차
-- [docs/common/ai/token-reports/index.md](docs/common/ai/token-reports/index.md): 요청할 때 만드는 세션별 토큰 사용량·컨텍스트 증가 원인 보고서 목차
+- [docs/common/ai/logs/index.md](docs/common/ai/logs/index.md): 특정 기능에 속하지 않는 공용 작업(문서 구조 정리 등) 진행 기록 목차
+- [docs/common/ai/token-reports/index.md](docs/common/ai/token-reports/index.md): 요청할 때 만드는 세션별 토큰 사용량·컨텍스트 증가 원인 보고서 목차 (지난 보고서 안의 경로는 당시 기준)
+- 앱 사이 약속(docs/common/ai/contracts/): 여러 앱이 주고받는 Supabase 테이블·실시간 메시지·상태 값. 집중 모드 명세를 쓸 때 만든다

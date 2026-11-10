@@ -21,19 +21,19 @@
 4. 안드로이드 보조 앱과 집중 모드
 
 ## 기능별 상태
-| 기능 | 상태 | 문서 |
-|---|---|---|
-| 메인 페이지 | 사용자 테스트 대기: 홈 다듬기 수정2 r2 AI 테스트 20개 통과 (L56), 체크리스트 28개 (r1 22개 다시 포함). 앱 틀·사이드바는 완료 (사이드바 메뉴 순서 변경 L46) | docs/features/main-page/index.md |
-| 캘린더 계획 (플랜) | 수정 구현 완료 (테스트 대기) | docs/features/plan/index.md |
-| 캘린더 (일정 관리, 스케줄러 대체) | 테스트 r1: AI 실패 1(A14 수정함), 사용자 테스트 대기 | docs/features/calendar/index.md |
-| 지원 관리 | 수정1 완료 (테스트 r2 통과) | docs/features/applications/index.md |
-| 서버 연결 | 완료 (AI·사용자 테스트 r1 통과, 일시정지 재개 U31만 미확인) (notifications·job-search의 선행) | docs/features/server-setup/index.md |
-| 알림 | 완료 (r1 사용자 테스트 통과, 수정1은 AI 테스트 r2 통과·사용자 테스트 보류) (선행: server-setup, job-search의 선행) | docs/features/notifications/index.md |
-| 구직 관리 | 수정 구현 완료 (테스트 대기) (수정2, 수정1 사용자 테스트 r2는 수정2 뒤 함께) (Gmail 상태 보기 보안 수정 L63, 서버 업데이트 필요) (선행: server-setup, notifications) | docs/features/job-search/index.md |
-| 투데이 (집중 타이머 합침) | AI 테스트 통과, 사용자 테스트 대기 (r1) | docs/features/today/index.md |
-| 프로젝트 | AI 테스트 통과 (A11 수정), 사용자 테스트 대기 (r1) | docs/features/projects/index.md |
-| 데이터 동기화 | 테스트 중 (AI r1 통과, 사용자 테스트 대기) (선행: server-setup) | docs/features/data-sync/index.md |
-| 백그라운드 실행 | AI 테스트 통과, 사용자 테스트 대기 (r1) | docs/features/background/index.md |
-| 자동 업데이트 | AI 테스트 통과, 사용자 테스트 대기 (r1) (선행: notifications, background) | docs/features/auto-update/index.md |
-| 집중 모드 | 시작 전 | - |
-| 공유 웹 | 시작 전 | - |
+| 플랫폼 | 기능 | 상태 | 문서 |
+|---|---|---|---|
+| PC | 메인 페이지 | 사용자 테스트 대기: 홈 다듬기 수정2 r2 AI 테스트 20개 통과 (L56), 체크리스트 28개 (r1 22개 다시 포함). 앱 틀·사이드바는 완료 (사이드바 메뉴 순서 변경 L46) | docs/desktop/features/main-page/index.md |
+| PC | 캘린더 계획 (플랜) | 수정 구현 완료 (테스트 대기) | docs/desktop/features/plan/index.md |
+| PC | 캘린더 (일정 관리, 스케줄러 대체) | 테스트 r1: AI 실패 1(A14 수정함), 사용자 테스트 대기 | docs/desktop/features/calendar/index.md |
+| PC | 지원 관리 | 수정1 완료 (테스트 r2 통과) | docs/desktop/features/applications/index.md |
+| PC | 서버 연결 | 완료 (AI·사용자 테스트 r1 통과, 일시정지 재개 U31만 미확인) (notifications·job-search의 선행) | docs/desktop/features/server-setup/index.md |
+| PC | 알림 | 완료 (r1 사용자 테스트 통과, 수정1은 AI 테스트 r2 통과·사용자 테스트 보류) (선행: server-setup, job-search의 선행) | docs/desktop/features/notifications/index.md |
+| PC | 구직 관리 | 수정 구현 완료 (테스트 대기) (수정2, 수정1 사용자 테스트 r2는 수정2 뒤 함께) (Gmail 상태 보기 보안 수정 L63, 서버 업데이트 필요) (선행: server-setup, notifications) | docs/desktop/features/job-search/index.md |
+| PC | 투데이 (집중 타이머 합침) | AI 테스트 통과, 사용자 테스트 대기 (r1) | docs/desktop/features/today/index.md |
+| PC | 프로젝트 | AI 테스트 통과 (A11 수정), 사용자 테스트 대기 (r1) | docs/desktop/features/projects/index.md |
+| PC | 데이터 동기화 | 테스트 중 (AI r1 통과, 사용자 테스트 대기) (선행: server-setup) | docs/desktop/features/data-sync/index.md |
+| PC | 백그라운드 실행 | AI 테스트 통과, 사용자 테스트 대기 (r1) | docs/desktop/features/background/index.md |
+| PC | 자동 업데이트 | AI 테스트 통과, 사용자 테스트 대기 (r1) (선행: notifications, background) | docs/desktop/features/auto-update/index.md |
+| 안드로이드·PC | 집중 모드 | 시작 전 | - |
+| 웹 | 공유 웹 | 시작 전 | - |

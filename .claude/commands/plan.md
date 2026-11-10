@@ -3,10 +3,11 @@ description: 기능 명세서를 읽고 구현 계획을 세운다 (코드 작�
 argument-hint: <기능명>
 ---
 
-"$ARGUMENTS" 기능의 구현 계획을 세워줘. 기능 폴더는 docs/features/<기능명>/ 이다.
+"$ARGUMENTS" 기능의 구현 계획을 세워줘. 기능 폴더는 docs/<플랫폼>/features/<기능명>/ 이다.
+- <플랫폼>은 desktop·android·web 중 하나다. 인자에 플랫폼이 없으면 `ls docs/*/features/`로 폴더 이름만 확인해 맞는 폴더를 쓴다 (대소문자·단수형 차이). 두 플랫폼에 같은 이름이 있으면 사용자에게 묻는다.
 - 명세서: ai/spec/index.md를 먼저 읽고, 계획에 필요한 req 파일·data.md·scope.md·decisions.md를 읽는다. 명세서를 찾지 못하면 계획을 세우지 말고 나에게 알려줘.
 - 진행 기록: ai/logs/index.md(목차)를 확인하고 필요한 항목 파일만 읽는다.
-- 목업: human/mockups/index.html 맨 앞 목업 목차를 보고 필요한 화면 파일만 읽는다. 목업은 화면 구성·흐름·문구의 근거이고, 색·크기·간격 같은 모양 값은 theme.css와 docs/common/ai/design/design-direction.md가 기준이다. 목차에 "폴리싱 이전 목업" 줄이 있으면 배치도 지금 앱 코드를 먼저 본다.
+- 목업: human/mockups/index.html 맨 앞 목업 목차를 보고 필요한 화면 파일만 읽는다. 목업은 화면 구성·흐름·문구의 근거이고, 색·크기·간격 같은 모양 값은 theme.css와 docs/desktop/common/ai/design/design-direction.md가 기준이다. 목차에 "폴리싱 이전 목업" 줄이 있으면 배치도 지금 앱 코드를 먼저 본다.
 - 다른 기능의 구조가 필요하면 그 기능의 index.md에서 필요한 파일만 찾는다 (예: 메인 페이지 ai/spec/extension.md).
 
 아직 코드는 작성하지 마.
@@ -29,7 +30,7 @@ ai/logs/index.md 목차에서 마지막 "계획" 항목보다 뒤에 "명세" �
 - 목업: 바뀐 화면이 목업과 달라지면 어디가 달라지는지 step 파일에 적는다. 폴리싱으로 달라진 모양(색·간격·글씨 등)은 차이로 적지 않는다. 목업은 고치지 않는다. 화면 모양을 새로 정해야 하면 `/mockup`을 먼저 하자고 제안한다.
 
 계획을 보여준 뒤 내가 승인하면 다음을 해줘.
-- docs/features/<기능명>/ai/plan/에 나눠 저장:
+- docs/<플랫폼>/features/<기능명>/ai/plan/에 나눠 저장:
   - index.md: 명세서·목업 링크, 작성일·상태, 계획 중 정한 결정과 작은 규칙, 단계 표(단계 → 이름 → step 파일 → R), 이번 계획에 넣지 않는 것 (40줄 안팎)
   - structure.md: 전체 파일 목록, 데이터 모양, 컴포넌트 구조, C++ 비유
   - step-NN.md: 단계 하나당 파일 하나. 요구사항(R), 목업 화면 파일, 할 일, 확인할 결과, 이 단계에서 만들거나 고칠 파일만 적는다

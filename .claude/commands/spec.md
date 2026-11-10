@@ -10,23 +10,24 @@ $ARGUMENTS
 이걸 바탕으로 기능 명세서를 만들어줘.
 
 진행 방식:
+0. 어느 플랫폼(desktop·android·web)의 기능인지 정한다. 요구사항에서 분명하지 않으면 먼저 묻는다. 여러 앱이 주고받는 약속(Supabase 테이블, 실시간 메시지 형식, 상태 값)은 기능 폴더가 아니라 docs/common/ai/contracts/에 따로 적는다.
 1. 먼저 요구사항을 정리해서 보여주고, 빠졌거나 모호한 부분을 질문해줘. 질문은 한 번에 너무 많지 않게, 중요한 것부터 해줘.
 2. 내가 정해야 하는 건 네가 마음대로 정하지 말고 질문해줘. 단순한 건 추천안을 함께 보여줘도 돼.
 3. 질문이 끝나면 아래 "명세서 양식"대로 초안을 보여줘. (초안은 한 문서로 보여주고, 저장할 때 파일로 나눈다)
 
 내가 초안을 승인하면:
-- docs/features/<기능명>/ai/spec/ 아래에 "명세서 양식"의 파일들로 나눠 저장
-- 기능 허브 docs/features/<기능명>/index.md를 만들기 (아래 "기능 허브 양식")
-- 진행 기록 docs/features/<기능명>/ai/logs/index.md와 L01.md "명세" 항목을 남기기 (docs/common/ai/formats/record-format.md의 "진행 기록 쓰는 법")
-- PROJECT.md의 기능별 상태 표에 기능 허브 경로를 기록
-- DOCS_INDEX.md의 기능 목록에 기능 허브 경로와 한 줄 설명을 추가
+- docs/<플랫폼>/features/<기능명>/ai/spec/ 아래에 "명세서 양식"의 파일들로 나눠 저장
+- 기능 허브 docs/<플랫폼>/features/<기능명>/index.md를 만들기 (아래 "기능 허브 양식")
+- 진행 기록 docs/<플랫폼>/features/<기능명>/ai/logs/index.md와 L01.md "명세" 항목을 남기기 (docs/common/ai/formats/record-format.md의 "진행 기록 쓰는 법")
+- PROJECT.md의 기능별 상태 표에 플랫폼과 기능 허브 경로를 기록
+- 플랫폼 색인 docs/<플랫폼>/index.md의 기능 허브 목록에 경로와 한 줄 설명을 추가 (DOCS_INDEX.md는 고치지 않는다)
 
 이미 있는 기능의 명세서를 고칠 때는 ai/spec/index.md에서 고칠 파일만 찾아 읽고, ai/logs/index.md(목차)를 확인한 뒤, 아래 "R 번호 규칙"을 지켜 고치고 고친 내용을 "명세" 항목으로 남겨줘.
 
 아직 코드는 작성하지 마.
 
 ## 명세서 양식
-폴더: docs/features/<기능명>/ai/spec/
+폴더: docs/<플랫폼>/features/<기능명>/ai/spec/
 다른 문서(노트, 계획 step 파일, 목업 목차, 기록)가 이 파일 이름과 R·D 번호를 참조하므로, 정해진 파일 이름은 바꾸지 않는다.
 아직 채울 내용이 없는 파일은 만들지 않고, index.md 표에 "(아직 없음)"이라고 적는다.
 

@@ -2,7 +2,7 @@
 모든 명령(/spec, /mockup, /plan, /implement, /test)과 명령 없이 하는 작업이 기록과 결정을 남길 때 따르는 양식. 형식을 보려고 예전 기록 파일(LNN.md)을 읽지 않는다.
 
 ## 진행 기록 쓰는 법
-폴더: docs/features/<기능명>/ai/logs/
+폴더: docs/<플랫폼>/features/<기능명>/ai/logs/ (특정 기능에 속하지 않는 공용 작업은 docs/common/ai/logs/, 결정은 CLAUDE.md에 바로 반영)
 - index.md: 기록 목차 하나. 항목을 추가하면 같은 작업에서 한 줄 추가한다.
 - LNN.md: 기록 항목 하나당 파일 하나 (L01.md, L02.md …).
 

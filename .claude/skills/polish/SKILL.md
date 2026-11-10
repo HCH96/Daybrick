@@ -9,7 +9,7 @@ argument-hint: <대상 id> (common, home, today, calendar, plan, projects, appli
 "$ARGUMENTS" 대상을 폴리싱한다. **단위는 메뉴 페이지 하나**이고, 그 페이지에 속한 하위 화면(상세 화면, 팝업, 모달, 끌기 중 모습, 빈 상태·오류 상태)까지 한 번에 맡는다.
 
 ## 기준 문서와 우선순위
-1. `docs/common/ai/design/design-direction.md`: **최우선 기준.** 매번 통째로 읽는다
+1. `docs/desktop/common/ai/design/design-direction.md`: **최우선 기준.** 매번 통째로 읽는다
 2. `apps/desktop/src/styles/theme.css`: 값은 이 토큰만 쓴다. 새 값이 필요하면 **페이지 작업 중이라도 바로 토큰을 추가한다** (아래 "대상과 범위"의 예외). 직접 쓴 색이나 `color-mix`로 비슷한 색을 만들어 미루지 않는다. 이름은 기존 짝(`-soft`, `-line` 등)을 따르고 쓰는 곳을 주석으로 단다
 3. unslop 스킬 (`.claude/skills/unslop/`): 점검 목록과 고치는 순서만 빌려 쓴다
    - 읽는 것: `SKILL.md`의 "Run it" 이후 1~9단계·"Do not"·"Checklist", `references/signs.md`
@@ -22,7 +22,7 @@ argument-hint: <대상 id> (common, home, today, calendar, plan, projects, appli
 - 문서에 없는 결정(문서의 "아직 정하지 않은 것" 포함)이 필요하면 **추측하지 않는다.** AskUserQuestion으로 묻고, 답을 문서의 해당 절과 "결정 기록" 표에 먼저 적은 뒤 작업한다
 
 ## 대상과 범위
-대상 목록과 진행 상태는 `docs/common/ai/design/polish-targets.md`에 있다.
+대상 목록과 진행 상태는 `docs/desktop/common/ai/design/polish-targets.md`에 있다.
 - 인자가 비어 있으면 목록에서 `진행` 항목을 먼저, 없으면 첫 `대기` 항목을 고른다
 - `common`(공통 기반)이 `완료`가 아니면 다른 페이지를 시작하지 않고 그 사실을 알린다
 - 범위는 목록의 "코드 범위" 열이 정한다. 그 폴더 아래의 화면이 모두 하위 화면이다

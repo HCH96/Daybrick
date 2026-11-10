@@ -4,12 +4,14 @@ argument-hint: <화면 또는 기능명>
 ---
 
 "$ARGUMENTS"의 목업을 만들어줘.
-관련 명세서가 있으면 docs/features/<기능명>/ai/spec/index.md를 먼저 보고, 목업에 필요한 req 파일과 data.md만 읽어줘.
+관련 명세서가 있으면 docs/<플랫폼>/features/<기능명>/ai/spec/index.md를 먼저 보고, 목업에 필요한 req 파일과 data.md만 읽어줘.
+- <플랫폼>은 desktop·android·web 중 하나다. 인자에 플랫폼이 없으면 `ls docs/*/features/`로 폴더 이름만 확인해 맞는 폴더를 쓴다 (대소문자·단수형 차이). 두 플랫폼에 같은 이름이 있으면 사용자에게 묻는다.
+- 아래 디자인 기준(theme.css, design-direction.md)은 PC 앱 기준이다. 안드로이드·웹 목업은 그 플랫폼의 디자인 기준 문서가 생기기 전까지 기준을 사용자에게 묻는다.
 
 - 디자인 확인용이니까 기능이나 동작은 구현하지 말고, 화면 배치와 스타일만 보여주는 정적 화면으로 만들어줘.
 - 데이터는 실제처럼 보이는 예시 값으로 채워줘.
-- 브라우저에서 바로 열 수 있게 docs/features/<기능명>/human/mockups/에 저장하고, index.html 경로를 알려줘.
-- 색·글씨·간격·모서리·움직임 값은 apps/desktop/src/styles/theme.css의 토큰과 docs/common/ai/design/design-direction.md를 따른다. 목업 common.css에는 theme.css 토큰 값을 옮겨 쓴다. 다른 기능 목업의 common.css에서 값을 가져오지 않는다 (폴리싱 이전 값일 수 있다).
+- 브라우저에서 바로 열 수 있게 docs/<플랫폼>/features/<기능명>/human/mockups/에 저장하고, index.html 경로를 알려줘.
+- 색·글씨·간격·모서리·움직임 값은 apps/desktop/src/styles/theme.css의 토큰과 docs/desktop/common/ai/design/design-direction.md를 따른다. 목업 common.css에는 theme.css 토큰 값을 옮겨 쓴다. 다른 기능 목업의 common.css에서 값을 가져오지 않는다 (폴리싱 이전 값일 수 있다).
 - 이미 있는 화면을 바꾸는 목업이면 목업이 아니라 지금 앱 화면(코드)을 출발점으로 그린다.
 
 ## 파일 나누기
@@ -27,7 +29,7 @@ human/mockups/
 
 - 화면 하나(앱 창 한 장면)마다 HTML 파일 하나를 만든다. 팝업 안의 작은 창처럼 따로 구현되는 부품은 `part-<이름>.html`로 나눈다.
 - 같은 기능에 화면을 추가할 때는 새 화면 파일을 만들고 index.html 목차와 링크에 추가한다.
-- 색·배치 후보를 비교하는 목업은 `compare-<주제>.html` 한 파일로 만들 수 있다. 결정이 끝나면 docs/features/<기능명>/archive/mockups/로 옮긴다.
+- 색·배치 후보를 비교하는 목업은 `compare-<주제>.html` 한 파일로 만들 수 있다. 결정이 끝나면 docs/<플랫폼>/features/<기능명>/archive/mockups/로 옮긴다.
 - 화면 파일 하나는 15KB 안팎을 넘기지 않는다. 넘을 것 같으면 부분을 part 파일로 나눈다.
 - 스타일은 화면 파일 안에 넣지 않고 CSS 파일에 둔다. 화면 파일은 `common.css`와 필요한 `<영역>.css`만 link한다.
 
