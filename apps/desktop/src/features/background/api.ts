@@ -36,6 +36,8 @@ export function listenQuitRequested(fn: () => void): Promise<UnlistenFn> {
 export interface AppSettings {
   autostartInitialized: boolean;
   closeNoticeSeen: boolean;
+  /** 새 버전 알림을 보낸 버전 (auto-update R7). 옛 파일에는 없다 */
+  notifiedUpdateVersion?: string | null;
 }
 
 export function loadAppSettings(): Promise<AppSettings> {

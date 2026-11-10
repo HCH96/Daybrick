@@ -1,5 +1,5 @@
 //! 이 PC에만 두는 앱 설정: 앱 데이터 폴더의 app-settings.json (서버로 동기화하지 않는다).
-//! 파일이 없거나 깨졌으면 모든 값을 false로 본다 (structure.md 2절).
+//! 파일이 없거나 깨졌으면 모든 값을 false로 본다 (structure.md 2절). 알린 버전을 쓸 때만 깨진 파일을 건드리지 않는다 (auto-update D5).
 
 use std::fs;
 use std::path::PathBuf;
@@ -16,6 +16,8 @@ pub struct AppSettings {
     pub autostart_initialized: bool,
     /// 첫 닫기 안내를 봤는지 (R4)
     pub close_notice_seen: bool,
+    /// 새 버전 알림을 보낸(또는 수동 확인으로 본) 버전 (auto-update R7, R14). 옛 파일에는 없어 None으로 읽는다 (R33).
+    pub notified_update_version: Option<String>,
 }
 
 fn data_dir<R: Runtime>(app: &AppHandle<R>) -> Result<PathBuf, String> {
@@ -36,6 +38,17 @@ pub fn read<R: Runtime>(app: &AppHandle<R>) -> AppSettings {
         eprintln!("[background] app-settings.json이 깨져 기본값을 써요: {e}");
         AppSettings::default()
     })
+}
+
+/// 설정을 읽되, 파일이 있는데 읽지 못하거나 깨졌으면 오류를 준다 (auto-update D5, R36).
+/// 파일이 없을 때만 기본값.
+fn read_strict<R: Runtime>(app: &AppHandle<R>) -> Result<AppSettings, String> {
+    let path = data_dir(app)?.join(SETTINGS_FILE);
+    if !path.exists() {
+        return Ok(AppSettings::default());
+    }
+    let text = fs::read_to_string(&path).map_err(|e| format!("app-settings.json을 읽지 못함: {e}"))?;
+    serde_json::from_str(&text).map_err(|e| format!("app-settings.json이 깨져 있음: {e}"))
 }
 
 /// 임시 파일에 다 쓴 뒤 원래 파일과 바꿔치기한다.
@@ -59,5 +72,13 @@ pub fn load_app_settings<R: Runtime>(app: AppHandle<R>) -> AppSettings {
 pub fn mark_close_notice_seen<R: Runtime>(app: AppHandle<R>) -> Result<(), String> {
     let mut settings = read(&app);
     settings.close_notice_seen = true;
+    write(&app, &settings)
+}
+
+/// 알린 버전을 적는다 (auto-update R7, R14). 파일이 깨져 있으면 쓰지 않고 오류 (D5). 다른 값은 그대로 둔다.
+#[tauri::command]
+pub fn mark_update_notified<R: Runtime>(app: AppHandle<R>, version: String) -> Result<(), String> {
+    let mut settings = read_strict(&app)?;
+    settings.notified_update_version = Some(version);
     write(&app, &settings)
 }

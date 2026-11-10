@@ -7,6 +7,7 @@ mod server;
 mod storage;
 mod sync;
 mod today;
+mod updater;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -30,6 +31,7 @@ pub fn run() {
         })
         .manage(server::oauth_listener::OAuthListenerState::default())
         .manage(background::quit::QuitState::default())
+        .manage(updater::UpdaterState::default())
         .invoke_handler(tauri::generate_handler![
             background::quit::show_main_window,
             background::quit::hide_main_window,
@@ -37,8 +39,14 @@ pub fn run() {
             background::quit::ack_quit_request,
             background::app_settings::load_app_settings,
             background::app_settings::mark_close_notice_seen,
+            background::app_settings::mark_update_notified,
             background::autostart::autostart_status,
             background::autostart::set_autostart,
+            updater::updater_info,
+            updater::check::check_update,
+            updater::install::download_update,
+            updater::install::install_update,
+            updater::install::discard_update,
             storage::load_applications,
             storage::save_applications,
             storage::save_image,
