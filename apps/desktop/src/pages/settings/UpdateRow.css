@@ -1,0 +1,90 @@
+/* 설정 "앱" 칸의 업데이트 줄. 왼쪽 글자·문구는 AppSection의 app-section__* 모양을 같이 쓴다 */
+
+/* 자동 시작 줄과 나누는 구분선 */
+.update-row {
+  border-top: 1px solid var(--border);
+}
+
+.update-row__version {
+  font-variant-numeric: tabular-nums;
+}
+
+.update-row__btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.update-row__found {
+  margin-top: var(--space-16);
+}
+
+.update-row__new {
+  display: block;
+  font-size: var(--fs-14);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 변경 내용은 latest.json의 줄바꿈을 그대로 보인다 */
+.update-row__notes {
+  margin: var(--space-4) 0 0;
+  font-size: var(--fs-13);
+  color: var(--muted);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.update-row__progress {
+  margin-top: var(--space-12);
+}
+
+.update-row__progress-label {
+  margin: var(--space-12) 0 0;
+  font-size: var(--fs-12);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.update-row__progress .update-row__progress-label {
+  margin-top: 0;
+}
+
+.update-row__bar {
+  height: 4px;
+  margin-top: var(--space-8);
+  border-radius: var(--space-2);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+
+/* 너비 대신 가로 배율로 채운다 (배율은 TSX의 --update-ratio) */
+.update-row__bar i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(var(--update-ratio, 0));
+  transform-origin: left center;
+  transition: transform var(--dur-enter) var(--ease);
+}
+
+.update-row__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-12);
+}
+
+.update-row__result {
+  margin: var(--space-12) 0 0;
+  font-size: var(--fs-13);
+  color: var(--muted);
+}
+
+.update-row .app-section__error {
+  margin-top: var(--space-12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .update-row__bar i {
+    transition: none;
+  }
+}

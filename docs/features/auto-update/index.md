@@ -1,7 +1,7 @@
 # 자동 업데이트 (auto-update)
 PC 앱이 GitHub Releases에서 새 버전을 확인해 알림센터로 알리고, 설정 화면에서 받아 설치한 뒤 다시 시작한다.
 
-- 상태: 구현 중 (3/6단계 완료)
+- 상태: 구현 중 (4/6단계 완료)
 - 선행 기능: notifications, background, today (타이머 처리)
 - 작업 노트: [notes.md](notes.md)
 

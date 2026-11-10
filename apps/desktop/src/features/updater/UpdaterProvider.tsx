@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { loadAppSettings } from "../background/api";
 import { notify } from "../notifications/notify";
 import { checkUpdate, markUpdateNotified, updaterInfo, type FoundUpdate, type UpdaterInfo } from "./api";
+import { installDevUpdater } from "./devUpdater";
 import { isCheckDue, shouldNotify } from "./logic";
 import { newVersionNotice } from "./notices";
 
@@ -31,6 +32,8 @@ export interface UpdaterStore {
   info: UpdaterInfo | null;
   /** [업데이트 확인] 수동 확인 (R14) */
   checkNow: () => void;
+  /** [설치하고 다시 시작] (R16). 받기·설치 흐름은 5단계에서 채운다 */
+  install: () => void;
 }
 
 const UpdaterContext = createContext<UpdaterStore | null>(null);
@@ -122,6 +125,12 @@ export function UpdaterProvider({ children }: { children?: ReactNode }) {
     })();
   }, [readNotified, rememberNotified, setPhase]);
 
+  // 5단계에서 받기·타이머 확인·설치 흐름으로 채운다
+  const install = useCallback(() => {}, []);
+
+  // 개발 모드 전용: 콘솔에서 상태를 바꿔 본다 (배포 빌드에서는 아무것도 하지 않음)
+  useEffect(() => installDevUpdater(setPhase), [setPhase]);
+
   // 켤 때 쓸 수 있는지 보고, 쓸 수 있으면 자동 확인 타이머를 건다 (개발 모드면 걸지 않음, R5)
   useEffect(() => {
     let cancelled = false;
@@ -145,6 +154,6 @@ export function UpdaterProvider({ children }: { children?: ReactNode }) {
     };
   }, [autoCheck]);
 
-  const store = useMemo<UpdaterStore>(() => ({ phase, info, checkNow }), [phase, info, checkNow]);
+  const store = useMemo<UpdaterStore>(() => ({ phase, info, checkNow, install }), [phase, info, checkNow, install]);
   return <UpdaterContext.Provider value={store}>{children}</UpdaterContext.Provider>;
 }

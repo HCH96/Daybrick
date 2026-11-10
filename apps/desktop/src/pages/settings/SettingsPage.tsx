@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import { NAV_LABELS } from "../../app/pageLabels";
+import { usePageIntent } from "../../app/pageIntent";
 import AppSection from "./AppSection";
 import ServerSection from "./ServerSection";
 import SyncSection from "./SyncSection";
@@ -24,6 +25,10 @@ const SECTION_IDS = sections.map((section) => section.id);
 /** 설정 화면: 제목 + 칸 이름 줄(누르면 그 칸으로 이동) + 칸들 */
 function SettingsPage() {
   const { activeId, register, scrollTo } = useSectionAnchors(SECTION_IDS);
+  // 알림의 갈 곳 {page:"settings", tab}이면 그 칸까지 스크롤한다 (자동 업데이트 R8)
+  usePageIntent("settings", (intent) => {
+    if (intent.tab && SECTION_IDS.includes(intent.tab)) scrollTo(intent.tab);
+  });
   return (
     <div className="settings-page">
       <div>

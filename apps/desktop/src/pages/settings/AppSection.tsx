@@ -3,6 +3,7 @@ import LineIcon from "../../components/icons/LineIcon";
 import { autostartStatus, setAutostart, type AutostartStatus } from "../../features/background/api";
 import "./SyncSection.css"; // 켜기 스위치(sync-switch) 모양을 같이 쓴다
 import "./AppSection.css";
+import UpdateRow from "./UpdateRow";
 
 /** 전원 모양 아이콘 (앱 칸 머리) */
 function PowerIcon() {
@@ -14,7 +15,7 @@ function PowerIcon() {
   );
 }
 
-/** 설정의 "앱" 칸: 윈도우 시작 시 자동 실행 스위치 (R14, R17, D6) */
+/** 설정의 "앱" 칸: 윈도우 시작 시 자동 실행 스위치 (R14, R17, D6) + 구분선 아래 업데이트 줄 (자동 업데이트 R10–R15) */
 function AppSection() {
   const [status, setStatus] = useState<AutostartStatus | null>(null);
   const [busy, setBusy] = useState(false);
@@ -85,6 +86,8 @@ function AppSection() {
           onClick={() => void onToggle()}
         />
       </div>
+
+      <UpdateRow />
     </section>
   );
 }
