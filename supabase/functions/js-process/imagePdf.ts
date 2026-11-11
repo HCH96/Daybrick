@@ -110,53 +110,12 @@ export function jpegToPdfImage(b: Uint8Array, info: Extract<ImageInfo, { kind: "
   return { width: info.width, height: info.height, dict: `/ColorSpace ${space} /BitsPerComponent 8 /Filter /DCTDecode${decode}`, data: b };
 }
 
-async function zlib(data: Uint8Array, mode: "compress" | "decompress"): Promise<Uint8Array> {
-  // slice(): 새 ArrayBuffer로 복사 (Blob이 SharedArrayBuffer 뷰를 받지 않는 타입 규칙)
-  const stream = new Blob([data.slice()]).stream().pipeThrough(
-    mode === "compress" ? new CompressionStream("deflate") : new DecompressionStream("deflate"),
-  );
-  return new Uint8Array(await new Response(stream).arrayBuffer());
-}
-
 function concat(parts: Uint8Array[]): Uint8Array {
   const out = new Uint8Array(parts.reduce((n, p) => n + p.length, 0));
   let at = 0;
   for (const p of parts) {
     out.set(p, at);
     at += p.length;
-  }
-  return out;
-}
-
-/** PNG 행 필터를 되돌린다 (8비트, bpp는 픽셀당 바이트) */
-function unfilter(raw: Uint8Array, width: number, height: number, bpp: number): Uint8Array | null {
-  const stride = width * bpp;
-  if (raw.length < height * (stride + 1)) return null;
-  const out = new Uint8Array(height * stride);
-  for (let y = 0; y < height; y++) {
-    const filter = raw[y * (stride + 1)];
-    const src = y * (stride + 1) + 1;
-    const row = y * stride;
-    const up = row - stride;
-    for (let x = 0; x < stride; x++) {
-      const a = x >= bpp ? out[row + x - bpp] : 0;
-      const b = y > 0 ? out[up + x] : 0;
-      const c = x >= bpp && y > 0 ? out[up + x - bpp] : 0;
-      const v = raw[src + x];
-      let r: number;
-      if (filter === 0) r = v;
-      else if (filter === 1) r = v + a;
-      else if (filter === 2) r = v + b;
-      else if (filter === 3) r = v + ((a + b) >> 1);
-      else if (filter === 4) {
-        const p = a + b - c;
-        const pa = Math.abs(p - a);
-        const pb = Math.abs(p - b);
-        const pc = Math.abs(p - c);
-        r = v + (pa <= pb && pa <= pc ? a : pb <= pc ? b : c);
-      } else return null;
-      out[row + x] = r & 0xff;
-    }
   }
   return out;
 }
@@ -211,21 +170,105 @@ export async function pngToPdfImage(b: Uint8Array, info: Extract<ImageInfo, { ki
 
   // 투명도 있는 꼴(회색+알파, RGBA): 풀어서 흰 바탕에 합친다
   if ((colorType !== 4 && colorType !== 6) || bitDepth !== 8 || width * height > MAX_ALPHA_PIXELS) return null;
-  const bpp = colorType === 6 ? 4 : 2;
-  const pixels = unfilter(await zlib(concat(idat), "decompress"), width, height, bpp);
-  if (!pixels) return null;
-  const channels = bpp - 1;
-  const flat = new Uint8Array(width * height * channels);
-  for (let i = 0, o = 0; i < pixels.length; i += bpp) {
-    const al = pixels[i + channels];
-    for (let k = 0; k < channels; k++) flat[o++] = ((pixels[i + k] * al + 255 * (255 - al) + 127) / 255) | 0;
-  }
+  const data = await flattenAlpha(idat, width, height, colorType === 6 ? 4 : 2);
+  if (!data) return null;
   return {
     width,
     height,
-    dict: `/ColorSpace ${channels === 3 ? "/DeviceRGB" : "/DeviceGray"} /BitsPerComponent 8 /Filter /FlateDecode`,
-    data: await zlib(flat, "compress"),
+    dict: `/ColorSpace ${colorType === 6 ? "/DeviceRGB" : "/DeviceGray"} /BitsPerComponent 8 /Filter /FlateDecode`,
+    data,
   };
+}
+
+/** 한 번에 압축기로 넘길 행 수 */
+const FLAT_BLOCK_ROWS = 64;
+
+/**
+ * 투명 PNG의 IDAT를 줄 단위로 풀어 흰 바탕에 합치고 곧바로 다시 압축한다.
+ * 이미지 전체를 풀어 두지 않아 메모리는 몇 줄과 압축 결과만큼만 쓴다 (풀어 두면 2,000만 픽셀에 260MB 넘게 써
+ * 함수 메모리 한도를 넘었다). 데이터가 모자라거나 필터가 잘못되면 null.
+ */
+async function flattenAlpha(idat: Uint8Array[], width: number, height: number, bpp: number): Promise<Uint8Array | null> {
+  const stride = width * bpp;
+  const channels = bpp - 1;
+  const flatStride = width * channels;
+  // slice(): 새 ArrayBuffer로 복사 (Blob이 SharedArrayBuffer 뷰를 받지 않는 타입 규칙)
+  const input = new Blob(idat.map((d) => d.slice())).stream().pipeThrough(new DecompressionStream("deflate")).getReader();
+  const deflate = new CompressionStream("deflate");
+  const writer = deflate.writable.getWriter();
+  const output = new Response(deflate.readable).arrayBuffer();
+  output.catch(() => undefined);
+
+  let prev = new Uint8Array(stride);
+  let cur = new Uint8Array(stride);
+  const row = new Uint8Array(stride + 1);
+  let block = new Uint8Array(FLAT_BLOCK_ROWS * flatStride);
+  let blockRows = 0;
+  let filled = 0;
+  let y = 0;
+  const fail = async () => {
+    await input.cancel().catch(() => undefined);
+    await writer.abort().catch(() => undefined);
+    return null;
+  };
+
+  while (y < height) {
+    const { value, done } = await input.read();
+    if (done) return await fail();
+    for (let at = 0; at < value.length && y < height;) {
+      const take = Math.min(row.length - filled, value.length - at);
+      row.set(value.subarray(at, at + take), filled);
+      filled += take;
+      at += take;
+      if (filled < row.length) break;
+      filled = 0;
+      if (!unfilterRow(row, prev, cur, bpp, y > 0)) return await fail();
+      const o = blockRows * flatStride;
+      for (let i = 0, k = 0; i < stride; i += bpp) {
+        const al = cur[i + channels];
+        for (let c = 0; c < channels; c++) block[o + k++] = ((cur[i + c] * al + 255 * (255 - al) + 127) / 255) | 0;
+      }
+      [prev, cur] = [cur, prev];
+      y++;
+      blockRows++;
+      if (blockRows === FLAT_BLOCK_ROWS || y === height) {
+        await writer.ready;
+        await writer.write(block.subarray(0, blockRows * flatStride));
+        block = new Uint8Array(FLAT_BLOCK_ROWS * flatStride);
+        blockRows = 0;
+      }
+    }
+  }
+  await input.cancel().catch(() => undefined);
+  await writer.close();
+  return new Uint8Array(await output);
+}
+
+/** PNG 한 행의 필터를 되돌린다 (`row[0]`이 필터 종류). 모르는 필터면 false */
+function unfilterRow(row: Uint8Array, prev: Uint8Array, out: Uint8Array, bpp: number, hasPrev: boolean): boolean {
+  const filter = row[0];
+  if (filter > 4) return false;
+  const stride = out.length;
+  for (let x = 0; x < stride; x++) {
+    const a = x >= bpp ? out[x - bpp] : 0;
+    const b = hasPrev ? prev[x] : 0;
+    const c = x >= bpp && hasPrev ? prev[x - bpp] : 0;
+    const v = row[x + 1];
+    let r: number;
+    if (filter === 0) r = v;
+    else if (filter === 1) r = v + a;
+    else if (filter === 2) r = v + b;
+    else if (filter === 3) r = v + ((a + b) >> 1);
+    else {
+      const p = a + b - c;
+      const pa = Math.abs(p - a);
+      const pb = Math.abs(p - b);
+      const pc = Math.abs(p - c);
+      r = v + (pa <= pb && pa <= pc ? a : pb <= pc ? b : c);
+    }
+    out[x] = r & 0xff;
+  }
+  return true;
 }
 
 /**

@@ -103,7 +103,7 @@ async function send(
   return readInfo(body) ?? { reason: "bad-response" };
 }
 
-/** 요청 하나를 JSON 글자로 만든다. 맡기는 쪽이 크기(약 30MB 나누기)를 재고 그대로 `createBatch`에 넘긴다 */
+/** 요청 하나를 JSON 글자로 만든다. 맡기는 쪽이 크기(약 10MB 나누기)를 재고 그대로 `createBatch`에 넘긴다 */
 export function batchRequestJson(customId: string, params: Record<string, unknown>): string {
   const request: BatchRequest = { custom_id: customId, params };
   return JSON.stringify(request);
