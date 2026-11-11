@@ -441,6 +441,10 @@ async function fetchBodies(
     let detail;
     if (listed !== undefined) {
       detail = readBodyHtml(listed, target.rule.detail?.images ?? "img", link);
+    } else if (!target.rule.detail) {
+      // 상세 규칙 없이 목록으로만 본문을 받는 사이트: 이번 목록 본문이 없으면 빈 원문을 저장하지 않고
+      // null로 둬 다음 수집이 목록 본문으로 채우게 한다 (빈 글자로 저장하면 다시 받지 않는다, D90)
+      continue;
     } else {
       const wait = (lastRequest.get(target.site.id) ?? 0) + target.rule.delayMs - Date.now();
       if (wait > 0) await sleep(wait); // R37: 같은 사이트 요청 사이 간격
