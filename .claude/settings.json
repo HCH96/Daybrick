@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build)",
+      "Bash(node .claude/scripts/check-links.mjs)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(cargo check)",
+      "mcp__Claude_Browser__find",
+      "mcp__Claude_Browser__get_page_text",
+      "mcp__Claude_Browser__read_console_messages",
+      "mcp__Claude_Browser__read_page",
+      "mcp__Claude_Browser__tabs_context",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__list_migrations",
+      "mcp__supabase__list_extensions",
+      "mcp__supabase__list_edge_functions",
+      "mcp__supabase__get_edge_function",
+      "mcp__supabase__get_advisors",
+      "mcp__supabase__query_logs",
+      "mcp__supabase__search_docs"
+    ]
+  }
+}
