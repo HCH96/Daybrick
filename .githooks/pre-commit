@@ -1,7 +1,8 @@
 #!/bin/sh
-# 커밋 전 검사 두 가지. 켜기 (저장소를 새로 받았을 때 한 번): git config core.hooksPath .githooks
+# 커밋 전 검사 세 가지. 켜기 (저장소를 새로 받았을 때 한 번): git config core.hooksPath .githooks
 # 1) 비밀값 검사 (gitleaks): 커밋에 넣는 내용만 보고, 키·토큰이 있으면 커밋을 막는다. 규칙은 .gitleaks.toml.
-# 2) 문서 링크 검사: 문서·스크립트·앱 소스가 커밋에 들어 있을 때만 검사하고, 새로 깨진 링크가 있으면 커밋을 막는다.
+# 2) PC 앱 단위 테스트 (Vitest): PC 앱 코드가 커밋에 들어 있을 때만 돌리고, 실패하면 커밋을 막는다.
+# 3) 문서 링크 검사: 문서·스크립트·앱 소스가 커밋에 들어 있을 때만 검사하고, 새로 깨진 링크가 있으면 커밋을 막는다.
 #    링크 검사는 작업 폴더 기준이다 (커밋에 넣지 않은 수정도 함께 본다).
 
 # --- 1) 비밀값 검사 ---
@@ -24,7 +25,21 @@ if ! "$GITLEAKS" git --pre-commit --staged --redact --no-banner --verbose -c .gi
   exit 1
 fi
 
-# --- 2) 문서 링크 검사 ---
+# --- 2) PC 앱 단위 테스트 (Vitest, 1초 안쪽) ---
+# PC 앱 소스·테스트 설정·패키지가 커밋에 들어 있을 때만 돌린다. 작업 폴더 기준이다.
+if git diff --cached --name-only --diff-filter=ACDMR | grep -qE '^apps/desktop/(src/|vitest\.config\.ts$|package(-lock)?\.json$)'; then
+  if [ ! -d apps/desktop/node_modules/vitest ]; then
+    echo "커밋을 멈췄다: PC 앱 테스트 도구가 설치돼 있지 않다. apps/desktop에서 npm install을 먼저 한다."
+    exit 1
+  fi
+  if ! (cd apps/desktop && npm test --silent); then
+    echo ""
+    echo "커밋을 멈췄다: PC 앱 단위 테스트가 실패했다. 위 실패 내용을 고친 뒤 다시 커밋한다."
+    exit 1
+  fi
+fi
+
+# --- 3) 문서 링크 검사 ---
 if git diff --cached --name-only --diff-filter=ACDMR | grep -qE '^(docs/|\.claude/|[^/]+\.md$|apps/[^/]+/src/|apps/[^/]+/CLAUDE\.md$|supabase/.*\.md$)'; then
   if ! node .claude/scripts/check-links.mjs; then
     echo ""

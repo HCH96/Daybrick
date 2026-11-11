@@ -24,6 +24,6 @@ PC 앱 코드를 다루거나 PC 앱 기능을 명세·계획할 때 따른다. 
 - 프론트엔드만 빌드 (타입 검사 포함): `npm run build`
 - 타입 검사만: `npx tsc --noEmit`
 - Rust 쪽만 컴파일 확인 (apps/desktop/src-tauri에서): `cargo check`
-- 단위 테스트 (Vitest, 몇 초): `npm test`. 화면·Tauri 없는 순수 로직만 테스트하고, 파일은 원본 옆 `*.test.ts`. 시간대는 vitest.config.ts에서 서울로 고정한다. 순수 로직을 고치면 돌리고, 새 순수 로직에는 테스트를 같이 쓴다.
+- 단위 테스트 (Vitest, 몇 초): `npm test`. 화면·Tauri 없는 순수 로직만 테스트하고, 파일은 원본 옆 `*.test.ts`. 시간대는 vitest.config.ts에서 서울로 고정한다. 순수 로직을 고치면 돌리고, 새 순수 로직에는 테스트를 같이 쓴다. PC 앱 코드를 커밋하면 커밋 전 훅이 자동으로 돌려 실패 시 막는다.
 - 화면 확인은 브라우저 미리보기(`desktop-web`)에 `?fixture=basic`(또는 `empty`)을 붙여 예시 데이터로 연다. 방식은 docs/desktop/common/ai/testing.md
 - 설치 파일 배포·버전 올리기 절차: docs/desktop/common/ai/setup/desktop-release.md
