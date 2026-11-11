@@ -13,6 +13,7 @@ import {
   type PdfImage,
   pngToPdfImage,
   readImageInfo,
+  sniffImageType,
 } from "./imagePdf.ts";
 
 const BUCKET = "job-search";
@@ -72,11 +73,16 @@ export async function postingAttachments(caller: Caller, paths: string[], budget
   const items: Item[] = [];
   let total = 0;
   for (const path of paths) {
-    const type = IMAGE_TYPES[path.split(".").pop()?.toLowerCase() ?? ""];
-    if (!type) continue;
+    if (!IMAGE_TYPES[path.split(".").pop()?.toLowerCase() ?? ""]) continue;
     const file = await caller.admin.storage.from(BUCKET).download(path);
     if (file.error || !file.data) continue;
     const bytes = new Uint8Array(await file.data.arrayBuffer());
+    // 형식은 확장자가 아니라 파일 내용으로 정한다. 이미지가 아니면(예: 오류 페이지) 뺀다 (L66)
+    const type = sniffImageType(bytes);
+    if (!type) {
+      console.error(`js-process 이미지 형식을 알 수 없어 뺌: ${path}`);
+      continue;
+    }
     if (total + bytes.byteLength > MAX_IMAGE_TOTAL) break;
     total += bytes.byteLength;
     items.push({ path, type, bytes, info: readImageInfo(bytes) });

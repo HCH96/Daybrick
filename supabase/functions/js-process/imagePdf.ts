@@ -75,6 +75,18 @@ function webpSize(b: Uint8Array): { width: number; height: number } | null {
   return null;
 }
 
+/**
+ * 파일 앞부분의 형식 표시로 실제 이미지 형식(media type)을 읽는다. 모르는 형식이면 null.
+ * 저장 이름의 확장자는 사이트가 알려 준 형식이라 틀릴 수 있고, Anthropic은 형식이 다르면 요청을 거절한다 (L66).
+ */
+export function sniffImageType(b: Uint8Array): string | null {
+  if (b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return "image/jpeg";
+  if (b.length >= 8 && b[0] === 0x89 && ascii(b, 1, 3) === "PNG" && b[4] === 0x0d && b[5] === 0x0a) return "image/png";
+  if (b.length >= 6 && (ascii(b, 0, 6) === "GIF87a" || ascii(b, 0, 6) === "GIF89a")) return "image/gif";
+  if (b.length >= 12 && ascii(b, 0, 4) === "RIFF" && ascii(b, 8, 4) === "WEBP") return "image/webp";
+  return null;
+}
+
 /** 머리 부분만 읽어 형식과 크기를 알아낸다 (이미지를 풀지 않는다) */
 export function readImageInfo(b: Uint8Array): ImageInfo {
   if (b.length > 4 && b[0] === 0xff && b[1] === 0xd8) {
