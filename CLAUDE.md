@@ -45,7 +45,7 @@ docs/
 
 ### 링크와 이동
 - 문서(파일·폴더)를 옮기거나 이름을 바꿀 때는 `git mv`나 직접 이동 대신 `node .claude/scripts/move-doc.mjs <원래> <새 경로>`를 쓴다 (`--dry-run`으로 미리 보기). 색인의 설명 줄 정리와 이름만 적은 언급은 스크립트가 알려 주는 대로 직접 고친다.
-- 커밋 전 훅(.githooks/pre-commit)이 `node .claude/scripts/check-links.mjs`로 새로 깨진 링크를 막는다. 알려진 깨진 링크는 .claude/scripts/link-baseline.txt에 있고, 새로 깨진 링크를 이 목록에 넣어 덮지 않는다. 저장소를 새로 받으면 `git config core.hooksPath .githooks`로 훅을 켠다.
+- 커밋 전 훅(.githooks/pre-commit)이 비밀값 검사(금지 사항 참고)와 함께 `node .claude/scripts/check-links.mjs`로 새로 깨진 링크를 막는다. 알려진 깨진 링크는 .claude/scripts/link-baseline.txt에 있고, 새로 깨진 링크를 이 목록에 넣어 덮지 않는다. 저장소를 새로 받으면 `git config core.hooksPath .githooks`로 훅을 켠다.
 - 진행 기록·AI 테스트 보고서에는 다른 문서를 경로로 링크하지 않고 ID로 적는다 (record-format.md).
 
 ## 작업 방식
@@ -60,4 +60,5 @@ docs/
 ## 금지 사항
 - Supabase 키 등 비밀값을 코드에 직접 넣지 않는다. .env를 사용하고 .env는 커밋하지 않는다.
 - 이 저장소(GitHub HCH96/Daybrick)는 공개다. push하면 바로 공개되므로, 커밋 전에 비밀값·개인정보가 섞이지 않았는지 확인하고 push는 사용자에게 물은 뒤에 한다.
+- 커밋 전 훅이 gitleaks로 커밋할 내용의 비밀값을 검사해 막는다 (규칙은 .gitleaks.toml, gitleaks가 없으면 커밋도 막힌다). 걸리면 값을 .env로 옮기고, 훅을 건너뛰거나(`--no-verify`) 진짜 비밀값에 `gitleaks:allow`를 달지 않는다. 새 서비스의 키를 쓰게 되면 그 모양을 .gitleaks.toml 규칙에 더한다. 개인정보는 검사하지 못하므로 직접 확인한다.
 - 요청하지 않은 파일 삭제나 대규모 리팩터링은 하지 않는다.
