@@ -8,7 +8,9 @@
 (아직 없음)
 
 ## 안드로이드 공용 문서 (docs/android/common)
-(아직 없음. 개발 환경 설치·릴리즈 절차·모바일 디자인 기준은 개발 환경을 정할 때 만든다)
+- [common/ai/setup/android-setup.md](common/ai/setup/android-setup.md): 개발 환경 설치(Android Studio·SDK·가상 폰)와 프로젝트 생성 기록, 주의점
+- [common/ai/testing.md](common/ai/testing.md): 테스트 방식, 가상 폰 + adb로 하는 AI 화면 확인 명령
+- 릴리즈 절차·모바일 디자인 기준은 첫 기능을 만들 때 만든다.
 
 ## 다른 앱과 주고받는 것
 PC 앱·웹과 주고받는 약속(Supabase 테이블, 실시간 메시지 형식, 상태 값)은 여기가 아니라 docs/common/ai/contracts/에 둔다. 해당 기능 명세서를 쓸 때 만든다.
