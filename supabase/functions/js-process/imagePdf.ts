@@ -12,8 +12,17 @@ export type ImageInfo =
 
 /** Anthropic이 받는 이미지 한 변의 최대 픽셀 */
 export const MAX_SIDE = 8000;
-/** 투명도 있는 PNG를 풀 때의 최대 픽셀 수 (CPU 한도) */
-const MAX_ALPHA_PIXELS = 25_000_000;
+/**
+ * 함수 실행 한 번에 투명 PNG를 풀 수 있는 픽셀 합계 (함수 CPU 한도 2초 중 약 0.55초, 개발 PC에서 1픽셀에 약 0.14µs).
+ * 이미지 한 장도 이보다 크면 풀지 않는다 (L65).
+ */
+export const ALPHA_RUN_PIXELS = 4_000_000;
+
+/** 풀어서 흰 바탕에 합쳐야 하는 투명 PNG면 그 픽셀 수, 아니면 0 (pngToPdfImage가 푸는 조건과 같다) */
+export function alphaPixels(info: ImageInfo): number {
+  if (info.kind !== "png" || info.interlace !== 0 || info.bitDepth !== 8) return 0;
+  return info.colorType === 4 || info.colorType === 6 ? info.width * info.height : 0;
+}
 
 function u16(b: Uint8Array, p: number): number {
   return (b[p] << 8) | b[p + 1];
@@ -169,7 +178,7 @@ export async function pngToPdfImage(b: Uint8Array, info: Extract<ImageInfo, { ki
   }
 
   // 투명도 있는 꼴(회색+알파, RGBA): 풀어서 흰 바탕에 합친다
-  if ((colorType !== 4 && colorType !== 6) || bitDepth !== 8 || width * height > MAX_ALPHA_PIXELS) return null;
+  if ((colorType !== 4 && colorType !== 6) || bitDepth !== 8 || width * height > ALPHA_RUN_PIXELS) return null;
   const data = await flattenAlpha(idat, width, height, colorType === 6 ? 4 : 2);
   if (!data) return null;
   return {

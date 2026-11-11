@@ -27,6 +27,10 @@
 - 접속 확인: 로그인 전에는 공개 RPC `daybrick_schema_version()`, 로그인 뒤에는 `health` 서버 함수로 한다. 둘 다 DB를 실제로 읽는다. (server-setup D17)
 - 앱은 자기가 아는 최신 번호와 서버 번호를 비교한다. 서버 번호가 더 크면 "앱 업데이트 필요", 더 작으면 "서버 업데이트 필요"다. (server-setup D33)
 - 지금 서버 구조를 적용하고 서버 함수를 배포하는 것은 PC 앱뿐이다. 앱의 최신 번호 기준은 PC 앱 Rust `migrations.rs`다. (server-setup D15, D24)
+- 예외: 개발 중 **서버 함수만** 고친 경우는 앱 출시를 기다리지 않고 개발 PC에서 Supabase CLI로 그 함수만 바로 배포할 수 있다 (2026-11-11 사용자 결정, 공용 기록 L14). 서버 구조(마이그레이션)는 계속 앱만 적용한다.
+  - 커밋한 코드만 배포한다 (서버 함수 = 저장소 코드). 배포한 함수는 다음 설치본 빌드 때 `include_str!`로 자동으로 앱에 들어간다.
+  - 명령 (저장소 맨 위에서, 로그인은 사용자가 `npx supabase login`으로 한 번): `npx supabase functions deploy <이름> --project-ref <ref> --use-api`. `migrations.rs` `FUNCTIONS`에서 `verify_jwt: false`인 함수(js-collect, js-process, js-gmail)는 `--no-verify-jwt`를 꼭 붙인다 (빠뜨리면 예약 실행이 막힌다). project ref는 저장소에 적지 않는다.
+  - 주의: 새 설치본이 나오기 전 옛 앱에서 "자동 세팅 다시 실행"을 하면 함수가 옛 버전으로 돌아간다. 그랬으면 CLI로 다시 배포한다.
 - **열린 질문**: 안드로이드·웹이 서버 번호가 모자랄 때 직접 업데이트할지, "PC 앱에서 서버 업데이트" 안내만 할지는 그 앱의 명세 때 정한다.
 
 ## 데이터 동기화

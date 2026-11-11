@@ -21,7 +21,7 @@ import {
   SCORE_SYSTEM,
   scoreContent,
 } from "../_shared/prompts.ts";
-import { postingAttachments } from "./attach.ts";
+import { type AlphaBudget, postingAttachments } from "./attach.ts";
 import { guardText } from "./guard.ts";
 
 export interface PostingRow {
@@ -37,8 +37,8 @@ export interface PostingRow {
 
 export const POSTING_COLUMNS = "id, title, company, duty, body_text, image_paths, collected_at, stage";
 
-/** 이번 실행에서 같이 쓰는 값: 필터 조건과 지금 프로필 */
-export interface Context {
+/** 이번 실행에서 같이 쓰는 값: 필터 조건과 지금 프로필, 투명 PNG를 더 풀 수 있는 몫(AlphaBudget) */
+export interface Context extends AlphaBudget {
   caller: Caller;
   filters: FilterRow[];
   profile: { version: number; data: unknown; skills: string[] } | null;
@@ -98,10 +98,12 @@ function strings(value: unknown): string[] {
 /**
  * 추출 요청 만들기 (R48–R50): 첨부(이미지·나눈 PDF)와 규칙 검사로 보이지 않는 문자를 지운 원문.
  * 바로 호출(`extract`)과 일괄 맡기기(`batch.ts`)가 같은 요청을 쓴다 (D71).
+ * 이번 실행의 투명 PNG 몫이 모자라면 null (다음 실행에 다시 만든다, L65).
  */
-export async function extractRequest(ctx: Context, p: PostingRow): Promise<CallClaudeInput> {
+export async function extractRequest(ctx: Context, p: PostingRow): Promise<CallClaudeInput | null> {
   const guard = guardText(p.body_text ?? "");
-  const attached = await postingAttachments(ctx.caller, p.image_paths ?? []);
+  const attached = await postingAttachments(ctx.caller, p.image_paths ?? [], ctx);
+  if (!attached) return null;
   return {
     task: "extract",
     model: "claude-haiku-5-5",
@@ -144,7 +146,10 @@ export async function extract(ctx: Context, p: PostingRow): Promise<Extraction |
   if (saved.error) return { stop: { reason: "database" } };
   if (saved.data) return { fields: saved.data.fields, suspect: saved.data.suspect === true };
 
-  const result = await callClaude(ctx.caller, await extractRequest(ctx, p));
+  const request = await extractRequest(ctx, p);
+  // 투명 PNG 몫이 모자람: 남은 공고와 같이 다음 실행에서 한다
+  if (!request) return { stop: { reason: "time" } };
+  const result = await callClaude(ctx.caller, request);
   if (result.kind === "limit") return { stop: { reason: "limit", which: result.which } };
   if (result.kind === "credit") return { stop: { reason: "credit" } };
   if (result.kind === "error") {

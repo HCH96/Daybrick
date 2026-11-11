@@ -21,6 +21,7 @@ import { loadInFlight, submitBatches } from "./batch.ts";
 import { pollBatches } from "./batchResult.ts";
 import { backfillDedupe, checkDuplicate } from "./dedupe.ts";
 import { ensureFamilyBackfill } from "./familyBackfill.ts";
+import { ALPHA_RUN_PIXELS } from "./imagePdf.ts";
 import { handleOptions, json } from "../_shared/cors.ts";
 import type { FilterRow } from "../_shared/filters.ts";
 import { lastNoticeAt, sendNotice } from "../_shared/notify.ts";
@@ -73,7 +74,7 @@ async function loadContext(caller: Context["caller"]): Promise<Context | null> {
       profile = { version, data: row.data.data, skills };
     }
   }
-  return { caller, filters: (filters.data ?? []) as FilterRow[], profile };
+  return { caller, filters: (filters.data ?? []) as FilterRow[], profile, alphaLeft: ALPHA_RUN_PIXELS };
 }
 
 function limitOf(value: unknown): number {

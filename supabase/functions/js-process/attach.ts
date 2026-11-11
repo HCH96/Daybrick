@@ -3,6 +3,8 @@
 import { encodeBase64 } from "jsr:@std/encoding/base64";
 import type { Caller } from "../_shared/auth.ts";
 import {
+  ALPHA_RUN_PIXELS,
+  alphaPixels,
   buildPdf,
   type ImageInfo,
   jpegToPdfImage,
@@ -56,8 +58,17 @@ async function toPdfImage(item: Item): Promise<PdfImage | null> {
   return null;
 }
 
-/** 공고 이미지를 내려받아 추출 요청에 붙일 블록으로 만든다 */
-export async function postingAttachments(caller: Caller, paths: string[]): Promise<Attachments> {
+/** 이번 함수 실행에서 투명 PNG를 더 풀 수 있는 픽셀 수 (실행마다 ALPHA_RUN_PIXELS에서 시작, L65) */
+export interface AlphaBudget {
+  alphaLeft: number;
+}
+
+/**
+ * 공고 이미지를 내려받아 추출 요청에 붙일 블록으로 만든다.
+ * 풀어야 할 투명 PNG가 남은 몫보다 많고 이번 실행에서 이미 몫을 썼으면 null (다음 실행에 다시).
+ * 몫을 처음 쓰는 공고인데도 넘치면 들어가는 이미지만 풀고 나머지는 뺀다 (대기열이 막히지 않게).
+ */
+export async function postingAttachments(caller: Caller, paths: string[], budget: AlphaBudget): Promise<Attachments | null> {
   const items: Item[] = [];
   let total = 0;
   for (const path of paths) {
@@ -76,9 +87,23 @@ export async function postingAttachments(caller: Caller, paths: string[]): Promi
     return { blocks: ok.map(imageBlock), images: ok.length, pdfPages: 0 };
   }
 
+  const need = items.reduce((n, i) => {
+    const px = alphaPixels(i.info);
+    return px <= ALPHA_RUN_PIXELS ? n + px : n;
+  }, 0);
+  if (need > budget.alphaLeft && budget.alphaLeft < ALPHA_RUN_PIXELS) return null;
+
   const pdfImages: PdfImage[] = [];
   const rest: Item[] = [];
   for (const item of items) {
+    const px = alphaPixels(item.info);
+    if (px > budget.alphaLeft) {
+      // 풀지 않아도 보낼 수 있는 이미지는 그대로 이미지 블록으로 보낸다
+      if (!needsSlicing(item.info) && sendable(item.info)) rest.push(item);
+      else console.error(`js-process 투명 이미지가 이번 실행 몫(${budget.alphaLeft}픽셀)보다 커서 뺌: ${item.path} (${item.info.width}x${item.info.height})`);
+      continue;
+    }
+    budget.alphaLeft -= px;
     const pdfImage = await toPdfImage(item);
     if (pdfImage) pdfImages.push(pdfImage);
     else if (!needsSlicing(item.info) && sendable(item.info)) rest.push(item);

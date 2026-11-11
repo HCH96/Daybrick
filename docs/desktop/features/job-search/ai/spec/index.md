@@ -31,7 +31,7 @@
 | [data.md](data.md) | 다룰 데이터와 저장 위치 |
 | [scope.md](scope.md) | 제외, 다른 기능으로 넘긴 것, 나중에 고려할 것, 계획 단계에서 확인할 것 |
 | [mockup.md](mockup.md) | 목업 경로(2026-10-27 승인)와 목업에서 정한 것 |
-| [decisions.md](decisions.md) | 결정 사항 D1–D91 |
+| [decisions.md](decisions.md) | 결정 사항 D1–D92 |
 
 ## 다른 문서
 - 수정 계획 2: [../plan/index.md](../plan/index.md) (2026-10-30 승인) — 수정2 명세(L44) 10단계. 주간 처리는 `js-process batch`가 결과 확인·맡기기를 하고 공고는 `batch_id`로 표시(D70–D71), 기존 공고 직군은 첫 일괄 때 백업과 함께 일괄로 채움(D75)
