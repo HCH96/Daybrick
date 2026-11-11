@@ -9,6 +9,7 @@
 | AI 화면 | 하위 에이전트 test-ui | 브라우저 미리보기 + 예시 데이터 | ai/tests/<회차>/ui.md |
 | 출시 확인 | 사람 | 새 설치본, 실제 계정·서버 | docs/desktop/common/human/release-check.md |
 
+- AI 코드 테스트는 먼저 `npm test`(Vitest 단위 테스트, apps/desktop)를 돌린다. 이미 테스트가 있는 순수 함수는 그 결과로 판정하고, 없는 것만 임시 스크립트로 실행해 본다. 지금 테스트가 있는 곳: utils/date, today(reducer·stats), notifications/logic, sync(stableJson·latestUpdatedAt).
 - AI 코드와 AI 화면을 통과하면 기능은 완료다. 출시 확인 항목은 출시 때 모아서 본다.
 - 평소에는 앱을 실제로 쓰다가 문제가 생기면 고친다.
 - 이 방식 전에 만든 사용자 체크리스트(각 기능 human/tests/)는 진행하지 않고, 출시 확인 목록으로 옮기지도 않는다 (2026-11-11 사용자 결정: 실사용으로 잘 동작함). 다시 하자고 권하지 않는다.

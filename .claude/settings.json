@@ -2,6 +2,7 @@
   "permissions": {
     "allow": [
       "Bash(npm run build)",
+      "Bash(npm test)",
       "Bash(node .claude/scripts/check-links.mjs)",
       "Bash(npx tsc --noEmit)",
       "Bash(cargo check)",

@@ -23,6 +23,7 @@ tools: Read, Write, Bash, Grep
 - Bash의 현재 폴더는 호출이 끝나도 남는다. 경로는 절대 경로로 쓰거나 `(cd <절대 경로> && …)` 하위 셸 안에서만 옮긴다. 상대 경로 `cd`를 하지 않는다.
 - 없을 수 있는 파일·폴더를 확인할 때는 `2>/dev/null || true`를 붙여 오류로 끝나지 않게 한다.
 - 여러 줄 스크립트(순수 함수 실행 등)는 Bash 명령 안에 쓰지 않는다. 메인이 준 임시 폴더에 Write로 파일을 만든 뒤 `node <파일>`로 실행한다. 임시 스크립트는 저장소에 넣지 않는다.
+- 순수 함수 항목은 먼저 apps/desktop에서 `npm test`(Vitest)를 돌려, 그 함수의 `*.test.ts`가 있으면 그 결과로 판정한다. 테스트가 없는 함수만 임시 스크립트로 실행한다. 테스트 파일은 새로 만들지 않는다.
 - 빌드는 apps/desktop에서 `npm run build`, Rust는 apps/desktop/src-tauri에서 `cargo check`. 출력은 `| tail -20`처럼 끝부분만 본다.
 
 ## 보고서 저장
